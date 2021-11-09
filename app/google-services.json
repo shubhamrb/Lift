@@ -1,0 +1,80 @@
+{
+  "project_info": {
+    "project_number": "398822640432",
+    "firebase_url": "https://liftplzz-283205.firebaseio.com",
+    "project_id": "liftplzz-283205",
+    "storage_bucket": "liftplzz-283205.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398822640432:android:240434acd7f1fefb9856f5",
+        "android_client_info": {
+          "package_name": "com.liftPlzz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398822640432-26m0n7uopfdbq3sbf3earo83bqqesp3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liftPlzz",
+            "certificate_hash": "852a0c2bf5f3f700703eddb6fbdb57117ecd3827"
+          }
+        },
+        {
+          "client_id": "398822640432-2gpcd4p36qp6neac9eu71br4uja7d4do.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liftPlzz",
+            "certificate_hash": "bb96a0ffd27c2f937ae28b022324f5dfce4d9544"
+          }
+        },
+        {
+          "client_id": "398822640432-65f2abo63371vbsh6se5484n5dqejnv1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liftPlzz",
+            "certificate_hash": "860112afc515e5aeba418ea081462dbfbdd65a14"
+          }
+        },
+        {
+          "client_id": "398822640432-6thah77is2phs8skv2mnevqpo1aniq0m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liftPlzz",
+            "certificate_hash": "0cf9ca0680f0f0c3cf0cc5b7f2a15564dde7c53e"
+          }
+        },
+        {
+          "client_id": "398822640432-h65nukhg7bn8buum458g7cah9r63m9sr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liftPlzz",
+            "certificate_hash": "7010d069bac269489c0692c7e2d422c4454f2a23"
+          }
+        },
+        {
+          "client_id": "398822640432-bdsld0fp06clu016j0sm4nfpj12omaet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRxYpvucj8CGaCxwNan74BS4L8tMWbqDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398822640432-bdsld0fp06clu016j0sm4nfpj12omaet.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/toolbar_home_title_layout" />
+
+    <ImageView
+        android:id="@+id/imgCurrentloc"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/title"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/white_rounded_corner"
+        android:contentDescription="Search Location"
+        android:padding="4dp"
+        app:srcCompat="@drawable/ic_my_location_black_24dp" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutRide"
+        android:layout_below="@+id/title" />
+
+    <LinearLayout
+        android:id="@+id/layoutRide"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_350"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/home_bg"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/l1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/rounded_bg_white_border"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_1">
+
+            <LinearLayout
+                android:id="@+id/layoutTakeLift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_3"
+                android:background="@drawable/rounded_bg"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_8">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewTakeLift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_check"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20"
+                    android:text="@string/find_lift"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/sp_16" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutGiveLift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_3"
+                android:background="@drawable/rounded_bg_white"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_8">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewGiveLift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_check"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20"
+                    android:text="@string/offer_lift"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layoutPickupLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/rounded_edit_border_grey"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_12">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/editTextPickupLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:hint="Your Current Locations"
+                android:padding="@dimen/dp_5"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_5"
+                android:src="@drawable/ic_search"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCheckpoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/layoutDropLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/rounded_edit_border_grey"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_12">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/editTextDropLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:hint="Your Dropoff Locations"
+                android:padding="@dimen/dp_5"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_5"
+                android:src="@drawable/ic_search"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCheckPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_5"
+                android:src="@drawable/ic_add"
+                android:tint="@color/colorPrimary"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewCheckpoints"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:hint="Add Checkpoints"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorBlack"
+                android:textSize="@dimen/sp_14"
+                app:drawableTint="@color/colorPrimary" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/layoutSelectDateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:src="@drawable/clock"
+                    android:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewSelectDateTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:text="Select Time"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutSelectSeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_25"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:src="@drawable/seat"
+                    android:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewSelectSeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:text="Select Seat"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonLift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/sp_25"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginRight="@dimen/sp_25"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_40"
+            android:paddingRight="@dimen/dp_40"
+            android:text="@string/find_lift"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutRideVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_350"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/home_bg"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMyVehicle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
+
+</RelativeLayout>

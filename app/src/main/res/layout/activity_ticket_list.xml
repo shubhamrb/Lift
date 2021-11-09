@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_driver"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbarNew"
+        layout="@layout/toolbar_back_title_layout" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTicketList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarNew" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+
+        android:layout_marginLeft="@dimen/sp_25"
+        android:layout_marginRight="@dimen/sp_25"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:contentDescription="@string/create_ticket"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="end|bottom"
+        android:src="@drawable/add_button_white"
+        android:text="@string/send_request"
+        android:textSize="@dimen/sp_16" />
+
+</RelativeLayout>

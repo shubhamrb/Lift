@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="Enter vehicle Model:"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:id="@+id/layoutEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@drawable/current_location_et_bg"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10">
+
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextVehicleModel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:hint="e.g. Sunny"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="Enter Registration Number:"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@drawable/current_location_et_bg"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10">
+
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextVehicleRegNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:hint="Registration Number"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="Insurance Date: (yyyy-mm-dd)"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@drawable/current_location_et_bg"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10">
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/editTextVehicleInsuranceDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:hint="2020-07-18"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="@string/rate_per_km"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@drawable/current_location_et_bg"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_10">
+
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/ed_rate_per_km"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:hint="@string/rate_per_km"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="Vehicle Front Image"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewFrontImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/current_location_et_bg"
+                android:scaleType="fitXY"
+                android:src="@drawable/upload_image" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="Vehicle Back Image"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewBackImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/current_location_et_bg"
+                android:scaleType="fitXY"
+                android:src="@drawable/upload_image" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:singleLine="true"
+                android:text="Vehicle RC Image"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewRcImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/current_location_et_bg"
+                android:scaleType="fitXY"
+                android:src="@drawable/upload_image" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/checkBoxVehicleMakeDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:background="@null"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center|start"
+                android:singleLine="true"
+                android:text="Make this default vehicle"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:id="@+id/layoutSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_35"
+                android:layout_marginBottom="@dimen/dp_30"
+                android:background="@drawable/rounded_bg_green"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewSaveVehicle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dp_70"
+                    android:paddingTop="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_70"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:text="Save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/sp_18" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|start"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/pickuplocationn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pickup Location :"></TextView>
+
+        <TextView
+            android:id="@+id/droplocationn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Drop Location :"></TextView>
+
+        <TextView
+            android:id="@+id/datee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Date :"></TextView>
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Distance :"></TextView>
+
+        <TextView
+            android:id="@+id/kmpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Per KM Point :"></TextView>
+
+        <TextView
+            android:id="@+id/totalpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Total Point :"></TextView>
+
+        <Button
+            android:id="@+id/pay"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_15"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorWhite"
+            android:text="Pay" />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

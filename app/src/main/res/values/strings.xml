@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">LiftPlzz</string>
+    <string name="are_you_new_user_register_here">Are you new user? <font color='#DD3333'><u>Register here</u></font></string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="maps_api_key">AIzaSyA7SV33I2sYhbd9SiUo9b75qpGOS9ZNT5I</string>
+    <!--  <string name="facebook_app_id">2727968734109669</string>
+    <string name="fb_login_protocol_scheme">fb2727968734109669</string>-->
+    <string name="facebook_application_id">2727968734109669</string>
+
+    <string name="msg_token_fmt" translatable="false">FCM registration Token: %s</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="completed">Completed</string>
+    <string name="find_matches">Find Matches</string>
+    <string name="match_found">Match Found</string>
+    <string name="no_matches">No Matches</string>
+    <string name="no_request_found">No Request found</string>
+    <string name="my_lifts">My Lifts</string>
+    <string name="logout">Logout</string>
+    <string name="chat">Chat</string>
+    <string name="txt_faq">FAQ</string>
+    <string name="my_contribution">My Contribution</string>
+    <string name="help_ticket">Help/Ticket</string>
+    <string name="groups">Groups</string>
+    <string name="setting">Setting</string>
+    <string name="my_vehicle">My Vehicle</string>
+    <string name="my_payments">My Payments</string>
+    <string name="post_list">Post Lift</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="add_vehicle">Add Vehicle</string>
+    <string name="update_vehicle">Update Vehicle</string>
+    <string name="four_wheeler">four_wheeler</string>
+    <string name="facebook_app_id">602082917080957</string>
+    <string name="fb_login_protocol_scheme">fb602082917080957</string>
+    <string name="help_us_to_server">Help us to server better! Let us know your feedback</string>
+    <string name="submit">Submit</string>
+    <string name="total_rides">Total Rides</string>
+    <string name="as_rider">As Rider</string>
+    <string name="as_a_seeker">As  Seeker</string>
+    <string name="palasia_badwani_plaza">Palasia badwani palaza</string>
+    <string name="call">Call</string>
+    <string name="select_vehicle_category">Select vehicle category</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="resend_otp_in">"Resend OTP in "</string>
+    <string name="android">android</string>
+    <string name="please_select_vehicle_back_image">Please select vehicle Back Image</string>
+    <string name="please_select_vehicle_rc_image">Please select vehicle RC Image</string>
+    <string name="lift_id">"Lift ID: "</string>
+    <string name="seat">"Seat: "</string>
+    <string name="recommended_for_you">Recommended for you</string>
+    <string name="start_point">Start point</string>
+    <string name="end_point">End point</string>
+    <string name="partnet_details">Partner Details</string>
+    <string name="request">Request</string>
+    <string name="time">Time</string>
+    <string name="send_request">Send request</string>
+    <string name="cancel_request">Cancel request</string>
+    <string name="take_lift">Take Lift</string>
+    <string name="offer_lift">Offer Lift</string>
+    <string name="find_lift">Find Lift</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="seats">Seats</string>
+    <string name="mobile">Mobile</string>
+    <string name="driver_list">Driver List</string>
+    <string name="accepted">Accepted</string>
+    <string name="rejected">Rejected</string>
+    <string name="profile">Profile</string>
+    <string name="driver_profile">Driver Profile</string>
+    <string name="ride_request">Ride request</string>
+    <string name="review">Review</string>
+    <string name="ticket_list">Ticket List</string>
+    <string name="something_went_wrong">Some thing went wrong</string>
+    <string name="subject">Subject</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="create_ticket">Create Ticket</string>
+    <string name="please_enter_email">Please enter email</string>
+    <string name="please_enter_subject">Please enter subject</string>
+    <string name="please_enter_category">Please enter category</string>
+    <string name="please_enter_description">Please enter description</string>
+    <string name="ticket_id">Ticket Id</string>
+    <string name="toggle">toggle</string>
+    <string name="lift_type">Lift Type</string>
+    <string name="answer">Answer</string>
+    <string name="question">Question</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="number_of_seat">Number of Seat</string>
+    <string name="rate_per_km">Rate per km</string>
+    <string name="please_enter_rate_per_km">Please enter rate per km</string>
+    <string name="start_ride">Start Ride</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="otp">OTP : </string>
+    <string name="share_code">Share Code :</string>
+    <string name="enter_otp">Enter Otp</string>
+    <string name="enter_share_password">Enter Share Code</string>
+    <string name="end_ride">End Ride</string>
+    <string name="give_some_feedback">Give some feedback</string>
+
+
+</resources>

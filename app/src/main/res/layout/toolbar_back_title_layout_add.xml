@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_50"
+    android:layout_alignParentTop="true"
+    android:background="@color/colorPrimary"
+    android:elevation="@dimen/dp_2"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/imageViewBack"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:padding="@dimen/dp_6"
+        android:src="@drawable/back_white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/toolBarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

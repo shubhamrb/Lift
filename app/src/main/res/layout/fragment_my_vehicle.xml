@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbarNew"
+        layout="@layout/toolbar_back_title_layout" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewNovVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarNew"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_30"
+        android:background="@null"
+        android:fontFamily="@font/gotham_light"
+        android:gravity="center"
+        android:padding="@dimen/dp_5"
+        android:singleLine="true"
+        android:text="No Vehicle Found"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/sp_18" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/imageViewNoVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_250"
+        android:layout_below="@+id/textViewNovVehicle"
+        android:src="@drawable/no_vehicle_image"
+        android:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMyVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarNew"
+        android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/layoutAddVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:background="@drawable/rounded_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_12">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewAddVehicle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_30"
+            android:paddingRight="@dimen/dp_30"
+            android:text="Add Vehicle"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+
+
+    </LinearLayout>
+</RelativeLayout>

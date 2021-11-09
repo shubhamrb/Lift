@@ -1,0 +1,15 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="GlassRating" parent="@android:style/Widget.RatingBar">
+        <item name="android:minHeight">@dimen/dp_10</item>
+        <item name="android:minWidth">@dimen/dp_20</item>
+        <item name="android:progressDrawable">@drawable/rating_bar_bg</item>
+    </style>
+</resources>

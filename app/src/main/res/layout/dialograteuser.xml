@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RatingBar
+            android:rating="0"
+            android:max="5"
+            android:id="@+id/driver_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+        </RatingBar>
+<!--        <androidx.appcompat.widget.AppCompatRatingBar-->
+<!--            android:padding="0dp"-->
+<!--            android:id="@+id/driver_rating"-->
+<!--            style="?android:attr/ratingBarStyleSmall"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:rating="4" />-->
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/feedbacktext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_10"
+
+        android:hint="@string/give_some_feedback"
+        android:inputType="text"
+        android:textColorHint="@color/colorGrey" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_bg_green"
+            android:ellipsize="end"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:text="@string/ok"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_bg_green"
+            android:ellipsize="end"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+
+    </LinearLayout>
+</LinearLayout>
