@@ -27,7 +27,8 @@
     <string name="groups">Groups</string>
     <string name="setting">Setting</string>
     <string name="my_vehicle">My Vehicle</string>
-    <string name="my_payments">My Payments</string>
+    <string name="my_payments">My Payments/History</string>
+    <string name="payments_package">Payments Recharge Packages</string>
     <string name="post_list">Post Lift</string>
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
@@ -100,7 +101,7 @@
     <string name="enter_otp">Enter Otp</string>
     <string name="enter_share_password">Enter Share Code</string>
     <string name="end_ride">End Ride</string>
-    <string name="give_some_feedback">Give some feedback</string>
+    <string name="give_some_feedback">Give Some Feedback</string>
 
 
 </resources>

@@ -66,12 +66,10 @@ public class Lift implements Serializable {
     @SerializedName("ride_start")
     @Expose
     private Integer rideStart;
+
     @SerializedName("driver_tracking_id")
     @Expose
     private Integer driver_tracking_id;
-
-
-
 
     public Integer getDriver_tracking_id() {
         return driver_tracking_id;
@@ -80,9 +78,11 @@ public class Lift implements Serializable {
     public void setDriver_tracking_id(Integer driver_tracking_id) {
         this.driver_tracking_id = driver_tracking_id;
     }
+
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }

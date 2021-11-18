@@ -35,9 +35,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_10"
-
         android:hint="@string/give_some_feedback"
         android:inputType="text"
+        android:maxLength="4"
+        android:text=""
         android:textColorHint="@color/colorGrey" />
 
     <LinearLayout

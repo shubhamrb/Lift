@@ -94,6 +94,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(3, getResources().getString(R.string.my_payments), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(5, getResources().getString(R.string.help_ticket), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(6, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
@@ -177,6 +178,8 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 //            startActivity(intent);
             openMyRidesFragment(PerformFragment.REPLACE);
         } else if (s == 3) {
+            Intent intent = new Intent(HomeActivity.this, PaymentHistory.class);
+            startActivity(intent);
 //             openInventoryFragment(PerformFragment.REPLACE);
         } else if (s == 4) {
             openMyVehicleFragment(PerformFragment.REPLACE);
@@ -202,6 +205,9 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             });
             newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             newBuilder.show();
+        } else if (s == 9){
+            Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
+            startActivity(intent);
         }
     }
 }

@@ -159,7 +159,9 @@ public interface ApiService {
                                                  @Field("email") String email,
                                                  @Field("mobile") String mobile,
                                                  @Field("designation") String designation,
-                                                 @Field("about_me") String about_me);
+                                                 @Field("about_me") String about_me,
+                                                 @Field("sos") String sos);
+
 
     @FormUrlEncoded
     @POST("find-lift")
@@ -394,15 +396,24 @@ public interface ApiService {
                                     @Field("token") String token,
                                     @Field("lift_id") int liftId);
 
-    @FormUrlEncoded
-    @POST("liftstart-codematch")
-    Call<JsonObject> liftStartCodeMatch(@Field("api_key") String api_key,
-                                          @Field("client") String client,
-                                          @Field("token") String token,
-                                          @Field("lift_id") int requestId,
-                                          @Field("code") int code,
-                                          @Field("lat") double lat,
-                                          @Field("long") double logitute);
+//    @FormUrlEncoded
+//    @POST("liftstart-codematch")
+//    Call<ResponseBody> liftStartCodeMatch(@Field("api_key") String api_key,
+//                                          @Field("client") String client,
+//                                          @Field("token") String token,
+//                                          @Field("request_id") int requestId,
+//                                          @Field("code") int code,
+//                                          @Field("lat") double lat,
+//                                          @Field("long") double logitute);
+
+//    @FormUrlEncoded
+//    @POST("ride-end")
+//    Call<ResponseBody> rideEnd(@Field("api_key") String api_key,
+//                                          @Field("client") String client,
+//                                          @Field("token") String token,
+//                                          @Field("request_id") int requestId,
+//                                          @Field("lat") double lat,
+//                                          @Field("long") double logitute);
 
     @FormUrlEncoded
     @POST("ride-end")
@@ -415,17 +426,23 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("driver-liftend")
     Call<JsonObject> ridebyDriverEnd(@Field("api_key") String api_key,
-                             @Field("client") String client,
-                             @Field("token") String token,
-                             @Field("lift_id") int requestId,
-                             @Field("lat") double lat,
-                             @Field("long") double logitute);
-//    Call<ResponseBody> rideEnd(@Field("api_key") String api_key,
-//                                          @Field("client") String client,
-//                                          @Field("token") String token,
-//                                          @Field("request_id") int requestId,
-//                                          @Field("lat") double lat,
-//                                          @Field("long") double logitute);
+                                     @Field("client") String client,
+                                     @Field("token") String token,
+                                     @Field("lift_id") int requestId,
+                                     @Field("lat") double lat,
+                                     @Field("long") double logitute);
+
+
+
+    @FormUrlEncoded
+    @POST("liftstart-codematch")
+    Call<JsonObject> liftStartCodeMatch(@Field("api_key") String api_key,
+                                        @Field("client") String client,
+                                        @Field("token") String token,
+                                        @Field("lift_id") int requestId,
+                                        @Field("code") int code,
+                                        @Field("lat") double lat,
+                                        @Field("long") double logitute);
 
 
 

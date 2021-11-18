@@ -36,12 +36,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.liftPlzz.R;
+import com.liftPlzz.SmsListener;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.resendOtp.Response;
 import com.liftPlzz.model.sendotp.SendOtpResponse;
 import com.liftPlzz.presenter.OtpPresenter;
 import com.liftPlzz.receiver.SmsBroadcastReceiver;
+import com.liftPlzz.receiver.SmsReceiver;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.OtpReceivedInterface;
 import com.liftPlzz.views.OtpView;
@@ -136,6 +138,21 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 //                presenter.verifyOtp(otp, sharedPreferences.getString(Constants.MOBILE, ""));
 //            }
 //        }
+
+        SmsReceiver.bindListener(messageText -> {
+            editTextFirstDigits.setText(String.valueOf(messageText.charAt(0)));
+            Log.d("OTP word 1", editTextFirstDigits.getText().toString());
+        editTextSecondsDigits.setText(String.valueOf(messageText.charAt(1)));
+            Log.d("OTP word 2", editTextSecondsDigits.getText().toString());
+        editTextThirdDigits.setText(String.valueOf(messageText.charAt(2)));
+            Log.d("OTP word 3", editTextThirdDigits.getText().toString());
+        editTextFourthDigits.setText(String.valueOf(messageText.charAt(3)));
+            Log.d("OTP word 4", editTextFourthDigits.getText().toString());
+        editTextFive.setText(String.valueOf(messageText.charAt(4)));
+            Log.d("OTP word 5", editTextFive.getText().toString());
+        editTextSix.setText(String.valueOf(messageText.charAt(5)));
+            Log.d("OTP word 6", editTextSix.getText().toString());
+        });
         editTextFirstDigits.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -426,10 +443,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         if (task.isSuccessful()) {
                             Snackbar.make(reltive, "Successful", Snackbar.LENGTH_LONG).show();
                             String cred = task.getResult().getUser().getPhoneNumber();
+                            Log.d("mobile no.", cred);
+                            if (cred.isEmpty()){
+                                Snackbar.make(reltive, "Mobile Number not found", Snackbar.LENGTH_LONG).show();
+                            }
                             cred.replace("+91", "");
 //                            checkUser();
 //                            setLoginData();
                             presenter.sendOtp(mobileNo);
+//                            presenter.sendOtp(cred);
                         } else {
                             if (task.getException() instanceof
                                     FirebaseAuthInvalidCredentialsException) {

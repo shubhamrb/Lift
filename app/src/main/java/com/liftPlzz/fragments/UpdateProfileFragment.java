@@ -5,17 +5,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.ViewPagerAdapter;
@@ -26,10 +33,15 @@ import com.liftPlzz.presenter.UpdateProfilePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.UpdateProfileView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,6 +68,10 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     AppCompatEditText editTextMobile;
     @BindView(R.id.editTextEmail)
     AppCompatEditText editTextEmail;
+
+    @BindView(R.id.editsosnumber)
+    AppCompatEditText editsosnumber;
+
     @BindView(R.id.editTextAboutUser)
     AppCompatEditText editTextAboutUser;
 
@@ -92,6 +108,8 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
 
     @Override
     protected void bindData() {
+        sosnumbers();
+
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if (user != null) {
             editTextName.setText(user.getName());
@@ -128,10 +146,13 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     showMessage("Please enter email");
                 } else if (editTextMobile.getText().toString().isEmpty()) {
                     showMessage("Please enter mobile number");
-                } else if (editTextAboutUser.getText().toString().isEmpty()) {
+                }else if (editsosnumber.getText().toString().isEmpty()) {
+                    showMessage("Please enter Emergency number");
+                }
+                else if (editTextAboutUser.getText().toString().isEmpty()) {
                     showMessage("Please enter About Yourself");
                 } else {
-                    presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""), editTextName.getText().toString(), editTextDesignation.getText().toString(), editTextEmail.getText().toString(), editTextMobile.getText().toString(), editTextAboutUser.getText().toString());
+                    presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""), editTextName.getText().toString(), editTextDesignation.getText().toString(), editTextEmail.getText().toString(), editTextMobile.getText().toString(),editTextAboutUser.getText().toString(),editsosnumber.getText().toString());
 
                 }
                 break;
@@ -162,6 +183,49 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             //File file= =ImagePicker.getFile(data);
         }
     }
+
+    private void sosnumbers() {
+        Constants.showLoader(getContext());
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-profile", new com.android.volley.Response.Listener<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(String response) {
+                Constants.hideLoader();
+                Log.d("history", response);
+                try {
+                    JSONObject jObject = new JSONObject(response);
+                    JSONObject responsee = jObject.getJSONObject("response");
+                    JSONObject userdata = responsee.getJSONObject("user");
+                    String so1s = userdata.getString("sos");
+                    Log.d("sos", so1s);
+
+                    editsosnumber.setText(so1s);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", Constants.API_KEY);
+                params.put("client", Constants.ANDROID);
+                params.put("token", sharedPreferences.getString(Constants.TOKEN, ""));
+                //   params.put("token", "064ywr3Ht5LPpFPF73J0foCAdvw3ylSDXJys8IqATQ2wyvwimen827FAPA5I");
+                return params;
+            }
+        };
+        queue.add(sr);
+
+    }
+
 
     @Override
     public void setProfileData(Response response) {

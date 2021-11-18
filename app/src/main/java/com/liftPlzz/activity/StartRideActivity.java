@@ -1,7 +1,7 @@
-
 package com.liftPlzz.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,14 +12,18 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -27,6 +31,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -34,6 +39,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -63,12 +70,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.liftPlzz.R;
+import com.liftPlzz.adapter.PaymentHistoryAdatper;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.locationservice.LocationUpdatesService;
 import com.liftPlzz.locationservice.Utils;
+import com.liftPlzz.model.PaymentHistoryModel;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
+import com.razorpay.Checkout;
+import com.razorpay.PaymentResultListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -79,7 +90,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,49 +102,50 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 //++++++++++++++++++++++++++++++Driverliftstart havetobeimplimented+++++
 public class StartRideActivity extends AppCompatActivity implements
-        OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+        OnMapReadyCallback, PaymentResultListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     //+++++++++++++++++++++++++++++++++++++++++++++++get Location++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Write a message to the database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    boolean driverretriveenable =false;
     private DatabaseReference mDatabase;
     private DatabaseReference StoreLoactiontoDatabaseReference;
     private DatabaseReference HistoryStoreLoactiontoDatabaseReference;
     GoogleMap mGoogleMap;
     SharedPreferences sharedPreferences;
     SupportMapFragment mapFragment;
+    Button callButton;
+    Button smsButton;
+    String sos;
     Location Previouslocation = null;
-    boolean ridestarted =false;
-    boolean apimazoomcompleted =false;
-    int startedcount =0 ;
+    boolean ridestarted = false;
+    boolean apimazoomcompleted = false;
+    int startedcount = 0;
     int driverlocationcount = 0;
     ArrayList<LatLng> linelocationList = new ArrayList<>();
-    ArrayList<LatLng> driverlinelocationList = new ArrayList<>();
     ArrayList<LatLng> historylocationList = new ArrayList<>();
     private LatLng prelatLng;
-    private LatLng driverprelatLng;
     TextView totalpointt;
     String totalpoint;
     //++++++++++++++++++++++++++++++++++++++++++++Rating+++++++++++++
     private JSONArray users;
-    AlertDialog finalAlert ;
+    AlertDialog finalAlert;
     private String driver_id;
     private String request_id;
     private int bywhomRidestarted = -1;
     private Location location;
     private String tracking_lift_id;
-//    private ProgressDialog drivedriverstartprogress;
+    //    private ProgressDialog drivedriverstartprogress;
     private Context mainContext;
-    private boolean driverstarted =false;
-    public  int rateuser_length = 0;
-    private Location driverfisttargetLocation;
+    private boolean driverstarted = false;
+
+
     //+++++++++++++++++++++++++++++++++++++++++++++++
     //    private String strToken = "";
 
@@ -140,77 +155,57 @@ public class StartRideActivity extends AppCompatActivity implements
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-             location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
-            Log.e("Driver started is" , "Ride "+bywhomRidestarted);
-            if(bywhomRidestarted ==0)
-            {
+            location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
+            Log.e("Driver started is", "Ride " + bywhomRidestarted);
+            if (bywhomRidestarted == 0) {
 
-                Log.e(TAG , "Location Same location"+startedcount);
-                if( startedcount ==0 ){
+                Log.e(TAG, "Location Same location" + startedcount);
+                if (startedcount == 0) {
                     startedcount = 3;
-                    startDriverLift(location ,strToken);
+                    startDriverLift(location, strToken);
                     return;
-                }else {
+                } else {
 
 
                     if (location != null) {
 //                Log.e(TAG , "Location Received"+Utils.getLocationText(location));
                         // ...
-                        if(Previouslocation ==null)
-                        {
+                        if (Previouslocation == null) {
 
-                            historylocationList.add(new LatLng(location.getLatitude(),location.getLongitude()));
-                        }else if(location.getLatitude() == Previouslocation.getLatitude() ||(location.getLongitude() == Previouslocation.getLongitude()))
-                        {
-                            Log.e(TAG , "Location is Same");
-                        }else {
-                            historylocationList.add(new LatLng(location.getLatitude(),location.getLongitude()));
+                            historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
+                        } else if (location.getLatitude() == Previouslocation.getLatitude() || (location.getLongitude() == Previouslocation.getLongitude())) {
+                            Log.e(TAG, "Location is Same");
+                        } else {
+                            historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
                         }
                         Previouslocation = location;
-                        String livelocation  =String.valueOf(location.getLatitude()) +","+String.valueOf(location.getLongitude() );
-                        Log.e(TAG , "Location livelocation"+livelocation);
+                        String livelocation = String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude());
+                        Log.e(TAG, "Location livelocation" + livelocation);
                         StoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
-                        StoreLoactiontoDatabaseReference=  StoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id).child("location");
+                        StoreLoactiontoDatabaseReference = StoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id).child("location");
                         StoreLoactiontoDatabaseReference.setValue(livelocation).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Log.e(TAG , "Location Success");
-                                if(!driverretriveenable)
-                                {
-                                    String[] Latbroken = {String.valueOf(location.getLatitude()) ,String.valueOf (location.getLongitude() )};                                    Log.e(TAG , "Location Retrieved"+Latbroken[0] +" and "+Latbroken[1]);
-//                                    driverfisttargetLocation = new Location("");//provider name is unnecessary
-//                                    driverfisttargetLocation.setLatitude(Double.parseDouble(Latbroken[0]));//your coords of course
-//                                    driverfisttargetLocation.setLongitude(Double.parseDouble(Latbroken[1]));
-//                                            placeTheCUrrentmarker(Latbroken , 0);
-                                    driverLiftintialise(Latbroken , driverretriveenable);
+                                Log.e(TAG, "Location Success");
+                                StoreLoactiontoDatabaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        String[] Latbroken = dataSnapshot.getValue().toString().split(",");
+                                        Log.e(TAG, "Location Retrieved" + Latbroken[0] + " and " + Latbroken[1]);
+                                        Location targetLocation = new Location("");//provider name is unnecessary
+                                        targetLocation.setLatitude(Double.parseDouble(Latbroken[0]));//your coords of course
+                                        targetLocation.setLongitude(Double.parseDouble(Latbroken[1]));
+//                                Location retrivedloc = new Location(Latbroken[0] , Latbroken[1]) ;
+                                        placeTheCUrrentmarker(targetLocation);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull @NotNull Exception e) {
+                                        e.printStackTrace();
+                                        Log.e(TAG, "Location Failed");
 
-                                    driverretriveenable =true;
-                                }
-//                                StoreLoactiontoDatabaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-//                                    @Override
-//                                    public void onSuccess(DataSnapshot dataSnapshot) {
-////                                Location retrivedloc = new Location(Latbroken[0] , Latbroken[1]) ;
-//                                        if(!driverretriveenable)
-//                                        {
-//                                            String[] Latbroken = dataSnapshot.getValue().toString().split(",");
-//                                            Log.e(TAG , "Location Retrieved"+Latbroken[0] +" and "+Latbroken[1]);
-//                                            driverfisttargetLocation = new Location("");//provider name is unnecessary
-//                                            driverfisttargetLocation.setLatitude(Double.parseDouble(Latbroken[0]));//your coords of course
-//                                            driverfisttargetLocation.setLongitude(Double.parseDouble(Latbroken[1]));
-////                                            placeTheCUrrentmarker(Latbroken , 0);
-//                                            driverLiftintialise(Latbroken , 0);
-//                                            driverretriveenable = true;
-//                                        }
-//
-//                                    }
-//                                }).addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull @NotNull Exception e) {
-//                                        e.printStackTrace();
-//                                        Log.e(TAG , "Location Failed");
-//
-//                                    }
-//                                });
+                                    }
+                                });
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -226,72 +221,31 @@ public class StartRideActivity extends AppCompatActivity implements
 //                Toast.makeText(DriverUserLocationActivity.this, Utils.getLocationText(location),
 //                        Toast.LENGTH_SHORT).show();
                 }
-            }else if(bywhomRidestarted ==1) {
-                Log.e("Driver started is" , "User"+bywhomRidestarted);
+            } else if (bywhomRidestarted == 1) {
+                Log.e("Driver started is", "User" + bywhomRidestarted);
             }
 
 
         }
     }
 
-    private void placeTheCUrrentmarker(String[] startpoint, int startedloca) {
-        Log.d("usersresponse1", "startedloca "+startedloca);
+    private void placeTheCUrrentmarker(Location location) {
+        LatLng latLngOrigin = new LatLng(location.getLatitude(), location.getLongitude());
 //        origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 //        pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//
-        double latitude = Double.parseDouble(startpoint[0]);
-        double longitude = Double.parseDouble(startpoint[1]);
-        LatLng latLng = new LatLng(latitude,longitude);
-        if(startedloca ==0)
-        {
-            driverprelatLng = new LatLng(latitude,longitude);
-            Log.d("usersresponse1", ""+driverlocationcount);
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(driverprelatLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-                    .title("You started here"));
-            driverlinelocationList.add(driverprelatLng);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-        }else {
-            Log.d("usersresponse2", String.valueOf(startpoint));
 
-            driverlinelocationList.add(latLng);
-            PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(Color.GREEN);
-            polyOptions.width(5);
-            polyOptions.addAll(driverlinelocationList);
-
-            mGoogleMap.clear();
-            mGoogleMap.addPolyline(polyOptions);
-
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (LatLng latLngx : driverlinelocationList) {
-                builder.include(latLngx);
-
-            }
-
-            final LatLngBounds bounds = builder.build();
-
-            //BOUND_PADDING is an int to specify padding of bound.. try 100.
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-            mGoogleMap.animateCamera(cu);
-//            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(driverprelatLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-                    .title("You started here"));
-
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-                    .title("Current location"));
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(latLngOrigin)
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                .title("Driver"));
+        if (!apimazoomcompleted) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         }
-
+        apimazoomcompleted = true;
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
+
     private static final String TAG = StartRideActivity.class.getSimpleName();
 
     // Used in checking for runtime permissions.
@@ -312,6 +266,13 @@ public class StartRideActivity extends AppCompatActivity implements
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationUpdatesService.LocalBinder binder = (LocationUpdatesService.LocalBinder) service;
             mService = binder.getService();
+//            if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
+//                //todo start ride will call from here
+//                if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))){
+//
+//                }
+//            }
+
             mBound = true;
         }
 
@@ -340,11 +301,46 @@ public class StartRideActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_start_ride);
         ButterKnife.bind(this);
 //        TextView btn_start_rideqw = (TextView) findViewById(R.id.btn_start_ride);
+        callButton = findViewById(R.id.callButton);
+        smsButton = findViewById(R.id.smsButton);
+        callButton.setBackgroundResource(R.drawable.telephone);
+        smsButton.setBackgroundResource(R.drawable.sms);
+        sosnumbers();
+
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sos.isEmpty()){
+                    Toast.makeText(mainContext, "Emergency number not found", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
+                            "tel", sos, null));
+                    startActivity(phoneIntent);
+                }
+
+
+            }
+        });
+
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (sos.isEmpty()){
+                    Toast.makeText(mainContext, "Emergency number not found", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + sos));
+                    intent.putExtra("sms_body", "Hi");
+                    startActivity(intent);
+
+                }
+            }
+        });
+
         mainContext = this;
         if (getIntent() != null) {
             lift = (Lift) getIntent().getSerializableExtra(Constants.LIFT_OBJ);
         }
-        Log.e("lift.getLiftType()" , ""+lift.getLiftType());
+        Log.e("lift.getLiftType()", "" + lift.getLiftType());
         HistoryStoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
 //        assert lift != null;
 //        Log.e("lift" , "getDriver_tracking_id"+lift.getDriver_tracking_id());
@@ -362,18 +358,19 @@ public class StartRideActivity extends AppCompatActivity implements
 //        InitLocation();
         if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
 //            todo start ride will call from here
-            if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))){
-                startedcount = -1;
-                Log.e("Lift" , "Found");
+            if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                Log.e("Lift", "Found");
                 getUsers(2);
 
-            }else {
+            } else {
                 Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
             }
         }
     }
 
     private void InitLocation(String user_id, String tracking_lift_id) {
+
+//
         // Check that the user hasn't revoked permissions by going to Settings.
         if (Utils.requestingLocationUpdates(this)) {
             if (!checkPermissions()) {
@@ -387,22 +384,20 @@ public class StartRideActivity extends AppCompatActivity implements
                 // Get Post object and use the values to update the UI
 //                Post post = dataSnapshot.getValue(Post.class);
                 // ..
-                Log.e("dataSnapshot" , ""+dataSnapshot);
+                Log.e("dataSnapshot", "" + dataSnapshot);
                 String[] startpoint = new String[0];
-                if(dataSnapshot.getValue() ==null)
-                {
-                    Log.e("dataSnapshot" , "dataSnapshot is null");
+                if (dataSnapshot.getValue() == null) {
+                    Log.e("dataSnapshot", "dataSnapshot is null");
                     driverstarted = false;
                     Toast.makeText(StartRideActivity.this, "Driver has not started the ride", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 startpoint = Objects.requireNonNull(dataSnapshot.getValue()).toString().split(",");
-                if(driverlocationcount ==0)
-                {
-                    placeDriver(startpoint ,0 );
+                if (driverlocationcount == 0) {
+                    placeDriver(startpoint, 0);
                     driverlocationcount = 1;
-                }else {
-                    placeDriver(startpoint ,1 );
+                } else {
+                    placeDriver(startpoint, 1);
                 }
                 driverstarted = true;
             }
@@ -429,11 +424,10 @@ public class StartRideActivity extends AppCompatActivity implements
         Log.d("usersresponse1", String.valueOf(startpoint));
         double latitude = Double.parseDouble(startpoint[0]);
         double longitude = Double.parseDouble(startpoint[1]);
-        LatLng latLng = new LatLng(latitude,longitude);
-        if(driverlocationcountx ==0)
-        {
-            prelatLng = new LatLng(latitude,longitude);
-            Log.d("usersresponse1", ""+driverlocationcount);
+        LatLng latLng = new LatLng(latitude, longitude);
+        if (driverlocationcountx == 0) {
+            prelatLng = new LatLng(latitude, longitude);
+            Log.d("usersresponse1", "" + driverlocationcount);
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(prelatLng)
                     .draggable(true)
@@ -441,7 +435,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     .title("Driver Start here"));
             linelocationList.add(prelatLng);
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-        }else {
+        } else {
             driverlocationcount = 1;
             linelocationList.add(latLng);
             PolylineOptions polyOptions = new PolylineOptions();
@@ -465,7 +459,6 @@ public class StartRideActivity extends AppCompatActivity implements
             mGoogleMap.animateCamera(cu);
 
 
-
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
             mGoogleMap.addMarker(new MarkerOptions()
                     .position(prelatLng)
@@ -481,13 +474,15 @@ public class StartRideActivity extends AppCompatActivity implements
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
         }
 
+//
+
     }
 
     /**
      * Returns the current state of the permissions needed.
      */
     private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
@@ -511,6 +506,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -527,10 +523,22 @@ public class StartRideActivity extends AppCompatActivity implements
                     }
                 });
 
+//        if (!checkPermissions()) {
+//            requestPermissions();
+//        } else {
+//            mService.requestLocationUpdates();
+//        }
+
+        // Restore the state of the buttons when the activity (re)launches.
+//        setButtonsState(Utils.requestingLocationUpdates(this));
+
+        // Bind to the service. If the service is in foreground mode, this signals to the service
+        // that since this activity is in the foreground, the service can exit foreground mode.
         bindService(new Intent(this, LocationUpdatesService.class), mServiceConnection,
                 Context.BIND_AUTO_CREATE);
 
     }
+
     @OnClick({R.id.imageViewBack, R.id.btn_start_ride})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -545,32 +553,39 @@ public class StartRideActivity extends AppCompatActivity implements
 //                Log.d("btn_start_ride", txt);
                 if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
                     //todo start ride will call from here
-                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))){
+                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                         Log.d("btn_start_ride", txt);
                         ridestarted = true;
                         bywhomRidestarted = 0;
                         mService.requestLocationUpdates();
-                    }else {
-                        if(!driverstarted)
-                        {
+                        //                        getLiftStartCodeMatch(strToken , tvStartRide.getText().toString());
+
+//                        // Bind to the service. If the service is in foreground mode, this signals to the service
+//                        // that since this activity is in the foreground, the service can exit foreground mode.
+//                        bindService(new Intent(this, LocationUpdatesService.class), mServiceConnection,
+//                                Context.BIND_AUTO_CREATE);
+//                        if (!checkPermissions()) {
+//                            requestPermissions();
+//                        } else {
+//                            mService.requestLocationUpdates();
+//                        }
+                    } else {
+                        if (!driverstarted) {
                             Toast.makeText(StartRideActivity.this, "Let driver start the ride first", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                            {
+                        } else {
                             showDialogEnterCode();
                         }
 
                     }
 
                 } else {
-                    if(lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift)))
-                    {
-                        Log.e("Lift" , "end by driver");
+                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                        Log.e("Lift", "end by driver");
 //                        driverendLift(strToken);
-                        getRideEndBYDriver(strToken ,1);
-                    }else {
+                        getRideEndBYDriver(strToken, 1);
+                    } else {
 
-                        getRideEnd(strToken,2);
+                        getRideEnd(strToken, 2);
                     }
                 }
                 break;
@@ -582,21 +597,19 @@ public class StartRideActivity extends AppCompatActivity implements
 //        drivedriverstartprogress.setCancelable(false);
 //        drivedriverstartprogress.setTitle("Starting drive");
 //        drivedriverstartprogress.show();
-        try{
-            if(location ==null)
-            {
-                Toast.makeText(StartRideActivity.this ,"Location is not valid" ,Toast.LENGTH_LONG).show();
+        try {
+            if (location == null) {
+                Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
                 return;
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
 
             e.printStackTrace();
-            Toast.makeText(StartRideActivity.this ,"Location is not valid" ,Toast.LENGTH_LONG).show();
+            Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
             return;
         }
 
-        Log.e("lift" , "id"+lift.getId());
+        Log.e("lift", "id" + lift.getId());
         Constants.showLoader(StartRideActivity.this);
         ApiService api = RetroClient.getApiService();
 
@@ -612,13 +625,11 @@ public class StartRideActivity extends AppCompatActivity implements
                     try {
                         JSONObject mainjson = new JSONObject(new Gson().toJson(response.body()));
 //                        drivedriverstartprogress.dismiss();
-                        if(mainjson.getBoolean("status"))
-                        {
+                        if (mainjson.getBoolean("status")) {
                             StringBuilder wholelatlong = new StringBuilder();
-                            Log.e("historylocationList" , ""+historylocationList.get(0).toString());
-                            for(int x=0;x<historylocationList.size();x++)
-                            {
-                                Log.e("historylocationList" , ""+historylocationList.get(x).toString());
+                            Log.e("historylocationList", "" + historylocationList.get(0).toString());
+                            for (int x = 0; x < historylocationList.size(); x++) {
+                                Log.e("historylocationList", "" + historylocationList.get(x).toString());
                                 wholelatlong.append("(");
                                 wholelatlong.append(historylocationList.get(x).latitude);
                                 wholelatlong.append(",");
@@ -626,42 +637,40 @@ public class StartRideActivity extends AppCompatActivity implements
                                 wholelatlong.append(")");
 
                             }
-                            Log.e("wholelatlong" , ""+wholelatlong.toString());
+                            Log.e("wholelatlong", "" + wholelatlong.toString());
                             HistoryStoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id)
                                     .child("locationhistory").setValue(wholelatlong.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Log.e("History" , "Saved");
+                                    Log.e("History", "Saved");
                                     mService.removeLocationUpdates();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull @NotNull Exception e) {
-                                    Log.e("History" , "Failed to save");
+                                    Log.e("History", "Failed to save");
                                     e.printStackTrace();
                                 }
                             });
 
-                            if(mainjson.getJSONArray("user_details").length() ==0)
-                            {
+                            if (mainjson.getJSONArray("user_details").length() == 0) {
                                 Toast.makeText(StartRideActivity.this, "Ride ended successfully,but no user found", Toast.LENGTH_SHORT).show();
                                 finish();
-                            }else {
-                                for(int i =0 ;i<mainjson.getJSONArray("user_details").length();i++)
-                                {
+                            } else {
+                                for (int i = 0; i < mainjson.getJSONArray("user_details").length(); i++) {
 
                                     JSONObject user = mainjson.getJSONArray("user_details").getJSONObject(i);
 //                            if(user.getString("user_id").equals(sharedPreferences.getString(Constants.USER_ID, "")))
 //                            {
 //                              placeUser(user);
-                                    String   user_id = "" ;
-                                    try {
-                                           user_id = user.getString("id");
-                                        String   username = user.getString("name");
 
-                                        Rateusers(user_id ,1 ,username ,mainjson.getJSONArray("user_details").length());
+                                    String user_id = "";
+                                    try {
+                                        user_id = user.getString("id");
+                                        String username = user.getString("name");
+                                        Rateusers(user_id, 1, username);
                                     } catch (JSONException e) {
-                                        Rateusers(user_id ,1 ,"user", 0);
+                                        Rateusers(user_id, 1, "user");
                                         e.printStackTrace();
                                     }
 
@@ -669,8 +678,7 @@ public class StartRideActivity extends AppCompatActivity implements
                             }
 
 
-
-                        }else {
+                        } else {
                             Toast.makeText(StartRideActivity.this, "Failed to end ride", Toast.LENGTH_SHORT).show();
                         }
 
@@ -702,52 +710,7 @@ public class StartRideActivity extends AppCompatActivity implements
         });
     }
 
-    private void driverLiftintialise(String[] startpointx, boolean driverpos) {
-        placeTheCUrrentmarker(startpointx , 0);
-        //++++++++++++++++++++++++++++++++Database+++++++++++++++++++++++++++++++++++++++
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-//                Post post = dataSnapshot.getValue(Post.class);
-                // ..
-                Log.e("dataSnapshot" , ""+dataSnapshot);
-                String[] startpoint = new String[0];
-                if(dataSnapshot.getValue() ==null)
-                {
-                    Log.e("dataSnapshot" , "dataSnapshot is null");
-                    Toast.makeText(StartRideActivity.this, "Failed to get location", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                startpoint = Objects.requireNonNull(dataSnapshot.getValue()).toString().split(",");
-//                if(!driverpos)
-//                {
-////                    driverLiftintialise(startpoint ,0 );
-//
-////                    driverpos = true;
-////                    driverlocationcount = 1;
-//                }else {
-////                    driverLiftintialise(startpoint ,1 );
-//
-////                    placeDriver(startpoint ,1 );
-//                }
-                placeTheCUrrentmarker(startpoint , 1);
-//                driverstarted = true;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                driverstarted = false;
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        };
-        // ...
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        Query lastKnownLocation = mDatabase.child("Drivers").child("1").child("location");
-//        Query lastKnownLocation = mDatabase.child("LocationMap").child("Drivers").child("1").child("location");
-        Query lastKnownLocation = mDatabase.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id).child("location");
-        lastKnownLocation.addValueEventListener(postListener);
+    private void driverendLift(String strToken) {
     }
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Driver started+++++++++++++++++++++++++++++
@@ -764,28 +727,25 @@ public class StartRideActivity extends AppCompatActivity implements
             public void onResponse(String response) {
                 try {
                     JSONObject base = new JSONObject(response.toString());
-                    Log.e("base" , "is"+base);
-                    if(base.getBoolean("status"))
-                    {
+                    Log.e("base", "is" + base);
+                    if (base.getBoolean("status")) {
                         tvStartRide.setText("End Ride");
-                        try{
+                        try {
                             Toast.makeText(StartRideActivity.this, base.getJSONObject("message").toString(), Toast.LENGTH_LONG).show();
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             Toast.makeText(StartRideActivity.this, "Drive started", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
 
                         Toast.makeText(StartRideActivity.this, "Please wait we are getting live location", Toast.LENGTH_LONG).show();
                         Log.d("usersresponse liftstart", response);
-                        ridestarted =false;
+                        ridestarted = false;
                         bywhomRidestarted = 0;
+
+
                         getUsers(1);
-                    }else {
+                    } else {
                         Toast.makeText(StartRideActivity.this, "Drive already started", Toast.LENGTH_SHORT).show();
-                        ridestarted =false;
-                        bywhomRidestarted = 0;
-                        getUsers(1);
                     }
 
 //                    Constants.hideLoader();
@@ -803,13 +763,13 @@ public class StartRideActivity extends AppCompatActivity implements
 //            drivedriverstartprogress.dismiss();
             Toast.makeText(StartRideActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
 //            Constants.hideLoader();
-        }){
+        }) {
             @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("api_key",Constants.API_KEY);
-                params.put("client",Constants.ANDROID);
-                params.put("token",strToken);
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", Constants.API_KEY);
+                params.put("client", Constants.ANDROID);
+                params.put("token", strToken);
                 params.put("lat", String.valueOf(location.getLatitude()));
                 params.put("long", String.valueOf(location.getLongitude()));
                 params.put("lift_id", String.valueOf(lift.getId()));
@@ -873,9 +833,37 @@ public class StartRideActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         if (ActivityCompat.checkSelfPermission(StartRideActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(StartRideActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more detai ls.
             return;
         }
+//        mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+//        LatLng latLngOrigin = new LatLng(22.7244, 75.8839);
+//        origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+//        pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(latLngOrigin)
+//                .draggable(true)
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+//                .title("First"));
+
+        // [START_EXCLUDE silent]
+//        editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
+//        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+        // Zoom in the Google Map
+//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+//        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
+//        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
     }
 
     @Override
@@ -1004,15 +992,15 @@ public class StartRideActivity extends AppCompatActivity implements
 //                        JSONObject res = jsonObject.optJSONObject("response");
                         boolean status = jsonObject.optBoolean("status");
                         String msg = jsonObject.optString("message");
-                        Log.d("StartRideActivity","msg"+ msg);
+                        Log.d("StartRideActivity", "msg" + msg);
                         Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                         if (status) {
-                            request_id =   jsonObject.getJSONObject("data").getString("request_id");
+                            request_id = jsonObject.getJSONObject("data").getString("request_id");
                             tvStartRide.setText(getResources().getString(R.string.end_ride));
                             tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
-                            bywhomRidestarted =1;
+                            bywhomRidestarted = 1;
                             mService.requestLocationUpdates();
-                        }else {
+                        } else {
                             Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
@@ -1040,20 +1028,18 @@ public class StartRideActivity extends AppCompatActivity implements
 
     public void getRideEnd(String token, int ridender) {
 //        mService.removeLocationUpdates();
-        try{
-            if(location ==null)
-            {
-                Toast.makeText(StartRideActivity.this ,"Location is not valid" ,Toast.LENGTH_LONG).show();
+        try {
+            if (location == null) {
+                Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
                 return;
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
 
             e.printStackTrace();
-            Toast.makeText(StartRideActivity.this ,"Location is not valid" ,Toast.LENGTH_LONG).show();
+            Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
             return;
         }
-        Log.e("Request" , "id"+request_id);
+        Log.e("Request", "id" + request_id);
         Constants.showLoader(StartRideActivity.this);
         ApiService api = RetroClient.getApiService();
         Call<JsonObject> call = api.rideEnd(Constants.API_KEY, Constants.ANDROID, token, Integer.parseInt(request_id), location.getLatitude(), location.getLongitude());
@@ -1067,10 +1053,9 @@ public class StartRideActivity extends AppCompatActivity implements
                     try {
                         Toast.makeText(StartRideActivity.this, "Ride ended successfully", Toast.LENGTH_SHORT).show();
 //                        finish();
-                        if(ridender ==2)
-                        {
+                        if (ridender == 2) {
                             getInvoice();
-                        }else {
+                        } else {
 
                         }
 
@@ -1096,13 +1081,13 @@ public class StartRideActivity extends AppCompatActivity implements
             }
         });
     }
+
     //+++++++++++++++++++++++++++++++++++++++++++Driver only rate user+++++++++++++++++++++++
-    private void Rateusers(String user_id, int type, String username, int user_details_size) {
+    private void Rateusers(String user_id, int type, String username) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        if(type ==1)
-        {
-            alertDialogBuilder.setTitle("Rate "+username);
-        }else {
+        if (type == 1) {
+            alertDialogBuilder.setTitle("Rate " + username);
+        } else {
             alertDialogBuilder.setTitle("Rate Driver");
         }
 
@@ -1124,15 +1109,14 @@ public class StartRideActivity extends AppCompatActivity implements
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(feedbacktext.getText().toString().isEmpty() || driver_rating.getRating() ==0)
-                {
+                if (feedbacktext.getText().toString().isEmpty() || driver_rating.getRating() == 0) {
                     Toast.makeText(StartRideActivity.this, "Please specify some feedback", Toast.LENGTH_SHORT).show();
-                }else {
-                    rateUser(user_details_size);
+                } else {
+                    rateUser();
                 }
             }
 
-            private void rateUser(int user_details_size) {
+            private void rateUser() {
                 Log.d("liftiddd", String.valueOf(lift.getId()));
 //        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                 RequestQueue queue = Volley.newRequestQueue(StartRideActivity.this);
@@ -1143,20 +1127,10 @@ public class StartRideActivity extends AppCompatActivity implements
                         JSONObject jObject = null;
                         try {
                             jObject = new JSONObject(response);
-                            boolean res = jObject.getBoolean("status");
-                            if (res){
+                            Boolean res = jObject.getBoolean("status");
+                            if (res) {
                                 Toast.makeText(StartRideActivity.this, "Review send successfully", Toast.LENGTH_SHORT).show();
-                                if(user_details_size ==0)
-                                {
-                                    finish();
-                                }else if(rateuser_length <user_details_size) {
-                                    rateuser_length++;
-                                    finalAlert.dismiss();
-                                }else  if(rateuser_length ==user_details_size)
-                                {
-                                    finish();
-                                }
-
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1189,7 +1163,7 @@ public class StartRideActivity extends AppCompatActivity implements
     }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    public void getUsers(int type){
+    public void getUsers(int type) {
         Log.d("liftiddd", String.valueOf(lift.getId()));
 //        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -1205,9 +1179,8 @@ public class StartRideActivity extends AppCompatActivity implements
                     users = data.getJSONArray("user");
                     tracking_lift_id = data.getString("tracking_lift_id");
 
-                    if(type ==1)
-                    {
-                        for (int i=0; i<users.length(); i++) {
+                    if (type == 1) {
+                        for (int i = 0; i < users.length(); i++) {
 
                             JSONObject user = users.getJSONObject(i);
 //                            if(user.getString("user_id").equals(sharedPreferences.getString(Constants.USER_ID, "")))
@@ -1229,13 +1202,12 @@ public class StartRideActivity extends AppCompatActivity implements
 //                        drivedriverstartprogress.dismiss();
 //                            JSONObject driver = data.getJSONObject("driver");
 //                            InitLocation(driver.getString("user_id"));
-                    }else {
-                        try{
+                    } else {
+                        try {
                             JSONObject driver = data.getJSONObject("driver");
                             driver_id = driver.getString("user_id");
-                            InitLocation(driver_id,tracking_lift_id);
-                        }catch (Exception e)
-                        {
+                            InitLocation(driver_id, tracking_lift_id);
+                        } catch (Exception e) {
                             Toast.makeText(StartRideActivity.this, "Driver not found or driver has not started the ride", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
@@ -1275,7 +1247,7 @@ public class StartRideActivity extends AppCompatActivity implements
         Log.d("usersresponse1", String.valueOf(startpoint));
         double latitude = Double.parseDouble(startpoint[0]);
         double longitude = Double.parseDouble(startpoint[1]);
-        LatLng latLng = new LatLng(latitude,longitude);
+        LatLng latLng = new LatLng(latitude, longitude);
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .draggable(true)
@@ -1286,39 +1258,39 @@ public class StartRideActivity extends AppCompatActivity implements
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
-    private void getInvoice(){
+    private void getInvoice() {
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-invoice", new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("invoice response",response);
+                Log.d("invoice response", response);
                 try {
                     JSONObject jObject = new JSONObject(response);
                     JSONObject data = jObject.getJSONObject("data");
-                    Log.d("data",data.toString());
+                    Log.d("data", data.toString());
                     JSONObject st = data.getJSONObject("start_point");
-                    Log.d("st",st.toString());
+                    Log.d("st", st.toString());
                     String stlocation = st.getString("location");
-                    Log.d("stloc",stlocation);
+                    Log.d("stloc", stlocation);
                     JSONObject end = data.getJSONObject("end_point");
-                    Log.d("end",end.toString());
+                    Log.d("end", end.toString());
                     String etlocation = st.getString("location");
-                    Log.d("etlocatio",etlocation);
+                    Log.d("etlocatio", etlocation);
                     String date = data.getString("date");
-                    Log.d("date",date);
+                    Log.d("date", date);
                     String distance = data.getString("distance");
-                    Log.d("distance response",distance);
+                    Log.d("distance response", distance);
                     Integer perkm = data.getInt("per_km_point");
-                    Log.d("perkm response",perkm.toString());
+                    Log.d("perkm response", perkm.toString());
                     totalpoint = data.getString("total_point");
-                    Log.d("totalpoint",totalpoint);
+                    Log.d("totalpoint", totalpoint);
 
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(StartRideActivity.this);
                     // ...Irrelevant code for customizing the buttons and title
                     LayoutInflater inflater = getLayoutInflater();
                     dialogBuilder.setTitle("Invoice");
                     dialogBuilder.setCancelable(true);
-                    View dialogView= inflater.inflate(R.layout.invoicelayout, null);
+                    View dialogView = inflater.inflate(R.layout.invoicelayout, null);
                     dialogBuilder.setView(dialogView);
                     TextView pickuplocation = dialogView.findViewById(R.id.pickuplocationn);
                     TextView droplocation = dialogView.findViewById(R.id.droplocationn);
@@ -1331,18 +1303,19 @@ public class StartRideActivity extends AppCompatActivity implements
                     pickuplocation.setText("Pickup Location : " + stlocation);
                     droplocation.setText("Drop Location : " + etlocation);
                     datee.setText("Date : " + date);
-                    distancee.setText("Distance : " +distance);
-                    kmpoint.setText("Per KM Point : " +perkm.toString());
-                    totalpointt.setText("Total Point : " +totalpoint);
+                    distancee.setText("Distance : " + distance);
+                    kmpoint.setText("Per KM Point : " + perkm.toString());
+                    totalpointt.setText("Total Point : " + totalpoint);
 
 
-                     AlertDialog alertDialog =  dialogBuilder.create();
+                    AlertDialog alertDialog = dialogBuilder.create();
                     paybtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 //                            getPayedTODriver();
                             alertDialog.dismiss();
-                             pay();
+                            pay();
+//                            paymentintegration();
                         }
                     });
                     alertDialog.show();
@@ -1357,7 +1330,7 @@ public class StartRideActivity extends AppCompatActivity implements
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
@@ -1378,11 +1351,11 @@ public class StartRideActivity extends AppCompatActivity implements
 
     private void getPayedTODriver() {
         //+++++++++++++++++++++++++++++++Then rate+++++++++++++++++++++++++++++++++++++++
-        Rateusers(driver_id , 2, "", 0);
+        Rateusers(driver_id, 2, "");
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++
     }
 
-    private void pay(){
+    private void pay() {
         Constants.showLoader(this);
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/lift-payment", new com.android.volley.Response.Listener<String>() {
@@ -1396,7 +1369,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     String scss = jObject.getString("message");
 //                    String scss = jObject.getString("message");
                     Log.d("success", scss);
-                    if (scss.equalsIgnoreCase("Success")){
+                    if (scss.equalsIgnoreCase("Success")) {
                         Toast.makeText(StartRideActivity.this, "Payment Successfully Done!!", Toast.LENGTH_SHORT).show();
                         getPayedTODriver();
                     }
@@ -1431,27 +1404,126 @@ public class StartRideActivity extends AppCompatActivity implements
         queue.add(sr);
     }
 
+    private void paymentintegration() {
+//        String samount = totalpoint;
+
+        // rounding off the amount.
+        int amount = Math.round(Float.parseFloat(totalpoint) * 100);
+        // initialize Razorpay account.
+        Checkout checkout = new Checkout();
+        // set your id as below
+        checkout.setKeyID("Enter your key id here");
+        // set image
+//        checkout.setImage(R.drawable.gfgimage);
+        // initialize json object
+        JSONObject object = new JSONObject();
+        try {
+            // to put name
+            object.put("name", "Test Payment");
+            // put description
+            object.put("description", "Test Description");
+            // to set theme color
+            object.put("theme.color", "");
+            // put the currency
+            object.put("currency", "INR");
+            // put amount
+            object.put("amount", amount);
+            // put mobile number
+            object.put("prefill.contact", "0000000000");
+            // put email
+            object.put("prefill.email", "test@test.com");
+
+            // open razorpay to checkout activity
+            checkout.open(StartRideActivity.this, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sosnumbers() {
+        Constants.showLoader(this);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-profile", new com.android.volley.Response.Listener<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(String response) {
+                Constants.hideLoader();
+                Log.d("history", response);
+                try {
+                    JSONObject jObject = new JSONObject(response);
+                    JSONObject responsee = jObject.getJSONObject("response");
+                    JSONObject userdata = responsee.getJSONObject("user");
+                    sos = userdata.getString("sos");
+                    Log.d("sos", sos);
+
+                   } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", Constants.API_KEY);
+                params.put("client", Constants.ANDROID);
+                params.put("token", strToken);
+             //   params.put("token", "064ywr3Ht5LPpFPF73J0foCAdvw3ylSDXJys8IqATQ2wyvwimen827FAPA5I");
+                return params;
+            }
+        };
+        queue.add(sr);
+
+    }
+
+    @Override
+    public void onPaymentSuccess(String s) {
+        // this method is called on payment success.
+        Toast.makeText(this, "Payment is successful : " + s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPaymentError(int i, String s) {
+        // on payment failed.
+        Toast.makeText(this, "Payment Failed due to error : " + s, Toast.LENGTH_SHORT).show();
+        Log.d("payment error", s);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-       if(startedcount==3)
-       {
-           mService.requestLocationUpdates();
-       }else {
-           try{
-               LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
-                       new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
-
-
-           }catch (Exception e)
-           {
-               Log.e("it is","the user no lcoation needed");
-               e.printStackTrace();
-           }
-       }
-//       else if(bywhomRidestarted ==1) {
+//       if(startedcount==3)
+//       {
+//           try{
+//               LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
+//                       new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
 //
+//               mService.requestLocationUpdates();
+//           }catch (Exception e)
+//           {
+//               Log.e("it is","the user no lcoation needed");
+//               e.printStackTrace();
+//           }
 //       }
+        if(startedcount==3)
+        {
+            mService.requestLocationUpdates();
+        }else {
+            try{
+                LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver,
+                        new IntentFilter(LocationUpdatesService.ACTION_BROADCAST));
+
+
+            }catch (Exception e)
+            {
+                Log.e("it is","the user no location needed");
+                e.printStackTrace();
+            }
+        }
 
 
 
@@ -1475,6 +1547,7 @@ public class StartRideActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 }
+///+++++++++++++++++++++++++++++FOr user+++++++++++++++++++++++++Ride end actiivty+++++++++++++++++++ Liftstartcodematch
 
 //package com.liftPlzz.activity;
 //

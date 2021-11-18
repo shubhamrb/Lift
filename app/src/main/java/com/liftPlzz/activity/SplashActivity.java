@@ -1,8 +1,13 @@
 package com.liftPlzz.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -18,6 +23,10 @@ import com.liftPlzz.utils.Constants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SplashActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
@@ -49,6 +58,8 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }, 2000);
+
+
     }
 
     public static String printKeyHash(Context context) {
@@ -83,4 +94,6 @@ public class SplashActivity extends AppCompatActivity {
 
         return key;
     }
+
+
 }

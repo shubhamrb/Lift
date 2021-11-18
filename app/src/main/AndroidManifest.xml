@@ -16,6 +16,7 @@
          Android 10 (API level 29) and higher.
     -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
         android:name=".LiftPlzz"
@@ -28,16 +29,19 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activity.PaymentPackage"></activity>
+        <activity android:name=".activity.PaymentHistory" />
         <activity android:name=".DriverUserLocationActivity">
-<!--           <intent-filter>-->
-<!--               <action android:name="android.intent.action.MAIN" />-->
 
-<!--               <category android:name="android.intent.category.LAUNCHER" />-->
-<!--                </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
-        <activity android:name=".activity.StartRideActivity"> </activity>
-
+        <activity android:name=".activity.StartRideActivity" />
         <activity android:name=".activity.UserProfileActivity" />
         <activity android:name=".activity.RideRequestActivity" />
         <activity android:name=".activity.DriverProfileActivity" />
@@ -88,10 +92,9 @@
         </service>
         <service
             android:name=".locationservice.LocationUpdatesService"
-            android:foregroundServiceType="location"
             android:enabled="true"
             android:exported="true"
-            >
+            android:foregroundServiceType="location">
 
             <!-- Any inner elements would go here. -->
         </service>
@@ -118,6 +121,12 @@
         <activity
             android:name=".activity.TicketDetailsActivity"
             android:screenOrientation="portrait" />
+
+        <receiver android:name=".receiver.SmsReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

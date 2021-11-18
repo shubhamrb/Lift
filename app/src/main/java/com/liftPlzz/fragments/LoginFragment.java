@@ -1,18 +1,25 @@
 package com.liftPlzz.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
@@ -20,6 +27,11 @@ import com.liftPlzz.model.sendotp.SendOtpResponse;
 import com.liftPlzz.presenter.LoginPresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.LoginView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,7 +42,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
     @BindView(R.id.editTextMobileNumber)
     AppCompatEditText editTextMobileNumber;
 
-
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     SharedPreferences sharedPreferences;
     @BindView(R.id.textViewForgotPassword)
     AppCompatTextView textViewForgotPassword;
@@ -108,4 +120,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
 //        OTpFragment.setNewUser(response.getNewUser());
         presenter.openOTP();
     }
+
+
+
 }

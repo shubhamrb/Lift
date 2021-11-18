@@ -40,6 +40,9 @@ public class User {
     private String aboutMe;
     @SerializedName("dob")
     @Expose
+    private String sos;
+    @SerializedName("sos")
+    @Expose
     private String dob;
     @SerializedName("image")
     @Expose
@@ -81,6 +84,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getSos() {
+        return sos;
+    }
+
+    public void setSos(String sos) {
+        this.sos = sos;
     }
 
     public String getName() {
