@@ -67,6 +67,30 @@ public class Lift implements Serializable {
     @Expose
     private Integer rideStart;
 
+
+    @SerializedName("same_route_vehicle")
+    @Expose
+    private Integer sameroutevehicle;
+    //
+
+    @SerializedName("lift_time")
+    @Expose
+    private String lift_time;
+
+
+
+    @SerializedName("start_time")
+    @Expose
+    private String start_time;
+
+    @SerializedName("total_points")
+    @Expose
+    private String total_points;
+
+    @SerializedName("rate_per_km")
+    @Expose
+    private String rate_per_km;
+
     @SerializedName("driver_tracking_id")
     @Expose
     private Integer driver_tracking_id;
@@ -237,5 +261,45 @@ public class Lift implements Serializable {
 
     public void setRideStart(Integer rideStart) {
         this.rideStart = rideStart;
+    }
+
+    public Integer getSameroutevehicle() {
+        return sameroutevehicle;
+    }
+
+    public void setSameroutevehicle(Integer sameroutevehicle) {
+        this.sameroutevehicle = sameroutevehicle;
+    }
+
+    public String getLift_time() {
+        return lift_time;
+    }
+
+    public void setLift_time(String lift_time) {
+        this.lift_time = lift_time;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public String getTotal_points() {
+        return total_points;
+    }
+
+    public void setTotal_points(String total_points) {
+        this.total_points = total_points;
+    }
+
+    public String getRate_per_km() {
+        return rate_per_km;
+    }
+
+    public void setRate_per_km(String rate_per_km) {
+        this.rate_per_km = rate_per_km;
     }
 }

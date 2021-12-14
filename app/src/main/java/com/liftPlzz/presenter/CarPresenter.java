@@ -6,7 +6,6 @@ import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.createVehicle.CreateVehicleResponse;
 import com.liftPlzz.model.vehiclesubcategory.VehicleSubCategoryModel;
 import com.liftPlzz.views.CarView;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -14,7 +13,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CarPresenter extends BasePresenter<CarView> {
-
 
     @Override
     public void resume() {
@@ -47,8 +45,6 @@ public class CarPresenter extends BasePresenter<CarView> {
                     } else {
                         view.showMessage(response.body().getResponse().getMessage());
                     }
-
-
                 }
             }
 
@@ -80,10 +76,8 @@ public class CarPresenter extends BasePresenter<CarView> {
                         view.showMessage(response.body().getResponse().getMessage());
                     }
 
-
                 }
             }
-
 
             @Override
             public void onFailure(Call<CreateVehicleResponse> call, Throwable throwable) {
@@ -91,7 +85,6 @@ public class CarPresenter extends BasePresenter<CarView> {
                 view.showMessage(throwable.getMessage());
             }
         });
-
     }
 
     public void getSubCategory(String key, String client, String token, String vehicleType) {
@@ -111,13 +104,11 @@ public class CarPresenter extends BasePresenter<CarView> {
                 }
             }
 
-
             @Override
             public void onFailure(Call<VehicleSubCategoryModel> call, Throwable throwable) {
                 view.hideLoader();
                 view.showMessage(throwable.getMessage());
             }
         });
-
     }
 }

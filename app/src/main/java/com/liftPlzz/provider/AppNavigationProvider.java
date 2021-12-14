@@ -2,6 +2,7 @@ package com.liftPlzz.provider;
 
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.fragments.AddVehicleFragment;
+import com.liftPlzz.fragments.ChatUserFragment;
 import com.liftPlzz.fragments.ContactsFragment;
 import com.liftPlzz.fragments.CreateProfileFragment;
 import com.liftPlzz.fragments.ELearningFragment;
@@ -31,6 +32,12 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     public void openCreateProfileFragment(PerformFragment performFragment) {
         CreateProfileFragment createProfileFragment = new CreateProfileFragment();
         openFragment(createProfileFragment, CreateProfileFragment.class.getName(), performFragment, false);
+    }
+
+    @Override
+    public void openMyChatFragment(PerformFragment performFragment) {
+        ChatUserFragment chatUserFragment = new ChatUserFragment();
+        openFragment(chatUserFragment, ChatUserFragment.class.getName(), performFragment, true);
     }
 
     @Override

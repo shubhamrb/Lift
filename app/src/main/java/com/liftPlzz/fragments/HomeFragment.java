@@ -20,9 +20,11 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -130,7 +132,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @BindView(R.id.textViewSelectSeat)
     AppCompatTextView textViewSelectSeat;
     @BindView(R.id.layoutCheckPoints)
-    LinearLayout layoutCheckPoints;
+    RelativeLayout layoutCheckPoints;
     @BindView(R.id.textViewGiveLift)
     AppCompatTextView textViewGiveLift;
     @BindView(R.id.textViewTakeLift)
@@ -142,7 +144,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @BindView(R.id.layoutRide)
     LinearLayout layoutRide;
     @BindView(R.id.layoutRideVehicle)
-    LinearLayout layoutRideVehicle;
+    RelativeLayout layoutRideVehicle;
     int listPos;
     @BindView(R.id.recyclerViewMyVehicle)
     RecyclerView recyclerViewMyVehicle;
@@ -157,6 +159,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
     List<LatLng> pontos = new ArrayList<>();
+    String distanceString="";
 
     Polyline polyline;
     Calendar calendar;
@@ -172,6 +175,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     BottomSheetCheckPointsDialog bottomSheetCheckPointsDialog;
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
+
+    @BindView(R.id.textkm)
+    AppCompatTextView textkm;
+
+    @BindView(R.id.etkm)
+    EditText etkm;
+
+    @BindView(R.id.btnSubmit)
+    AppCompatButton btnSubmit;
+
+    MyVehicleListRideAdapter myVehicleListRideAdapter;
+
+
+    //
     LatLng latLngOrigin, latLngDestination;
 
     @Override
@@ -240,7 +257,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
     }
 
-    @OnClick({R.id.buttonLift, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
+    @OnClick({R.id.buttonLift,R.id.btnSubmit, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
@@ -312,6 +329,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             case R.id.imageViewNotification:
                 presenter.openNotification();
                 break;
+            case R.id.btnSubmit:
+                if(etkm.getText().toString().trim().length()>0){
+                    onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
+                }
+                break;
             case R.id.layoutPickupLocation:
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
@@ -320,6 +342,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             case R.id.layoutDropLocation:
                 locationSelect = 2;
                 Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+                i1.putExtra("startLocation",true);
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutGiveLift:
@@ -561,7 +584,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     .title("pickup"));
                             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
+
                             new GetDirection().execute(origin, destination);
+
                         }
 
 
@@ -741,8 +766,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (data.size() > 0) {
             layoutRideVehicle.setVisibility(View.VISIBLE);
             layoutRide.setVisibility(View.GONE);
+            //etkm
+            myVehicleListRideAdapter=new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this,etkm);
             recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-            recyclerViewMyVehicle.setAdapter(new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this));
+            recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
         }
@@ -806,7 +833,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     class GetDirection extends AsyncTask<String, String, String> {
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -845,6 +871,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 String polyline = poly.getString("points");
                 pontos = decodePoly(polyline);
 
+
+                JSONArray legs = route.getJSONArray("legs");
+                JSONObject steps = legs.getJSONObject(0);
+                JSONObject distance = steps.getJSONObject("distance");
+                distanceString=distance.getString("text");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -871,6 +903,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     int padding = 250; // offset from edges of the map in pixels
                     CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                     mGoogleMap.moveCamera(cu);
+
                 } catch (NullPointerException e) {
                     Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
                 } catch (Exception e2) {
@@ -878,8 +911,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
 
             }
-
-
+            textkm.setText(""+distanceString);
         }
     }
 

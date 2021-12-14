@@ -1,6 +1,4 @@
 package com.liftPlzz.fragments;
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -21,8 +19,6 @@ import com.liftPlzz.views.CompletedView;
 import java.util.List;
 
 import butterknife.BindView;
-
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -59,7 +55,12 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
     public void setLiftData(List<CompleteLiftData> lifts) {
         if (lifts.size() > 0) {
             recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewUpcoming.setAdapter(new CompletedLiftAdapter(getContext(), lifts));
+            recyclerViewUpcoming.setAdapter(new CompletedLiftAdapter(getContext(), lifts, new CompletedLiftAdapter.ItemListener() {
+                @Override
+                public void onMatchClick(Lift lift) {
+
+                }
+            }));
         }
     }
 

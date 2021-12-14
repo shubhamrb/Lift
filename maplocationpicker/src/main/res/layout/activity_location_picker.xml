@@ -16,21 +16,26 @@
         android:id="@+id/imgSearch"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/white_rounded_corner"
-        android:drawableEnd="@drawable/ic_search_black_24dp"
         android:drawableStart="@drawable/ic_pointer"
+        android:drawableLeft="@drawable/ic_place_red_800_24dp"
+        android:drawableEnd="@drawable/ic_search_black_24dp"
+        android:drawableRight="@drawable/ic_search_black_24dp"
         android:drawablePadding="5dp"
+        android:focusedByDefault="true"
         android:gravity="start|center_vertical"
         android:hint="Search Location"
         android:maxLines="1"
         android:padding="5dp"
-        android:focusedByDefault="true"
         android:textColorHint="@color/colorPrimary"
         android:textCursorDrawable="@null"
-        android:textSize="18sp"
-        android:drawableRight="@drawable/ic_search_black_24dp"
-        android:drawableLeft="@drawable/ic_place_red_800_24dp" />
+        android:textSize="18sp" />
 
 
 

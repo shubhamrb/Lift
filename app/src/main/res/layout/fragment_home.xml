@@ -195,7 +195,7 @@
                 android:visibility="visible" />
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layoutCheckPoints"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -204,26 +204,45 @@
             android:layout_marginRight="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_5"
             android:orientation="horizontal"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                android:layout_gravity="center"
-                android:padding="@dimen/dp_5"
-                android:src="@drawable/ic_add"
-                android:tint="@color/colorPrimary"
-                android:visibility="visible" />
+            android:visibility="visible">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewCheckpoints"
-                android:layout_width="match_parent"
+                android:paddingTop="@dimen/dp_3"
+                android:id="@+id/textkm"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@null"
                 android:fontFamily="@font/gotham_light"
                 android:gravity="start"
+                android:hint=""
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorBlack"
+                android:textSize="@dimen/sp_14" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="center"
+                android:padding="@dimen/dp_5"
+                android:src="@drawable/ic_add"
+                android:layout_toLeftOf="@+id/textViewCheckpoints"
+                android:tint="@color/colorPrimary"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:paddingTop="@dimen/dp_3"
+                android:id="@+id/textViewCheckpoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="start"
+                android:layout_alignParentRight="true"
                 android:hint="Add Checkpoints"
                 android:singleLine="true"
                 android:textColor="@color/colorPrimary"
@@ -231,7 +250,7 @@
                 android:textSize="@dimen/sp_14"
                 app:drawableTint="@color/colorPrimary" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <LinearLayout
@@ -327,7 +346,7 @@
             android:textSize="@dimen/sp_16" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layoutRideVehicle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_350"
@@ -346,6 +365,36 @@
             android:layout_marginRight="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>
 
-    </LinearLayout>
+
+        <EditText
+            android:id="@+id/etkm"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:hint="Enter Par Km Price"
+            android:inputType="number"
+            android:padding="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:textSize="@dimen/dp_14" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/gotham_medium"
+            android:layout_marginRight="@dimen/dp_10"
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_14" />
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

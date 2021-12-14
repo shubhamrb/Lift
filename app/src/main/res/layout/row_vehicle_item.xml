@@ -14,6 +14,7 @@
         android:src="@drawable/dummy_user" />
 
     <LinearLayout
+        android:id="@+id/layoutClick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -110,8 +111,10 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageOptions"
         android:layout_gravity="center"
-        android:layout_width="@dimen/dp_25"
+        android:layout_width="@dimen/dp_35"
         android:layout_height="@dimen/dp_35"
         android:layout_marginTop="@dimen/dp_5"
-        android:src="@drawable/menu_icon" />
+        android:scaleType="centerInside"
+        android:tint="@color/colorRed"
+        android:src="@drawable/ic_delete" />
 </LinearLayout>

@@ -25,7 +25,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
     List<CompleteLiftData> verifiedLists;
 
 
-    public CompletedLiftAdapter(Context context, List<CompleteLiftData> verifiedLists) {
+    public CompletedLiftAdapter(Context context, List<CompleteLiftData> verifiedLists,ItemListener itemListener) {
         this.context = context;
         this.verifiedLists = verifiedLists;
         this.itemListener = itemListener;
@@ -69,6 +69,10 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         AppCompatTextView textViewSeats;
         @BindView(R.id.textViewDateTime)
         AppCompatTextView textViewDateTime;
+
+        @BindView(R.id.textRepet)
+        AppCompatTextView textRepet;
+
         @BindView(R.id.linear_item)
         LinearLayout linearItem;
 

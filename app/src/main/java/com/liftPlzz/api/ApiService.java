@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.ResponseChatSuggestion;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
+import com.liftPlzz.model.chatuser.ResponseChatUser;
 import com.liftPlzz.model.completedLift.ResponseCompletedLift;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
 import com.liftPlzz.model.createProfile.CreateProfileMainResponse;
@@ -141,6 +142,16 @@ public interface ApiService {
     Call<GetReviewMainResponse> get_review(@Field("api_key") String api_key,
                                            @Field("client") String client,
                                            @Field("token") String token);
+
+     // ------------jagnarayan-----------//
+     //  https://charpair.com/api/chat-user-list
+    @FormUrlEncoded
+    @POST("chat-user-list")
+    Call<ResponseChatUser> getChatUser(@Field("api_key") String api_key,
+                                       @Field("client") String client,
+                                       @Field("token") String token);
+
+    //  ------------ end jagnarayan----------- //
 
     @FormUrlEncoded
     @POST("update-push-notification")

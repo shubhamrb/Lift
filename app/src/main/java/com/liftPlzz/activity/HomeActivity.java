@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -61,6 +62,11 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     View header;
     LocationManager locationManager;
 
+    @BindView(R.id.imfacebook) ImageView imfacebook;
+    @BindView(R.id.iminstagram) ImageView iminstagram;
+    @BindView(R.id.imtwitter) ImageView imtwitter;
+    @BindView(R.id.imlinkedin) ImageView imlinkedin;
+
 
     @Override
     public int getPlaceHolder() {
@@ -93,19 +99,51 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         }
         menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(3, getResources().getString(R.string.my_payments), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(10, "Payments & Recharge", R.drawable.ic_white_liftplzz));
+       // menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(5, getResources().getString(R.string.help_ticket), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(6, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(7, getResources().getString(R.string.setting), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(8, getResources().getString(R.string.logout), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(3, "Refer & Earn", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(9, getResources().getString(R.string.logout), R.drawable.ic_white_liftplzz));
 
         leftDrawer.setLayoutManager(new LinearLayoutManager(this));
         MenuListAdapter menuListAdapter = new MenuListAdapter(this, menuList, this);
         leftDrawer.setAdapter(menuListAdapter);
         openHomeFragment(PerformFragment.REPLACE);
-        printHashKey(this);
+      //  printHashKey(this);
+        imfacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Char-pair-112112291298820/"));
+                startActivity(intent);
+            }
+        });
+
+        iminstagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/___srb/"));
+                startActivity(intent);
+            }
+        });
+        imtwitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/srb2305"));
+                startActivity(intent);
+            }
+        });
+        imlinkedin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/saurabh-sahu/"));
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -183,16 +221,18 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 //             openInventoryFragment(PerformFragment.REPLACE);
         } else if (s == 4) {
             openMyVehicleFragment(PerformFragment.REPLACE);
-        } else if (s == 5) {
+        }else if(s==5){
+            openMyChatFragment(PerformFragment.REPLACE);
+        } else if (s == 6) {
 //             openContactsFragment(PerformFragment.REPLACE);
-//            openDriverListFragment(PerformFragment.REPLACE);
+//             openDriverListFragment(PerformFragment.REPLACE);
             Intent intent = new Intent(HomeActivity.this, TicketListActivity.class);
             startActivity(intent);
-        } else if (s == 6) {
-            openFaqFragment(PerformFragment.REPLACE);
         } else if (s == 7) {
-            openSettingFragment(PerformFragment.REPLACE);
+            openFaqFragment(PerformFragment.REPLACE);
         } else if (s == 8) {
+            openSettingFragment(PerformFragment.REPLACE);
+        } else if (s == 9) {
             final AlertDialog.Builder newBuilder = new AlertDialog.Builder(this);
             newBuilder.setMessage("Are you sure you want to Logout?");
             newBuilder.setPositiveButton("Yes", (dialog, which) -> {
@@ -205,7 +245,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             });
             newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             newBuilder.show();
-        } else if (s == 9){
+        } else if (s == 10){
             Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
             startActivity(intent);
         }

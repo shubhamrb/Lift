@@ -126,6 +126,8 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
+    private Boolean startLocation=false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +138,11 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_location_picker);
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();
+        try{
+            startLocation=getIntent().getBooleanExtra("startLocation",false);
+        }catch (Exception e){
+
+        }
         ImageView imgCurrentloc = findViewById(R.id.imgCurrentloc);
         Button txtSelectLocation = findViewById(R.id.fab_select_location);
         ImageView directionTool = findViewById(R.id.direction_tool);
@@ -308,6 +315,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 userAddress = place.getAddress();
                 //  addressdetails=place.getAddressComponents();
+                Log.e("cell l","Location 1");
                 imgSearch.setText("" + userAddress);
                 mLatitude = place.getLatLng().latitude;
                 mLongitude = place.getLatLng().longitude;
@@ -401,11 +409,9 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                     //If perm provided then gps not enabled
 //                getSettingsLocation();
                     Toast.makeText(LocationPickerActivity.this, "Location Not Availabe", Toast.LENGTH_SHORT).show();
-
                 }
             });
         }
-
     }
 
     public Bitmap resizeMapIcons(String iconName, int width, int height) {
@@ -422,22 +428,23 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
             MarkerOptions markerOptions;
             try {
                 mMap.clear();
-                imgSearch.setText("" + userAddress);
-                markerOptions = new MarkerOptions().position(coordinate).title(userAddress).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_pointer", 100, 100)));
                 if (isZooming) {
                     //  camera will not Update
                     cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinate, mMap.getCameraPosition().zoom);
                 } else {
                     // camera will Update zoom
                     cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinate, 18);
-
-
                 }
 
                 mMap.animateCamera(cameraUpdate);
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                if(startLocation==false) {
+                    imgSearch.setText("" + userAddress);
+                    markerOptions = new MarkerOptions().position(coordinate).title(userAddress).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_pointer", 100, 100)));
+                    Marker marker = mMap.addMarker(markerOptions);
+                }
 
-                Marker marker = mMap.addMarker(markerOptions);
+                startLocation=false;
                 //marker.showInfoWindow();
             } catch (Exception ex) {
                 ex.printStackTrace();

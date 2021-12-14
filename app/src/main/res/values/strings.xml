@@ -27,6 +27,7 @@
     <string name="groups">Groups</string>
     <string name="setting">Setting</string>
     <string name="my_vehicle">My Vehicle</string>
+    <string name="my_chat">My Chat</string>
     <string name="my_payments">My Payments/History</string>
     <string name="payments_package">Payments Recharge Packages</string>
     <string name="post_list">Post Lift</string>

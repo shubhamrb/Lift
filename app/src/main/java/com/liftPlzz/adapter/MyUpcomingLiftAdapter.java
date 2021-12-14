@@ -72,8 +72,13 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         //todo if ride_start will be 1 it will show the ride start button
         if (lift.getRideStart() == 1) {
             holder.tvStartRide.setVisibility(View.VISIBLE);
+            holder.btn_share_lift.setVisibility(View.VISIBLE);
+            holder.btn_same_rute.setVisibility(View.VISIBLE);
+            holder.btn_same_rute.setText(lift.getSameroutevehicle()+" Same Route");
         } else {
             holder.tvStartRide.setVisibility(View.GONE);
+            holder.btn_share_lift.setVisibility(View.GONE);
+            holder.btn_same_rute.setVisibility(View.GONE);
         }
         //        if   "is_booked": 0,      then this button will be hide
 //        if   "is_booked": 1,    then 'Partner details' button will show,
@@ -89,6 +94,9 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         holder.textViewRideId.setText(context.getString(R.string.lift_id) + lift.getId());
         holder.textViewSeats.setText(context.getString(R.string.seat) + lift.getPaidSeats());
         holder.textViewDateTime.setText(lift.getLiftDate());
+        //textRateparkm,textPoints
+        holder.textRateparkm.setText("Rate per km : "+lift.getRate_per_km());
+        holder.textPoints.setText("Points : "+lift.getTotal_points());
 
         holder.tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,8 +150,6 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             }
         });
     }
-
-
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.textViewTitle)
         AppCompatTextView textViewTitle;
@@ -165,8 +171,14 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         AppCompatTextView textViewDateTime;
         @BindView(R.id.tv_cancel)
         AppCompatTextView tvCancel;
-        @BindView(R.id.btn_start_ride)
-        AppCompatTextView tvStartRide;
+
+        @BindView(R.id.btn_start_ride) AppCompatTextView tvStartRide;
+        @BindView(R.id.btn_share_lift) AppCompatTextView btn_share_lift;
+        @BindView(R.id.btn_same_rute) AppCompatTextView btn_same_rute;
+        @BindView(R.id.textPoints) AppCompatTextView textPoints;
+        @BindView(R.id.textRateparkm) AppCompatTextView textRateparkm;
+        //  textRateparkm,textPoints
+
         @BindView(R.id.linear_item)
         LinearLayout linearItem;
 
@@ -174,6 +186,19 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            btn_share_lift.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Lift lift = verifiedLists.get(getAdapterPosition());
+                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBody = "I am inviting you for this ride\n\n"+lift.getTitle()+"\nDate: "+lift.getLiftDate()+" at "+lift.getStart_time();
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share Lift");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                    context.startActivity(Intent.createChooser(sharingIntent, "LiftPlzz"));
+                }
+            });
+
 
         }
 

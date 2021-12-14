@@ -131,6 +131,45 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textPoints"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dp_5"
+                android:text="Points : "
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_16" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textRateparkm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_weight="1"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="center_vertical|right"
+                android:padding="@dimen/dp_5"
+                android:text="Rate per km :"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_14"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -223,23 +262,67 @@
                 android:textSize="@dimen/sp_16" />
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/btn_start_ride"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:visibility="gone"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:background="@drawable/rounded_bg_green"
-            android:ellipsize="end"
-            android:fontFamily="@font/gotham_medium"
-            android:padding="@dimen/dp_10"
-            android:text="@string/start_ride"
-            android:textAllCaps="false"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_16" />
+            android:layout_marginBottom="@dimen/dp_10">
+
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_share_lift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:visibility="visible"
+                android:background="@drawable/rounded_bg_green"
+                android:ellipsize="end"
+                android:elevation="@dimen/dp_5"
+                android:fontFamily="@font/gotham_medium"
+                android:padding="@dimen/dp_10"
+                android:text="Share"
+                android:gravity="center_horizontal"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_same_rute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="right"
+                android:background="@drawable/rounded_bg_green"
+                android:elevation="@dimen/dp_5"
+                android:ellipsize="end"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/dp_10"
+                android:text="Same Route"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_start_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/rounded_bg_green"
+                android:elevation="@dimen/dp_5"
+                android:ellipsize="end"
+                android:fontFamily="@font/gotham_medium"
+                android:padding="@dimen/dp_10"
+                android:text="@string/start_ride"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12"
+                android:visibility="visible" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

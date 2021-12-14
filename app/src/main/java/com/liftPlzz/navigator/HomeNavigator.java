@@ -21,6 +21,8 @@ public interface HomeNavigator {
 
     void openMyVehicleFragment(BaseActivity.PerformFragment performFragment);
 
+    void openMyChatFragment(BaseActivity.PerformFragment performFragment);
+
     void openNotificationFragment(BaseActivity.PerformFragment performFragment);
 
     void openUpdateProfileFragment(BaseActivity.PerformFragment performFragment);

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -79,7 +80,9 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         holder.imageOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu menu = new PopupMenu(context, v);
+                itemListener.onDeleteClick(verifiedLists.get(position).getId());
+
+                /*PopupMenu menu = new PopupMenu(context, v);
                 menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.edit));
                 menu.getMenu().add(Menu.NONE, 2, 2, context.getResources().getString(R.string.remove));
                 menu.show();
@@ -101,7 +104,7 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
                         }
                     }
 
-                });
+                });*/
 
             }
         });
@@ -123,11 +126,27 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         AppCompatTextView textViewSeats;
         @BindView(R.id.tv_rate_per_km)
         AppCompatTextView tvRatePerKm;
+        @BindView(R.id.layoutClick)
+        LinearLayout layoutClick;
+
 
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            imageViewConactImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemListener.onEditClick(verifiedLists.get(getAdapterPosition()));
+                }
+            });
+            layoutClick.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemListener.onEditClick(verifiedLists.get(getAdapterPosition()));
+                }
+            });
 
         }
     }

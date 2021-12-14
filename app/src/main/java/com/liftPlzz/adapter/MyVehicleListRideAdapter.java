@@ -8,6 +8,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -27,13 +28,16 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
 
     private Context context;
     public ItemListener itemListener;
-    List<Datum> verifiedLists;
+    public List<Datum> verifiedLists;
+    public int selectionposition=-1;
+    private EditText etkm;
 
 
-    public MyVehicleListRideAdapter(Context context, List<Datum> verifiedLists, ItemListener itemListener) {
+    public MyVehicleListRideAdapter(Context context, List<Datum> verifiedLists, ItemListener itemListener, EditText etkm) {
         this.context = context;
         this.verifiedLists = verifiedLists;
         this.itemListener = itemListener;
+        this.etkm=etkm;
     }
 
     @Override
@@ -63,6 +67,9 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
         } else {
             Picasso.get().load(R.drawable.images_no_found).into(holder.imageViewConactImage);
         }
+        holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+        if(position==selectionposition)
+           holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorGrey));
     }
 
 
@@ -76,13 +83,19 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
         @BindView(R.id.imageViewConactImage)
         AppCompatImageView imageViewConactImage;
 
+        View itemView;
+
         ViewHolder(View itemView) {
             super(itemView);
+            this.itemView=itemView;
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemListener.onclickVehicle(verifiedLists.get(getAdapterPosition()));
+                    selectionposition=getAdapterPosition();
+                    etkm.setText(""+verifiedLists.get(getAdapterPosition()).getRatePerKm());
+                    notifyDataSetChanged();
+                  //  itemListener.onclickVehicle(verifiedLists.get(getAdapterPosition()));
                 }
             });
 

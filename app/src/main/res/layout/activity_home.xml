@@ -39,8 +39,50 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:choiceMode="singleChoice"
+            android:paddingBottom="@dimen/dp_70"
             android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp" />
+            android:dividerHeight="1dp"
+
+            />
+
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:weightSum="4">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imfacebook"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/facebook"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iminstagram"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/instagram"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imtwitter"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/twitter"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imlinkedin"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/linkedin"/>
+        </LinearLayout>
 
     </com.google.android.material.navigation.NavigationView>
 

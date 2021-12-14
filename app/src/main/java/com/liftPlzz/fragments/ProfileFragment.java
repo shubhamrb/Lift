@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -29,14 +28,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.liftPlzz.R;
-import com.liftPlzz.activity.PaymentHistory;
-import com.liftPlzz.activity.PaymentPackage;
-import com.liftPlzz.activity.StartRideActivity;
-import com.liftPlzz.adapter.PaymentHistoryAdatper;
 import com.liftPlzz.adapter.ReviewListAdapter;
 import com.liftPlzz.adapter.ViewPagerAdapter;
 import com.liftPlzz.base.BaseFragment;
-import com.liftPlzz.model.PaymentHistoryModel;
 import com.liftPlzz.model.SocialImage;
 import com.liftPlzz.model.createProfile.Response;
 import com.liftPlzz.model.createProfile.User;
@@ -45,14 +39,10 @@ import com.liftPlzz.presenter.ProfilePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.ProfileView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
