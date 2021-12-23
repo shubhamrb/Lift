@@ -171,10 +171,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.lyt_parent.setPadding(100, 10, 15, 10);
             holder.lyt_parent.setGravity(Gravity.RIGHT);
             holder.lyt_thread.setCardBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+            holder.messageText.setTextColor(Color.parseColor("#FFFFFF"));
         } else {
             holder.lyt_parent.setPadding(15, 10, 100, 10);
             holder.lyt_parent.setGravity(Gravity.LEFT);
             holder.lyt_thread.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.messageText.setTextColor(Color.parseColor("#000000"));
         }
 
         holder.messageText.setText(mes.getMessage());

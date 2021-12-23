@@ -78,6 +78,7 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
     @Override
     public void onResume() {
         super.onResume();
+
         if (viewpagermyride.getCurrentItem() == 0) {
             layoutupcoming.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));
             layoutcompleted.setBackgroundColor(getResources().getColor(R.color.colorWhite));

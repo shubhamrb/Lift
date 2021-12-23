@@ -53,6 +53,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         holder.textViewRideId.setText(context.getString(R.string.lift_id) + lift.getId());
         holder.textViewSeats.setText(context.getString(R.string.seat) + lift.getPaidSeats());
         holder.textViewDateTime.setText(lift.getLiftDate());
+        holder.textDistancekm.setText("Distance : "+lift.getTotalDistance()+" km");
     }
 
 
@@ -61,8 +62,8 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         AppCompatTextView textViewTitle;
         @BindView(R.id.tv_lift_type)
         AppCompatTextView tvLiftType;
-        @BindView(R.id.textViewRideType)
-        AppCompatTextView textViewRideType;
+        @BindView(R.id.textDistancekm)
+        AppCompatTextView textDistancekm;
         @BindView(R.id.textViewRideId)
         AppCompatTextView textViewRideId;
         @BindView(R.id.textViewSeats)
@@ -79,11 +80,17 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            textRepet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemListener.onMatchClick(verifiedLists.get(getAdapterPosition()));
+                }
+            });
 
         }
     }
 
     public interface ItemListener {
-        void onMatchClick(Lift lift);
+        void onMatchClick(CompleteLiftData lift);
     }
 }

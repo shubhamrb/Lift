@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Lift implements Serializable {
+
     @SerializedName("id")
     @Expose
     private Integer id;

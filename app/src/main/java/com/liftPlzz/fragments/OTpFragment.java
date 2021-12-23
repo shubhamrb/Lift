@@ -34,6 +34,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.liftPlzz.R;
 import com.liftPlzz.SmsListener;
@@ -383,14 +384,38 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
     private void sendCode() {
         setUpVerificationCallbacks();
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+       /* PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 country + mobileNo,        // Phone number to verify
                 60,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 getActivity(),               // Activity (for callback binding)
-                verificationCallbacks);
+                verificationCallbacks);*/
+
+        PhoneAuthOptions options =
+                PhoneAuthOptions.newBuilder(firebaseAuth)
+                        .setPhoneNumber(country + mobileNo)       // Phone number to verify
+                        .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                        .setActivity(getActivity())                 // Activity (for callback binding)
+                        .setCallbacks(verificationCallbacks)          // OnVerificationStateChangedCallbacks
+                        .build();
+        PhoneAuthProvider.verifyPhoneNumber(options);
+
     }
 
+
+
+    /*// below method is use to verify code from Firebase.
+    private void verifyCode(String code) {
+        // below line is used for getting getting
+        // credentials from our verification id and code.
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+
+        // after getting credential we are
+        // calling sign in method.
+        signInWithCredential(credential);
+    }
+}
+*/
 
     private void setUpVerificationCallbacks() {
         verificationCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -402,7 +427,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_SHORT).show();
+                   // Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_SHORT).show();
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     Snackbar.make(reltive, "Limit Reached Try Again In a few Hours", Snackbar.LENGTH_LONG).show();
                 }

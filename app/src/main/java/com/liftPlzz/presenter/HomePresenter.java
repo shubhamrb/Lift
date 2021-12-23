@@ -6,6 +6,7 @@ import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
+import com.liftPlzz.model.editlift.GetVehicleEditResponse;
 import com.liftPlzz.model.getVehicle.GetVehicleListMainResponse;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.HomeView;
@@ -68,6 +69,9 @@ public class HomePresenter extends BasePresenter<HomeView> {
         });
 
     }
+
+
+
 
     public void updateToken(String token, String FCMToken) {
         ApiService api = RetroClient.getApiService();

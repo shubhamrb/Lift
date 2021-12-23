@@ -2,7 +2,6 @@ package com.liftPlzz.fragments;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
@@ -34,7 +33,7 @@ import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.SocialImage;
 import com.liftPlzz.model.createProfile.Response;
 import com.liftPlzz.model.createProfile.User;
-import com.liftPlzz.model.getReview.Datum;
+import com.liftPlzz.model.getVehicle.getReview.Datum;
 import com.liftPlzz.presenter.ProfilePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.ProfileView;

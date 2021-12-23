@@ -1,4 +1,4 @@
-package com.liftPlzz.model.getReview;
+package com.liftPlzz.model.getVehicle.getReview;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

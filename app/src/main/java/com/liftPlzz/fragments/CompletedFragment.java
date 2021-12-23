@@ -1,11 +1,13 @@
 package com.liftPlzz.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.CompletedLiftAdapter;
 import com.liftPlzz.adapter.MyUpcomingLiftAdapter;
@@ -57,8 +59,8 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
             recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerViewUpcoming.setAdapter(new CompletedLiftAdapter(getContext(), lifts, new CompletedLiftAdapter.ItemListener() {
                 @Override
-                public void onMatchClick(Lift lift) {
-
+                public void onMatchClick(CompleteLiftData lift) {
+                    Log.e("object is ",""+new Gson().toJson(lift));
                 }
             }));
         }

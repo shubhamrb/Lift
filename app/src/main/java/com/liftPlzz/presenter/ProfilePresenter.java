@@ -5,7 +5,7 @@ import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.createProfile.CreateProfileMainResponse;
-import com.liftPlzz.model.getReview.GetReviewMainResponse;
+import com.liftPlzz.model.getVehicle.getReview.GetReviewMainResponse;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.ProfileView;
 

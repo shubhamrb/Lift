@@ -66,7 +66,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
+
 
     // lib for Razorpay
     implementation 'com.razorpay:checkout:1.6.12'
@@ -74,8 +74,8 @@ dependencies {
 
 
     // lib for SMS verification (Phone Auth)
-    implementation 'com.google.android.gms:play-services-auth:18.1.0'
-    implementation 'com.google.android.gms:play-services-auth-api-phone:17.0.0'
+   /* implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.android.gms:play-services-auth-api-phone:17.0.0'*/
     //-----FIREBASE STORAGE----
     implementation 'com.google.firebase:firebase-storage:10.0.1'
     //-----FIREBASE DATABASE---
@@ -90,10 +90,21 @@ dependencies {
 // check the stetho website
     implementation 'com.facebook.stetho:stetho-okhttp3:1.4.2'
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:28.2.0')
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+
+    // Declare the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth'
+
+    //implementation 'com.google.firebase:firebase-auth:16.0.5'
+
+  //  implementation platform('com.google.firebase:firebase-bom:28.2.0')
 
     // Declare the dependency for the Realtime Database library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-database'
+
+    implementation 'androidx.browser:browser:1.2.0'
 }
 apply plugin: 'com.google.gms.google-services'

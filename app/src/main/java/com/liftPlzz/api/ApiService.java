@@ -12,10 +12,11 @@ import com.liftPlzz.model.createProfile.CreateProfileMainResponse;
 import com.liftPlzz.model.createTicket.ResponseCreateTicket;
 import com.liftPlzz.model.createVehicle.CreateVehicleResponse;
 import com.liftPlzz.model.deleteVehicle.DeleteVehicleMainResponse;
+import com.liftPlzz.model.editlift.GetVehicleEditResponse;
 import com.liftPlzz.model.findVehicle.FindVehicleResponse;
 import com.liftPlzz.model.getFaq.ResponseFaq;
 import com.liftPlzz.model.getNotification.ResponseNotification;
-import com.liftPlzz.model.getReview.GetReviewMainResponse;
+import com.liftPlzz.model.getVehicle.getReview.GetReviewMainResponse;
 import com.liftPlzz.model.getTicketCategory.ResponseTicketCategory;
 import com.liftPlzz.model.getTicketDetails.ResponseTicketDetails;
 import com.liftPlzz.model.getTicketList.ResponseTicketList;
@@ -70,6 +71,13 @@ public interface ApiService {
     Call<GetVehicleListMainResponse> get_vehicle_list(@Field("api_key") String api_key,
                                                       @Field("client") String client,
                                                       @Field("token") String token);
+    @FormUrlEncoded
+    @POST("edit-lift")
+    Call<GetVehicleEditResponse> get_lift_detail(@Field("api_key") String api_key,
+                                                 @Field("client") String client,
+                                                 @Field("lift_id") String lift_id,
+                                                 @Field("token") String token);
+
 
     @FormUrlEncoded
     @POST("get-driver-list")
@@ -187,6 +195,40 @@ public interface ApiService {
                                      @Field("lift_time") String liftTime);
 
     @FormUrlEncoded
+    @POST("update-lift")
+    Call<FindLiftResponse> findUpdate_lift(@Field("api_key") String api_key,
+                                     @Field("client") String client,
+                                     @Field("token") String token,
+                                     @Field("title") String title,
+                                     @Field("paid_seats") String requir_seats,
+                                     @Field("start_point") String start_point,
+                                     @Field("end_point") String end_point,
+                                     @Field("lift_date") String lift_date,
+                                     @Field("lift_id") String lift_id,
+                                     @Field("lift_time") String liftTime);
+
+      // FIND UPDATE  paid_seats,  , lift_id
+
+
+    //checkpoints
+
+    @FormUrlEncoded
+    @POST("update-lift")
+    Call<CreateLiftResponse> offerUpdate_lift(@Field("api_key") String api_key,
+                                         @Field("client") String client,
+                                         @Field("token") String token,
+                                         @Field("vehicle_id") String vehicle_id,
+                                         @Field("lift_type") String lift_type,
+                                         @Field("free_seats") String free_seats,
+                                         @Field("paid_seats") String paid_seats,
+                                         @Field("start_point") String start_point,
+                                         @Field("end_point") String end_point,
+                                         @Field("checkpoints") String checkpoints,
+                                         @Field("lift_date") String lift_date,
+                                         @Field("lift_id") String lift_id,
+                                         @Field("lift_time") String liftTime);
+
+    @FormUrlEncoded
     @POST("create-lift")
     Call<CreateLiftResponse> create_lift(@Field("api_key") String api_key,
                                          @Field("client") String client,
@@ -200,6 +242,9 @@ public interface ApiService {
                                          @Field("checkpoints") String checkpoints,
                                          @Field("lift_date") String lift_date,
                                          @Field("lift_time") String liftTime);
+
+//     ,
+
 
 
     @FormUrlEncoded

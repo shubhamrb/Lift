@@ -105,12 +105,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Toolbar toolbar;
     @BindView(R.id.imageViewHome)
     ImageView imageViewHome;
-    SharedPreferences sharedPreferences;
+
     @BindView(R.id.imageViewNotification)
     ImageView imageViewNotification;
 
-    GoogleMap mGoogleMap;
-    SupportMapFragment mapFragment;
+
+
     @BindView(R.id.editTextPickupLocation)
     AppCompatTextView editTextPickupLocation;
     @BindView(R.id.layoutPickupLocation)
@@ -150,19 +150,22 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     RecyclerView recyclerViewMyVehicle;
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
-    GoogleApiClient mGoogleApiClient;
+
+
+
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     LocationRequest mLocationRequest;
     int locationSelect = 1;
     LatLng pickupLocation;
     LatLng dropLocation;
-    int day, month, year, hour, minute;
-    int myday, myMonth, myYear, myHour, myMinute;
+
+
+
     List<LatLng> pontos = new ArrayList<>();
     String distanceString="";
 
     Polyline polyline;
-    Calendar calendar;
+
     String origin;
     String startPoint = "", endPoint = "";
     String destination;
@@ -172,7 +175,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     boolean isMultiCheck = false;
     String seat = "1";
     String dateTime, liftTime = "";
-    BottomSheetCheckPointsDialog bottomSheetCheckPointsDialog;
+
+
+
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
 
@@ -190,6 +195,16 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     //
     LatLng latLngOrigin, latLngDestination;
+
+    SharedPreferences sharedPreferences;
+    GoogleMap mGoogleMap;
+    SupportMapFragment mapFragment;
+    GoogleApiClient mGoogleApiClient;
+    BottomSheetCheckPointsDialog bottomSheetCheckPointsDialog;
+
+    Calendar calendar;
+    int day, month, year, hour, minute;
+    int myday, myMonth, myYear, myHour, myMinute;
 
     @Override
     protected int createLayout() {
@@ -274,7 +289,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "test ride", seat, startPoint, endPoint, dateTime, liftTime);
+                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime);
                     }
                 } else {
                     //create lift
@@ -530,6 +545,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     "addressline1"
                     "addressline2"
                      */
+
                     if (locationSelect == 1) {
                         pickupLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngOrigin = new LatLng(currentLatitude, currentLongitude);
@@ -538,6 +554,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
                                 (completeAddress.getString("state"));
+                      Log.e("result ",""+strAdd.toString()+"  ");
                         editTextPickupLocation.setText(strAdd.toString());
                         startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
                         if (dropLocation != null) {
@@ -626,6 +643,14 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 ex.printStackTrace();
             }
         }
+    }
+
+    public void setPickupLocation(){
+
+    }
+
+    public void setDroupLocation(){
+
     }
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
@@ -886,29 +911,46 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
 
         protected void onPostExecute(String file_url) {
+            LatLng src1=null;LatLng dest=null;
             for (int i = 0; i < pontos.size() - 1; i++) {
+                Log.e("call poly ","loop = "+i);
                 LatLng src = pontos.get(i);
-                LatLng dest = pontos.get(i + 1);
+                if(i==0){
+                    src1=src;
+                }
+                dest = pontos.get(i + 1);
                 try {
                     //here is where it will draw the polyline in your map
                     Polyline line = mGoogleMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(src.latitude, src.longitude),
                                     new LatLng(dest.latitude, dest.longitude))
                             .width(7).color(Color.GREEN).geodesic(true));
-                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    builder.include(latLngOrigin);
-                    builder.include(latLngDestination);
-                    LatLngBounds bounds = builder.build();
-//                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                    int padding = 250; // offset from edges of the map in pixels
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                    mGoogleMap.moveCamera(cu);
+
+
+
+
 
                 } catch (NullPointerException e) {
                     Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
                 } catch (Exception e2) {
                     Log.e("Error", "Exception onPostExecute: " + e2.toString());
                 }
+
+            }
+            try{
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(src1);
+                builder.include(dest);
+
+                   /* builder.include(latLngOrigin);
+                    builder.include(latLngDestination);*/
+
+                LatLngBounds bounds = builder.build();
+//                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                int padding = 250; // offset from edges of the map in pixels
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+                mGoogleMap.moveCamera(cu);
+            }catch (Exception e){
 
             }
             textkm.setText(""+distanceString);
@@ -965,14 +1007,29 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             getActivity().finish();
                         }
                     });
+            alertDialogBuilder.setNegativeButton("Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+        }else{
+            alertDialogBuilder.setNegativeButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            try{
+                                ((HomeActivity)getActivity()).openride();
+                            }catch (Exception E){
+
+                            }
+                            dialog.cancel();
+
+                        }
+                    });
         }
 
-        alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
@@ -985,6 +1042,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         alertDialogBuilder.setNegativeButton("Ok",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        try{
+                            ((HomeActivity)getActivity()).openride();
+                        }catch (Exception E){
+
+                        }
                         dialog.cancel();
                     }
                 });

@@ -15,6 +15,7 @@ import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.activity.RideRequestActivity;
 import com.liftPlzz.adapter.MyUpcomingLiftAdapter;
 import com.liftPlzz.base.BaseFragment;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.presenter.UpComingPresenter;
 import com.liftPlzz.utils.Constants;
@@ -63,9 +64,18 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     public void setLiftData(List<Lift> lifts) {
         if (lifts.size() > 0) {
             recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewUpcoming.setAdapter(new MyUpcomingLiftAdapter(getContext(), lifts, UpComingFragment.this));
+            recyclerViewUpcoming.setAdapter(new MyUpcomingLiftAdapter(getContext(), lifts, UpComingFragment.this,listinerUpdate));
         }
     }
+    public void getupcomingLiftUpdate(){
+        presenter.getUpcomingLift(strToken);
+    }
+    public EditLiftDaiFragment.UpdateRecordListiner listinerUpdate = new EditLiftDaiFragment.UpdateRecordListiner() {
+        @Override
+        public void done() {
+            getupcomingLiftUpdate();
+        }
+    };
 
     @Override
     public void onMatchClick(Lift lift) {

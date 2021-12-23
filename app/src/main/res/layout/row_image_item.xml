@@ -8,10 +8,8 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageViewMainDetails"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_380"
-        android:maxHeight="@dimen/dp_380"
-        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:src="@drawable/user_image" />
 
 </LinearLayout>

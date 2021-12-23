@@ -9,8 +9,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +33,7 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.ChatSuggestionAdapter;
 import com.liftPlzz.adapter.MessageAdapter;
@@ -37,6 +41,7 @@ import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.model.Messages;
 import com.liftPlzz.model.ResponseChatSuggestion;
+import com.liftPlzz.model.chatuser.ChatUser;
 import com.liftPlzz.utils.Constants;
 
 import java.util.ArrayList;
@@ -79,14 +84,32 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
     ChatSuggestionAdapter chatSuggestionAdapter;
     private ArrayList arrayListSuggestion = new ArrayList();
 
+    //tv_mob,tv_name,img_driver,img_back
+    TextView tv_mob,tv_name;
+    ImageView img_driver,img_back,img_call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_chat);
 //        mChatAddButton = (ImageButton) findViewById(R.id.chatAddButton);
         mChatSendButton = (ImageButton) findViewById(R.id.chatSendButton);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         tvText = (TextView) findViewById(R.id.tv_text);
+
+        tv_mob = (TextView) findViewById(R.id.tv_mob);
+        tv_name = (TextView) findViewById(R.id.tv_name);
+        img_driver = (ImageView) findViewById(R.id.img_driver);
+        img_back = (ImageView) findViewById(R.id.img_back);
+        img_call = (ImageView) findViewById(R.id.img_call);
+        img_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         mMessageView = (EditText) findViewById(R.id.chatMessageView);
         sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
@@ -96,6 +119,35 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
         String userName = getIntent().getStringExtra("user_name");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         chatSuggestionAdapter = new ChatSuggestionAdapter(arrayListSuggestion, this, this);
+
+        try{
+           // intent.putExtra("charuser",new Gson().toJson(chatUser));
+            String chatuserstring=getIntent().getStringExtra("charuser");
+            final ChatUser chatUser=new Gson().fromJson(chatuserstring,ChatUser.class);
+
+            tv_name.setText(chatUser.getName());
+            tv_mob.setText(chatUser.getMobile());
+            img_call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+
+                    intent.setData(Uri.parse("tel:" +chatUser.getMobile()));
+                    startActivity(intent);
+                }
+            });
+
+            try {
+                Glide.with(this).load(chatUser.getImage())
+                        .error(R.drawable.logo_icon)
+                        .placeholder(R.drawable.logo_icon).into(img_driver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }catch (Exception E){
+
+        }
 
 //        int mNoOfColumns = Constants.calculateNoOfColumns(getApplicationContext(),R.id.tv_title);
 
@@ -145,7 +197,6 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
 
         loadMessages();
         getSuggestionChatText();
-
         //----ADDING LAST SEEN-----
 //        mRootReference.child("users").child(mChatUser).addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -194,10 +245,7 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
                             } else
                                 Toast.makeText(getApplicationContext(), "Cannot Add chats feature", Toast.LENGTH_SHORT).show();
                         }
-
-
                     });
-
                 }
 
             }

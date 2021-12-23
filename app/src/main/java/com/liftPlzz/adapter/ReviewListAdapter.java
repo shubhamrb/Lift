@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
 import com.liftPlzz.model.UserInfo.Review;
-import com.liftPlzz.model.getReview.Datum;
+import com.liftPlzz.model.getVehicle.getReview.Datum;
 import com.liftPlzz.utils.CircleTransform;
 import com.squareup.picasso.Picasso;
 

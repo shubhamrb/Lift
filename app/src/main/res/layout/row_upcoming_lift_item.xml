@@ -49,7 +49,15 @@
                 android:textColor="@color/colorRed"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
-                android:visibility="visible" />
+                android:visibility="gone" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_5"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_more"
+                android:layout_alignParentRight="true"></androidx.appcompat.widget.AppCompatImageView>
 
         </RelativeLayout>
 
@@ -122,7 +130,7 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_weight="0.5"
                 android:fontFamily="@font/gotham_light"
-                android:gravity="center_vertical"
+                android:gravity="right"
                 android:padding="@dimen/dp_5"
                 android:text="1 Seats"
                 android:textColor="@color/colorBlack"
@@ -171,7 +179,7 @@
         </LinearLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -183,7 +191,6 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_2"
-                android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/gotham_medium"
                 android:gravity="center_vertical"
@@ -191,9 +198,24 @@
                 android:text="@string/time"
                 android:textColor="@color/colorText"
                 android:textSize="@dimen/sp_16" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textDistancekm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_toRightOf="@+id/textViewDateTime"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_2"
+                android:fontFamily="@font/gotham_light"
+                android:gravity="center_vertical|right"
+                android:padding="@dimen/dp_5"
+                android:text="Distance : km"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/sp_14"
+                android:visibility="visible" />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
         <LinearLayout

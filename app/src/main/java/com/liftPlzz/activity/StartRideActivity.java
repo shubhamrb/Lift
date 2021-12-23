@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -298,6 +299,7 @@ public class StartRideActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_start_ride);
         ButterKnife.bind(this);
 //        TextView btn_start_rideqw = (TextView) findViewById(R.id.btn_start_ride);
@@ -548,17 +550,19 @@ public class StartRideActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btn_start_ride:
-                String txt = tvStartRide.getText().toString();
+                try {
+                    String txt = tvStartRide.getText().toString();
 
 //                Log.d("btn_start_ride", txt);
-                if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
-                    //todo start ride will call from here
-                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-                        Log.d("btn_start_ride", txt);
-                        ridestarted = true;
-                        bywhomRidestarted = 0;
-                        mService.requestLocationUpdates();
-                        //                        getLiftStartCodeMatch(strToken , tvStartRide.getText().toString());
+                    if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
+                        //todo start ride will call from here
+                        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                            Log.d("btn_start_ride", txt);
+                            ridestarted = true;
+                            bywhomRidestarted = 0;
+                            mService.requestLocationUpdates();
+                            Log.e("Line 561", "offer_lift match");
+                            //  getLiftStartCodeMatch(strToken , tvStartRide.getText().toString());
 
 //                        // Bind to the service. If the service is in foreground mode, this signals to the service
 //                        // that since this activity is in the foreground, the service can exit foreground mode.
@@ -569,24 +573,27 @@ public class StartRideActivity extends AppCompatActivity implements
 //                        } else {
 //                            mService.requestLocationUpdates();
 //                        }
-                    } else {
-                        if (!driverstarted) {
-                            Toast.makeText(StartRideActivity.this, "Let driver start the ride first", Toast.LENGTH_SHORT).show();
                         } else {
-                            showDialogEnterCode();
+                            if (!driverstarted) {
+                                Toast.makeText(StartRideActivity.this, "Let driver start the ride first", Toast.LENGTH_SHORT).show();
+                            } else {
+                                showDialogEnterCode();
+                            }
+
                         }
 
-                    }
-
-                } else {
-                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-                        Log.e("Lift", "end by driver");
-//                        driverendLift(strToken);
-                        getRideEndBYDriver(strToken, 1);
                     } else {
+                        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                            Log.e("Lift", "end by driver");
+//                        driverendLift(strToken);
+                            getRideEndBYDriver(strToken, 1);
+                        } else {
 
-                        getRideEnd(strToken, 2);
+                            getRideEnd(strToken, 2);
+                        }
                     }
+                }catch (Exception E){
+                    Log.e("Exception E", ""+E.getMessage());
                 }
                 break;
         }
@@ -1448,7 +1455,7 @@ public class StartRideActivity extends AppCompatActivity implements
             @Override
             public void onResponse(String response) {
                 Constants.hideLoader();
-                Log.d("history", response);
+                Log.e("history jjj", response);
                 try {
                     JSONObject jObject = new JSONObject(response);
                     JSONObject responsee = jObject.getJSONObject("response");
@@ -1463,7 +1470,8 @@ public class StartRideActivity extends AppCompatActivity implements
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Constants.hideLoader();
+                Log.e("rise vo",""+error.getMessage());
             }
         }) {
             @Override

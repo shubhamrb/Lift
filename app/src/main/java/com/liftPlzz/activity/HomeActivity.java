@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,7 +28,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.MenuListAdapter;
+import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.model.MenuItem;
+import com.liftPlzz.model.completedLift.CompleteLiftData;
 import com.liftPlzz.provider.AppNavigationProvider;
 import com.liftPlzz.utils.Constants;
 
@@ -76,6 +79,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -97,14 +101,14 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showGPSDisabledAlertToUser();
         }
-        menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
+       // menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(10, "Payments & Recharge", R.drawable.ic_white_liftplzz));
        // menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(3, "Refer & Earn", R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
+      //  menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(7, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.ic_white_liftplzz));
@@ -145,6 +149,12 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             }
         });
 
+    }
+
+    public void openHomeFragment(CompleteLiftData lift){
+       // openHomeFragment(PerformFragment.REPLACE);
+        HomeFragment homeFragment = new HomeFragment();
+        openFragment(homeFragment, HomeFragment.class.getName(), PerformFragment.REPLACE, false);
     }
 
     @Override
@@ -202,6 +212,10 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         alert.show();
     }
 
+    public void openride(){
+        openMyRidesFragment(PerformFragment.REPLACE);
+    }
+
     @Override
     public void onclick(int s) {
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
@@ -212,7 +226,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 //             openFeedbackFragment(PerformFragment.REPLACE);
         } else if (s == 2) {
 //            Intent intent = new Intent(HomeActivity.this, MatchingRideActivity.class);
-////            intent.putExtra(Constants.LIFT_ID, lift.getId());
+//            intent.putExtra(Constants.LIFT_ID, lift.getId());
 //            startActivity(intent);
             openMyRidesFragment(PerformFragment.REPLACE);
         } else if (s == 3) {

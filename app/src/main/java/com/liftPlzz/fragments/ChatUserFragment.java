@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.ChatActivity;
 import com.liftPlzz.activity.DriverProfileActivity;
@@ -84,6 +85,7 @@ public class ChatUserFragment extends BaseFragment<ChatUserPresenter, ChatUserVi
             public void onSendButtonClick(ChatUser chatUser) {
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 intent.putExtra(Constants.USER_ID, String.valueOf(chatUser.getId()));
+                intent.putExtra("charuser",new Gson().toJson(chatUser));
                 startActivity(intent);
             }
 
