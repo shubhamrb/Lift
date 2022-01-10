@@ -349,8 +349,8 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
             sharedPreferences.edit().putString(Constants.TOKEN, response.getToken()).apply();
 //            sharedPreferences.edit().putString(Constants.NAME, response.getData().getName()).apply();
 //            sharedPreferences.edit().putString(Constants.EMAIL, response.getData().getEmail()).apply();
-            sharedPreferences.edit().putString(Constants.MOBILE, response.getData().getMobile()).apply();
-            sharedPreferences.edit().putString(Constants.USER_ID, String.valueOf(response.getData().getId())).apply();
+//            sharedPreferences.edit().putString(Constants.MOBILE, response.getData().getMobile()).apply();
+//            sharedPreferences.edit().putString(Constants.USER_ID, String.valueOf(response.getData().getId())).apply();
       /*  Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
         getActivity().finish();*/
@@ -480,7 +480,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         } else {
                             if (task.getException() instanceof
                                     FirebaseAuthInvalidCredentialsException) {
-                                Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
+//                                Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
                             }
                         }
                     }

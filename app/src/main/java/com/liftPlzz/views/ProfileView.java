@@ -12,5 +12,7 @@ public interface ProfileView extends RootView {
 
     void setProfileData(Response response);
 
+    void setProfileImageData(String message);
+
     void setReviewData(List<Datum> data);
 }

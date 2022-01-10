@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.model.completedLift.CompleteLiftData;
 import com.liftPlzz.model.upcomingLift.Lift;
 
@@ -24,8 +27,9 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
     public ItemListener itemListener;
     List<CompleteLiftData> verifiedLists;
 
+    EditLiftDaiFragment.UpdateRecordListiner listinerUpdate;
 
-    public CompletedLiftAdapter(Context context, List<CompleteLiftData> verifiedLists,ItemListener itemListener) {
+    public CompletedLiftAdapter(Context context, List<CompleteLiftData> verifiedLists,EditLiftDaiFragment.UpdateRecordListiner listinerUpdate,ItemListener itemListener) {
         this.context = context;
         this.verifiedLists = verifiedLists;
         this.itemListener = itemListener;
@@ -83,7 +87,38 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
             textRepet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemListener.onMatchClick(verifiedLists.get(getAdapterPosition()));
+                    EditLiftDaiFragment sheet = new EditLiftDaiFragment("add");
+                    Lift lif=new Lift();
+                    lif.setId(verifiedLists.get(getAdapterPosition()).getId());
+                    lif.setTitle(verifiedLists.get(getAdapterPosition()).getTitle());
+                    lif.setUserId(verifiedLists.get(getAdapterPosition()).getUserId());
+                    lif.setVehicleId(verifiedLists.get(getAdapterPosition()).getVehicleId());
+                    lif.setLiftType(verifiedLists.get(getAdapterPosition()).getLiftType());
+                    lif.setLiftType(verifiedLists.get(getAdapterPosition()).getLiftType());
+                    lif.setFreeSeats(verifiedLists.get(getAdapterPosition()).getFreeSeats());
+                    lif.setPaidSeats(verifiedLists.get(getAdapterPosition()).getPaidSeats());
+                    lif.setLiftDate(verifiedLists.get(getAdapterPosition()).getLiftDate());
+                    lif.setStatus(verifiedLists.get(getAdapterPosition()).getStatus());
+                    lif.setIsBooked(verifiedLists.get(getAdapterPosition()).getIsBooked());
+                    lif.setTotalRequest(verifiedLists.get(getAdapterPosition()).getTotalRequest());
+                    lif.setCreatedAt(verifiedLists.get(getAdapterPosition()).getCreatedAt());
+                    lif.setUpdatedAt(verifiedLists.get(getAdapterPosition()).getUpdatedAt());
+                    lif.setStartLatlong(verifiedLists.get(getAdapterPosition()).getStartLatlong());
+                    lif.setStartLocation(verifiedLists.get(getAdapterPosition()).getStartLocation());
+                    lif.setEndLatlong(verifiedLists.get(getAdapterPosition()).getEndLatlong());
+                    lif.setEndLocation(verifiedLists.get(getAdapterPosition()).getEndLocation());
+                    lif.setTotalDistance(verifiedLists.get(getAdapterPosition()).getTotalDistance());
+//                    lif.seten(verifiedLists.get(getAdapterPosition()).getTotalDistance());
+//        lif.setStart_time(model.get());
+//        lif.setSameroutevehicle(model.get());
+//        lif.setFindMatch(model.ge());
+
+
+                    sheet.setLift(lif,listinerUpdate,"add" );
+                    sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
+                    sheet.show(((FragmentActivity)context).getSupportFragmentManager().beginTransaction(),"dialog");
+
+//                    itemListener.onMatchClick(verifiedLists.get(getAdapterPosition()));
                 }
             });
 

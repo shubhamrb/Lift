@@ -14,11 +14,15 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,18 +30,26 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -77,6 +89,7 @@ import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -86,8 +99,10 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -133,6 +148,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     AppCompatTextView textViewSelectSeat;
     @BindView(R.id.layoutCheckPoints)
     RelativeLayout layoutCheckPoints;
+    @BindView(R.id.llchkpoint)
+    LinearLayout llchkpoint;
     @BindView(R.id.textViewGiveLift)
     AppCompatTextView textViewGiveLift;
     @BindView(R.id.textViewTakeLift)
@@ -145,6 +162,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     LinearLayout layoutRide;
     @BindView(R.id.layoutRideVehicle)
     RelativeLayout layoutRideVehicle;
+
+    @BindView(R.id.callButton)
+    ImageView callButton;
+    @BindView(R.id.smsButton)
+    ImageView smsButton;
     int listPos;
     @BindView(R.id.recyclerViewMyVehicle)
     RecyclerView recyclerViewMyVehicle;
@@ -190,6 +212,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @BindView(R.id.btnSubmit)
     AppCompatButton btnSubmit;
 
+
+
     MyVehicleListRideAdapter myVehicleListRideAdapter;
 
 
@@ -215,12 +239,86 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     protected void setPresenter() {
         presenter = new HomePresenter();
     }
+    String sos;
 
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
 
     @Override
     protected HomeView createView() {
         return this;
     }
+    private void sosnumbers() {
+        Constants.showLoader(getActivity());
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-profile", new com.android.volley.Response.Listener<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(String response) {
+                Constants.hideLoader();
+                Log.e("history jjj", response);
+                try {
+                    JSONObject jObject = new JSONObject(response);
+                    JSONObject responsee = jObject.getJSONObject("response");
+                    JSONObject userdata = responsee.getJSONObject("user");
+                    sos = userdata.getString("sos");
+                    Log.d("sos", sos);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Constants.hideLoader();
+                Log.e("rise vo",""+error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", Constants.API_KEY);
+                params.put("client", Constants.ANDROID);
+                params.put("token", sharedPreferences.getString(Constants.TOKEN, ""));
+                //   params.put("token", "064ywr3Ht5LPpFPF73J0foCAdvw3ylSDXJys8IqATQ2wyvwimen827FAPA5I");
+                return params;
+            }
+        };
+        queue.add(sr);
+
+    }
+    private String strToken = "";
+
+    public void requestpermisson(){
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(sos, null, "This is emergency message from liftplzz app", null, null);
+                    Toast.makeText(getActivity(), "SMS sent.",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(),
+                            "SMS faild, please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }}
 
     @Override
     protected void bindData() {
@@ -239,7 +337,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         day = calendar.get(Calendar.DAY_OF_MONTH);
         mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
-
+sosnumbers();
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
         bottomSheetCheckPointsDialog.setSelectionListner(HomeFragment.this);
 
@@ -272,7 +370,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
     }
 
-    @OnClick({R.id.buttonLift,R.id.btnSubmit, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
+    @OnClick({R.id.callButton,R.id.smsButton,R.id.buttonLift,R.id.btnSubmit, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
@@ -289,7 +387,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime);
+                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime,textkm.getText().toString());
                     }
                 } else {
                     //create lift
@@ -302,7 +400,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""));
+                        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
                     }
                 }
                 break;
@@ -367,7 +465,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 buttonLift.setText(textViewGiveLift.getText().toString());
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorWhite));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorBlack));
-                layoutCheckPoints.setVisibility(View.VISIBLE);
+                llchkpoint.setVisibility(View.VISIBLE);
                 break;
             case R.id.layoutTakeLift:
                 isMultiCheck = false;
@@ -376,8 +474,23 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 buttonLift.setText(textViewTakeLift.getText().toString());
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorBlack));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorWhite));
-                layoutCheckPoints.setVisibility(View.INVISIBLE);
+                llchkpoint.setVisibility(View.INVISIBLE);
                 break;
+            case R.id.callButton:
+                if (sos.isEmpty()){
+                    Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
+                            "tel", sos, null));
+                    startActivity(phoneIntent);
+                }
+                break;
+            case R.id.smsButton:
+                if (sos.isEmpty()){
+                    Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
+                }else{
+                    requestpermisson();
+                }
         }
     }
 
@@ -745,6 +858,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         np.setMinValue(1);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(HomeFragment.this);
+        np.setValue(Integer.parseInt(seat));
         b1.setOnClickListener(v -> {
             textViewSelectSeat.setText(np.getValue() + " Seat");
             seat = String.valueOf(np.getValue());
@@ -792,11 +906,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             layoutRideVehicle.setVisibility(View.VISIBLE);
             layoutRide.setVisibility(View.GONE);
             //etkm
-            myVehicleListRideAdapter=new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this,etkm);
+            myVehicleListRideAdapter=new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this,etkm,0);
             recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
             recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
+            presenter.openMyVehicle();
         }
     }
 
@@ -809,7 +924,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
         layoutDropLocation.setVisibility(View.VISIBLE);
-        layoutCheckPoints.setVisibility(View.VISIBLE);
+        llchkpoint.setVisibility(View.VISIBLE);
         recyclerViewCheckpoints.setVisibility(View.GONE);
     }
 
@@ -841,7 +956,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             }
         }
 //        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, "{" + listString + "}", dateTime, liftTime);
-        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime);
+        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(),etkm.getText().toString());
     }
 
     @Override

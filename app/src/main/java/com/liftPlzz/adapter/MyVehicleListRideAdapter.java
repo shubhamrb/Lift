@@ -29,15 +29,29 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
     private Context context;
     public ItemListener itemListener;
     public List<Datum> verifiedLists;
-    public int selectionposition=-1;
+    public int selectionposition=0;
     private EditText etkm;
+    int vehicle_id;
 
 
-    public MyVehicleListRideAdapter(Context context, List<Datum> verifiedLists, ItemListener itemListener, EditText etkm) {
+    public MyVehicleListRideAdapter(Context context, List<Datum> verifiedLists, ItemListener itemListener, EditText etkm,int v_id) {
         this.context = context;
         this.verifiedLists = verifiedLists;
         this.itemListener = itemListener;
         this.etkm=etkm;
+        this.vehicle_id=v_id;
+        if(this.vehicle_id>0) {
+            selectionposition = get_pos_by_id(this.vehicle_id, this.verifiedLists);
+        }
+
+    }
+    private int get_pos_by_id(int id,List<Datum> verifiedLists){
+        for(int i=0;i<verifiedLists.size();i++){
+            if(verifiedLists.get(i).getId()==vehicle_id){
+                return i;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -68,6 +82,8 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
             Picasso.get().load(R.drawable.images_no_found).into(holder.imageViewConactImage);
         }
         holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+        etkm.setText(""+verifiedLists.get(selectionposition).getRatePerKm());
+
         if(position==selectionposition)
            holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorGrey));
     }
@@ -95,7 +111,7 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
                     selectionposition=getAdapterPosition();
                     etkm.setText(""+verifiedLists.get(getAdapterPosition()).getRatePerKm());
                     notifyDataSetChanged();
-                  //  itemListener.onclickVehicle(verifiedLists.get(getAdapterPosition()));
+//                    itemListener.onclickVehicle(verifiedLists.get(getAdapterPosition()));
                 }
             });
 

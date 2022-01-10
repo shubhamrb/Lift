@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface EditLiftView extends RootView {
 
-    void setFindRideData(FindLiftResponse findRideData);
+    void setFindRideData(FindLiftResponse findRideData,String action);
 
-    void setVehicle(List<Datum> data);
+    void setVehicle(List<Datum> data,String action);
 
-    void setCreateRideData(CreateLiftResponse createRideData);
+    void setCreateRideData(CreateLiftResponse createRideData,String action);
 
     void getLiftDetail(EditVehicleData data);
 }

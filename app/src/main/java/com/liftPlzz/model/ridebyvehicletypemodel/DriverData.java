@@ -8,6 +8,9 @@ public class DriverData {
     @SerializedName("id")
     @Expose
     private Integer id;
+    @SerializedName("total_point")
+    @Expose
+    private Integer total_point;
     @SerializedName("lift_id")
     @Expose
     private Integer liftId;
@@ -20,9 +23,9 @@ public class DriverData {
     @SerializedName("user_id")
     @Expose
     private Integer userId;
-    @SerializedName("vehicle_id")
+    @SerializedName("rating")
     @Expose
-    private Integer vehicleId;
+    private String rating;
     @SerializedName("paid_seats")
     @Expose
     private Integer paidSeats;
@@ -33,24 +36,41 @@ public class DriverData {
     @SerializedName("lift_date")
     @Expose
     private String liftDate;
+    @SerializedName("lfit_time")
+    @Expose
+    private String lfit_time;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("mobile")
+    @SerializedName("total_review")
     @Expose
-    private String mobile;
+    private String total_review;
     @SerializedName("image")
     @Expose
     private String image;
-    @SerializedName("vehicle_total_seats")
-    @Expose
-    private Integer vehicleTotalSeats;
+
     @SerializedName("start_point_distance")
     @Expose
     private Double startPointDistance;
     @SerializedName("end_point_distance")
     @Expose
     private Double endPointDistance;
+
+    public Integer getTotal_point() {
+        return total_point;
+    }
+
+    public void setTotal_point(Integer total_point) {
+        this.total_point = total_point;
+    }
+
+    public String getLfit_time() {
+        return lfit_time;
+    }
+
+    public void setLfit_time(String lfit_time) {
+        this.lfit_time = lfit_time;
+    }
 
     public Integer getId() {
         return id;
@@ -92,13 +112,7 @@ public class DriverData {
         this.userId = userId;
     }
 
-    public Integer getVehicleId() {
-        return vehicleId;
-    }
 
-    public void setVehicleId(Integer vehicleId) {
-        this.vehicleId = vehicleId;
-    }
 
     public Integer getPaidSeats() {
         return paidSeats;
@@ -124,13 +138,7 @@ public class DriverData {
         this.name = name;
     }
 
-    public String getMobile() {
-        return mobile;
-    }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
 
     public String getImage() {
         return image;
@@ -140,12 +148,20 @@ public class DriverData {
         this.image = image;
     }
 
-    public Integer getVehicleTotalSeats() {
-        return vehicleTotalSeats;
+    public String getRating() {
+        return rating;
     }
 
-    public void setVehicleTotalSeats(Integer vehicleTotalSeats) {
-        this.vehicleTotalSeats = vehicleTotalSeats;
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getTotal_review() {
+        return total_review;
+    }
+
+    public void setTotal_review(String total_review) {
+        this.total_review = total_review;
     }
 
     public Double getStartPointDistance() {

@@ -49,6 +49,7 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     @Override
     public void openHomeFragment(PerformFragment performFragment) {
         HomeFragment homeFragment = new HomeFragment();
+//        CreateProfileFragment homeFragment = new CreateProfileFragment();
         openFragment(homeFragment, HomeFragment.class.getName(), performFragment, false);
     }
 

@@ -70,7 +70,8 @@ public interface ApiService {
     @POST("get-vehicle-list")
     Call<GetVehicleListMainResponse> get_vehicle_list(@Field("api_key") String api_key,
                                                       @Field("client") String client,
-                                                      @Field("token") String token);
+                                                      @Field("token") String token,
+                                                      @Field("total_km") String total_km);
     @FormUrlEncoded
     @POST("edit-lift")
     Call<GetVehicleEditResponse> get_lift_detail(@Field("api_key") String api_key,
@@ -150,6 +151,12 @@ public interface ApiService {
     Call<GetReviewMainResponse> get_review(@Field("api_key") String api_key,
                                            @Field("client") String client,
                                            @Field("token") String token);
+    @FormUrlEncoded
+    @POST("remove-social-image")
+    Call<GetReviewMainResponse> delete_eimag(@Field("api_key") String api_key,
+                                           @Field("client") String client,
+                                           @Field("token") String token,
+                                           @Field("id") String id);
 
      // ------------jagnarayan-----------//
      //  https://charpair.com/api/chat-user-list
@@ -192,7 +199,8 @@ public interface ApiService {
                                      @Field("start_point") String start_point,
                                      @Field("end_point") String end_point,
                                      @Field("lift_date") String lift_date,
-                                     @Field("lift_time") String liftTime);
+                                     @Field("lift_time") String liftTime,
+                                     @Field("total_km") String total_km);
 
     @FormUrlEncoded
     @POST("update-lift")
@@ -205,7 +213,8 @@ public interface ApiService {
                                      @Field("end_point") String end_point,
                                      @Field("lift_date") String lift_date,
                                      @Field("lift_id") String lift_id,
-                                     @Field("lift_time") String liftTime);
+                                     @Field("lift_time") String liftTime,
+                                     @Field("total_km") String total_km);
 
       // FIND UPDATE  paid_seats,  , lift_id
 
@@ -226,7 +235,8 @@ public interface ApiService {
                                          @Field("checkpoints") String checkpoints,
                                          @Field("lift_date") String lift_date,
                                          @Field("lift_id") String lift_id,
-                                         @Field("lift_time") String liftTime);
+                                         @Field("lift_time") String liftTime,
+                                         @Field("total_km") String total_km, @Field("rate_per_km") String rate_per_km);
 
     @FormUrlEncoded
     @POST("create-lift")
@@ -241,7 +251,9 @@ public interface ApiService {
                                          @Field("end_point") String end_point,
                                          @Field("checkpoints") String checkpoints,
                                          @Field("lift_date") String lift_date,
-                                         @Field("lift_time") String liftTime);
+                                         @Field("lift_time") String liftTime,
+                                         @Field("total_km") String total_km,
+                                         @Field("rate_per_km") String rate_per_km);
 
 //     ,
 

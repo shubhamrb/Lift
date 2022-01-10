@@ -51,9 +51,13 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         DriverData driverData = arrayList.get(position);
-        holder.tvName.setText(driverData.getName());
-        holder.tvMobile.setText(driverData.getMobile());
-        holder.tvRatePerKm.setText("" + driverData.getRatePerKm());
+        holder.tvName.setText("" + driverData.getName());
+        holder.tv_time.setText(driverData.getLfit_time());
+        holder.tv_na.setText("Point: " + driverData.getTotal_point());
+        holder.tv_date.setText(driverData.getLiftDate());
+        holder.tv_rate.setText("" + driverData.getRating() + " " + "(" + driverData.getTotal_review() + ")");
+        holder.tvRatePerKm.setText("Point per km: " + driverData.getRatePerKm());
+        holder.tv_paid_seat.setText("Paid Seat: " + driverData.getPaidSeats());
         if (driverData.getRequestAlreadySend() == 0) {
             holder.btnSendRequest.setText(context.getResources().getString(R.string.send_request));
         } else {
@@ -94,10 +98,18 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         AppCompatImageView imgDriver;
         @BindView(R.id.tv_name)
         AppCompatTextView tvName;
-        @BindView(R.id.tv_mob)
-        AppCompatTextView tvMobile;
+        @BindView(R.id.tv_time)
+        AppCompatTextView tv_time;
+        @BindView(R.id.tv_paid_seat)
+        AppCompatTextView tv_paid_seat;
+        @BindView(R.id.tv_date)
+        AppCompatTextView tv_date;
         @BindView(R.id.tv_rate_per_km)
         AppCompatTextView tvRatePerKm;
+        @BindView(R.id.tv_rate)
+        AppCompatTextView tv_rate;
+        @BindView(R.id.tv_na)
+        AppCompatTextView tv_na;
         @BindView(R.id.btn_send_request)
         AppCompatButton btnSendRequest;
         @BindView(R.id.relative_item)

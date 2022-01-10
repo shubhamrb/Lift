@@ -60,7 +60,7 @@ public class Lift implements Serializable {
     private String endLocation;
     @SerializedName("total_distance")
     @Expose
-    private Double totalDistance;
+    private String totalDistance;
     @SerializedName("find_match")
     @Expose
     private Integer findMatch;
@@ -91,10 +91,21 @@ public class Lift implements Serializable {
     @SerializedName("rate_per_km")
     @Expose
     private String rate_per_km;
+    @SerializedName("total_km")
+    @Expose
+    private String total_km;
 
     @SerializedName("driver_tracking_id")
     @Expose
     private Integer driver_tracking_id;
+
+    public String getTotal_km() {
+        return total_km;
+    }
+
+    public void setTotal_km(String total_km) {
+        this.total_km = total_km;
+    }
 
     public Integer getDriver_tracking_id() {
         return driver_tracking_id;
@@ -240,11 +251,11 @@ public class Lift implements Serializable {
         this.endLocation = endLocation;
     }
 
-    public Double getTotalDistance() {
+    public String getTotalDistance() {
         return totalDistance;
     }
 
-    public void setTotalDistance(Double totalDistance) {
+    public void setTotalDistance(String totalDistance) {
         this.totalDistance = totalDistance;
     }
 

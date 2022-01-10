@@ -73,17 +73,21 @@ public class MyVehicleFragment extends BaseFragment<MyVehiclePresenter, MyVehicl
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         toolBarTitle.setText("My Vehicles");
-        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""));
+        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""),"");
     }
 
 
-    @OnClick({R.id.imageViewBack, R.id.textViewAddVehicle})
+    @OnClick({R.id.imageViewBack, R.id.textViewAddVehicle,R.id.imageViewNoVehicle})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
                 getActivity().onBackPressed();
                 break;
             case R.id.textViewAddVehicle:
+                AddVehicleFragment.setIsEdit(false);
+                presenter.openAddVehicle();
+                break;
+                case R.id.imageViewNoVehicle:
                 AddVehicleFragment.setIsEdit(false);
                 presenter.openAddVehicle();
                 break;
@@ -108,7 +112,7 @@ public class MyVehicleFragment extends BaseFragment<MyVehiclePresenter, MyVehicl
 
     @Override
     public void setVehicleDelete(String message) {
-        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""));
+        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""),"");
     }
 
     @Override
