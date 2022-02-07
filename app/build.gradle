@@ -74,8 +74,8 @@ dependencies {
 
 
     // lib for SMS verification (Phone Auth)
-   /* implementation 'com.google.android.gms:play-services-auth:18.1.0'
-    implementation 'com.google.android.gms:play-services-auth-api-phone:17.0.0'*/
+    /* implementation 'com.google.android.gms:play-services-auth:18.1.0'
+     implementation 'com.google.android.gms:play-services-auth-api-phone:17.0.0'*/
     //-----FIREBASE STORAGE----
     implementation 'com.google.firebase:firebase-storage:10.0.1'
     //-----FIREBASE DATABASE---
@@ -99,7 +99,7 @@ dependencies {
 
     //implementation 'com.google.firebase:firebase-auth:16.0.5'
 
-  //  implementation platform('com.google.firebase:firebase-bom:28.2.0')
+    //  implementation platform('com.google.firebase:firebase-bom:28.2.0')
 
     // Declare the dependency for the Realtime Database library
     // When using the BoM, you don't specify versions in Firebase library dependencies

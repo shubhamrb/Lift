@@ -104,6 +104,13 @@
     <string name="enter_share_password">Enter Share Code</string>
     <string name="end_ride">End Ride</string>
     <string name="give_some_feedback">Give Some Feedback</string>
-
+    <array name="id_proof">
+         <item>Daily Availability</item>
+        <item>Car Pooling</item>
+        <item>Pre Schedule Lifts</item>
+        <item>Next Tentative Lifts</item>
+        <item>Fixed Final Lifts</item>
+        <item>Monthly Tour Plan</item>
+    </array>
 
 </resources>

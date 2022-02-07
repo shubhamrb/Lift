@@ -14,6 +14,9 @@ public class Datum {
     @SerializedName("model")
     @Expose
     private String model;
+    @SerializedName("name")
+    @Expose
+    private String name;
     @SerializedName("registration_no")
     @Expose
     private String registrationNo;
@@ -45,6 +48,14 @@ public class Datum {
     @SerializedName("vehicle_subcategory")
     @Expose
     private String vehicleSubcategory;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

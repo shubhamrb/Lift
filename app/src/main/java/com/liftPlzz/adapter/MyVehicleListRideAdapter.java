@@ -22,6 +22,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleListRideAdapter.ViewHolder> {
@@ -97,7 +98,7 @@ public class MyVehicleListRideAdapter extends RecyclerView.Adapter<MyVehicleList
         @BindView(R.id.textViewDeafult)
         AppCompatTextView textViewDeafult;
         @BindView(R.id.imageViewConactImage)
-        AppCompatImageView imageViewConactImage;
+        CircleImageView imageViewConactImage;
 
         View itemView;
 

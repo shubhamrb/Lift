@@ -2,6 +2,7 @@ package com.liftPlzz.dialog;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -22,12 +23,14 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -879,6 +882,9 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 //                        new GetDirection().execute();
 
                         textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
+                        if(bottomSheetCheckPointsDialog!=null) {
+                            bottomSheetCheckPointsDialog.dismiss();
+                        }
                     }
 
 
@@ -959,11 +965,59 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         myYear = year;
         myday = dayOfMonth;
         myMonth = month;
-        hour = calendar.get(Calendar.HOUR);
-        minute = calendar.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), EditLiftDaiFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-        timePickerDialog.show();
+        myHour=hour = calendar.get(Calendar.HOUR_OF_DAY);
+        myMinute=minute = calendar.get(Calendar.MINUTE);
+        showDialog(getActivity(),"Time Picker");
+//        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), EditLiftDaiFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+//        timePickerDialog.show();
     }
+    public void showDialog(Activity activity, String msg) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.time_picker_dialog);
+
+//        TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
+//        text.setText(msg);
+        TimePicker simpleTimePicker = (TimePicker) dialog.findViewById(R.id.simpleTimePicker);
+        simpleTimePicker.setIs24HourView(false); // used to display AM/PM mode
+        // perform set on time changed listener event
+        simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                // display a toast with changed values of time picker
+//                Toast.makeText(getActivity(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
+                myHour = hourOfDay;
+                myMinute = minute;
+
+
+//                time.setText("Time is :: " + hourOfDay + " : " + minute); // set the current time in text view
+            }
+        });
+        TextView dialogButton = dialog.findViewById(R.id.btn_dialog);
+        TextView btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar myCalender = Calendar.getInstance();
+                myCalender.set(myYear, myMonth, myday, myHour, myMinute);
+                dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
+                liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
+                textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
+
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -995,6 +1049,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         b1.setOnClickListener(v -> {
             textViewSelectSeat.setText(np.getValue() + " Seat");
             seat = String.valueOf(np.getValue());
+
             d.dismiss();
         });
 //        b2.setOnClickListener(v -> d.dismiss());
@@ -1122,6 +1177,9 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     @Override
     public void setCallBackSelectionCheckPointsDelete(int preferredCallingMode) {
         textViewCheckpoints.setText("Checkpoints :" + preferredCallingMode);
+        if(bottomSheetCheckPointsDialog!=null) {
+            bottomSheetCheckPointsDialog.dismiss();
+        }
     }
 
     class GetDirection extends AsyncTask<String, String, String> {

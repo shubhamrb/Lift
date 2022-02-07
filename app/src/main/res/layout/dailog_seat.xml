@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -7,41 +9,101 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_200"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/s3" />
+        android:src="@drawable/s3"
+        android:visibility="gone" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_demo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_5"
-        android:padding="@dimen/dp_10"
-        android:text="@string/number_of_seat"
-        android:textColor="@color/colorText" />
+    <RelativeLayout
+        android:id="@+id/layoutRideVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_350"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/home_bg"
+        android:orientation="vertical">
 
 
-    <NumberPicker
-        android:id="@+id/numberPicker1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_select"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_5" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMyVehicle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:layout_below="@+id/recyclerViewMyVehicle"
+            android:layout_centerHorizontal="true"
+            android:text="@string/number_of_seat"
+            android:textColor="@color/colorText" />
+
+        <LinearLayout
+            android:id="@+id/llrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate Per Km"></TextView>
+
+            <EditText
+                android:id="@+id/etkm"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:gravity="center"
+
+                android:hint="Enter Par Km Price"
+                android:inputType="number"
+                android:textSize="@dimen/dp_14" />
+        </LinearLayout>
+
+        <NumberPicker
+            android:id="@+id/numberPicker1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_select"
+            android:layout_centerHorizontal="true" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/gotham_medium"
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_14" />
+
+
+    </RelativeLayout>
 
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/numberPicker1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
         android:background="@drawable/rounded_button"
         android:padding="@dimen/dp_10"
         android:text="@string/confirm"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorWhite"
+        android:visibility="gone" />
 
     <!-- <Button
          android:id="@+id/button2"

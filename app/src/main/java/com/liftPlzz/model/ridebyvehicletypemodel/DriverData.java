@@ -10,7 +10,7 @@ public class DriverData {
     private Integer id;
     @SerializedName("total_point")
     @Expose
-    private Integer total_point;
+    private Float total_point;
     @SerializedName("lift_id")
     @Expose
     private Integer liftId;
@@ -56,11 +56,11 @@ public class DriverData {
     @Expose
     private Double endPointDistance;
 
-    public Integer getTotal_point() {
+    public Float getTotal_point() {
         return total_point;
     }
 
-    public void setTotal_point(Integer total_point) {
+    public void setTotal_point(Float total_point) {
         this.total_point = total_point;
     }
 
