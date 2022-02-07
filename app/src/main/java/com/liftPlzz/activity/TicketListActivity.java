@@ -55,7 +55,7 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_ticket_list);
         ButterKnife.bind(this);
         toolBarTitle.setText(getResources().getString(R.string.ticket_list));

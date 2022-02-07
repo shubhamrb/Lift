@@ -54,7 +54,7 @@ import me.relex.circleindicator.CircleIndicator;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView> implements ProfileView, ReviewListAdapter.ItemListener {
+public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView> implements ProfileView, ReviewListAdapter.ItemListener,ViewPagerAdapter.ItemListener {
 
 
     SharedPreferences sharedPreferences;
@@ -72,6 +72,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @BindView(R.id.layoutReview)
     LinearLayout layoutReview;
+    @BindView(R.id.imgback)
+    ImageView imgback;
     @BindView(R.id.textViewReview)
     AppCompatTextView textViewReview;
     @BindView(R.id.recyclerViewReview)
@@ -141,7 +143,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     }
 
-    @OnClick({R.id.imageViewBackContact, R.id.layoutAbout, R.id.layoutReview, R.id.imageViewEdit, R.id.layoutAddPoint})
+    @OnClick({R.id.imageViewBackContact,R.id.imgback, R.id.layoutAbout, R.id.layoutReview, R.id.imageViewEdit, R.id.layoutAddPoint, R.id.textViewReviewCount})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBackContact:
@@ -154,7 +156,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                 presenter.openUpdateProfile();
 
                 break;
-            case R.id.layoutAbout:
+            case R.id.imgback:
                 layoutAbout.setSelected(true);
                 textViewAbout.setSelected(true);
                 layoutReview.setSelected(false);
@@ -162,6 +164,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                 layoutAddPoint.setSelected(false);
                 scrollViewAbout.setVisibility(View.VISIBLE);
                 recyclerViewReview.setVisibility(View.GONE);
+                imgback.setVisibility(View.GONE);
+
                 break;
 
             case R.id.layoutAddPoint:
@@ -176,7 +180,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 //                startActivity(intent);
                 break;
 
-            case R.id.layoutReview:
+            case R.id.textViewReviewCount:
                 layoutAbout.setSelected(false);
                 textViewAbout.setSelected(false);
                 layoutReview.setSelected(true);
@@ -184,6 +188,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                 layoutAddPoint.setSelected(false);
                 scrollViewAbout.setVisibility(View.GONE);
                 recyclerViewReview.setVisibility(View.VISIBLE);
+                imgback.setVisibility(View.VISIBLE);
 
                 break;
         }
@@ -215,11 +220,17 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             if (user.getSocialImages().size() > 0) {
                 imageslist.addAll(user.getSocialImages());
             }
-            mViewPagerAdapter = new ViewPagerAdapter(getActivity(), imageslist);
+
+            mViewPagerAdapter = new ViewPagerAdapter(getActivity(), imageslist,ProfileFragment.this);
             // Adding the Adapter to the ViewPager
             viewPagerMain.setAdapter(mViewPagerAdapter);
             indicator.setViewPager(viewPagerMain);
         }
+    }
+
+    @Override
+    public void setProfileImageData(String message) {
+        presenter.getProfile(sharedPreferences.getString(Constants.TOKEN, ""));
     }
 
     @Override
@@ -230,6 +241,17 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @Override
     public void onclick(int s) {
+
+    }
+
+    @Override
+    public void onDeleteClick(int s) {
+        presenter.delete_imag(sharedPreferences.getString(Constants.TOKEN, ""),""+s);
+
+    }
+
+    @Override
+    public void onEditClick(com.liftPlzz.model.getVehicle.Datum s) {
 
     }
 

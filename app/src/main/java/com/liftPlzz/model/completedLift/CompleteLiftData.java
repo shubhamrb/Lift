@@ -59,7 +59,7 @@ public class CompleteLiftData {
 
     @SerializedName("total_distance")
     @Expose
-    private Double totalDistance;
+    private String totalDistance;
 
     public Integer getId() {
         return id;
@@ -197,11 +197,11 @@ public class CompleteLiftData {
         this.endLocation = endLocation;
     }
 
-    public Double getTotalDistance() {
+    public String getTotalDistance() {
         return totalDistance;
     }
 
-    public void setTotalDistance(Double totalDistance) {
+    public void setTotalDistance(String totalDistance) {
         this.totalDistance = totalDistance;
     }
 }

@@ -40,7 +40,7 @@
             android:textAllCaps="false"
             android:background="@drawable/rounded_bg_green"
             android:textColor="@color/colorRed"
-            android:text="Cancel" />
+            android:text="Delete" />
 
     </LinearLayout>
 

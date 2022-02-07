@@ -41,10 +41,10 @@ public class HomePresenter extends BasePresenter<HomeView> {
         navigator.openLearningFragment(BaseActivity.PerformFragment.REPLACE);
     }
 
-    public void getVehicle(String token) {
+    public void getVehicle(String token,String tot_km) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token);
+        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token,tot_km);
         call.enqueue(new Callback<GetVehicleListMainResponse>() {
             @Override
             public void onResponse(Call<GetVehicleListMainResponse> call, Response<GetVehicleListMainResponse> response) {
@@ -90,11 +90,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
     public void findLift(String token, String title, String requir_seats, String start_point, String end_point, String lift_date,
-                         String liftTime) {
+                         String liftTime,String tot) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<FindLiftResponse> call = api.find_lift(Constants.API_KEY, "android", token, title, requir_seats, start_point, end_point, lift_date,
-                liftTime);
+                liftTime,tot);
         call.enqueue(new Callback<FindLiftResponse>() {
             @Override
             public void onResponse(Call<FindLiftResponse> call, Response<FindLiftResponse> response) {
@@ -120,12 +120,12 @@ public class HomePresenter extends BasePresenter<HomeView> {
             }
         });
     }
-
+///offer lift
     public void createLift(String token, String vehicle_id, String lift_type, String free_seats, String paid_seats, String start_ponit, String end_point, String checkpoints, String lift_date,
-                           String liftTime) {
+                           String liftTime,String tot,String rate_per_km) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date, liftTime);
+        Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date, liftTime,tot,rate_per_km);
         call.enqueue(new Callback<CreateLiftResponse>() {
             @Override
             public void onResponse(Call<CreateLiftResponse> call, Response<CreateLiftResponse> response) {

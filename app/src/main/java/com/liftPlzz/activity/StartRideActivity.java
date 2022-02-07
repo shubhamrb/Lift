@@ -299,7 +299,7 @@ public class StartRideActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_start_ride);
         ButterKnife.bind(this);
 //        TextView btn_start_rideqw = (TextView) findViewById(R.id.btn_start_ride);
@@ -342,6 +342,18 @@ public class StartRideActivity extends AppCompatActivity implements
         if (getIntent() != null) {
             lift = (Lift) getIntent().getSerializableExtra(Constants.LIFT_OBJ);
         }
+        getUsers(2);
+
+        if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
+//            todo start ride will call from here
+            if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                Log.e("Lift", "Found");
+                getUsers(2);
+
+            } else {
+                Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
+            }
+        }
         Log.e("lift.getLiftType()", "" + lift.getLiftType());
         HistoryStoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
 //        assert lift != null;
@@ -358,16 +370,6 @@ public class StartRideActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
 //        tvStartRide.setText("End Ride");
 //        InitLocation();
-        if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
-//            todo start ride will call from here
-            if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-                Log.e("Lift", "Found");
-                getUsers(2);
-
-            } else {
-                Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     private void InitLocation(String user_id, String tracking_lift_id) {
@@ -1479,7 +1481,7 @@ public class StartRideActivity extends AppCompatActivity implements
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("api_key", Constants.API_KEY);
                 params.put("client", Constants.ANDROID);
-                params.put("token", strToken);
+                params.put("token", sharedPreferences.getString(Constants.TOKEN, ""));
              //   params.put("token", "064ywr3Ht5LPpFPF73J0foCAdvw3ylSDXJys8IqATQ2wyvwimen827FAPA5I");
                 return params;
             }

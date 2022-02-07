@@ -22,6 +22,8 @@
         android:padding="4dp"
         app:srcCompat="@drawable/ic_my_location_black_24dp" />
 
+
+
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -29,6 +31,29 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/layoutRide"
         android:layout_below="@+id/title" />
+    <ImageView
+        android:id="@+id/callButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="15dp"
+        android:visibility="visible"
+        android:src="@drawable/telephone"/>
+
+    <ImageView
+        android:id="@+id/smsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="190dp"
+        android:layout_marginEnd="15dp"
+        android:visibility="visible"
+        android:src="@drawable/sms"
+        android:layout_below="@+id/callButton"
+        />
 
     <LinearLayout
         android:id="@+id/layoutRide"
@@ -204,11 +229,12 @@
             android:layout_marginRight="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_5"
             android:orientation="horizontal"
-            android:visibility="visible">
+            >
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:paddingTop="@dimen/dp_3"
                 android:id="@+id/textkm"
+                android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -221,7 +247,12 @@
                 android:textColor="@color/colorPrimary"
                 android:textColorHint="@color/colorBlack"
                 android:textSize="@dimen/sp_14" />
-
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:id="@+id/llchkpoint"
+    android:visibility="invisible"
+    android:layout_alignParentRight="true"
+    android:layout_height="wrap_content">
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
@@ -249,7 +280,7 @@
                 android:textColorHint="@color/colorBlack"
                 android:textSize="@dimen/sp_14"
                 app:drawableTint="@color/colorPrimary" />
-
+</LinearLayout>
         </RelativeLayout>
 
 
@@ -268,11 +299,11 @@
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:src="@drawable/clock"
                     android:visibility="visible" />
 
@@ -294,17 +325,17 @@
 
             <LinearLayout
                 android:id="@+id/layoutSelectSeat"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_25"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
                     android:src="@drawable/seat"
                     android:visibility="visible" />
 
@@ -313,7 +344,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp_20"
                     android:layout_weight="1"
                     android:background="@null"
                     android:fontFamily="@font/gotham_light"
@@ -346,55 +376,55 @@
             android:textSize="@dimen/sp_16" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/layoutRideVehicle"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_350"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/home_bg"
-        android:orientation="vertical"
-        android:visibility="gone">
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/layoutRideVehicle"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/dp_350"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:background="@drawable/home_bg"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="gone">-->
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMyVehicle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_25"
-            android:layout_marginRight="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/recyclerViewMyVehicle"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="@dimen/dp_5"-->
+<!--            android:layout_marginTop="@dimen/dp_25"-->
+<!--            android:layout_marginRight="@dimen/dp_5"-->
+<!--            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>-->
 
 
-        <EditText
-            android:id="@+id/etkm"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:hint="Enter Par Km Price"
-            android:inputType="number"
-            android:padding="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:textSize="@dimen/dp_14" />
+<!--        <EditText-->
+<!--            android:id="@+id/etkm"-->
+<!--            android:layout_width="@dimen/dp_100"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:gravity="center"-->
+<!--            android:hint="Enter Par Km Price"-->
+<!--            android:inputType="number"-->
+<!--            android:padding="@dimen/dp_10"-->
+<!--            android:layout_marginBottom="@dimen/dp_10"-->
+<!--            android:textSize="@dimen/dp_14" />-->
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSubmit"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/rounded_button"
-            android:fontFamily="@font/gotham_medium"
-            android:layout_marginRight="@dimen/dp_10"
-            android:text="Submit"
-            android:textAllCaps="false"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_alignParentBottom="true"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_14" />
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/btnSubmit"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:background="@drawable/rounded_button"-->
+<!--            android:fontFamily="@font/gotham_medium"-->
+<!--            android:layout_marginRight="@dimen/dp_10"-->
+<!--            android:text="Submit"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:layout_marginBottom="@dimen/dp_10"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:textColor="@color/colorWhite"-->
+<!--            android:textSize="@dimen/sp_14" />-->
 
 
-    </RelativeLayout>
+<!--    </RelativeLayout>-->
 
 </RelativeLayout>

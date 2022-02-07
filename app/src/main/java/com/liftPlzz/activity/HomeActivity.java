@@ -22,12 +22,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.MenuListAdapter;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.model.MenuItem;
 import com.liftPlzz.model.completedLift.CompleteLiftData;
@@ -79,7 +81,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -214,6 +216,8 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 
     public void openride(){
         openMyRidesFragment(PerformFragment.REPLACE);
+        getSupportFragmentManager().popBackStackImmediate(EditLiftDaiFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
     }
 
     @Override

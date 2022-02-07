@@ -5,19 +5,27 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
+import com.liftPlzz.fragments.AddVehicleFragment;
+import com.liftPlzz.fragments.dailog.MoreOptionDailog;
+import com.liftPlzz.fragments.dailog.MoreOptionDeleteDialog;
 import com.liftPlzz.model.getVehicle.Datum;
 import com.squareup.picasso.Picasso;
 
@@ -67,7 +75,7 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
             holder.textViewDeafult.setVisibility(View.GONE);
         }
         if (verifiedLists.get(position).getVehicleImageFront() != null && !verifiedLists.get(position).getVehicleImageFront().isEmpty()) {
-            Picasso.get().load(verifiedLists.get(position).getVehicleImageFront()).into(holder.imageViewConactImage);
+            Picasso.get().load(verifiedLists.get(position).getVehicleImageFront()).fit().centerCrop().into(holder.imageViewConactImage);
         } else if (verifiedLists.get(position).getVehicleImageBack() != null && !verifiedLists.get(position).getVehicleImageBack().isEmpty()) {
             Picasso.get().load(verifiedLists.get(position).getVehicleImageBack()).into(holder.imageViewConactImage);
         } else if (verifiedLists.get(position).getRcImage() != null && !verifiedLists.get(position).getRcImage().isEmpty()) {
@@ -76,11 +84,29 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
             Picasso.get().load(R.drawable.images_no_found).into(holder.imageViewConactImage);
         }
 
-
-        holder.imageOptions.setOnClickListener(new View.OnClickListener() {
+        holder.imMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemListener.onDeleteClick(verifiedLists.get(position).getId());
+//                itemListener.onDeleteClick(verifiedLists.get(position).getId());
+                MoreOptionDeleteDialog sheet = new MoreOptionDeleteDialog();
+                sheet.listiner(new MoreOptionDeleteDialog.ItemSelectListiner() {
+                    @Override
+                    public void cancel() {
+                        if (itemListener != null) {
+                            itemListener.onDeleteClick(verifiedLists.get(position).getId());
+                        }
+                    }
+
+                    @Override
+                    public void edit() {
+                        itemListener.onEditClick(verifiedLists.get(position));
+                    }
+                });
+                sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "HomeSlidingMenuFragment");
+
+
+
+
 
                 /*PopupMenu menu = new PopupMenu(context, v);
                 menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.edit));
@@ -118,10 +144,10 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         AppCompatTextView textViewNumber;
         @BindView(R.id.textViewDeafult)
         AppCompatTextView textViewDeafult;
-        @BindView(R.id.imageOptions)
-        AppCompatImageView imageOptions;
+        @BindView(R.id.imMore)
+        AppCompatImageView imMore;
         @BindView(R.id.imageViewConactImage)
-        AppCompatImageView imageViewConactImage;
+        ImageView imageViewConactImage;
         @BindView(R.id.textViewSeats)
         AppCompatTextView textViewSeats;
         @BindView(R.id.tv_rate_per_km)
@@ -130,23 +156,22 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         LinearLayout layoutClick;
 
 
-
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            imageViewConactImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemListener.onEditClick(verifiedLists.get(getAdapterPosition()));
-                }
-            });
-            layoutClick.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemListener.onEditClick(verifiedLists.get(getAdapterPosition()));
-                }
-            });
+//            imageViewConactImage.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    itemListener.onDeleteClick(getAdapterPosition());
+//                }
+//            });
+//            layoutClick.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    itemListener.onEditClick(verifiedLists.get(getAdapterPosition()));
+//                }
+//            });
 
         }
     }

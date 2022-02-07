@@ -1,10 +1,12 @@
 package com.liftPlzz.adapter;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.AppCompatToggleButton;
@@ -51,24 +53,25 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
         holder.tvContent.setText(datum.getType());
         if (datum.getOptionType().equalsIgnoreCase(context.getResources().getString(R.string.toggle))) {
             holder.toggleButton.setVisibility(View.VISIBLE);
+            holder.imgnext.setVisibility(View.GONE);
             if (datum.getSelectedValue().equalsIgnoreCase("1")) {
-                holder.toggleButton.setChecked(true);
+                holder.toggleButton.setImageResource(R.drawable.off);
             } else if (datum.getSelectedValue().equalsIgnoreCase("0")) {
-                holder.toggleButton.setChecked(false);
+                holder.toggleButton.setImageResource(R.drawable.on);
             }
 
         } else {
             holder.toggleButton.setVisibility(View.GONE);
+            holder.imgnext.setVisibility(View.VISIBLE);
         }
-        holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+            public void onClick(View v) {
+                if (datum.getSelectedValue().equalsIgnoreCase("0")) {
                     itemListener.onToggleClick(datum.getId(), 1);
                 } else {
                     itemListener.onToggleClick(datum.getId(), 0);
                 }
-
             }
         });
 //        holder.ratingBarReview.setRating(settingList.get(position).getRating());
@@ -81,8 +84,10 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.toggle_button)
-        AppCompatToggleButton toggleButton;
+        @BindView(R.id.imgtoggle)
+        ImageView toggleButton;
+        @BindView(R.id.imgnext)
+        ImageView imgnext;
         @BindView(R.id.tv_setting_content)
         AppCompatTextView tvContent;
 

@@ -11,6 +11,12 @@ public class CreateLiftResponse {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("lift_id")
+    @Expose
+    private String lift_id;
+    @SerializedName("matches_count")
+    @Expose
+    private Integer matches_count;
     @SerializedName("sub_message")
     @Expose
     private String subMessage;
@@ -18,6 +24,22 @@ public class CreateLiftResponse {
     @SerializedName("lift_details")
     @Expose
     private LiftDetails liftDetails;
+
+    public String getLift_id() {
+        return lift_id;
+    }
+
+    public void setLift_id(String lift_id) {
+        this.lift_id = lift_id;
+    }
+
+    public Integer getMatches_count() {
+        return matches_count;
+    }
+
+    public void setMatches_count(Integer matches_count) {
+        this.matches_count = matches_count;
+    }
 
     public Boolean getStatus() {
         return status;

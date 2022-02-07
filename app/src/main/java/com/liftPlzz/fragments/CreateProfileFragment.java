@@ -4,8 +4,13 @@ package com.liftPlzz.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,6 +55,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import butterknife.BindView;
@@ -142,9 +149,12 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
             }
         });
         LoginButton loginButton = (LoginButton) getActivity().findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList(EMAIL));
+//        loginButton.setReadPermissions("email", "public_profile", "user_friends");
+
         loginButton.setFragment(this);
-        // LoginManager.getInstance().logInWithReadPermissions(CreateProfileFragment.this, Arrays.asList("public_profile", "email"));
+        loginButton.setReadPermissions("email", "public_profile");
+
+//         LoginManager.getInstance().logInWithReadPermissions(CreateProfileFragment.this, Arrays.asList("public_profile", "email"));
         LoginManager.getInstance().registerCallback(mCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -200,6 +210,39 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
                         Log.d("CreateProfileFragment", exception.getMessage());
                     }
                 });
+        printKeyHash(getActivity());
+    }
+    public static String printKeyHash(Context context) {
+        PackageInfo packageInfo;
+        String key = null;
+        try {
+            //getting application package name, as defined in manifest
+            String packageName = context.getApplicationContext().getPackageName();
+
+            //Retriving package info
+            packageInfo = context.getPackageManager().getPackageInfo(packageName,
+                    PackageManager.GET_SIGNATURES);
+
+            Log.e("Package Name=", context.getApplicationContext().getPackageName());
+
+            for (Signature signature : packageInfo.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                key = new String(Base64.encode(md.digest(), 0));
+
+                // String key = new String(Base64.encodeBytes(md.digest()));
+                Log.e("Key Hash=", key);
+            }
+        } catch (PackageManager.NameNotFoundException e1) {
+            Log.e("Name not found", e1.toString());
+        }
+        catch (NoSuchAlgorithmException e) {
+            Log.e("No such an algorithm", e.toString());
+        } catch (Exception e) {
+            Log.e("Exception", e.toString());
+        }
+
+        return key;
     }
 
 

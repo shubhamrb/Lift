@@ -91,7 +91,7 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_chat);
 //        mChatAddButton = (ImageButton) findViewById(R.id.chatAddButton);
         mChatSendButton = (ImageButton) findViewById(R.id.chatSendButton);

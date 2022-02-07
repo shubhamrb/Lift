@@ -88,6 +88,38 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             }
         });
     }
+    public void delete_imag(String token,String id) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<GetReviewMainResponse> call = api.delete_eimag(Constants.API_KEY, "android",token,id);
+        call.enqueue(new Callback<GetReviewMainResponse>() {
+            @Override
+            public void onResponse(Call<GetReviewMainResponse> call, Response<GetReviewMainResponse> response) {
+                view.hideLoader();
+
+                if (response.body() != null) {
+                    if (response.code()==200) {
+                        view.setProfileImageData("success");
+                    } else {
+                        //  view.hideLoader();
+                        view.showMessage(response.body().getResponse().getMessage());
+                    }
+
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<GetReviewMainResponse> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage(throwable.getMessage());
+            }
+        });
+    }
+
+
+
     public void openUpdateProfile() {
         navigator.openUpdateProfileFragment(BaseActivity.PerformFragment.REPLACE);
     }

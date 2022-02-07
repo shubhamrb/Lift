@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/dp_200"
+    android:layout_width="@dimen/dp_150"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_5"
     android:orientation="horizontal"
     >
-    <androidx.appcompat.widget.AppCompatImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageViewConactImage"
-        android:layout_width="@dimen/dp_70"
+        android:layout_width="@dimen/dp_60"
         android:layout_marginTop="@dimen/dp_5"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="@dimen/dp_60"
         android:src="@drawable/dummy_user" />
 <LinearLayout
-    android:layout_marginTop="@dimen/dp_10"
+    android:layout_marginTop="@dimen/dp_5"
     android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -30,9 +30,9 @@
         android:layout_marginLeft="@dimen/dp_5"
         android:fontFamily="@font/gotham_medium"
         android:gravity="center_vertical"
-        android:padding="@dimen/dp_5"
+        android:padding="@dimen/dp_1"
         android:textColor="@color/colorBlack"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_14"
         />
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textViewNumber"
@@ -41,13 +41,12 @@
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
         android:text="Number"
-        android:layout_marginTop="@dimen/dp_2"
         android:layout_marginLeft="@dimen/dp_5"
         android:fontFamily="@font/gotham_medium"
         android:gravity="center_vertical"
-        android:padding="@dimen/dp_5"
+        android:padding="@dimen/dp_1"
         android:textColor="@color/colorText"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_12"
         />
 <LinearLayout
     android:layout_marginBottom="@dimen/dp_5"

@@ -31,10 +31,10 @@ public class MyVehiclePresenter extends BasePresenter<MyVehicleView> {
 
     }
 
-    public void getVehicle(String token) {
+    public void getVehicle(String token,String tot_km) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token);
+        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token,tot_km);
         call.enqueue(new Callback<GetVehicleListMainResponse>() {
             @Override
             public void onResponse(Call<GetVehicleListMainResponse> call, Response<GetVehicleListMainResponse> response) {

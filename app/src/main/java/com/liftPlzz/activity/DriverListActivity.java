@@ -58,7 +58,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_driver_list);
         ButterKnife.bind(this);
         if (getIntent() != null) {
@@ -144,10 +144,11 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
                         String message = jsonObject.optString("message");
                         Toast.makeText(DriverListActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (status) {
-                            Intent intent = new Intent(DriverListActivity.this, HomeActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
+                            getDriverList();
+//                            Intent intent = new Intent(DriverListActivity.this, HomeActivity.class);
+//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(intent);
+//                            finish();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

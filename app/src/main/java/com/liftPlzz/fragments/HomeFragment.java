@@ -2,6 +2,7 @@ package com.liftPlzz.fragments;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -11,33 +12,48 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -77,6 +93,7 @@ import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -86,8 +103,10 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -98,6 +117,7 @@ import butterknife.OnClick;
  */
 public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implements HomeView,
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+//        DatePickerDialog.OnDateSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
 
     private static final int ADDRESS_PICKER_REQUEST = 1;
@@ -108,7 +128,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @BindView(R.id.imageViewNotification)
     ImageView imageViewNotification;
-
 
 
     @BindView(R.id.editTextPickupLocation)
@@ -133,6 +152,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     AppCompatTextView textViewSelectSeat;
     @BindView(R.id.layoutCheckPoints)
     RelativeLayout layoutCheckPoints;
+    @BindView(R.id.llchkpoint)
+    LinearLayout llchkpoint;
     @BindView(R.id.textViewGiveLift)
     AppCompatTextView textViewGiveLift;
     @BindView(R.id.textViewTakeLift)
@@ -143,14 +164,17 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     RecyclerView recyclerViewCheckpoints;
     @BindView(R.id.layoutRide)
     LinearLayout layoutRide;
-    @BindView(R.id.layoutRideVehicle)
-    RelativeLayout layoutRideVehicle;
+//    @BindView(R.id.layoutRideVehicle)
+//    RelativeLayout layoutRideVehicle;
+
+    @BindView(R.id.callButton)
+    ImageView callButton;
+    @BindView(R.id.smsButton)
+    ImageView smsButton;
     int listPos;
-    @BindView(R.id.recyclerViewMyVehicle)
-    RecyclerView recyclerViewMyVehicle;
+
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
-
 
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
@@ -160,9 +184,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     LatLng dropLocation;
 
 
-
     List<LatLng> pontos = new ArrayList<>();
-    String distanceString="";
+    String distanceString = "";
 
     Polyline polyline;
 
@@ -177,18 +200,18 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     String dateTime, liftTime = "";
 
 
-
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
 
     @BindView(R.id.textkm)
     AppCompatTextView textkm;
 
-    @BindView(R.id.etkm)
-    EditText etkm;
+//    @BindView(R.id.etkm)
+//    EditText etkm;
 
-    @BindView(R.id.btnSubmit)
-    AppCompatButton btnSubmit;
+//    @BindView(R.id.btnSubmit)
+//    AppCompatButton btnSubmit;
+
 
     MyVehicleListRideAdapter myVehicleListRideAdapter;
 
@@ -216,10 +239,89 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         presenter = new HomePresenter();
     }
 
+    String sos;
+
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
 
     @Override
     protected HomeView createView() {
         return this;
+    }
+
+    private void sosnumbers() {
+        Constants.showLoader(getActivity());
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-profile", new com.android.volley.Response.Listener<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(String response) {
+                Constants.hideLoader();
+                Log.e("history jjj", response);
+                try {
+                    JSONObject jObject = new JSONObject(response);
+                    JSONObject responsee = jObject.getJSONObject("response");
+                    JSONObject userdata = responsee.getJSONObject("user");
+                    sos = userdata.getString("sos");
+                    Log.d("sos", sos);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Constants.hideLoader();
+                Log.e("rise vo", "" + error.getMessage());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", Constants.API_KEY);
+                params.put("client", Constants.ANDROID);
+                params.put("token", sharedPreferences.getString(Constants.TOKEN, ""));
+                //   params.put("token", "064ywr3Ht5LPpFPF73J0foCAdvw3ylSDXJys8IqATQ2wyvwimen827FAPA5I");
+                return params;
+            }
+        };
+        queue.add(sr);
+
+    }
+
+    private String strToken = "";
+
+    public void requestpermisson() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(sos, null, "This is emergency message from liftplzz app", null, null);
+                    Toast.makeText(getActivity(), "SMS sent.",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(),
+                            "SMS faild, please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -239,7 +341,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         day = calendar.get(Calendar.DAY_OF_MONTH);
         mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
-
+        sosnumbers();
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
         bottomSheetCheckPointsDialog.setSelectionListner(HomeFragment.this);
 
@@ -272,7 +374,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
     }
 
-    @OnClick({R.id.buttonLift,R.id.btnSubmit, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
+    @OnClick({R.id.callButton, R.id.smsButton, R.id.buttonLift, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
@@ -289,7 +391,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime);
+                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString());
                     }
                 } else {
                     //create lift
@@ -302,7 +404,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""));
+                        if (myVehicleListRideAdapter != null) {
+                            onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
+                        } else {
+                            onclickVehicle(data.get(0));
+
+                        }
+//                        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                     }
                 }
                 break;
@@ -334,7 +442,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutSelectSeat:
-                show();
+                if (editTextDropLocation.getText().toString().length() > 0) {
+                    show();
+                } else {
+                    Toast.makeText(getActivity(), "Please select drop location", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.layoutSelectDateTime:
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), HomeFragment.this, year, month, day);
@@ -344,11 +456,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             case R.id.imageViewNotification:
                 presenter.openNotification();
                 break;
-            case R.id.btnSubmit:
-                if(etkm.getText().toString().trim().length()>0){
-                    onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
-                }
-                break;
+//            case R.id.btnSubmit:
+//                if (etkm.getText().toString().trim().length() > 0) {
+//                    onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
+//                }
+//                break;
             case R.id.layoutPickupLocation:
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
@@ -357,7 +469,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             case R.id.layoutDropLocation:
                 locationSelect = 2;
                 Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
-                i1.putExtra("startLocation",true);
+                i1.putExtra("startLocation", true);
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutGiveLift:
@@ -367,7 +479,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 buttonLift.setText(textViewGiveLift.getText().toString());
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorWhite));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorBlack));
-                layoutCheckPoints.setVisibility(View.VISIBLE);
+                llchkpoint.setVisibility(View.VISIBLE);
+                if(editTextDropLocation.getText().toString().length()>0) {
+                    textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
+                }
                 break;
             case R.id.layoutTakeLift:
                 isMultiCheck = false;
@@ -376,8 +491,27 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 buttonLift.setText(textViewTakeLift.getText().toString());
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorBlack));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorWhite));
-                layoutCheckPoints.setVisibility(View.INVISIBLE);
+                llchkpoint.setVisibility(View.INVISIBLE);
+                if(editTextDropLocation.getText().toString().length()>0) {
+                    textViewSelectSeat.setText(seat + " Seats");
+                }
+
                 break;
+            case R.id.callButton:
+                if (sos.isEmpty()) {
+                    Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
+                            "tel", sos, null));
+                    startActivity(phoneIntent);
+                }
+                break;
+            case R.id.smsButton:
+                if (sos.isEmpty()) {
+                    Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
+                } else {
+                    requestpermisson();
+                }
         }
     }
 
@@ -554,7 +688,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
                                 (completeAddress.getString("state"));
-                      Log.e("result ",""+strAdd.toString()+"  ");
+                        Log.e("result ", "" + strAdd.toString() + "  ");
                         editTextPickupLocation.setText(strAdd.toString());
                         startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
                         if (dropLocation != null) {
@@ -603,6 +737,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
 
                             new GetDirection().execute(origin, destination);
+                            //create lift
+
+                            presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+
 
                         }
 
@@ -635,6 +773,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 //                        new GetDirection().execute();
 
                         textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
+                        if (bottomSheetCheckPointsDialog != null) {
+                            bottomSheetCheckPointsDialog.dismiss();
+                        }
                     }
 
 
@@ -645,11 +786,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
     }
 
-    public void setPickupLocation(){
+    public void setPickupLocation() {
 
     }
 
-    public void setDroupLocation(){
+    public void setDroupLocation() {
 
     }
 
@@ -715,10 +856,91 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         myYear = year;
         myday = dayOfMonth;
         myMonth = month;
-        hour = calendar.get(Calendar.HOUR);
-        minute = calendar.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), HomeFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-        timePickerDialog.show();
+        myHour = hour = calendar.get(Calendar.HOUR_OF_DAY);
+        myMinute = minute = calendar.get(Calendar.MINUTE);
+        showDialog(getActivity(), "Time Picker");
+//        TimePickerDialog  timePickerDialog = new TimePickerDialog(getActivity(), HomeFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
+//        timePickerDialog.show();
+    }
+
+    public void showDialog(Activity activity, String msg) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.time_picker_dialog);
+
+//        TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
+//        text.setText(msg);
+        TimePicker simpleTimePicker = (TimePicker) dialog.findViewById(R.id.simpleTimePicker);
+        simpleTimePicker.setIs24HourView(false); // used to display AM/PM mode
+        // perform set on time changed listener event
+//        Calendar myCalender = Calendar.getInstance();
+//        simpleTimePicker.setCurrentHour(myCalender.get(Calendar.HOUR));
+//        simpleTimePicker.setCurrentMinute(myCalender.get(Calendar.MINUTE));
+//        updateTime(myCalender.get(Calendar.HOUR),myCalender.get(Calendar.MINUTE));
+        simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                // display a toast with changed values of time picker
+//                Toast.makeText(getActivity(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
+                myHour = hourOfDay;
+                myMinute = minute;
+
+
+//                time.setText("Time is :: " + hourOfDay + " : " + minute); // set the current time in text view
+            }
+        });
+        TextView dialogButton = dialog.findViewById(R.id.btn_dialog);
+        TextView btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar myCalender = Calendar.getInstance();
+                myCalender.set(myYear, myMonth, myday, myHour, myMinute);
+                dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
+                liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
+                textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    // Used to convert 24hr format to 12hr format with AM/PM values
+    private void updateTime(int hours, int mins) {
+
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        String minutes = "";
+        if (mins < 10)
+            minutes = "0" + mins;
+        else
+            minutes = String.valueOf(mins);
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(minutes).append(" ").append(timeSet).toString();
+
+        textViewSelectDateTime.setText(aTime);
     }
 
     @Override
@@ -733,24 +955,57 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
     }
 
+    RecyclerView recyclerViewMyVehicle;
+    EditText etkm;
+    LinearLayout llrate;
+    AppCompatButton btnSubmit;
+
     public void show() {
 
         final Dialog d = new Dialog(getActivity());
 //        d.setTitle("NumberPicker");
         d.setContentView(R.layout.dailog_seat);
-        AppCompatTextView b1 = d.findViewById(R.id.button1);
+        AppCompatButton b1 = d.findViewById(R.id.btnSubmit);
+        recyclerViewMyVehicle = d.findViewById(R.id.recyclerViewMyVehicle);
+        etkm = d.findViewById(R.id.etkm);
+        llrate = d.findViewById(R.id.llrate);
+        btnSubmit = d.findViewById(R.id.btnSubmit);
+        myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this, etkm, 0);
+        recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
 //        Button b2 = d.findViewById(R.id.button2);
+        if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+            recyclerViewMyVehicle.setVisibility(View.GONE);
+            llrate.setVisibility(View.GONE);
+        } else {
+            recyclerViewMyVehicle.setVisibility(View.VISIBLE);
+            llrate.setVisibility(View.VISIBLE);
+        }
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
         np.setMaxValue(5);
         np.setMinValue(1);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(HomeFragment.this);
+        np.setValue(Integer.parseInt(seat));
         b1.setOnClickListener(v -> {
             textViewSelectSeat.setText(np.getValue() + " Seat");
             seat = String.valueOf(np.getValue());
+            vehicle_name = myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition).getModel();
+            rate_per_km = myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition).getRatePerKm();
+            if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+                textViewSelectSeat.setText(seat+" Seats");
+
+            } else {
+                textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
+
+
+            }
             d.dismiss();
         });
 //        b2.setOnClickListener(v -> d.dismiss());
+        d.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.show();
 
 
@@ -786,17 +1041,33 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         textViewSelectDateTime.setText("Select Time");
     }
 
+    List<Datum> data;
+    String vehicle_name;
+    int rate_per_km;
+
     @Override
     public void setVehicle(List<Datum> data) {
         if (data.size() > 0) {
-            layoutRideVehicle.setVisibility(View.VISIBLE);
-            layoutRide.setVisibility(View.GONE);
+            this.data = data;
+//            layoutRideVehicle.setVisibility(View.GONE);
+//            layoutRide.setVisibility(View.GONE);
             //etkm
-            myVehicleListRideAdapter=new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this,etkm);
-            recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-            recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
+//            myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this, etkm, 0);
+//            recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+//            recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
+            vehicle_name = data.get(0).getModel();
+            rate_per_km = data.get(0).getRatePerKm();
+            if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+                textViewSelectSeat.setText(seat+" Seats");
+
+            } else {
+
+                textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
+            }
+
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
+            presenter.openMyVehicle();
         }
     }
 
@@ -804,12 +1075,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setCreateRideData(CreateLiftResponse createRideData) {
 //        showMessage("Ride Request Send successfully");
         showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage());
-        layoutRideVehicle.setVisibility(View.GONE);
+//        layoutRideVehicle.setVisibility(View.GONE);
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
         layoutDropLocation.setVisibility(View.VISIBLE);
-        layoutCheckPoints.setVisibility(View.VISIBLE);
+        llchkpoint.setVisibility(View.VISIBLE);
         recyclerViewCheckpoints.setVisibility(View.GONE);
     }
 
@@ -841,7 +1112,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             }
         }
 //        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, "{" + listString + "}", dateTime, liftTime);
-        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime);
+        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), "" + rate_per_km);
     }
 
     @Override
@@ -900,7 +1171,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 JSONArray legs = route.getJSONArray("legs");
                 JSONObject steps = legs.getJSONObject(0);
                 JSONObject distance = steps.getJSONObject("distance");
-                distanceString=distance.getString("text");
+                distanceString = distance.getString("text");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -911,23 +1182,21 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
 
         protected void onPostExecute(String file_url) {
-            LatLng src1=null;LatLng dest=null;
+            LatLng src1 = null;
+            LatLng dest = null;
             for (int i = 0; i < pontos.size() - 1; i++) {
-                Log.e("call poly ","loop = "+i);
+                Log.e("call poly ", "loop = " + i);
                 LatLng src = pontos.get(i);
-                if(i==0){
-                    src1=src;
+                if (i == 0) {
+                    src1 = src;
                 }
                 dest = pontos.get(i + 1);
                 try {
                     //here is where it will draw the polyline in your map
-                    Polyline line = mGoogleMap.addPolyline(new PolylineOptions()
+                    polyline = mGoogleMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(src.latitude, src.longitude),
                                     new LatLng(dest.latitude, dest.longitude))
                             .width(7).color(Color.GREEN).geodesic(true));
-
-
-
 
 
                 } catch (NullPointerException e) {
@@ -937,7 +1206,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
 
             }
-            try{
+            try {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(src1);
                 builder.include(dest);
@@ -950,10 +1219,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 int padding = 250; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                 mGoogleMap.moveCamera(cu);
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
-            textkm.setText(""+distanceString);
+            textkm.setText("" + distanceString);
         }
     }
 
@@ -1005,22 +1274,29 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             intent.putExtra(Constants.LIFT_ID, findRideData.getLiftId());
                             getActivity().startActivity(intent);
                             getActivity().finish();
+                            if (mGoogleMap != null) {
+                                mGoogleMap.clear();
+                            }
                         }
                     });
             alertDialogBuilder.setNegativeButton("Cancel",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
+
                         }
                     });
 
-        }else{
+        } else {
             alertDialogBuilder.setNegativeButton("Ok",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            try{
-                                ((HomeActivity)getActivity()).openride();
-                            }catch (Exception E){
+                            try {
+                                ((HomeActivity) getActivity()).openride();
+                                if (mGoogleMap != null) {
+                                    mGoogleMap.clear();
+                                }
+                            } catch (Exception E) {
 
                             }
                             dialog.cancel();
@@ -1042,9 +1318,15 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         alertDialogBuilder.setNegativeButton("Ok",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        try{
-                            ((HomeActivity)getActivity()).openride();
-                        }catch (Exception E){
+                        try {
+                            ((HomeActivity) getActivity()).openride();
+                            if (polyline != null) {
+                                polyline.remove();
+                            }
+                            if (mGoogleMap != null) {
+                                mGoogleMap.clear();
+                            }
+                        } catch (Exception E) {
 
                         }
                         dialog.cancel();

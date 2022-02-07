@@ -3,7 +3,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +14,7 @@ import com.liftPlzz.R;
 import com.liftPlzz.adapter.CompletedLiftAdapter;
 import com.liftPlzz.adapter.MyUpcomingLiftAdapter;
 import com.liftPlzz.base.BaseFragment;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.model.completedLift.CompleteLiftData;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.presenter.CompletedPresenter;
@@ -24,7 +27,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CompletedFragment extends BaseFragment<CompletedPresenter, CompletedView> implements CompletedView, MyUpcomingLiftAdapter.ItemListener {
+public class CompletedFragment extends BaseFragment<CompletedPresenter, CompletedView> implements CompletedView, CompletedLiftAdapter.ItemListener {
 
     SharedPreferences sharedPreferences;
     @BindView(R.id.recyclerViewUpcoming)
@@ -52,12 +55,17 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         presenter.getCompletedLift(sharedPreferences.getString(Constants.TOKEN, ""));
     }
-
+    public EditLiftDaiFragment.UpdateRecordListiner listinerUpdate = new EditLiftDaiFragment.UpdateRecordListiner() {
+        @Override
+        public void done() {
+//            getupcomingLiftUpdate();
+        }
+    };
     @Override
     public void setLiftData(List<CompleteLiftData> lifts) {
         if (lifts.size() > 0) {
             recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerViewUpcoming.setAdapter(new CompletedLiftAdapter(getContext(), lifts, new CompletedLiftAdapter.ItemListener() {
+            recyclerViewUpcoming.setAdapter(new CompletedLiftAdapter(getContext(), lifts,listinerUpdate, new CompletedLiftAdapter.ItemListener() {
                 @Override
                 public void onMatchClick(CompleteLiftData lift) {
                     Log.e("object is ",""+new Gson().toJson(lift));
@@ -67,27 +75,38 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
     }
 
     @Override
-    public void onMatchClick(Lift lift) {
+    public void onMatchClick(CompleteLiftData model) {
+//        EditLiftDaiFragment sheet = new EditLiftDaiFragment();
+        Lift lif=new Lift();
+        lif.setId(model.getId());
+        lif.setTitle(model.getTitle());
+        lif.setUserId(model.getUserId());
+        lif.setVehicleId(model.getVehicleId());
+        lif.setLiftType(model.getLiftType());
+        lif.setLiftType(model.getLiftType());
+        lif.setFreeSeats(model.getFreeSeats());
+        lif.setPaidSeats(model.getPaidSeats());
+        lif.setLiftDate(model.getLiftDate());
+        lif.setStatus(model.getStatus());
+        lif.setIsBooked(model.getIsBooked());
+        lif.setTotalRequest(model.getTotalRequest());
+        lif.setCreatedAt(model.getCreatedAt());
+        lif.setUpdatedAt(model.getUpdatedAt());
+        lif.setStartLatlong(model.getStartLatlong());
+        lif.setStartLocation(model.getStartLocation());
+        lif.setEndLatlong(model.getEndLatlong());
+        lif.setEndLocation(model.getEndLocation());
+        lif.setTotalDistance(model.getTotalDistance());
+//        lif.setStart_time(model.get());
+//        lif.setSameroutevehicle(model.get());
+//        lif.setFindMatch(model.ge());
+
+
+//        sheet.setLift(lif,listinerUpdate );
+//        sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
+//        sheet.show(((FragmentActivity)getActivity()).getSupportFragmentManager().beginTransaction(),"dialog");
 
     }
 
-    @Override
-    public void onRequestClick(Lift lift) {
 
-    }
-
-    @Override
-    public void onPartnetDetails(Lift lift) {
-
-    }
-
-    @Override
-    public void onDriverProfile(Lift lift) {
-
-    }
-
-    @Override
-    public void onCancelClick(int Id) {
-
-    }
 }
