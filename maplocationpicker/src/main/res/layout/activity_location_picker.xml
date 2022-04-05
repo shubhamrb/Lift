@@ -11,17 +11,17 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:visibility="gone"
         android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
 
-        android:layout_height="fill_parent" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:background="#fff"
-        android:layout_height="match_parent"></LinearLayout>
+        android:layout_height="match_parent"
+        android:background="#fff" />
 
     <TextView
         android:id="@+id/imgSearch"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
@@ -37,13 +37,12 @@
         android:focusedByDefault="true"
         android:gravity="start|center_vertical"
         android:hint="Search Location"
-        android:maxLines="1"
         android:padding="5dp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
         android:textColorHint="@color/colorPrimary"
         android:textCursorDrawable="@null"
         android:textSize="18sp" />
-
-
 
 
     <ImageView
@@ -69,8 +68,7 @@
         android:background="@drawable/white_rounded_corner"
         android:padding="5dp"
         android:layout_margin="6dp"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
         <EditText
             android:visibility="gone"
             android:id="@+id/addressline1"
@@ -80,8 +78,7 @@
             android:textSize="16sp"
             android:lines="5"
             android:minLines="1"
-            android:inputType="textCapSentences|textMultiLine"
-            />
+            android:inputType="textCapSentences|textMultiLine" />
         <EditText
             android:visibility="gone"
             android:id="@+id/addressline2"

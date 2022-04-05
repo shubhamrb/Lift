@@ -59,6 +59,9 @@ public class BottomSheetCheckPointsDialog extends BottomSheetDialogFragment {
                 groupLists.remove(s);
                 checkPointsListAdapter.notifyDataSetChanged();
                 callBackSelection.setCallBackSelectionCheckPointsDelete(groupLists.size());
+                if (!s.getAddress().contains("Select Checkpoints")) {
+                    callBackSelection.getRemainingList(groupLists);
+                }
             }
         });
         recyclerView.setAdapter(checkPointsListAdapter);
@@ -95,6 +98,11 @@ public class BottomSheetCheckPointsDialog extends BottomSheetDialogFragment {
 
     public interface CallBackSelectionCheckPoints {
         void setCallBackSelectionCheckPoints(int preferredCallingMode);
+
         void setCallBackSelectionCheckPointsDelete(int preferredCallingMode);
+
+        void getRemainingList(List<CheckPoints> groupLists);
+
+        void onDeleteCheckList(int preferredCallingMode);
     }
 }

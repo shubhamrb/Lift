@@ -56,7 +56,6 @@ import me.relex.circleindicator.CircleIndicator;
  */
 public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView> implements ProfileView, ReviewListAdapter.ItemListener,ViewPagerAdapter.ItemListener {
 
-
     SharedPreferences sharedPreferences;
     @BindView(R.id.imageViewBackContact)
     ImageView imageViewBackContact;
@@ -86,6 +85,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
     AppCompatTextView textViewEmail;
     @BindView(R.id.textViewReviewCount)
     AppCompatTextView textViewReviewCount;
+    @BindView(R.id.profilePercentTxt)
+    AppCompatTextView profilePercentTxt;
     @BindView(R.id.textViewRating)
     AppCompatTextView textViewRating;
     @BindView(R.id.textViewAboutUser)
@@ -203,6 +204,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             if (!user.getAboutMe().isEmpty()) {
                 textViewAboutUser.setText(user.getAboutMe());
             }
+            profilePercentTxt.setText(user.getProfile_percentage()+" %");
             textViewMobile.setText(user.getMobile());
             textViewEmail.setText(user.getEmail());
             tvShareCode.setText("" + user.getShareCode());

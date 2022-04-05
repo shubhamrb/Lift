@@ -22,6 +22,9 @@ public class Lift implements Serializable {
     @SerializedName("lift_type")
     @Expose
     private String liftType;
+    @SerializedName("vehicle_model")
+    @Expose
+    private String vehicle_model;
     @SerializedName("free_seats")
     @Expose
     private Integer freeSeats;
@@ -313,5 +316,13 @@ public class Lift implements Serializable {
 
     public void setRate_per_km(String rate_per_km) {
         this.rate_per_km = rate_per_km;
+    }
+
+    public String getVehicle_model() {
+        return vehicle_model;
+    }
+
+    public void setVehicle_model(String vehicle_model) {
+        this.vehicle_model = vehicle_model;
     }
 }

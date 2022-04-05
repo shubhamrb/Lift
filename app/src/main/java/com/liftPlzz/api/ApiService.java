@@ -33,6 +33,8 @@ import com.liftPlzz.model.vehiclesubcategory.VehicleSubCategoryModel;
 import com.liftPlzz.model.verifyOtp.VerifyOtpMainResponse;
 import com.liftPlzz.model.viewRideDetails.ViewRideDetailsResponse;
 
+import org.json.JSONObject;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -389,6 +391,22 @@ public interface ApiService {
                                          @Field("token") String token,
                                          @Field("setting_id") int settingId,
                                          @Field("input_value") int inputValue);
+
+    @FormUrlEncoded
+    @POST("update-user-setting")
+    Call<SettingModel> updateUserSetting(@Field("api_key") String api_key,
+                                         @Field("client") String client,
+                                         @Field("token") String token,
+                                         @Field("setting_id") int settingId,
+                                         @Field("input_value") String inputValue);
+
+    @FormUrlEncoded
+    @POST("update-user-setting")
+    Call<SettingModel> updateUserSetting(@Field("api_key") String api_key,
+                                         @Field("client") String client,
+                                         @Field("token") String token,
+                                         @Field("setting_id") int settingId,
+                                         @Field("input_value") JSONObject inputValue);
 
     @FormUrlEncoded
     @POST("create-ticket")

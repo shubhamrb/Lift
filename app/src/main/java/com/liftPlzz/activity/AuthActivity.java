@@ -52,7 +52,6 @@ public class AuthActivity extends AppNavigationProvider {
         openLoginFragment(PerformFragment.REPLACE);
         if (!checkLocationPermission()) {
             requestLocationPermission();
-
         }
 
     }

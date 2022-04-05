@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_demo"
@@ -12,14 +14,44 @@
         android:src="@drawable/s3"
         android:visibility="gone" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutRideVehicle"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_350"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/home_bg"
-        android:orientation="vertical">
+        android:background="@drawable/dialog_bg"
+        android:orientation="vertical"
+        android:padding="10sp">
 
+        <RelativeLayout
+            android:id="@+id/vehicleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="150sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/vehiclePager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <me.relex.circleindicator.CircleIndicator
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="15sp"
+                android:padding="@dimen/dp_3"
+                app:ci_drawable="@drawable/dot_green"
+                app:ci_drawable_unselected="@drawable/dot_grey"
+                app:ci_gravity="center" />
+
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewMyVehicle"
@@ -28,68 +60,155 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_25"
             android:layout_marginRight="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>
+            android:layout_marginBottom="@dimen/dp_10"
+            android:visibility="gone"
+            tools:ignore="MissingConstraints" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5sp"
-            android:layout_below="@+id/recyclerViewMyVehicle"
+            android:layout_below="@+id/vehicleLayout"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="15sp"
             android:text="@string/number_of_seat"
-            android:textColor="@color/colorText" />
+            android:textColor="@color/colorText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vehicleLayout" />
 
         <LinearLayout
+            android:layout_marginTop="10sp"
             android:id="@+id/llrate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5sp"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:layout_below="@+id/seatSelectionLayout"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seatSelectionLayout">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rate Per Km"></TextView>
+                android:paddingLeft="3sp"
+                android:text="Rate Per Km" />
 
             <EditText
+                android:maxLength="3"
                 android:id="@+id/etkm"
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:gravity="center"
-
                 android:hint="Enter Par Km Price"
                 android:inputType="number"
                 android:textSize="@dimen/dp_14" />
         </LinearLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/seatSelectionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20sp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_marginTop="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_select">
+
+            <TextView
+                android:textSize="18sp"
+                android:text="1"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/number_selected_bg"
+                android:id="@+id/oneTxt"
+                android:gravity="center"
+                android:layout_width="45sp"
+                android:layout_height="45sp"/>
+
+            <TextView
+                android:textSize="18sp"
+                android:text="2"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/number_unselected_bg"
+                android:layout_marginLeft="10sp"
+                android:id="@+id/twoTxt"
+                android:gravity="center"
+                android:layout_width="45sp"
+                android:layout_height="45sp"/>
+
+            <TextView
+                android:textSize="18sp"
+                android:text="3"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/number_unselected_bg"
+                android:layout_marginLeft="10sp"
+                android:id="@+id/threeTxt"
+                android:gravity="center"
+                android:layout_width="45sp"
+                android:layout_height="45sp"/>
+
+            <TextView
+                android:textSize="18sp"
+                android:text="4"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/number_unselected_bg"
+                android:layout_marginLeft="10sp"
+                android:id="@+id/fourTxt"
+                android:gravity="center"
+                android:layout_width="45sp"
+                android:layout_height="45sp"/>
+
+            <TextView
+                android:textSize="18sp"
+                android:text="5"
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
+                android:background="@drawable/number_unselected_bg"
+                android:layout_marginLeft="10sp"
+                android:id="@+id/fiveTxt"
+                android:gravity="center"
+                android:layout_width="45sp"
+                android:layout_height="45sp"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <NumberPicker
             android:id="@+id/numberPicker1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_select"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_select" />
 
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
+            android:layout_below="@+id/seatSelectionLayout"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"
             android:background="@drawable/rounded_button"
             android:fontFamily="@font/gotham_medium"
             android:text="Submit"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seatSelectionLayout" />
 
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.appcompat.widget.AppCompatTextView

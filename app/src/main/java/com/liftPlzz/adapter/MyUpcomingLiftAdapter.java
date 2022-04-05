@@ -232,8 +232,6 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                             sheet.setLift(verifiedLists.get(getAdapterPosition()),listinerUpdate ,"edit");
                             sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
                             sheet.show(((FragmentActivity)context).getSupportFragmentManager().beginTransaction(),"dialog");
-
-
                         }
                     });
                     sheet.show(((FragmentActivity)context).getSupportFragmentManager().beginTransaction(), "HomeSlidingMenuFragment");

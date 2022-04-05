@@ -74,6 +74,19 @@ public class User {
     @SerializedName("driver_details")
     @Expose
     private String driverDetails;
+
+    @SerializedName("profile_percentage")
+    @Expose
+    private Integer profile_percentage;
+
+    public Integer getProfile_percentage() {
+        return profile_percentage;
+    }
+
+    public void setProfile_percentage(Integer profile_percentage) {
+        this.profile_percentage = profile_percentage;
+    }
+
     @SerializedName("social_images")
     @Expose
     private List<SocialImage> socialImages = null;

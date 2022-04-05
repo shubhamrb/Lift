@@ -46,13 +46,11 @@ public class SettingPresenter extends BasePresenter<SettingView> {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<SettingModel> call, Throwable throwable) {
                 view.hideLoader();
                 view.showMessage(throwable.getMessage());
             }
         });
-
     }
 }

@@ -44,6 +44,7 @@
 
 
     <LinearLayout
+        android:layout_marginTop="28sp"
         android:id="@+id/layoutProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -221,36 +222,43 @@
 
                                 </LinearLayout>
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="14sp"
-                                    android:layout_marginTop="10sp"
-                                    android:layout_marginLeft="20sp"
-                                    android:text="Gender"></TextView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20sp"
+                    android:layout_marginTop="10sp"
+                    android:fontFamily="@font/gotham_medium"
+                    android:text="Gender"
+                    android:textSize="14sp" />
 
-                                <RadioGroup
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:orientation="horizontal">
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20sp"
+                    android:layout_marginRight="20sp"
+                    android:orientation="horizontal">
 
-                                    <RadioButton
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Male"></RadioButton>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/gotham_medium"
+                        android:text="Male" />
 
-                                    <RadioButton
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="FeMale"></RadioButton>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10sp"
+                        android:fontFamily="@font/gotham_medium"
+                        android:text="Female" />
 
-                                    <RadioButton
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Not to Share"></RadioButton>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10sp"
+                        android:fontFamily="@font/gotham_medium"
+                        android:text="Not to Share" />
 
-                                </RadioGroup>
+                </RadioGroup>
 
                                 <LinearLayout
                                     android:id="@+id/layoutEditTextMobile"
@@ -317,6 +325,7 @@
                                 </LinearLayout>
 
                                 <LinearLayout
+                                    android:visibility="gone"
                                     android:id="@+id/layoutEditsocial"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -349,6 +358,7 @@
 
 
                                 <LinearLayout
+                                    android:visibility="gone"
                                     android:id="@+id/layoutGovtId"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -407,6 +417,7 @@
 
                                 </LinearLayout>
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -417,7 +428,7 @@
                         android:layout_marginLeft="20sp"
                         android:layout_marginTop="10sp"
                         android:text="Social Profile Intrested on"
-                        android:textSize="14sp"></TextView>
+                        android:textSize="14sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -429,7 +440,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20sp"
                             android:text="For Whom"
-                            android:textSize="14sp"></TextView>
+                            android:textSize="14sp" />
 
                         <RadioGroup
                             android:layout_width="match_parent"
@@ -440,12 +451,12 @@
                             <RadioButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Male"></RadioButton>
+                                android:text="Male" />
 
                             <RadioButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="FeMale"></RadioButton>
+                                android:text="FeMale" />
 
 
                         </RadioGroup>
@@ -462,7 +473,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20sp"
                             android:text="Age"
-                            android:textSize="14sp"></TextView>
+                            android:textSize="14sp" />
 
                         <EditText
                             android:layout_width="0dp"
@@ -470,17 +481,16 @@
                             android:layout_marginLeft="10sp"
                             android:layout_weight="1"
                             android:textSize="14sp"
-                            android:hint="Minimum"></EditText>
+                            android:hint="Minimum" />
 
                         <EditText
                             android:layout_width="0dp"
                             android:textSize="14sp"
-
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
                             android:layout_marginRight="10sp"
                             android:layout_weight="1"
-                            android:text="Maximum"></EditText>
+                            android:text="Maximum" />
 
                     </LinearLayout>
 
@@ -496,7 +506,7 @@
                             android:layout_marginLeft="20sp"
                             android:text="Profile Section"
                             android:layout_marginTop="10sp"
-                            android:textSize="14sp"></TextView>
+                            android:textSize="14sp" />
 
                         <RatingBar
                             android:layout_width="wrap_content"
@@ -551,14 +561,12 @@
         android:id="@+id/imageViewAddImage"
         android:layout_width="@dimen/dp_70"
         android:layout_height="@dimen/dp_70"
-        android:layout_above="@id/layoutProfile"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_5"
-        android:layout_marginBottom="-40dp"
         android:background="@drawable/add_bg_profile"
-        android:backgroundTint="@color/colorPrimary"
         android:scaleType="centerInside"
         android:src="@drawable/ic_add"
         android:visibility="visible" />
+
 </RelativeLayout>

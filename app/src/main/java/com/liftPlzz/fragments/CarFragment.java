@@ -275,7 +275,7 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 }
                 break;
             case R.id.editTextVehicleInsuranceDate:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), CarFragment.this, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, CarFragment.this, year, month, day);
                 datePickerDialog.show();
                 break;
             case R.id.imageViewFrontImage:

@@ -88,6 +88,7 @@
     <string name="please_enter_description">Please enter description</string>
     <string name="ticket_id">Ticket Id</string>
     <string name="toggle">toggle</string>
+    <string name="select_option">select_option</string>
     <string name="lift_type">Lift Type</string>
     <string name="answer">Answer</string>
     <string name="question">Question</string>

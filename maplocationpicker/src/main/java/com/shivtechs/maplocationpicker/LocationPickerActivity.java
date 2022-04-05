@@ -73,6 +73,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -232,16 +233,14 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 if (!Places.isInitialized()) {
                     Places.initialize(LocationPickerActivity.this.getApplicationContext(), MapUtility.apiKey);
                 }
-
                 // Set the fields to specify which types of place data to return.
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
-
-
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID,Place.Field.ADDRESS, Place.Field.NAME, Place.Field.LAT_LNG);
                 // Start the autocomplete intent.
                 Intent intent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.FULLSCREEN, fields)
+//                        .setTypeFilter(TypeFilter.ADDRESS)
                         .build(LocationPickerActivity.this);
-                LocationPickerActivity.this.startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
             }
         });
 
@@ -313,7 +312,8 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                userAddress = place.getAddress();
+
+                userAddress = place.getName()+", "+place.getAddress();
                 //  addressdetails=place.getAddressComponents();
                 Log.e("cell l","Location 1");
                 imgSearch.setText("" + userAddress);
@@ -439,7 +439,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 mMap.animateCamera(cameraUpdate);
                 mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                 if(startLocation==false) {
-                    imgSearch.setText("" + userAddress);
+//                    imgSearch.setText("" + userAddress);
                     markerOptions = new MarkerOptions().position(coordinate).title(userAddress).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_pointer", 100, 100)));
                     Marker marker = mMap.addMarker(markerOptions);
                 }

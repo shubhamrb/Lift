@@ -13,7 +13,7 @@ public class RetroClient {
      * ***** URLS *****
      */
 //    private static final String ROOT_URL = "http://liftplzz.com/api/";
-    //Base url change on 18Jan2021
+//    Base url change on 18Jan2021
     private static final String ROOT_URL = "https://charpair.com/api/";
 
     /**

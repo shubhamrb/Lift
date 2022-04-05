@@ -285,7 +285,7 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                 VehicleType = 3;
                 break;
             case R.id.editTextVehicleInsuranceDate:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), BikeFragment.this, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod,BikeFragment.this, year, month, day);
                 datePickerDialog.show();
                 break;
         }

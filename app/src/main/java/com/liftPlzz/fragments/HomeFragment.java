@@ -42,12 +42,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -56,6 +58,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -77,9 +80,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.HomeActivity;
+import com.liftPlzz.activity.MainActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
+import com.liftPlzz.adapter.VehiclePagerAdapter;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.dialog.BottomSheetCheckPointsDialog;
 import com.liftPlzz.model.CheckPoints;
@@ -110,6 +115,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import me.relex.circleindicator.CircleIndicator;
 
 
 /**
@@ -164,9 +170,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     RecyclerView recyclerViewCheckpoints;
     @BindView(R.id.layoutRide)
     LinearLayout layoutRide;
-//    @BindView(R.id.layoutRideVehicle)
-//    RelativeLayout layoutRideVehicle;
-
     @BindView(R.id.callButton)
     ImageView callButton;
     @BindView(R.id.smsButton)
@@ -176,20 +179,17 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
 
-
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     LocationRequest mLocationRequest;
     int locationSelect = 1;
     LatLng pickupLocation;
     LatLng dropLocation;
 
-
     List<LatLng> pontos = new ArrayList<>();
     String distanceString = "";
-
     Polyline polyline;
-
     String origin;
+    LatLng originLat, destinationLat;
     String startPoint = "", endPoint = "";
     String destination;
     PolylineOptions polylineOptions = new PolylineOptions();
@@ -198,25 +198,15 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     boolean isMultiCheck = false;
     String seat = "1";
     String dateTime, liftTime = "";
-
-
+    String wayPoints = "";
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
-
     @BindView(R.id.textkm)
     AppCompatTextView textkm;
-
-//    @BindView(R.id.etkm)
-//    EditText etkm;
-
-//    @BindView(R.id.btnSubmit)
-//    AppCompatButton btnSubmit;
-
+    int PagerPosition = 0;
 
     MyVehicleListRideAdapter myVehicleListRideAdapter;
-
-
-    //
+    VehiclePagerAdapter pagerAdapter;
     LatLng latLngOrigin, latLngDestination;
 
     SharedPreferences sharedPreferences;
@@ -353,17 +343,19 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             Log.w("gfggf", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
-
                         // Get new FCM registration token
                         String token = task.getResult();
-                        presenter.updateToken(sharedPreferences.getString(Constants.TOKEN, ""), token);
+                        try {
+                            presenter.updateToken(sharedPreferences.getString(Constants.TOKEN, ""), token);
+                            String msg = getString(R.string.msg_token_fmt, token);
+                            Log.d("hfhfh", msg);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("hfhfh", msg);
                     }
                 });
         // mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -404,13 +396,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        if (myVehicleListRideAdapter != null) {
-                            onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
+                        rate_per_km = Integer.parseInt(etkm.getText().toString().trim());
+                        if (pagerAdapter != null) {
+                            onclickVehicle(data.get(PagerPosition));
                         } else {
                             onclickVehicle(data.get(0));
-
                         }
-//                        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+//                      presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                     }
                 }
                 break;
@@ -428,7 +420,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         bottomSheetCheckPointsDialog.show(
                                 getActivity().getSupportFragmentManager(), "check");
                     }
-
                 } else {
                     if (checkPointsList.size() < 3) {
                         CheckPoints checkPoints = new CheckPoints();
@@ -449,7 +440,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutSelectDateTime:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), HomeFragment.this, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, HomeFragment.this, year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
                 break;
@@ -516,8 +507,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void fetchLocation() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+        if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -557,8 +548,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         latLngOrigin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
         pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-        googleMap.addMarker(new MarkerOptions()
+        originLat = latLngOrigin;
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(new MarkerOptions()
                 .position(latLngOrigin)
                 .draggable(true)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
@@ -566,13 +558,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
 
         // Zoom in the Google Map
 //        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 //        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
     /*    googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -590,7 +582,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
             }
         });*/
-        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+        mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker arg0) {
             }
@@ -628,16 +620,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     protected void createLocationRequest() {
-        //remove location updates so that it resets
-        //import should be **import com.google.android.gms.location.LocationListener**;
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        //restart location updates with the new interval
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
     }
 
     public String getJsonObject(Double latitue, Double longitute, Bundle bundle, String locationaddress) {
@@ -666,7 +653,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (requestCode == ADDRESS_PICKER_REQUEST) {
             try {
                 if (data != null && data.getStringExtra(MapUtility.ADDRESS) != null) {
-                    // String address = data.getStringExtra(MapUtility.ADDRESS);
+                    String address = data.getStringExtra(MapUtility.ADDRESS);
                     double currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                     double currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0);
                     Bundle completeAddress = data.getBundleExtra("fullAddress");
@@ -683,13 +670,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     if (locationSelect == 1) {
                         pickupLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngOrigin = new LatLng(currentLatitude, currentLongitude);
-
+                        originLat = latLngOrigin;
                         StringBuilder strAdd = new StringBuilder().append
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
                                 (completeAddress.getString("state"));
                         Log.e("result ", "" + strAdd.toString() + "  ");
-                        editTextPickupLocation.setText(strAdd.toString());
+                        editTextPickupLocation.setText(address);
                         startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
                         if (dropLocation != null) {
                             mGoogleMap.clear();
@@ -717,17 +704,18 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
                                 (completeAddress.getString("state"));
-                        editTextDropLocation.setText(stringBuilder.toString());
+                        editTextDropLocation.setText(address);
                         dropLocation = new LatLng(currentLatitude, currentLongitude);
+                        destinationLat = dropLocation;
                         latLngDestination = new LatLng(currentLatitude, currentLongitude);
                         endPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, stringBuilder.toString());
                         destination = currentLatitude + "," + currentLongitude;
-
                         mGoogleMap.clear();
                         mGoogleMap.addMarker(new MarkerOptions()
                                 .position(dropLocation)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
                                 .title("dropoff"));
+
                         if (pickupLocation != null) {
                             mGoogleMap.addMarker(new MarkerOptions()
                                     .position(pickupLocation)
@@ -735,15 +723,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     .title("pickup"));
                             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
-
                             new GetDirection().execute(origin, destination);
                             //create lift
-
                             presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
-
-
                         }
-
 
                     } else {
                         checkPointsList.get(listPos).setAddress(new StringBuilder().append
@@ -758,40 +741,16 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         checkPointsList.get(listPos).setCountry(completeAddress.getString("country"));
                         checkPointsList.get(listPos).setLongi(currentLongitude);
                         bottomSheetCheckPointsDialog.nofityAdapter();
-                        if (listPos > 0) {
-                            origin = checkPointsList.get(listPos - 1).getLat() + "," + checkPointsList.get(listPos - 1).getLongi();
-                        } else {
-                            origin = destination;
-                        }
-                        destination = currentLatitude + "," + currentLongitude;
-                        mGoogleMap.addMarker(new MarkerOptions()
-                                .position(dropLocation)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
-                                .title("Marker in Sydney"));
-//                        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
-//                        destination = dropLocation.latitude + "," + dropLocation.longitude;
-//                        new GetDirection().execute();
+                        Log.e("Check List Size : ", "" + checkPointsList.size());
+//                        textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
+                        refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
 
-                        textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
-                        if (bottomSheetCheckPointsDialog != null) {
-                            bottomSheetCheckPointsDialog.dismiss();
-                        }
                     }
-
-
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public void setPickupLocation() {
-
-    }
-
-    public void setDroupLocation() {
-
     }
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
@@ -956,59 +915,145 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     RecyclerView recyclerViewMyVehicle;
+    ViewPager vehiclePager;
     EditText etkm;
     LinearLayout llrate;
     AppCompatButton btnSubmit;
 
     public void show() {
-
         final Dialog d = new Dialog(getActivity());
-//        d.setTitle("NumberPicker");
         d.setContentView(R.layout.dailog_seat);
         AppCompatButton b1 = d.findViewById(R.id.btnSubmit);
-        recyclerViewMyVehicle = d.findViewById(R.id.recyclerViewMyVehicle);
+        vehiclePager = d.findViewById(R.id.vehiclePager);
+        CircleIndicator indicator = d.findViewById(R.id.indicator);
+        RelativeLayout vehicleLayout = d.findViewById(R.id.vehicleLayout);
         etkm = d.findViewById(R.id.etkm);
         llrate = d.findViewById(R.id.llrate);
         btnSubmit = d.findViewById(R.id.btnSubmit);
-        myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this, etkm, 0);
-        recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
-//        Button b2 = d.findViewById(R.id.button2);
+
+        TextView oneTxt = d.findViewById(R.id.oneTxt);
+        TextView twoTxt = d.findViewById(R.id.twoTxt);
+        TextView threeTxt = d.findViewById(R.id.threeTxt);
+        TextView fourTxt = d.findViewById(R.id.fourTxt);
+        TextView fiveTxt = d.findViewById(R.id.fiveTxt);
+
+        if (seat.equals("1")) {
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("2")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("3")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("4")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("5")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        }
+
+        oneTxt.setOnClickListener(v -> {
+            seat = "1";
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        twoTxt.setOnClickListener(v -> {
+            seat = "2";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        threeTxt.setOnClickListener(v -> {
+            seat = "3";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        fourTxt.setOnClickListener(v -> {
+            seat = "4";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        fiveTxt.setOnClickListener(v -> {
+            seat = "5";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        });
+
+        pagerAdapter = new VehiclePagerAdapter(getContext(), data);
+        vehiclePager.setAdapter(pagerAdapter);
+        indicator.setViewPager(vehiclePager);
+        etkm.setText("" + data.get(0).getRatePerKm());
+        vehiclePager.setCurrentItem(PagerPosition);
+        vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(final int i) {
+                PagerPosition = i;
+                etkm.setText("" + data.get(i).getRatePerKm());
+                rate_per_km = data.get(i).getRatePerKm();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
         if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
-            recyclerViewMyVehicle.setVisibility(View.GONE);
+            vehicleLayout.setVisibility(View.GONE);
             llrate.setVisibility(View.GONE);
         } else {
-            recyclerViewMyVehicle.setVisibility(View.VISIBLE);
+            vehicleLayout.setVisibility(View.VISIBLE);
             llrate.setVisibility(View.VISIBLE);
         }
-        final NumberPicker np = d.findViewById(R.id.numberPicker1);
-        np.setMaxValue(5);
-        np.setMinValue(1);
-        np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener(HomeFragment.this);
-        np.setValue(Integer.parseInt(seat));
+
         b1.setOnClickListener(v -> {
-            textViewSelectSeat.setText(np.getValue() + " Seat");
-            seat = String.valueOf(np.getValue());
-            vehicle_name = myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition).getModel();
-            rate_per_km = myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition).getRatePerKm();
+            rate_per_km =  Integer.parseInt(etkm.getText().toString().trim());
+            textViewSelectSeat.setText(seat + " Seat");
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
-                textViewSelectSeat.setText(seat+" Seats");
-
+                textViewSelectSeat.setText(seat + " Seats");
             } else {
-                textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
-
-
+                textViewSelectSeat.setText("" + data.get(PagerPosition).getModel() + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
             }
             d.dismiss();
         });
-//        b2.setOnClickListener(v -> d.dismiss());
         d.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.show();
-
-
     }
 
     @Override
@@ -1049,19 +1094,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setVehicle(List<Datum> data) {
         if (data.size() > 0) {
             this.data = data;
-//            layoutRideVehicle.setVisibility(View.GONE);
-//            layoutRide.setVisibility(View.GONE);
-            //etkm
-//            myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this, etkm, 0);
-//            recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-//            recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
             vehicle_name = data.get(0).getModel();
             rate_per_km = data.get(0).getRatePerKm();
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                 textViewSelectSeat.setText(seat+" Seats");
-
             } else {
-
                 textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
             }
 
@@ -1074,6 +1111,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @Override
     public void setCreateRideData(CreateLiftResponse createRideData) {
 //        showMessage("Ride Request Send successfully");
+        checkPointsList.clear();
+        wayPoints = "";
         showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage());
 //        layoutRideVehicle.setVisibility(View.GONE);
         layoutRide.setVisibility(View.VISIBLE);
@@ -1093,20 +1132,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         for (int i = 0; i < checkPointsList.size(); i++) {
             JSONObject jsonObject = new JSONObject();
-//                data.add(checkPointsList.get(i).getLat() + "," + checkPointsList.get(i).getLongi());
-            try {
-                jsonObject.put("LatLng", String.valueOf(checkPointsList.get(i).getLat()) + "," + String.valueOf(checkPointsList.get(i).getLongi()));
-                jsonObject.put("country", checkPointsList.get(i).getCountry());
-                jsonObject.put("state", checkPointsList.get(i).getState());
-                jsonObject.put("city", checkPointsList.get(i).getCity());
-                jsonObject.put("location", checkPointsList.get(i).getAddress());
-                jsonObject.put("date", "");
-                jsonObject.put("time", "");
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!checkPointsList.get(i).getAddress().contains("Select Checkpoints")) {
+                try {
+                    jsonObject.put("LatLng", checkPointsList.get(i).getLat() + "," + checkPointsList.get(i).getLongi());
+                    jsonObject.put("country", checkPointsList.get(i).getCountry());
+                    jsonObject.put("state", checkPointsList.get(i).getState());
+                    jsonObject.put("city", checkPointsList.get(i).getCity());
+                    jsonObject.put("location", checkPointsList.get(i).getAddress());
+                    jsonObject.put("date", "");
+                    jsonObject.put("time", "");
+                    jsonArray.put(jsonObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            jsonArray.put(jsonObject);
-//            }
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 listString = String.join(", ", data);
             }
@@ -1128,15 +1167,96 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         textViewCheckpoints.setText("Checkpoints :" + preferredCallingMode);
     }
 
+    @Override
+    public void getRemainingList(List<CheckPoints> groupLists) {
+        refreshGoogleMap((ArrayList<CheckPoints>) groupLists);
+    }
+
+    @Override
+    public void onDeleteCheckList(int position) {
+        if (checkPointsList.size() > 0) {
+            checkPointsList.remove(position);
+            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
+        }
+    }
+
+
+    public void refreshGoogleMap(ArrayList<CheckPoints> list) {
+
+        int checkPointsCount = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).getAddress().contains("Select Checkpoints"))
+                checkPointsCount++;
+        }
+        textViewCheckpoints.setText("Checkpoints :" + checkPointsCount);
+        wayPoints = "";
+        mGoogleMap.clear();
+        if (bottomSheetCheckPointsDialog != null) {
+            bottomSheetCheckPointsDialog.dismiss();
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i == 0) {
+                if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                    builder.append("=" + list.get(0).getLat() + "," + list.get(0).getLongi());
+                    wayPoints = builder.toString();
+                }
+            } else {
+                if (i != list.size()) {
+                    if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                        builder.append("|" + list.get(i).getLat() + "," + list.get(i).getLongi());
+                    }
+                } else {
+                    if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                        builder.append("" + list.get(i).getLat() + "," + list.get(i).getLongi());
+                    }
+                }
+            }
+
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(list.get(i).getLat(), list.get(i).getLongi()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                    .title(list.get(i).getCity()));
+
+        }
+        wayPoints = builder.toString();
+        Log.e("Way Points", wayPoints);
+
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(originLat)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                .title("pickup"));
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(destinationLat)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                .title("dropoff"));
+
+        String source = "" + originLat.latitude + "," + originLat.longitude;
+        String destination = "" + destinationLat.latitude + "," + destinationLat.longitude;
+        Log.e("Origin ", "" + source + "\n Destination " + destination);
+        new GetDirection().execute(source, destination);
+    }
+
     class GetDirection extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         protected String doInBackground(String... args) {
-            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+//            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=22.7425069,75.8850649&destination=26.5638,78.7861&waypoints=23.1765,75.7885|22.9676,76.0534&key=AIzaSyA7SV33I2sYhbd9SiUo9b75qpGOS9ZNT5I&sensor=false";
+//            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=22.7425069,75.8850649&destination=26.5638,78.7861&waypoints=23.1764665,75.7885163|23.1764665,75.7885163|23.1764665,75.7885163&key=AIzaSyA7SV33I2sYhbd9SiUo9b75qpGOS9ZNT5I&sensor=false";
+            String stringUrl = "";
+            distanceString = "";
+            if (!wayPoints.equals("")) {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&waypoints" + wayPoints + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            } else {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            }
+
+            Log.e("URL : ", "" + stringUrl);
             StringBuilder response = new StringBuilder();
             try {
                 URL url = new URL(stringUrl);
@@ -1169,10 +1289,22 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
 
                 JSONArray legs = route.getJSONArray("legs");
-                JSONObject steps = legs.getJSONObject(0);
-                JSONObject distance = steps.getJSONObject("distance");
-                distanceString = distance.getString("text");
-
+                JSONObject steps;
+                JSONObject distance = null;
+                Float totalDistance = 0f;
+                for (int i = 0; i < legs.length(); i++) {
+                    steps = legs.getJSONObject(i);
+                    distance = steps.getJSONObject("distance");
+                    String[] total = distance.getString("text").split(" ");
+                    totalDistance += Float.parseFloat(total[0]);
+                }
+                
+                /*JSONObject steps = legs.getJSONObject(0);
+                JSONObject distance = steps.getJSONObject("distance");*/
+                distanceString = "" + totalDistance + " Km";
+                Log.e("Total Distance : ", "" + distanceString);
+//                textkm.setText("" + distanceString);
+//                textkm.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1219,10 +1351,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 int padding = 250; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                 mGoogleMap.moveCamera(cu);
+                getActivity().runOnUiThread(() -> textkm.setText("" + distanceString));
+
             } catch (Exception e) {
 
             }
-            textkm.setText("" + distanceString);
+
         }
     }
 

@@ -58,11 +58,8 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
                     } else {
                         view.showMessage(response.body().getResponse().getMessage());
                     }
-
-
                 }
             }
-
 
             @Override
             public void onFailure(Call<GetVehicleListMainResponse> call, Throwable throwable) {
@@ -72,8 +69,6 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
         });
 
     }
-
-
 
     public void getRepeatVehicle(String token,String tot_km) {
         view.showLoader();
@@ -89,7 +84,6 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
                     } else {
                         view.showMessage(response.body().getResponse().getMessage());
                     }
-
 
                 }
             }
@@ -182,8 +176,29 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
     }
 
 
-    public void createLift(String token, String vehicle_id, String lift_type, String free_seats, String paid_seats, String start_ponit, String end_point, String checkpoints, String lift_date,
-                           String lift_id,String liftTime,String tot_km,String rate_per_km) {
+    public void createLift(String token, String vehicle_id,
+                           String lift_type, String free_seats,
+                           String paid_seats, String start_ponit,
+                           String end_point, String checkpoints,
+                           String lift_date, String lift_id,
+                           String liftTime,String tot_km,
+                           String rate_per_km) {
+
+        Log.e("Token",token);
+        Log.e("vehicle_id",vehicle_id);
+        Log.e("lift_type",lift_type);
+        Log.e("free_seats",free_seats);
+        Log.e("paid_seats",paid_seats);
+        Log.e("start_ponit",start_ponit);
+        Log.e("end_point",end_point);
+        Log.e("checkpoints",checkpoints);
+        Log.e("lift_date",lift_date);
+        Log.e("liftTime",liftTime);
+        Log.e("lift_id",lift_id);
+        Log.e("tot_km",tot_km);
+        Log.e("rate_per_km",rate_per_km);
+
+
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<CreateLiftResponse> call = api.offerUpdate_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date,lift_id, liftTime,tot_km,rate_per_km);
@@ -248,6 +263,19 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
 
     public void repeatoffercreateLift(String token, String vehicle_id, String lift_type, String free_seats, String paid_seats, String start_ponit, String end_point, String checkpoints, String lift_date,
                            String liftTime,String tot,String rate_per_km) {
+        Log.e("Token",token);
+        Log.e("vehicle_id",vehicle_id);
+        Log.e("lift_type",lift_type);
+        Log.e("free_seats",free_seats);
+        Log.e("paid_seats",paid_seats);
+        Log.e("start_ponit",start_ponit);
+        Log.e("end_point",end_point);
+        Log.e("checkpoints",checkpoints);
+        Log.e("lift_date",lift_date);
+        Log.e("liftTime",liftTime);
+        Log.e("tot",tot);
+        Log.e("rate_per_km",rate_per_km);
+
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date, liftTime,tot,rate_per_km);
@@ -263,7 +291,6 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
                         //  view.hideLoader();
                         view.showMessage(response.body().getMessage());
                     }
-
 
                 }
             }
