@@ -1,7 +1,9 @@
 package com.liftPlzz.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -26,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.ReviewListAdapter;
 import com.liftPlzz.adapter.ViewPagerAdapter;
@@ -41,6 +45,10 @@ import com.liftPlzz.views.ProfileView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +57,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 
 /**
@@ -249,13 +260,48 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
     @Override
     public void onDeleteClick(int s) {
         presenter.delete_imag(sharedPreferences.getString(Constants.TOKEN, ""),""+s);
-
     }
 
     @Override
     public void onEditClick(com.liftPlzz.model.getVehicle.Datum s) {
 
     }
+
+
+    @Override
+    public void onAddImage() {
+        ImagePicker.Companion.with(this)
+                .crop(1080, 700)                    //Crop image(Optional), Check Customization for more option
+                .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                .start();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            Log.e("hdhdhd", "onActivityResult: " + data.getData().toString());
+            File file = null;
+            try {
+                file = new File(new URL(data.getDataString()).toURI());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+            RequestBody api_key = RequestBody.create(okhttp3.MultipartBody.FORM, Constants.API_KEY);
+            RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, "android");
+            RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
+            presenter.uploadImage(api_key, device, token, body);
+
+            //File file= =ImagePicker.getFile(data);
+        }
+    }
+
 
     private void getpoints() {
         Constants.showLoader(getContext());

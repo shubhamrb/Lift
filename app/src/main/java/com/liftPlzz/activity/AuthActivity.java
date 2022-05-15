@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -22,6 +23,7 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.liftPlzz.BuildConfig;
 import com.liftPlzz.R;
 import com.liftPlzz.provider.AppNavigationProvider;
 
@@ -57,15 +59,28 @@ public class AuthActivity extends AppNavigationProvider {
     }
 
     private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.READ_SMS,
-                        Manifest.permission.RECEIVE_SMS
-                },
-                PERMISSION_REQUEST_CODE_LOCATION);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q){
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.READ_SMS,
+                            Manifest.permission.RECEIVE_SMS
+                    },
+                    PERMISSION_REQUEST_CODE_LOCATION);
+        }else {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.READ_SMS,
+                            Manifest.permission.RECEIVE_SMS
+                    },
+                    PERMISSION_REQUEST_CODE_LOCATION);
+        }
     }
 
     public boolean checkLocationPermission() {
@@ -74,6 +89,12 @@ public class AuthActivity extends AppNavigationProvider {
                 getPackageManager()
                         .checkPermission(
                                 Manifest.permission.ACCESS_FINE_LOCATION, getPackageName());
+
+        int backgroundLocation =
+                getPackageManager()
+                        .checkPermission(
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION, getPackageName());
+
         int writeStorage =
                 getPackageManager()
                         .checkPermission(
@@ -85,6 +106,7 @@ public class AuthActivity extends AppNavigationProvider {
                                 Manifest.permission.READ_SMS, getPackageName());
 
         return readStorage == PackageManager.PERMISSION_GRANTED
+                && backgroundLocation == PackageManager.PERMISSION_GRANTED
                 && writeStorage == PackageManager.PERMISSION_GRANTED
                 && readSms == PackageManager.PERMISSION_GRANTED;
     }

@@ -60,9 +60,10 @@
             android:layout_marginTop="@dimen/dp_10"
             android:padding="@dimen/dp_3"
             android:src="@drawable/profile_icon"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -128,18 +129,50 @@
 
                                 </LinearLayout>
 
-                                <LinearLayout
-                                    android:id="@+id/layoutEditTextDesignation"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginLeft="@dimen/dp_20"
-                                    android:layout_marginTop="@dimen/dp_12"
-                                    android:layout_marginRight="@dimen/dp_20"
-                                    android:background="@drawable/rounded_bg_et_profile"
-                                    android:orientation="horizontal"
-                                    android:padding="@dimen/dp_8">
+                <LinearLayout
+                    android:id="@+id/layoutProfessionalStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:background="@drawable/rounded_bg_et_profile"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp_8">
 
+                    <TextView
+                        android:id="@+id/professionalTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:drawableRight="@drawable/ic_dropdown"
+                        android:fontFamily="@font/gotham_medium"
+                        android:gravity="start"
+                        android:hint="Professional Status"
+                        android:padding="@dimen/dp_5"
+                        android:singleLine="true"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/sp_16" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/layoutEditTextDesignation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:background="@drawable/rounded_bg_et_profile"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp_8">
 
                                     <androidx.appcompat.widget.AppCompatEditText
                                         android:id="@+id/editTextDesignation"
@@ -232,6 +265,7 @@
                     android:textSize="14sp" />
 
                 <RadioGroup
+                    android:id="@+id/genderGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20sp"
@@ -239,12 +273,14 @@
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/maleRadio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/gotham_medium"
                         android:text="Male" />
 
                     <RadioButton
+                        android:id="@+id/femaleRadio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10sp"
@@ -252,6 +288,7 @@
                         android:text="Female" />
 
                     <RadioButton
+                        android:id="@+id/otherRadio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10sp"
@@ -567,6 +604,6 @@
         android:background="@drawable/add_bg_profile"
         android:scaleType="centerInside"
         android:src="@drawable/ic_add"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

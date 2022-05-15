@@ -8,8 +8,10 @@ import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
-import com.liftPlzz.model.editlift.GetVehicleEditResponse;
 import com.liftPlzz.model.getVehicle.GetVehicleListMainResponse;
+import com.liftPlzz.model.on_going.InnerGoingResponse;
+import com.liftPlzz.model.on_going.MainOnGoingResponse;
+import com.liftPlzz.model.sendotp.MainResponse;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.HomeView;
 
@@ -70,6 +72,32 @@ public class HomePresenter extends BasePresenter<HomeView> {
             }
         });
 
+    }
+
+
+    public void getOnGoing(String token) {
+//        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<MainOnGoingResponse> call = api.rideOnGoing(Constants.API_KEY, "android", token);
+        call.enqueue(new Callback<MainOnGoingResponse>() {
+            @Override
+            public void onResponse(Call<MainOnGoingResponse> call, Response<MainOnGoingResponse> response) {
+//                view.hideLoader();
+                if (response.body().getResponse() != null) {
+                    if (response.body().getResponse().isStatus()) {
+                        view.setOnGoingData(response.body().getResponse());
+                    } else {
+                        view.showMessage(response.body().getResponse().getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MainOnGoingResponse> call, Throwable throwable) {
+//                view.hideLoader();
+                view.showMessage(throwable.getMessage());
+            }
+        });
     }
 
 

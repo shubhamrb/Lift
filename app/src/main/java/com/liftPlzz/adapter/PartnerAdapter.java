@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -56,6 +57,13 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         User requestData = arrayList.get(position);
         holder.tvMobile.setText(requestData.getMobile());
         holder.tvName.setText(requestData.getName());
+        /*if(requestData.getUserType().equals("Lifter")){
+            holder.userType.setVisibility(View.VISIBLE);
+            holder.userType.setText(requestData.getUserType());
+        }*/
+
+        holder.userType.setVisibility(View.VISIBLE);
+        holder.userType.setText(requestData.getUserType());
         holder.linearBtn.setVisibility(View.GONE);
         holder.lblStatus.setVisibility(View.GONE);
         holder.tvSeats.setText(context.getResources().getString(R.string.seats) + " : " + requestData.getSeats());
@@ -76,8 +84,6 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
 //                holder.lblStatus.setText(context.getResources().getString(R.string.rejected));
 //            }
 //        }
-
-
         try {
             Glide.with(context).load(requestData.getImage()).into(holder.imgDriver);
         } catch (Exception e) {
@@ -106,6 +112,9 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         AppCompatTextView tvMobile;
         @BindView(R.id.tv_seats)
         AppCompatTextView tvSeats;
+
+        @BindView(R.id.userType)
+        TextView userType;
 
         @BindView(R.id.btn_accept)
         AppCompatButton btnAccept;

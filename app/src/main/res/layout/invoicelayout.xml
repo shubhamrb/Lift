@@ -52,15 +52,33 @@
             android:layout_marginTop="5dp"
             android:text="Total Point :"></TextView>
 
-        <Button
-            android:id="@+id/pay"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_15"
-            android:gravity="center"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/colorWhite"
-            android:text="Pay" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/pay"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:text="Pay"
+                android:textColor="@color/colorWhite" />
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/okayBtn"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:text="Okay"
+                android:textColor="@color/colorWhite" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 
     </LinearLayout>

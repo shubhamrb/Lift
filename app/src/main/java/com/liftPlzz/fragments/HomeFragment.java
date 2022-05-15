@@ -21,11 +21,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,23 +40,19 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -80,7 +74,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.HomeActivity;
-import com.liftPlzz.activity.MainActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
@@ -91,6 +84,7 @@ import com.liftPlzz.model.CheckPoints;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
 import com.liftPlzz.model.getVehicle.Datum;
+import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.presenter.HomePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.HomeView;
@@ -123,7 +117,6 @@ import me.relex.circleindicator.CircleIndicator;
  */
 public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implements HomeView,
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-//        DatePickerDialog.OnDateSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
 
     private static final int ADDRESS_PICKER_REQUEST = 1;
@@ -131,11 +124,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Toolbar toolbar;
     @BindView(R.id.imageViewHome)
     ImageView imageViewHome;
-
     @BindView(R.id.imageViewNotification)
     ImageView imageViewNotification;
-
-
     @BindView(R.id.editTextPickupLocation)
     AppCompatTextView editTextPickupLocation;
     @BindView(R.id.layoutPickupLocation)
@@ -196,6 +186,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     List<CheckPoints> checkPointsList = new ArrayList<>();
     CheckPointsListAdapter checkPointsListAdapter;
     boolean isMultiCheck = false;
+    boolean isOfferLift = false;
     String seat = "1";
     String dateTime, liftTime = "";
     String wayPoints = "";
@@ -205,7 +196,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     AppCompatTextView textkm;
     int PagerPosition = 0;
 
-    MyVehicleListRideAdapter myVehicleListRideAdapter;
     VehiclePagerAdapter pagerAdapter;
     LatLng latLngOrigin, latLngDestination;
 
@@ -218,6 +208,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Calendar calendar;
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
+
 
     @Override
     protected int createLayout() {
@@ -258,12 +249,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     e.printStackTrace();
                 }
             }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Constants.hideLoader();
-                Log.e("rise vo", "" + error.getMessage());
-            }
+        }, error -> {
+            Constants.hideLoader();
+            Log.e("rise vo", "" + error.getMessage());
         }) {
             @Override
             protected Map<String, String> getParams() {
@@ -278,6 +266,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         queue.add(sr);
 
     }
+
+
 
     private String strToken = "";
 
@@ -316,6 +306,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     protected void bindData() {
+        Constants.isLiftOnGoing = false;
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
         createLocationRequest();
@@ -352,10 +343,15 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        // Log and toast
                     }
                 });
         // mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        presenter.getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
     }
 
     @Override
@@ -378,7 +374,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select pickup location");
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
-                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase("Select Time")) {
+                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase(getContext().getString(R.string.select_date_time))) {
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
@@ -391,18 +387,17 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select pickup location");
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
-                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase("Select Time")) {
+                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase(getContext().getString(R.string.select_date_time))) {
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        rate_per_km = Integer.parseInt(etkm.getText().toString().trim());
+//                        rate_per_km = Integer.parseInt(etkm.getText().toString().trim());
                         if (pagerAdapter != null) {
                             onclickVehicle(data.get(PagerPosition));
                         } else {
                             onclickVehicle(data.get(0));
                         }
-//                      presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                     }
                 }
                 break;
@@ -447,11 +442,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             case R.id.imageViewNotification:
                 presenter.openNotification();
                 break;
-//            case R.id.btnSubmit:
-//                if (etkm.getText().toString().trim().length() > 0) {
-//                    onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
-//                }
-//                break;
             case R.id.layoutPickupLocation:
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
@@ -464,6 +454,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutGiveLift:
+                if (!isOfferLift){
+                    presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                }
                 isMultiCheck = true;
                 layoutGiveLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
                 layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg_white));
@@ -486,7 +479,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 if(editTextDropLocation.getText().toString().length()>0) {
                     textViewSelectSeat.setText(seat + " Seats");
                 }
-
                 break;
             case R.id.callButton:
                 if (sos.isEmpty()) {
@@ -517,9 +509,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             if (location != null) {
                 currentLocation = location;
                 mapFragment.getMapAsync(HomeFragment.this);
-                //   Toast.makeText(getActivity(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-
-
             }
         });
         task.addOnFailureListener(new OnFailureListener() {
@@ -560,28 +549,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
-
         // Zoom in the Google Map
 //        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 //        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-    /*    googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                googleMap.clear();
-            }
-        });
-        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-
-                MarkerOptions markerOptions = new MarkerOptions().position(googleMap.getCameraPosition().target)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
-                googleMap.addMarker(markerOptions);
-                editTextPickupLocation.setText(getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude));
-
-            }
-        });*/
         mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker arg0) {
@@ -657,14 +628,15 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     double currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                     double currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0);
                     Bundle completeAddress = data.getBundleExtra("fullAddress");
-                    /* data in completeAddress bundle
-                    "fulladdress"
-                    "city"
-                    "state"
-                    "postalcode"
-                    "country"
-                    "addressline1"
-                    "addressline2"
+                    /**
+                     * data in completeAddress bundle
+                     "fulladdress"
+                     "city"
+                     "state"
+                     "postalcode"
+                     "country"
+                     "addressline1"
+                     "addressline2"
                      */
 
                     if (locationSelect == 1) {
@@ -691,6 +663,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     .title("dropoff"));
                             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
+
                             new GetDirection().execute(origin, destination);
 
                         } else {
@@ -725,7 +698,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
                             new GetDirection().execute(origin, destination);
                             //create lift
-                            presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                            if (isMultiCheck) {
+                                presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                            }
                         }
 
                     } else {
@@ -742,9 +717,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         checkPointsList.get(listPos).setLongi(currentLongitude);
                         bottomSheetCheckPointsDialog.nofityAdapter();
                         Log.e("Check List Size : ", "" + checkPointsList.size());
-//                        textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
                         refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
-
                     }
                 }
             } catch (Exception ex) {
@@ -761,7 +734,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
-
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
@@ -818,8 +790,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         myHour = hour = calendar.get(Calendar.HOUR_OF_DAY);
         myMinute = minute = calendar.get(Calendar.MINUTE);
         showDialog(getActivity(), "Time Picker");
-//        TimePickerDialog  timePickerDialog = new TimePickerDialog(getActivity(), HomeFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-//        timePickerDialog.show();
     }
 
     public void showDialog(Activity activity, String msg) {
@@ -828,54 +798,31 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.time_picker_dialog);
 
-//        TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
-//        text.setText(msg);
         TimePicker simpleTimePicker = (TimePicker) dialog.findViewById(R.id.simpleTimePicker);
-        simpleTimePicker.setIs24HourView(false); // used to display AM/PM mode
-        // perform set on time changed listener event
-//        Calendar myCalender = Calendar.getInstance();
-//        simpleTimePicker.setCurrentHour(myCalender.get(Calendar.HOUR));
-//        simpleTimePicker.setCurrentMinute(myCalender.get(Calendar.MINUTE));
-//        updateTime(myCalender.get(Calendar.HOUR),myCalender.get(Calendar.MINUTE));
+        simpleTimePicker.setIs24HourView(false);
         simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                // display a toast with changed values of time picker
-//                Toast.makeText(getActivity(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
                 myHour = hourOfDay;
                 myMinute = minute;
-
-
-//                time.setText("Time is :: " + hourOfDay + " : " + minute); // set the current time in text view
             }
         });
         TextView dialogButton = dialog.findViewById(R.id.btn_dialog);
         TextView btn_cancel = dialog.findViewById(R.id.btn_cancel);
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
+        dialogButton.setOnClickListener(v -> {
+            Calendar myCalender = Calendar.getInstance();
+            myCalender.set(myYear, myMonth, myday, myHour, myMinute);
+            dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
+            liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
+            textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
+            dialog.dismiss();
         });
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar myCalender = Calendar.getInstance();
-                myCalender.set(myYear, myMonth, myday, myHour, myMinute);
-                dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
-                liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
-                textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
-                dialog.dismiss();
-            }
-        });
-
         dialog.show();
-
     }
 
     // Used to convert 24hr format to 12hr format with AM/PM values
     private void updateTime(int hours, int mins) {
-
         String timeSet = "";
         if (hours > 12) {
             hours -= 12;
@@ -887,18 +834,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             timeSet = "PM";
         else
             timeSet = "AM";
-
-
         String minutes = "";
         if (mins < 10)
             minutes = "0" + mins;
         else
             minutes = String.valueOf(mins);
-
-        // Append in a StringBuilder
         String aTime = new StringBuilder().append(hours).append(':')
                 .append(minutes).append(" ").append(timeSet).toString();
-
         textViewSelectDateTime.setText(aTime);
     }
 
@@ -910,11 +852,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         myCalender.set(myYear, myMonth, myday, myHour, myMinute);
         dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
         liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
-
         textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
     }
-
-    RecyclerView recyclerViewMyVehicle;
     ViewPager vehiclePager;
     EditText etkm;
     LinearLayout llrate;
@@ -1010,43 +949,81 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
         });
 
-        pagerAdapter = new VehiclePagerAdapter(getContext(), data);
-        vehiclePager.setAdapter(pagerAdapter);
-        indicator.setViewPager(vehiclePager);
-        etkm.setText("" + data.get(0).getRatePerKm());
-        vehiclePager.setCurrentItem(PagerPosition);
-        vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
 
+        if(data!=null){
+            if(data.size()>0){
+                if(data.get(0).getType().equals("two_wheeler")){
+                    oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                    twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    twoTxt.setVisibility(View.GONE);
+                    threeTxt.setVisibility(View.GONE);
+                    fourTxt.setVisibility(View.GONE);
+                    fiveTxt.setVisibility(View.GONE);
+                    seat = "1";
+                    etkm.setText("" + data.get(0).getRatePerKm());
+                }
             }
+            pagerAdapter = new VehiclePagerAdapter(getContext(), data);
+            vehiclePager.setAdapter(pagerAdapter);
+            indicator.setViewPager(vehiclePager);
+            vehiclePager.setCurrentItem(PagerPosition);
+            vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
 
-            @Override
-            public void onPageSelected(final int i) {
-                PagerPosition = i;
-                etkm.setText("" + data.get(i).getRatePerKm());
-                rate_per_km = data.get(i).getRatePerKm();
-            }
+                }
 
-            @Override
-            public void onPageScrollStateChanged(int i) {
+                @Override
+                public void onPageSelected(final int i) {
+                    if(data.get(i).getType().equals("two_wheeler")){
+                        oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                        twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        twoTxt.setVisibility(View.GONE);
+                        threeTxt.setVisibility(View.GONE);
+                        fourTxt.setVisibility(View.GONE);
+                        fiveTxt.setVisibility(View.GONE);
+                        seat = "1";
+                    }else {
+                        twoTxt.setVisibility(View.VISIBLE);
+                        threeTxt.setVisibility(View.VISIBLE);
+                        fourTxt.setVisibility(View.VISIBLE);
+                        fiveTxt.setVisibility(View.VISIBLE);
+                    }
+                    PagerPosition = i;
+                    etkm.setText("" + data.get(i).getRatePerKm());
+                    rate_per_km = data.get(i).getRatePerKm();
+                }
 
-            }
-        });
+                @Override
+                public void onPageScrollStateChanged(int i) {
+                }
+            });
+        }
+
         if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
             vehicleLayout.setVisibility(View.GONE);
             llrate.setVisibility(View.GONE);
+            twoTxt.setVisibility(View.VISIBLE);
+            threeTxt.setVisibility(View.VISIBLE);
+            fourTxt.setVisibility(View.VISIBLE);
+            fiveTxt.setVisibility(View.VISIBLE);
         } else {
             vehicleLayout.setVisibility(View.VISIBLE);
             llrate.setVisibility(View.VISIBLE);
         }
 
         b1.setOnClickListener(v -> {
-            rate_per_km =  Integer.parseInt(etkm.getText().toString().trim());
             textViewSelectSeat.setText(seat + " Seat");
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                 textViewSelectSeat.setText(seat + " Seats");
             } else {
+                rate_per_km =  Integer.parseInt(etkm.getText().toString().trim());
                 textViewSelectSeat.setText("" + data.get(PagerPosition).getModel() + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
             }
             d.dismiss();
@@ -1094,6 +1071,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setVehicle(List<Datum> data) {
         if (data.size() > 0) {
             this.data = data;
+            isOfferLift = true;
             vehicle_name = data.get(0).getModel();
             rate_per_km = data.get(0).getRatePerKm();
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
@@ -1101,7 +1079,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             } else {
                 textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
             }
-
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
             presenter.openMyVehicle();
@@ -1110,11 +1087,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void setCreateRideData(CreateLiftResponse createRideData) {
-//        showMessage("Ride Request Send successfully");
         checkPointsList.clear();
         wayPoints = "";
         showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage());
-//        layoutRideVehicle.setVisibility(View.GONE);
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
@@ -1124,12 +1099,18 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     @Override
+    public void setOnGoingData(InnerGoingResponse onGoingData) {
+        if(onGoingData.getLifts().size()>0){
+            Constants.isLiftOnGoing = true;
+//            layoutRide.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onclickVehicle(Datum s) {
         List<String> data = new ArrayList<>();
         String listString = "";
         JSONArray jsonArray = new JSONArray();
-//        if (checkPointsList.size() > 1) {
-
         for (int i = 0; i < checkPointsList.size(); i++) {
             JSONObject jsonObject = new JSONObject();
             if (!checkPointsList.get(i).getAddress().contains("Select Checkpoints")) {
@@ -1150,7 +1131,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 listString = String.join(", ", data);
             }
         }
-//        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, "{" + listString + "}", dateTime, liftTime);
         presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), "" + rate_per_km);
     }
 
@@ -1246,8 +1226,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
 
         protected String doInBackground(String... args) {
-//            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=22.7425069,75.8850649&destination=26.5638,78.7861&waypoints=23.1765,75.7885|22.9676,76.0534&key=AIzaSyA7SV33I2sYhbd9SiUo9b75qpGOS9ZNT5I&sensor=false";
-//            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=22.7425069,75.8850649&destination=26.5638,78.7861&waypoints=23.1764665,75.7885163|23.1764665,75.7885163|23.1764665,75.7885163&key=AIzaSyA7SV33I2sYhbd9SiUo9b75qpGOS9ZNT5I&sensor=false";
             String stringUrl = "";
             distanceString = "";
             if (!wayPoints.equals("")) {
@@ -1255,7 +1233,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             } else {
                 stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
             }
-
             Log.e("URL : ", "" + stringUrl);
             StringBuilder response = new StringBuilder();
             try {
@@ -1298,13 +1275,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     String[] total = distance.getString("text").split(" ");
                     totalDistance += Float.parseFloat(total[0]);
                 }
-                
-                /*JSONObject steps = legs.getJSONObject(0);
-                JSONObject distance = steps.getJSONObject("distance");*/
                 distanceString = "" + totalDistance + " Km";
                 Log.e("Total Distance : ", "" + distanceString);
-//                textkm.setText("" + distanceString);
-//                textkm.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1324,28 +1296,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 dest = pontos.get(i + 1);
                 try {
-                    //here is where it will draw the polyline in your map
                     polyline = mGoogleMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(src.latitude, src.longitude),
                                     new LatLng(dest.latitude, dest.longitude))
                             .width(7).color(Color.GREEN).geodesic(true));
-
-
                 } catch (NullPointerException e) {
                     Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
                 } catch (Exception e2) {
                     Log.e("Error", "Exception onPostExecute: " + e2.toString());
                 }
-
             }
             try {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(src1);
                 builder.include(dest);
-
-                   /* builder.include(latLngOrigin);
-                    builder.include(latLngDestination);*/
-
                 LatLngBounds bounds = builder.build();
 //                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                 int padding = 250; // offset from edges of the map in pixels
@@ -1361,7 +1325,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private List<LatLng> decodePoly(String encoded) {
-
         List<LatLng> poly = new ArrayList<LatLng>();
         int index = 0, len = encoded.length();
         int lat = 0, lng = 0;
@@ -1469,6 +1432,4 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
-
-
 }

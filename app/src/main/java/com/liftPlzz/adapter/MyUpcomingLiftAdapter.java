@@ -63,52 +63,69 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Lift lift = verifiedLists.get(position);
+        holder.matchFoundBtn.setText("" + lift.getFindMatch() + " " + context.getResources().getString(R.string.match_found));
+        holder.requestBtn.setText("" + lift.getTotalRequest() + " " + context.getResources().getString(R.string.request));
         if (lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift))) {
             //find lift
             holder.llpoint.setVisibility(View.GONE);
             holder.tvLiftType.setText(lift.getLiftType());
-            holder.btnRequest.setText("" + lift.getFindMatch() + " " + context.getResources().getString(R.string.match_found));
+//            holder.btnRequest.setText("" + lift.getFindMatch() + " " + context.getResources().getString(R.string.match_found));
         } else {
             //offer lift
             holder.llpoint.setVisibility(View.VISIBLE);
             holder.tvLiftType.setText(lift.getLiftType());
-            holder.btnRequest.setText("" + lift.getTotalRequest() + " " + context.getResources().getString(R.string.request));
-            if (lift.getIsBooked() == 1) {
+//            holder.btnRequest.setText("" + lift.getTotalRequest() + " " + context.getResources().getString(R.string.request));
+            /*if (lift.getIsBooked() == 1) {
                 holder.btnRequest.setVisibility(View.GONE);
-            }
+            }*/
         }
         //todo if ride_start will be 1 it will show the ride start button
         if (lift.getRideStart() == 1) {
             holder.tvStartRide.setVisibility(View.VISIBLE);
             holder.btn_share_lift.setVisibility(View.VISIBLE);
             holder.btn_same_rute.setVisibility(View.VISIBLE);
-            holder.btn_same_rute.setText(lift.getSameroutevehicle()+" Same Route");
+            holder.btn_same_rute.setText(lift.getSameroutevehicle() + " Same Route");
         } else {
             holder.tvStartRide.setVisibility(View.GONE);
             holder.btn_share_lift.setVisibility(View.GONE);
             holder.btn_same_rute.setVisibility(View.GONE);
         }
-        holder.tvStartRide.setVisibility(View.VISIBLE);
-        holder.btn_share_lift.setVisibility(View.VISIBLE);
+        /*holder.tvStartRide.setVisibility(View.VISIBLE);
+        holder.btn_share_lift.setVisibility(View.VISIBLE);*/
         //        if   "is_booked": 0,      then this button will be hide
 //        if   "is_booked": 1,    then 'Partner details' button will show,
 //        if   "is_booked": 0,      then   '0 match found' button will be same
 //        if 'is_booked': 1,   then '0 match found' button will be hide and will show  'driver-profile
         if (lift.getIsBooked() == 0) {
-            holder.btnPartnet.setVisibility(View.GONE);
+            holder.partnerBtn.setVisibility(View.GONE);
         } else {
-            holder.btnPartnet.setVisibility(View.VISIBLE);
-            holder.btnRequest.setText(context.getResources().getString(R.string.driver_profile));
+            holder.partnerBtn.setVisibility(View.VISIBLE);
         }
         holder.textViewTitle.setText(lift.getTitle());
         holder.textViewRideId.setText(context.getString(R.string.lift_id) + lift.getId());
         holder.textViewSeats.setText(context.getString(R.string.seat) + lift.getPaidSeats());
         holder.textViewDateTime.setText(lift.getLiftDate());
 
+
         //textRateparkm,textPoints
-        holder.textRateparkm.setText("Rate per km : "+lift.getRate_per_km());
-        holder.textPoints.setText("Total points : "+lift.getTotal_points());
-        holder.textDistancekm.setText("Distance : "+lift.getTotalDistance()+" km");
+        holder.textRateparkm.setText("Rate per km : " + lift.getRate_per_km());
+        holder.textPoints.setText("Total points : " + lift.getTotal_points());
+        holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
+
+        if (lift.getLiftType().equals(context.getResources().getString(R.string.find_lift))) {
+            if (lift.getIs_user_start() == 1) {
+                holder.tvStartRide.setText(context.getResources().getString(R.string.end_ride));
+            } else {
+                holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
+            }
+        } else {
+            if (lift.getIs_driver_start() == 1) {
+                holder.tvStartRide.setText(context.getResources().getString(R.string.end_ride));
+            } else {
+                holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
+            }
+        }
+
 
         holder.tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,10 +137,33 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         });
 
 
-        holder.btnRequest.setOnClickListener(new View.OnClickListener() {
+        if (lift.getFindMatch() == 0) {
+            holder.matchFoundBtn.setVisibility(View.GONE);
+        }
+        holder.matchFoundBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.btnRequest.getText().toString()
+                if (lift.getFindMatch() != null && lift.getFindMatch() != 0) {
+                    itemListener.onMatchClick(lift);
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.no_matches), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        if (lift.getTotalRequest() == 0) {
+            holder.requestBtn.setVisibility(View.GONE);
+        }
+
+        holder.requestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lift.getTotalRequest() != null && lift.getTotalRequest() != 0) {
+                    itemListener.onRequestClick(lift);
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.no_request_found), Toast.LENGTH_SHORT).show();
+                }
+                /*if (holder.btnRequest.getText().toString()
                         .equalsIgnoreCase(context.getResources().getString(R.string.driver_profile))) {
                     itemListener.onDriverProfile(lift);
                 } else if (lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift))) {
@@ -138,12 +178,12 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                     } else {
                         Toast.makeText(context, context.getResources().getString(R.string.no_request_found), Toast.LENGTH_SHORT).show();
                     }
-                }
+                }*/
 
             }
         });
 
-        holder.btnPartnet.setOnClickListener(new View.OnClickListener() {
+        holder.partnerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (itemListener != null) {
@@ -152,27 +192,33 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             }
         });
 
+
         holder.tvStartRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, StartRideActivity.class);
                 intent.putExtra(Constants.LIFT_OBJ, lift);
-
                 context.startActivity(intent);
             }
         });
+
+
     }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.textViewTitle)
         AppCompatTextView textViewTitle;
         @BindView(R.id.tv_lift_type)
         AppCompatTextView tvLiftType;
 
-        @BindView(R.id.btn_requst_match)
-        AppCompatButton btnRequest;
+        @BindView(R.id.partnerBtn)
+        AppCompatButton partnerBtn;
 
-        @BindView(R.id.btn_partnet)
-        AppCompatButton btnPartnet;
+        @BindView(R.id.requestBtn)
+        AppCompatButton requestBtn;
+
+        @BindView(R.id.matchFoundBtn)
+        AppCompatButton matchFoundBtn;
 
         @BindView(R.id.imMore)
         ImageView imMore;

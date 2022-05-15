@@ -1208,6 +1208,22 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             }
         }
 
+        if(vehicleList.size()>0){
+            if(vehicleList.get(0).getType().equals("two_wheeler")){
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                twoTxt.setVisibility(View.GONE);
+                threeTxt.setVisibility(View.GONE);
+                fourTxt.setVisibility(View.GONE);
+                fiveTxt.setVisibility(View.GONE);
+                seat = "1";
+                etkm.setText("" + vehicleList.get(0).getRatePerKm());
+            }
+        }
+
         pagerAdapter = new VehiclePagerAdapter(getContext(), vehicleList);
         vehiclePager.setAdapter(pagerAdapter);
         indicator.setViewPager(vehiclePager);
@@ -1227,6 +1243,23 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
             @Override
             public void onPageSelected(final int i) {
+                if(vehicleList.get(i).getType().equals("two_wheeler")){
+                    oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                    twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    twoTxt.setVisibility(View.GONE);
+                    threeTxt.setVisibility(View.GONE);
+                    fourTxt.setVisibility(View.GONE);
+                    fiveTxt.setVisibility(View.GONE);
+                    seat = "1";
+                }else {
+                    twoTxt.setVisibility(View.VISIBLE);
+                    threeTxt.setVisibility(View.VISIBLE);
+                    fourTxt.setVisibility(View.VISIBLE);
+                    fiveTxt.setVisibility(View.VISIBLE);
+                }
                 PagerPosition = i;
                 etkm.setText("" + vehicleList.get(i).getRatePerKm());
                 selectedVehicleData = vehicleList.get(i);

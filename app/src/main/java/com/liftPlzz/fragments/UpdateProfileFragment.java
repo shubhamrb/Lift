@@ -3,6 +3,7 @@ package com.liftPlzz.fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,9 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +32,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
@@ -36,12 +45,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.liftPlzz.R;
-import com.liftPlzz.adapter.ViewPagerAdapter;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.SocialImage;
 import com.liftPlzz.model.createProfile.Response;
 import com.liftPlzz.model.createProfile.User;
-import com.liftPlzz.model.getVehicle.Datum;
+import com.liftPlzz.model.getsetting.Datum;
 import com.liftPlzz.presenter.UpdateProfilePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.UpdateProfileView;
@@ -54,6 +62,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +90,8 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     AppCompatEditText editTextName;
     @BindView(R.id.editTextDesignation)
     AppCompatEditText editTextDesignation;
+    @BindView(R.id.professionalTextView)
+    TextView professionalTextView;
     @BindView(R.id.editTextMobile)
     AppCompatEditText editTextMobile;
     @BindView(R.id.editTextEmail)
@@ -101,8 +112,16 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     AppCompatImageView imageViewAddImage;
     @BindView(R.id.viewPagerMain)
     ViewPager viewPagerMain;
+    @BindView(R.id.layoutProfessionalStatus)
+    LinearLayout layoutProfessionalStatus;
+
+    @BindView(R.id.genderGroup)
+    RadioGroup genderGroup;
+
     ViewPagerAdapter mViewPagerAdapter;
     final Calendar myCalendar = Calendar.getInstance();
+    String professionSelection = "";
+    String professional = "";
 
     static User user;
 
@@ -136,9 +155,20 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             editTextEmail.setText(user.getEmail());
             editTextMobile.setText(user.getMobile());
             editTextDesignation.setText(user.getDesignation());
+            professionalTextView.setText(user.getDesignation());
             editTextAboutUser.setText(user.getAboutMe());
-            mViewPagerAdapter = new ViewPagerAdapter(getActivity(), user.getSocialImages());
+            professional = user.getDesignation();
+            if (!user.getGender().isEmpty()) {
+                if (user.getGender().equals("Male")) {
+                    genderGroup.check(R.id.maleRadio);
+                } else if (user.getGender().equals("Female")) {
+                    genderGroup.check(R.id.femaleRadio);
+                } else if (user.getGender().equals("Not to Share")) {
+                    genderGroup.check(R.id.otherRadio);
+                }
+            }
 
+            mViewPagerAdapter = new ViewPagerAdapter(getActivity(), user.getSocialImages());
             // Adding the Adapter to the ViewPager
             viewPagerMain.setAdapter(mViewPagerAdapter);
         }
@@ -146,9 +176,12 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
 
     private int mYear, mMonth, mDay, mHour, mMinute;
 
-    @OnClick({R.id.imageViewBackContact, R.id.buttonUpdate, R.id.imageViewAddImage, R.id.txtDOB})
+    @OnClick({R.id.layoutProfessionalStatus, R.id.imageViewBackContact, R.id.buttonUpdate, R.id.imageViewAddImage, R.id.txtDOB})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.layoutProfessionalStatus:
+                showProfessionalDialog(professional);
+                break;
             case R.id.imageViewAddImage:
                 ImagePicker.Companion.with(this)
                         .crop(1080, 700)                    //Crop image(Optional), Check Customization for more option
@@ -184,9 +217,9 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             case R.id.buttonUpdate:
                 if (editTextName.getText().toString().isEmpty()) {
                     showMessage("Please enter name");
-                } else if (editTextDesignation.getText().toString().isEmpty()) {
+                } else /*if (editTextDesignation.getText().toString().isEmpty()) {
                     showMessage("Please enter designation");
-                } else if (editTextEmail.getText().toString().isEmpty()) {
+                } else*/ if (editTextEmail.getText().toString().isEmpty()) {
                     showMessage("Please enter email");
                 } else if (editTextMobile.getText().toString().isEmpty()) {
                     showMessage("Please enter mobile number");
@@ -194,13 +227,125 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     showMessage("Please enter Emergency number");
                 } else if (editTextAboutUser.getText().toString().isEmpty()) {
                     showMessage("Please enter About Yourself");
+                } else if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
+                        genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
+                        genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+                    String gender = "";
+                    if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio) {
+                        gender = "Male";
+                    } else if (genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio) {
+                        gender = "Female";
+                    } else if (genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+                        gender = "Not to Share";
+                    }
+                    presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
+                            editTextName.getText().toString(),
+                            professionalTextView.getText().toString(),
+                            editTextEmail.getText().toString(),
+                            gender, editTextMobile.getText().toString(),
+                            editTextAboutUser.getText().toString(),
+                            editsosnumber.getText().toString());
                 } else {
-                    presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""), editTextName.getText().toString(), editTextDesignation.getText().toString(), editTextEmail.getText().toString(), editTextMobile.getText().toString(), editTextAboutUser.getText().toString(), editsosnumber.getText().toString());
-
+                    showMessage("Please Select Gender");
                 }
                 break;
         }
     }
+
+    /**
+     * Show Professional Status dialog
+     */
+    public void showProfessionalDialog(String professional) {
+        professionSelection = "";
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.select_professional_dialog);
+        TextView cancelBtn = dialog.findViewById(R.id.cancelBtn);
+        TextView okayBtn = dialog.findViewById(R.id.okayBtn);
+        TextView titleTxt = dialog.findViewById(R.id.titleTxt);
+        EditText otherEdit = dialog.findViewById(R.id.otherEdit);
+        AppCompatSpinner professionalSpinner = dialog.findViewById(R.id.professionalSpinner);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Select One");
+        list.add("Sales");
+        list.add("Marketing");
+        list.add("HR");
+        list.add("Account");
+        list.add("Back Office");
+        list.add("Govt. Employee");
+        list.add("Self Employed");
+        list.add("Production");
+        list.add("Warehouse");
+        list.add("Others");
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, list);
+        professionalSpinner.setAdapter(adapter);
+        if (professional != null) {
+            for (int i = 0; i < list.size(); i++) {
+                if (professional.equals(list.get(i))) {
+                    professionalSpinner.setSelection(i);
+                    break;
+                } else {
+                    if (professional.equals("")) {
+                        professionalSpinner.setSelection(0);
+                    } else {
+                        professionalSpinner.setSelection(i);
+                    }
+                }
+            }
+        }
+        professionalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0) {
+                    if (list.get(position).equals("Others")) {
+                        otherEdit.setVisibility(View.VISIBLE);
+                        otherEdit.setText(professional);
+                    } else {
+                        otherEdit.setVisibility(View.GONE);
+                    }
+                    professionSelection = list.get(position);
+                } else {
+                    otherEdit.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        titleTxt.setText(professional);
+
+        cancelBtn.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        okayBtn.setOnClickListener(v -> {
+
+            if (professionalSpinner.getSelectedItemPosition() != 0) {
+                if (professionSelection.equals("Others")) {
+                    if (otherEdit.getText().toString().trim().equals("")) {
+                        Toast.makeText(getContext(), "Please fill above details", Toast.LENGTH_SHORT).show();
+                    } else {
+                        presenter.updateSetting(sharedPreferences.getString(Constants.TOKEN, ""), 8, otherEdit.getText().toString().trim());
+                        professionalTextView.setText(otherEdit.getText().toString().trim());
+                        dialog.dismiss();
+                    }
+                } else {
+                    presenter.updateSetting(sharedPreferences.getString(Constants.TOKEN, ""), 8, professionSelection);
+                    professionalTextView.setText(professionSelection);
+                    dialog.dismiss();
+                }
+            } else {
+                Toast.makeText(getContext(), "Please select one of them", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -273,6 +418,32 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     @Override
     public void setProfileData(Response response) {
         getActivity().onBackPressed();
+    }
+
+    @Override
+    public void setUpdateSetting(Boolean status) {
+        if (status) {
+            String gender = "";
+            if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
+                    genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
+                    genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+                if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio) {
+                    gender = "Male";
+                } else if (genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio) {
+                    gender = "Female";
+                } else if (genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+                    gender = "Not to Share";
+                }
+            }
+
+            presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
+                    editTextName.getText().toString(),
+                    professionalTextView.getText().toString(),
+                    editTextEmail.getText().toString(),
+                    gender, editTextMobile.getText().toString(),
+                    editTextAboutUser.getText().toString(),
+                    editsosnumber.getText().toString());
+        }
     }
 
     @Override

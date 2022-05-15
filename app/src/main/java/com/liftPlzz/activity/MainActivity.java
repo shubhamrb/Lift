@@ -1,9 +1,12 @@
 package com.liftPlzz.activity;
 
+import static com.liftPlzz.utils.Constants.NOTIFICATION_TYPE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -61,9 +64,29 @@ public class MainActivity extends AppNavigationProvider {
                 getSharedPreferences(Constants.SHARED_PREF_INTRO, Context.MODE_PRIVATE);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
+        NOTIFICATION_TYPE = "";
+        Intent intent = getIntent();
+        if(intent.getStringExtra("id")!=null){
+            String id = intent.getStringExtra("id");
+            String type = intent.getStringExtra("type");
+            Log.e("ID", ""+id);
+            Log.e("TYPE", ""+type);
+        }
+
         if (sharedPreferencesIntro.getBoolean(Constants.IS_INTRO, false)) {
             if (sharedPreferences.getBoolean(Constants.IS_LOGIN, false)) {
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                if(intent.getStringExtra("id")!=null){
+                    String id = intent.getStringExtra("id");
+                    String type = intent.getStringExtra("type");
+                    Log.e("ID", ""+id);
+                    Log.e("TYPE", ""+type);
+                    NOTIFICATION_TYPE = type;
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class)
+                            .putExtra("id",id)
+                            .putExtra("type",type));
+                }else {
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                }
                 finish();
             } else {
                 startActivity(new Intent(MainActivity.this, AuthActivity.class));

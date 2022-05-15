@@ -28,11 +28,15 @@ public class Constants {
     public static final String ANDROID = "android";
 
     public static ProgressDialog dialog;
+    public static final String IS_DRIVER = "IS_DRIVER";
     public static final String LIFT_ID = "LIFT_ID";
     public static final String LIFT_OBJ = "LIFT_obj";
     public static final String SEATS_NO = "seats_no";
     public static final String VEHICLE_TYPE = "vehicle_type";
     public static final String SUB_CATEGORY_ID = "sub_category_id";
+
+    public static String NOTIFICATION_TYPE = "";
+    public static boolean isLiftOnGoing = false;
 
 
     public static void showLoader(Context context) {

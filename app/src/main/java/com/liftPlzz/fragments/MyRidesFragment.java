@@ -72,6 +72,34 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
                 new SectionPagerMyRidesAdapter(getChildFragmentManager(), 2);
         viewpagermyride.setAdapter(sectionPagerAdapter);
         viewpagermyride.setOffscreenPageLimit(1);
+        viewpagermyride.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if (i == 0) {
+                    layoutupcoming.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));
+                    layoutcompleted.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                    textViewCar.setTextColor(getResources().getColor(R.color.colorWhite));
+                    textCompleted.setTextColor(getResources().getColor(R.color.colorBlack));
+                    viewpagermyride.setCurrentItem(i);
+                } else {
+                    layoutcompleted.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));
+                    layoutupcoming.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                    textViewCar.setTextColor(getResources().getColor(R.color.colorBlack));
+                    textCompleted.setTextColor(getResources().getColor(R.color.colorWhite));
+                    viewpagermyride.setCurrentItem(i);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
     }
 

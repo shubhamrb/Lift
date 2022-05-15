@@ -34,7 +34,6 @@
         />
 
     <fragment
-
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map_matching"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -48,7 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dp_10">
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_start_ride"

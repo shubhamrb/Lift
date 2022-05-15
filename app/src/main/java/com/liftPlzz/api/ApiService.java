@@ -23,6 +23,8 @@ import com.liftPlzz.model.getTicketList.ResponseTicketList;
 import com.liftPlzz.model.getVehicle.GetVehicleListMainResponse;
 import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.model.matchingridemodel.MatchingRideByCategoryResponse;
+import com.liftPlzz.model.on_going.InnerGoingResponse;
+import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.partnerdetails.Example;
 import com.liftPlzz.model.resendOtp.ResendOtpResponse;
 import com.liftPlzz.model.ridebyvehicletypemodel.DriverByTypeReponse;
@@ -185,11 +187,11 @@ public interface ApiService {
                                                  @Field("token") String token,
                                                  @Field("name") String name,
                                                  @Field("email") String email,
+                                                 @Field("gender") String gender,
                                                  @Field("mobile") String mobile,
                                                  @Field("designation") String designation,
                                                  @Field("about_me") String about_me,
                                                  @Field("sos") String sos);
-
 
     @FormUrlEncoded
     @POST("find-lift")
@@ -364,6 +366,21 @@ public interface ApiService {
                                        @Field("client") String client,
                                        @Field("user_id") int userId);
 
+
+    @FormUrlEncoded
+    @POST("driver-detail")
+    Call<UserInfoModel> getDriverDetails(@Field("api_key") String api_key,
+                                         @Field("client") String client,
+                                         @Field("token") String token,
+                                         @Field("lift_id") int lift_ID);
+
+    @FormUrlEncoded
+    @POST("my-ongoing-ride")
+    Call<MainOnGoingResponse> rideOnGoing(@Field("api_key") String api_key,
+                                          @Field("client") String client,
+                                          @Field("token") String token);
+
+
     @FormUrlEncoded
     @POST("cancel-invitation-for-lift")
     Call<ResponseBody> cancelInvitation(@Field("api_key") String api_key,
@@ -529,6 +546,8 @@ public interface ApiService {
                                         @Field("code") int code,
                                         @Field("lat") double lat,
                                         @Field("long") double logitute);
+
+
 
 
 

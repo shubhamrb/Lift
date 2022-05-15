@@ -6,6 +6,6 @@ import com.liftPlzz.model.createProfile.Response;
 
 public interface UpdateProfileView extends RootView {
     void setProfileData(Response response);
-
+    void setUpdateSetting(Boolean response);
     void setImageData(Response response);
 }

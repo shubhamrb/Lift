@@ -47,7 +47,6 @@ public class LocationUpdatesService extends Service {
 
     public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
 
-
     public  static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
     public static final String EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME +
             ".started_from_notification";
@@ -142,7 +141,6 @@ public class LocationUpdatesService extends Service {
         Log.i(TAG, "Service started");
         boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
                 false);
-
         // We got here because the user decided to remove location updates from the notification.
         if (startedFromNotification) {
             removeLocationUpdates();

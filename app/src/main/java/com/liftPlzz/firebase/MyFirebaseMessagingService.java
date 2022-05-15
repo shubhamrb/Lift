@@ -130,8 +130,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
+
+        String[] mesg = messageBody.split("_");
+
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("id",mesg[1]);
+        intent.putExtra("type",mesg[2]);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
@@ -141,7 +147,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.logo_icon)
                         .setContentTitle(getString(R.string.app_name))
-                        .setContentText(messageBody)
+                        .setContentText(mesg[0])
                         .setAutoCancel(true)
                         .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                         .setSound(defaultSoundUri)
