@@ -99,7 +99,6 @@ public abstract class BaseFragment<PresenterT extends BasePresenter<ViewT>, View
     @Override
     public void showMessage(String message) {
             showMsg(message);
-
     }
 
 

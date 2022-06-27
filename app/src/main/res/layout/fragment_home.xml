@@ -23,14 +23,14 @@
         app:srcCompat="@drawable/ic_my_location_black_24dp" />
 
 
-
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/layoutRide"
-        android:layout_below="@+id/title" />
+        android:layout_below="@+id/title"/>
+
     <ImageView
         android:id="@+id/callButton"
         android:layout_width="wrap_content"
@@ -177,7 +177,7 @@
             android:id="@+id/recyclerViewCheckpoints"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/layoutDropLocation"
@@ -228,59 +228,60 @@
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_5"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:paddingTop="@dimen/dp_3"
                 android:id="@+id/textkm"
-                android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@null"
                 android:fontFamily="@font/gotham_light"
                 android:gravity="start"
                 android:hint=""
+                android:paddingTop="@dimen/dp_3"
                 android:singleLine="true"
                 android:textColor="@color/colorPrimary"
                 android:textColorHint="@color/colorBlack"
                 android:textSize="@dimen/sp_14" />
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:id="@+id/llchkpoint"
-    android:visibility="invisible"
-    android:layout_alignParentRight="true"
-    android:layout_height="wrap_content">
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                android:layout_gravity="center"
-                android:padding="@dimen/dp_5"
-                android:src="@drawable/ic_add"
-                android:layout_toLeftOf="@+id/textViewCheckpoints"
-                android:tint="@color/colorPrimary"
-                android:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:paddingTop="@dimen/dp_3"
-                android:id="@+id/textViewCheckpoints"
+            <LinearLayout
+                android:id="@+id/llchkpoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@null"
-                android:fontFamily="@font/gotham_light"
-                android:gravity="start"
                 android:layout_alignParentRight="true"
-                android:hint="Add Checkpoints"
-                android:singleLine="true"
-                android:textColor="@color/colorPrimary"
-                android:textColorHint="@color/colorBlack"
-                android:textSize="@dimen/sp_14"
-                app:drawableTint="@color/colorPrimary" />
-</LinearLayout>
+                android:visibility="invisible">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dp_25"
+                    android:layout_height="@dimen/dp_25"
+                    android:layout_gravity="center"
+                    android:layout_toLeftOf="@+id/textViewCheckpoints"
+                    android:padding="@dimen/dp_5"
+                    android:src="@drawable/ic_add"
+                    android:tint="@color/colorPrimary"
+                    android:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewCheckpoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:hint="Add Checkpoints"
+                    android:paddingTop="@dimen/dp_3"
+                    android:singleLine="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorBlack"
+                    android:textSize="@dimen/sp_14"
+                    app:drawableTint="@color/colorPrimary" />
+            </LinearLayout>
         </RelativeLayout>
 
 
@@ -318,7 +319,7 @@
                     android:gravity="start"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:text="Select Time"
+                    android:text="@string/select_date_time"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/sp_14" />
             </LinearLayout>
@@ -326,8 +327,8 @@
             <LinearLayout
                 android:id="@+id/layoutSelectSeat"
                 android:layout_width="match_parent"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -349,7 +350,6 @@
                     android:fontFamily="@font/gotham_light"
                     android:gravity="start"
                     android:padding="@dimen/dp_5"
-                    android:singleLine="true"
                     android:text="Select Seat"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/sp_14" />
@@ -358,6 +358,7 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginBottom="10sp"
             android:id="@+id/buttonLift"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

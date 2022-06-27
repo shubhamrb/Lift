@@ -12,14 +12,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +28,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -41,8 +40,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,7 +51,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -62,20 +60,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.HomeActivity;
-import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
-import com.liftPlzz.base.BaseActivity;
+import com.liftPlzz.adapter.VehiclePagerAdapter;
 import com.liftPlzz.base.BaseDailogFragment;
-import com.liftPlzz.base.BaseFragment;
-import com.liftPlzz.fragments.MyRidesFragment;
 import com.liftPlzz.model.CheckPoints;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
@@ -84,16 +77,12 @@ import com.liftPlzz.model.editlift.LiftLocationModel;
 import com.liftPlzz.model.getVehicle.Datum;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.presenter.EditLiftPresenter;
-import com.liftPlzz.presenter.HomePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.EditLiftView;
-import com.liftPlzz.views.HomeView;
 import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -103,9 +92,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.OnClick;
+import me.relex.circleindicator.CircleIndicator;
 
 
 /**
@@ -125,7 +114,8 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     @BindView(R.id.textViewLiftName)
     AppCompatTextView textViewLiftName;
 
-
+    @BindView(R.id.mainLayout)
+    RelativeLayout mainLayout;
     @BindView(R.id.layoutPickupLocation)
     LinearLayout layoutPickupLocation;
     @BindView(R.id.editTextDropLocation)
@@ -163,9 +153,15 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     int listPos;
     @BindView(R.id.recyclerViewMyVehicle)
     RecyclerView recyclerViewMyVehicle;
+    @BindView(R.id.vehiclePager)
+    ViewPager vehiclePager;
+    @BindView(R.id.indicator)
+    CircleIndicator indicator;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
-
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     LocationRequest mLocationRequest;
@@ -179,6 +175,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
     Polyline polyline;
 
+    LinearLayout llrate;
+
+    VehiclePagerAdapter pagerAdapter;
+    int PagerPosition = 0;
+
     String origin;
     String startPoint = "", endPoint = "";
     String destination;
@@ -188,6 +189,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     boolean isMultiCheck = false;
     String seat = "1";
     String dateTime, liftTime = "";
+    Datum selectedVehicleData;
 
 
     @BindView(R.id.textViewCheckpoints)
@@ -196,7 +198,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     @BindView(R.id.textkm)
     AppCompatTextView textkm;
 
-    @BindView(R.id.etkm)
     EditText etkm;
 
     @BindView(R.id.btnSubmit)
@@ -219,6 +220,13 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     Calendar calendar;
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
+
+    String wayPoints = "";
+    LatLng originLat, destinationLat;
+    List<Datum> vehicleList;
+    String rate_per_km = "";
+    String vehicleName = "";
+    int vehicleId = -1;
 
 
     ///////
@@ -252,56 +260,107 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         if (data.getCheck_point().size() > 0) {
             for (int i = 0; i < data.getCheck_point().size(); i++) {
                 list.add(data.getCheck_point().get(i));
-
                 CheckPoints checkPoints = new CheckPoints();
                 checkPoints.setId(checkPointsList.size() + 1);
                 checkPoints.setAddress("Select Checkpoints " + (checkPointsList.size() + 1));
                 checkPointsList.add(checkPoints);
-
                 checkPointsList.get(listPos).setAddress(new StringBuilder().append
                         (list.get(i).getCountry()).append
                         (list.get(i).getCity()).append(",").append
                         (list.get(i).getState()).toString());
-
                 double currentLatitude = Double.parseDouble(list.get(i).getLatLng().split(",")[0]);//data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                 double currentLongitude = Double.parseDouble(list.get(i).getLatLng().split(",")[1]);
-                LatLng dropLocation = new LatLng(currentLatitude, currentLongitude);
-                LatLng latLngDestination = new LatLng(currentLatitude, currentLongitude);
                 checkPointsList.get(listPos).setLat(currentLatitude);
                 checkPointsList.get(listPos).setCity(list.get(i).getCity());
                 checkPointsList.get(listPos).setState(list.get(i).getState());
                 checkPointsList.get(listPos).setCountry(list.get(i).getCity());
                 checkPointsList.get(listPos).setLongi(currentLongitude);
-//        bottomSheetCheckPointsDialog.nofityAdapter();
-                String origin = "";
-                if (listPos > 0) {
-                    origin = checkPointsList.get(listPos - 1).getLat() + "," + checkPointsList.get(listPos - 1).getLongi();
-                } else {
-                    origin = destination;
-                }
-                String destination = currentLatitude + "," + currentLongitude;
-                mGoogleMap.addMarker(new MarkerOptions()
-                        .position(dropLocation)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
-                        .title("Marker in Sydney"));
-//                        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
-//                        destination = dropLocation.latitude + "," + dropLocation.longitude;
-//                        new GetDirection().execute();
 
+                String[] latLng = list.get(i).getLatLng().split(",");
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(latLng[0]), Double.parseDouble(latLng[1])))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                        .title(list.get(i).getCity()));
                 textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
                 listPos++;
             }
+            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
         }
+    }
+
+
+    public void refreshGoogleMap(ArrayList<CheckPoints> list) {
+        int checkPointsCount = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                checkPointsCount++;
+            }
+        }
+        textViewCheckpoints.setText("Checkpoints :" + checkPointsCount);
+        wayPoints = "";
+        mGoogleMap.clear();
+        try {
+            if (bottomSheetCheckPointsDialog != null) {
+                bottomSheetCheckPointsDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i == 0) {
+                if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                    builder.append("=" + list.get(0).getLat() + "," + list.get(0).getLongi());
+                    wayPoints = builder.toString();
+                }
+            } else {
+                if (i != list.size()) {
+                    if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                        builder.append("|" + list.get(i).getLat() + "," + list.get(i).getLongi());
+                    }
+                } else {
+                    if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                        builder.append("" + list.get(i).getLat() + "," + list.get(i).getLongi());
+                    }
+                }
+            }
+
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(list.get(i).getLat(), list.get(i).getLongi()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                    .title(list.get(i).getCity()));
+
+        }
+        wayPoints = builder.toString();
+        Log.e("Way Points", wayPoints);
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(originLat)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                .title("pickup"));
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(destinationLat)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                .title("dropoff"));
+
+        String source = "" + originLat.latitude + "," + originLat.longitude;
+        String destination = "" + destinationLat.latitude + "," + destinationLat.longitude;
+        Log.e("Origin ", "" + source + "\n Destination " + destination);
+        new GetDirection().execute(source, destination);
     }
 
     public void setStarLift(EditVehicleData data) {
         liftdata = data;
-        vehicle_id=data.getLift().getVehicleId();
+        vehicle_id = data.getLift().getVehicleId();
+        vehicleId = data.getLift().getVehicleId();
+
         double currentLatitude = Double.parseDouble(data.getStart_point().getLatLng().split(",")[0]);//data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
         double currentLongitude = Double.parseDouble(data.getStart_point().getLatLng().split(",")[1]);
         pickupLocation = new LatLng(currentLatitude, currentLongitude);
         latLngOrigin = new LatLng(currentLatitude, currentLongitude);
-
+        originLat = new LatLng(currentLatitude, currentLongitude);
         StringBuilder strAdd = new StringBuilder().append
                 (data.getStart_point().getLocation());
         Log.e("result ", "" + strAdd.toString() + "  ");
@@ -346,21 +405,17 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     }
 
     public void setEndLiftLoc(EditVehicleData data) {
-
         StringBuilder stringBuilder = new StringBuilder().append(data.getEnd_point().getLocation());
         editTextDropLocation.setText(stringBuilder.toString());
-
-
         double currentLatitude = Double.parseDouble(data.getEnd_point().getLatLng().split(",")[0]);//data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
         double currentLongitude = Double.parseDouble(data.getEnd_point().getLatLng().split(",")[1]);
         dropLocation = new LatLng(currentLatitude, currentLongitude);
         latLngDestination = new LatLng(currentLatitude, currentLongitude);
         Bundle completeAddress = new Bundle();
-
+        destinationLat = dropLocation;
         completeAddress.putString("country", "" + data.getEnd_point().getCountry());
         completeAddress.putString("state", "" + data.getEnd_point().getState());
         completeAddress.putString("city", "" + data.getEnd_point().getCity());
-
 
         endPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, stringBuilder.toString());
         destination = currentLatitude + "," + currentLongitude;
@@ -378,9 +433,13 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
             destination = dropLocation.latitude + "," + dropLocation.longitude;
 
-            new GetDirection().execute(origin, destination);
-
+//            new GetDirection().execute(origin, destination);
+            if (data.getCheck_point().size() == 0) {
+                ArrayList<CheckPoints> list = new ArrayList<>();
+                refreshGoogleMap(list);
+            }
         }
+
     }
 
     public void setTimeEdit(EditVehicleData data) {
@@ -397,7 +456,16 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
         textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
 
-        textViewSelectSeat.setText("" + data.getLift().getPaidSeats() + " Seat");
+
+        if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+            textViewSelectSeat.setText("" + data.getLift().getPaidSeats() + " Seat");
+        }
+
+        /*if (data.getLift().getLiftType().equals("offer")) {
+            rate_per_km = data.getLift().getRate_per_km();
+            textViewSelectSeat.setText("" + vehicleName + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
+        }*/
+
         seat = String.valueOf(data.getLift().getPaidSeats());
     }
 
@@ -469,7 +537,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
         bottomSheetCheckPointsDialog.setSelectionListner(EditLiftDaiFragment.this);
-
+        progressBar.setVisibility(View.VISIBLE);
        /* FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -491,8 +559,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
         // casetFindRideDatall api for get lift detail
         presenter.getEditVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "" + lift.getId());
-
-
+        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "");
     }
 
     @Override
@@ -509,7 +576,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
             case R.id.buttonLift:
                 //find
-                if (liftdata.getLift().getLiftType().equals("offer")) {//offer
+                if (liftdata.getLift().getLiftType().equals("offer")) {
                     if (editTextPickupLocation.getText().toString().isEmpty()) {
                         showMessage("Select pickup location");
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
@@ -520,13 +587,14 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         showMessage("Select Seats");
                     } else {
                         if (action.equalsIgnoreCase("add")) {
-                            presenter.getRepeatVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
+//                            presenter.getRepeatVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
+                            onclickVehicle(selectedVehicleData);
                         } else {
-                            presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
+//                            presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
+                            onclickVehicle(selectedVehicleData);
                         }
                     }
                 } else {
-
                     if (editTextPickupLocation.getText().toString().isEmpty()) {
                         showMessage("Select pickup location");
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
@@ -545,7 +613,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         }
                     }
                 }
-
                 break;
             case R.id.layoutCheckPoints:
                 if (isMultiCheck) {
@@ -581,15 +648,14 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 dismiss();
                 break;
             case R.id.layoutSelectDateTime:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), EditLiftDaiFragment.this, myYear, myMonth - 1, myday);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, EditLiftDaiFragment.this, myYear, myMonth - 1, myday);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
-
                 break;
 
             case R.id.btnSubmit:
                 if (etkm.getText().toString().trim().length() > 0) {
-                    onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
+                    onclickVehicle(selectedVehicleData);
                 }
                 break;
             case R.id.layoutPickupLocation:
@@ -867,7 +933,9 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         checkPointsList.get(listPos).setCountry(completeAddress.getString("country"));
                         checkPointsList.get(listPos).setLongi(currentLongitude);
                         bottomSheetCheckPointsDialog.nofityAdapter();
-                        if (listPos > 0) {
+                        refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
+
+                        /*if (listPos > 0) {
                             origin = checkPointsList.get(listPos - 1).getLat() + "," + checkPointsList.get(listPos - 1).getLongi();
                         } else {
                             origin = destination;
@@ -884,7 +952,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
                         if(bottomSheetCheckPointsDialog!=null) {
                             bottomSheetCheckPointsDialog.dismiss();
-                        }
+                        }*/
                     }
 
 
@@ -1033,29 +1101,191 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
 
     public void show() {
-
         final Dialog d = new Dialog(getActivity());
-//        d.setTitle("NumberPicker");
         d.setContentView(R.layout.dailog_seat);
-        AppCompatTextView b1 = d.findViewById(R.id.button1);
-//        Button b2 = d.findViewById(R.id.button2);
-        final NumberPicker np = d.findViewById(R.id.numberPicker1);
+        AppCompatButton b1 = d.findViewById(R.id.btnSubmit);
+        recyclerViewMyVehicle = d.findViewById(R.id.recyclerViewMyVehicle);
 
-        np.setMaxValue(5);
-        np.setMinValue(1);
-        np.setWrapSelectorWheel(true);
-        np.setOnValueChangedListener(EditLiftDaiFragment.this);
-        np.setValue(Integer.parseInt(seat));
+        vehiclePager = d.findViewById(R.id.vehiclePager);
+        CircleIndicator indicator = d.findViewById(R.id.indicator);
+
+        RelativeLayout vehicleLayout = d.findViewById(R.id.vehicleLayout);
+        llrate = d.findViewById(R.id.llrate);
+        btnSubmit = d.findViewById(R.id.btnSubmit);
+
+        etkm = d.findViewById(R.id.etkm);
+        TextView oneTxt = d.findViewById(R.id.oneTxt);
+        TextView twoTxt = d.findViewById(R.id.twoTxt);
+        TextView threeTxt = d.findViewById(R.id.threeTxt);
+        TextView fourTxt = d.findViewById(R.id.fourTxt);
+        TextView fiveTxt = d.findViewById(R.id.fiveTxt);
+
+        if (seat.equals("1")) {
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("2")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("3")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("4")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("5")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        }
+
+        oneTxt.setOnClickListener(v -> {
+            seat = "1";
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        twoTxt.setOnClickListener(v -> {
+            seat = "2";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        threeTxt.setOnClickListener(v -> {
+            seat = "3";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        fourTxt.setOnClickListener(v -> {
+            seat = "4";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        fiveTxt.setOnClickListener(v -> {
+            seat = "5";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        });
+
+        int selectedPos = -1;
+        if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+            vehicleLayout.setVisibility(View.GONE);
+            llrate.setVisibility(View.GONE);
+        } else {
+            vehicleLayout.setVisibility(View.VISIBLE);
+            llrate.setVisibility(View.VISIBLE);
+            for (int i = 0; i < vehicleList.size(); i++) {
+                if (vehicleId == vehicleList.get(i).getId()) {
+                    vehicleList.get(i).setRatePerKm(Integer.parseInt(rate_per_km));
+                    selectedPos = i;
+                }
+            }
+        }
+
+        if(vehicleList.size()>0){
+            if(vehicleList.get(0).getType().equals("two_wheeler")){
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                twoTxt.setVisibility(View.GONE);
+                threeTxt.setVisibility(View.GONE);
+                fourTxt.setVisibility(View.GONE);
+                fiveTxt.setVisibility(View.GONE);
+                seat = "1";
+                etkm.setText("" + vehicleList.get(0).getRatePerKm());
+            }
+        }
+
+        pagerAdapter = new VehiclePagerAdapter(getContext(), vehicleList);
+        vehiclePager.setAdapter(pagerAdapter);
+        indicator.setViewPager(vehiclePager);
+
+        if (vehicleList.size() > 0) {
+            if (selectedPos != -1) {
+                selectedVehicleData = vehicleList.get(selectedPos);
+            }
+        }
+        etkm.setText("" + rate_per_km);
+        vehiclePager.setCurrentItem(selectedPos);
+        vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(final int i) {
+                if(vehicleList.get(i).getType().equals("two_wheeler")){
+                    oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                    twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    twoTxt.setVisibility(View.GONE);
+                    threeTxt.setVisibility(View.GONE);
+                    fourTxt.setVisibility(View.GONE);
+                    fiveTxt.setVisibility(View.GONE);
+                    seat = "1";
+                }else {
+                    twoTxt.setVisibility(View.VISIBLE);
+                    threeTxt.setVisibility(View.VISIBLE);
+                    fourTxt.setVisibility(View.VISIBLE);
+                    fiveTxt.setVisibility(View.VISIBLE);
+                }
+                PagerPosition = i;
+                etkm.setText("" + vehicleList.get(i).getRatePerKm());
+                selectedVehicleData = vehicleList.get(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+
         b1.setOnClickListener(v -> {
-            textViewSelectSeat.setText(np.getValue() + " Seat");
-            seat = String.valueOf(np.getValue());
-
+            selectedVehicleData.setRatePerKm(Integer.parseInt(etkm.getText().toString()));
+            rate_per_km = etkm.getText().toString();
+            if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+                textViewSelectSeat.setText(seat + " Seats");
+            } else {
+                vehicleId = selectedVehicleData.getId();
+                textViewSelectSeat.setText("" + selectedVehicleData.getModel() + " | " + etkm.getText().toString() + "/km" + " | " + seat + " Seats");
+            }
             d.dismiss();
         });
-//        b2.setOnClickListener(v -> d.dismiss());
+        d.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.show();
-
-
     }
 
     @Override
@@ -1090,18 +1320,48 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     }
 
     @Override
-    public void setVehicle(List<Datum> data,String action) {
+    public void setVehicle(List<Datum> dataList, String action) {
 
-            if (data.size() > 0) {
-                layoutRideVehicle.setVisibility(View.VISIBLE);
-                layoutRide.setVisibility(View.GONE);
-                //etkm
-                myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, EditLiftDaiFragment.this, etkm,vehicle_id);
-                recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-                recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
+        if (dataList.size() > 0) {
+            vehicleList = dataList;
+            selectedVehicleData = vehicleList.get(0);
+//            vehicleName = vehicleList.get(0).getModel();
+//            rate_per_km = ""+vehicleList.get(0).getRatePerKm();
+            /*if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+                textViewSelectSeat.setText(seat + " Seats");
             } else {
-                showMessage("No Vehicle find.Please Add Your Vehicle");
-            }
+                textViewSelectSeat.setText("" + vehicleName + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
+            }*/
+
+            /*layoutRideVehicle.setVisibility(View.VISIBLE);
+            layoutRide.setVisibility(View.GONE);
+            pagerAdapter = new VehiclePagerAdapter(getContext(), dataList);
+            vehiclePager.setAdapter(pagerAdapter);
+            indicator.setViewPager(vehiclePager);
+            etkm.setText("" + dataList.get(0).getRatePerKm());
+            selectedVehicleData = dataList.get(0);
+            vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
+                }
+                @Override
+                public void onPageSelected(final int i) {
+                    selectedVehicleData = dataList.get(i);
+                    Log.e("KM/", "" + dataList.get(i).getRatePerKm());
+                    etkm.setText("" + dataList.get(i).getRatePerKm());
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int i) {
+
+                }
+            });*/
+                /*myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, EditLiftDaiFragment.this, etkm,vehicle_id);
+                recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+                recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);*/
+        } else {
+            showMessage("No Vehicle find.Please Add Your Vehicle");
+        }
     }
 
     @Override
@@ -1120,6 +1380,18 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     @Override
     public void getLiftDetail(EditVehicleData data) {
         Log.e("getLiftDetail", "" + new Gson().toJson(data));
+        mainLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+
+        if (data.getLift().getVehicle_model() != null) {
+            rate_per_km = data.getLift().getRate_per_km();
+            vehicleName = data.getLift().getVehicle_model();
+            seat = "" + data.getLift().getPaidSeats();
+            if (data.getLift().getLiftType().equals("offer")) {
+                textViewSelectSeat.setText("" + vehicleName + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
+            }
+        }
+
         setStarLift(data);
         setEndLiftLoc(data);
         draw_check_point_from_api(data);
@@ -1132,36 +1404,31 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         List<String> data = new ArrayList<>();
         String listString = "";
         JSONArray jsonArray = new JSONArray();
-//        if (checkPointsList.size() > 1) {
-
         for (int i = 0; i < checkPointsList.size(); i++) {
             JSONObject jsonObject = new JSONObject();
-//                data.add(checkPointsList.get(i).getLat() + "," + checkPointsList.get(i).getLongi());
-            try {
-                jsonObject.put("LatLng", String.valueOf(checkPointsList.get(i).getLat()) + "," + String.valueOf(checkPointsList.get(i).getLongi()));
-                jsonObject.put("country", checkPointsList.get(i).getCountry());
-                jsonObject.put("state", checkPointsList.get(i).getState());
-                jsonObject.put("city", checkPointsList.get(i).getCity());
-                jsonObject.put("location", checkPointsList.get(i).getAddress());
-                jsonObject.put("date", "");
-                jsonObject.put("time", "");
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!checkPointsList.get(i).getAddress().contains("Select Checkpoints")) {
+                try {
+                    jsonObject.put("LatLng", checkPointsList.get(i).getLat() + "," + checkPointsList.get(i).getLongi());
+                    jsonObject.put("country", checkPointsList.get(i).getCountry());
+                    jsonObject.put("state", checkPointsList.get(i).getState());
+                    jsonObject.put("city", checkPointsList.get(i).getCity());
+                    jsonObject.put("location", checkPointsList.get(i).getAddress());
+                    jsonObject.put("date", "");
+                    jsonObject.put("time", "");
+                    jsonArray.put(jsonObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            jsonArray.put(jsonObject);
-//            }
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 listString = String.join(", ", data);
             }
         }
 //        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, "{" + listString + "}", dateTime, liftTime);
        if(action.equalsIgnoreCase("add")){
-
-           presenter.repeatoffercreateLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(),etkm.getText().toString());
-
+           presenter.repeatoffercreateLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), rate_per_km);
        }else {
-           presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime , String.valueOf(liftdata.getLift().getId()),liftTime, textkm.getText().toString(),etkm.getText().toString());
-
+           presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, String.valueOf(liftdata.getLift().getId()), liftTime, textkm.getText().toString(), rate_per_km);
        }
         // JAGNARAYAN
     }
@@ -1177,8 +1444,21 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     @Override
     public void setCallBackSelectionCheckPointsDelete(int preferredCallingMode) {
         textViewCheckpoints.setText("Checkpoints :" + preferredCallingMode);
-        if(bottomSheetCheckPointsDialog!=null) {
+        if (bottomSheetCheckPointsDialog != null) {
             bottomSheetCheckPointsDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void getRemainingList(List<CheckPoints> groupLists) {
+        refreshGoogleMap((ArrayList<CheckPoints>) groupLists);
+    }
+
+    @Override
+    public void onDeleteCheckList(int preferredCallingMode) {
+        if (checkPointsList.size() > 0) {
+            checkPointsList.remove(preferredCallingMode);
+            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
         }
     }
 
@@ -1186,11 +1466,18 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         protected String doInBackground(String... args) {
-            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            String stringUrl = "";
+            distanceString = "";
+            if (!wayPoints.equals("")) {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&waypoints" + wayPoints + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            } else {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            }
+
+            Log.e("URL : ", "" + stringUrl);
             StringBuilder response = new StringBuilder();
             try {
                 URL url = new URL(stringUrl);
@@ -1223,10 +1510,22 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
 
                 JSONArray legs = route.getJSONArray("legs");
-                JSONObject steps = legs.getJSONObject(0);
-                JSONObject distance = steps.getJSONObject("distance");
-                distanceString = distance.getString("text");
+                JSONObject steps;
+                JSONObject distance = null;
+                Float totalDistance = 0f;
+                for (int i = 0; i < legs.length(); i++) {
+                    steps = legs.getJSONObject(i);
+                    distance = steps.getJSONObject("distance");
+                    String[] total = distance.getString("text").split(" ");
+                    totalDistance += Float.parseFloat(total[0]);
+                }
 
+                /*JSONObject steps = legs.getJSONObject(0);
+                JSONObject distance = steps.getJSONObject("distance");*/
+                distanceString = "" + totalDistance + " Km";
+                Log.e("Total Distance : ", "" + distanceString);
+//                textkm.setText("" + distanceString);
+//                textkm.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1247,7 +1546,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 dest = pontos.get(i + 1);
                 try {
                     //here is where it will draw the polyline in your map
-                    Polyline line = mGoogleMap.addPolyline(new PolylineOptions()
+                    polyline = mGoogleMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(src.latitude, src.longitude),
                                     new LatLng(dest.latitude, dest.longitude))
                             .width(7).color(Color.GREEN).geodesic(true));
@@ -1273,10 +1572,12 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 int padding = 250; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                 mGoogleMap.moveCamera(cu);
+                getActivity().runOnUiThread(() -> textkm.setText("" + distanceString));
+
             } catch (Exception e) {
 
             }
-            textkm.setText("" + distanceString);
+
         }
     }
 

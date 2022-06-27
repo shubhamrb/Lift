@@ -102,6 +102,23 @@ public class AddVehicleFragment extends BaseFragment<AddVehiclePresenter, AddVeh
             }
         }
 
+        viewpagerAddVehicle.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                IsBikeSelected(i != 0);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
     }
 
     @Override
@@ -154,6 +171,24 @@ public class AddVehicleFragment extends BaseFragment<AddVehiclePresenter, AddVeh
                     viewpagerAddVehicle.setCurrentItem(1);
                 }
                 break;
+        }
+    }
+
+    public void IsBikeSelected(boolean isIt) {
+        if (isIt) {
+            layoutBike.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));
+            layoutCar.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+            textViewCar.setTextColor(getResources().getColor(R.color.colorBlack));
+            textViewBike.setTextColor(getResources().getColor(R.color.colorWhite));
+            textViewCar.setSelected(false);
+            textViewBike.setSelected(true);
+        } else {
+            layoutCar.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));
+            layoutBike.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+            textViewCar.setTextColor(getResources().getColor(R.color.colorWhite));
+            textViewBike.setTextColor(getResources().getColor(R.color.colorBlack));
+            textViewCar.setSelected(true);
+            textViewBike.setSelected(false);
         }
     }
 }

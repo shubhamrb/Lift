@@ -235,8 +235,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:inputType="textCapSentences"
-
+                    android:inputType="number"
                     android:background="@null"
                     android:fontFamily="@font/gotham_light"
                     android:gravity="start"

@@ -21,11 +21,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,12 +44,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
@@ -80,12 +77,14 @@ import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
+import com.liftPlzz.adapter.VehiclePagerAdapter;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.dialog.BottomSheetCheckPointsDialog;
 import com.liftPlzz.model.CheckPoints;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
 import com.liftPlzz.model.getVehicle.Datum;
+import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.presenter.HomePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.HomeView;
@@ -110,6 +109,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import me.relex.circleindicator.CircleIndicator;
 
 
 /**
@@ -117,7 +117,6 @@ import butterknife.OnClick;
  */
 public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implements HomeView,
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-//        DatePickerDialog.OnDateSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
 
     private static final int ADDRESS_PICKER_REQUEST = 1;
@@ -125,11 +124,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Toolbar toolbar;
     @BindView(R.id.imageViewHome)
     ImageView imageViewHome;
-
     @BindView(R.id.imageViewNotification)
     ImageView imageViewNotification;
-
-
     @BindView(R.id.editTextPickupLocation)
     AppCompatTextView editTextPickupLocation;
     @BindView(R.id.layoutPickupLocation)
@@ -164,9 +160,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     RecyclerView recyclerViewCheckpoints;
     @BindView(R.id.layoutRide)
     LinearLayout layoutRide;
-//    @BindView(R.id.layoutRideVehicle)
-//    RelativeLayout layoutRideVehicle;
-
     @BindView(R.id.callButton)
     ImageView callButton;
     @BindView(R.id.smsButton)
@@ -176,47 +169,34 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
 
-
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     LocationRequest mLocationRequest;
     int locationSelect = 1;
     LatLng pickupLocation;
     LatLng dropLocation;
 
-
     List<LatLng> pontos = new ArrayList<>();
     String distanceString = "";
-
     Polyline polyline;
-
     String origin;
+    LatLng originLat, destinationLat;
     String startPoint = "", endPoint = "";
     String destination;
     PolylineOptions polylineOptions = new PolylineOptions();
     List<CheckPoints> checkPointsList = new ArrayList<>();
     CheckPointsListAdapter checkPointsListAdapter;
     boolean isMultiCheck = false;
+    boolean isOfferLift = false;
     String seat = "1";
     String dateTime, liftTime = "";
-
-
+    String wayPoints = "";
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
-
     @BindView(R.id.textkm)
     AppCompatTextView textkm;
+    int PagerPosition = 0;
 
-//    @BindView(R.id.etkm)
-//    EditText etkm;
-
-//    @BindView(R.id.btnSubmit)
-//    AppCompatButton btnSubmit;
-
-
-    MyVehicleListRideAdapter myVehicleListRideAdapter;
-
-
-    //
+    VehiclePagerAdapter pagerAdapter;
     LatLng latLngOrigin, latLngDestination;
 
     SharedPreferences sharedPreferences;
@@ -228,6 +208,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Calendar calendar;
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
+
 
     @Override
     protected int createLayout() {
@@ -268,12 +249,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     e.printStackTrace();
                 }
             }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Constants.hideLoader();
-                Log.e("rise vo", "" + error.getMessage());
-            }
+        }, error -> {
+            Constants.hideLoader();
+            Log.e("rise vo", "" + error.getMessage());
         }) {
             @Override
             protected Map<String, String> getParams() {
@@ -288,6 +266,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         queue.add(sr);
 
     }
+
+
 
     private String strToken = "";
 
@@ -326,6 +306,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     protected void bindData() {
+        Constants.isLiftOnGoing = false;
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
         createLocationRequest();
@@ -353,17 +334,24 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             Log.w("gfggf", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
-
                         // Get new FCM registration token
                         String token = task.getResult();
-                        presenter.updateToken(sharedPreferences.getString(Constants.TOKEN, ""), token);
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("hfhfh", msg);
+                        try {
+                            presenter.updateToken(sharedPreferences.getString(Constants.TOKEN, ""), token);
+                            String msg = getString(R.string.msg_token_fmt, token);
+                            Log.d("hfhfh", msg);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
         // mapFragment.getMapAsync(this);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+//        presenter.getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
     }
 
     @Override
@@ -386,7 +374,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select pickup location");
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
-                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase("Select Time")) {
+                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase(getContext().getString(R.string.select_date_time))) {
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
@@ -399,18 +387,17 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select pickup location");
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
-                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase("Select Time")) {
+                    } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase(getContext().getString(R.string.select_date_time))) {
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
-                        if (myVehicleListRideAdapter != null) {
-                            onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
+//                        rate_per_km = Integer.parseInt(etkm.getText().toString().trim());
+                        if (pagerAdapter != null) {
+                            onclickVehicle(data.get(PagerPosition));
                         } else {
                             onclickVehicle(data.get(0));
-
                         }
-//                        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                     }
                 }
                 break;
@@ -428,7 +415,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         bottomSheetCheckPointsDialog.show(
                                 getActivity().getSupportFragmentManager(), "check");
                     }
-
                 } else {
                     if (checkPointsList.size() < 3) {
                         CheckPoints checkPoints = new CheckPoints();
@@ -449,18 +435,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutSelectDateTime:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), HomeFragment.this, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, HomeFragment.this, year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
                 break;
             case R.id.imageViewNotification:
                 presenter.openNotification();
                 break;
-//            case R.id.btnSubmit:
-//                if (etkm.getText().toString().trim().length() > 0) {
-//                    onclickVehicle(myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition));
-//                }
-//                break;
             case R.id.layoutPickupLocation:
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
@@ -473,6 +454,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutGiveLift:
+                if (!isOfferLift){
+                    presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                }
                 isMultiCheck = true;
                 layoutGiveLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
                 layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg_white));
@@ -495,7 +479,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 if(editTextDropLocation.getText().toString().length()>0) {
                     textViewSelectSeat.setText(seat + " Seats");
                 }
-
                 break;
             case R.id.callButton:
                 if (sos.isEmpty()) {
@@ -516,8 +499,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void fetchLocation() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+        if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -526,9 +509,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             if (location != null) {
                 currentLocation = location;
                 mapFragment.getMapAsync(HomeFragment.this);
-                //   Toast.makeText(getActivity(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-
-
             }
         });
         task.addOnFailureListener(new OnFailureListener() {
@@ -557,8 +537,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         latLngOrigin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
         pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-        googleMap.addMarker(new MarkerOptions()
+        originLat = latLngOrigin;
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(new MarkerOptions()
                 .position(latLngOrigin)
                 .draggable(true)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
@@ -566,31 +547,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
-
         // Zoom in the Google Map
 //        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 //        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-    /*    googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                googleMap.clear();
-            }
-        });
-        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-
-                MarkerOptions markerOptions = new MarkerOptions().position(googleMap.getCameraPosition().target)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
-                googleMap.addMarker(markerOptions);
-                editTextPickupLocation.setText(getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude));
-
-            }
-        });*/
-        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker arg0) {
             }
@@ -628,16 +591,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     protected void createLocationRequest() {
-        //remove location updates so that it resets
-        //import should be **import com.google.android.gms.location.LocationListener**;
-
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        //restart location updates with the new interval
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
     }
 
     public String getJsonObject(Double latitue, Double longitute, Bundle bundle, String locationaddress) {
@@ -666,30 +624,31 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (requestCode == ADDRESS_PICKER_REQUEST) {
             try {
                 if (data != null && data.getStringExtra(MapUtility.ADDRESS) != null) {
-                    // String address = data.getStringExtra(MapUtility.ADDRESS);
+                    String address = data.getStringExtra(MapUtility.ADDRESS);
                     double currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                     double currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0);
                     Bundle completeAddress = data.getBundleExtra("fullAddress");
-                    /* data in completeAddress bundle
-                    "fulladdress"
-                    "city"
-                    "state"
-                    "postalcode"
-                    "country"
-                    "addressline1"
-                    "addressline2"
+                    /**
+                     * data in completeAddress bundle
+                     "fulladdress"
+                     "city"
+                     "state"
+                     "postalcode"
+                     "country"
+                     "addressline1"
+                     "addressline2"
                      */
 
                     if (locationSelect == 1) {
                         pickupLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngOrigin = new LatLng(currentLatitude, currentLongitude);
-
+                        originLat = latLngOrigin;
                         StringBuilder strAdd = new StringBuilder().append
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
                                 (completeAddress.getString("state"));
                         Log.e("result ", "" + strAdd.toString() + "  ");
-                        editTextPickupLocation.setText(strAdd.toString());
+                        editTextPickupLocation.setText(address);
                         startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
                         if (dropLocation != null) {
                             mGoogleMap.clear();
@@ -704,6 +663,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     .title("dropoff"));
                             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
+
                             new GetDirection().execute(origin, destination);
 
                         } else {
@@ -717,17 +677,18 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
                                 (completeAddress.getString("state"));
-                        editTextDropLocation.setText(stringBuilder.toString());
+                        editTextDropLocation.setText(address);
                         dropLocation = new LatLng(currentLatitude, currentLongitude);
+                        destinationLat = dropLocation;
                         latLngDestination = new LatLng(currentLatitude, currentLongitude);
                         endPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, stringBuilder.toString());
                         destination = currentLatitude + "," + currentLongitude;
-
                         mGoogleMap.clear();
                         mGoogleMap.addMarker(new MarkerOptions()
                                 .position(dropLocation)
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
                                 .title("dropoff"));
+
                         if (pickupLocation != null) {
                             mGoogleMap.addMarker(new MarkerOptions()
                                     .position(pickupLocation)
@@ -735,15 +696,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     .title("pickup"));
                             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
                             destination = dropLocation.latitude + "," + dropLocation.longitude;
-
                             new GetDirection().execute(origin, destination);
                             //create lift
-
-                            presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
-
-
+                            if (isMultiCheck) {
+                                presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                            }
                         }
-
 
                     } else {
                         checkPointsList.get(listPos).setAddress(new StringBuilder().append
@@ -758,40 +716,14 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         checkPointsList.get(listPos).setCountry(completeAddress.getString("country"));
                         checkPointsList.get(listPos).setLongi(currentLongitude);
                         bottomSheetCheckPointsDialog.nofityAdapter();
-                        if (listPos > 0) {
-                            origin = checkPointsList.get(listPos - 1).getLat() + "," + checkPointsList.get(listPos - 1).getLongi();
-                        } else {
-                            origin = destination;
-                        }
-                        destination = currentLatitude + "," + currentLongitude;
-                        mGoogleMap.addMarker(new MarkerOptions()
-                                .position(dropLocation)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
-                                .title("Marker in Sydney"));
-//                        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
-//                        destination = dropLocation.latitude + "," + dropLocation.longitude;
-//                        new GetDirection().execute();
-
-                        textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
-                        if (bottomSheetCheckPointsDialog != null) {
-                            bottomSheetCheckPointsDialog.dismiss();
-                        }
+                        Log.e("Check List Size : ", "" + checkPointsList.size());
+                        refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
                     }
-
-
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public void setPickupLocation() {
-
-    }
-
-    public void setDroupLocation() {
-
     }
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
@@ -802,7 +734,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
-
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
@@ -859,8 +790,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         myHour = hour = calendar.get(Calendar.HOUR_OF_DAY);
         myMinute = minute = calendar.get(Calendar.MINUTE);
         showDialog(getActivity(), "Time Picker");
-//        TimePickerDialog  timePickerDialog = new TimePickerDialog(getActivity(), HomeFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
-//        timePickerDialog.show();
     }
 
     public void showDialog(Activity activity, String msg) {
@@ -869,54 +798,31 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.time_picker_dialog);
 
-//        TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
-//        text.setText(msg);
         TimePicker simpleTimePicker = (TimePicker) dialog.findViewById(R.id.simpleTimePicker);
-        simpleTimePicker.setIs24HourView(false); // used to display AM/PM mode
-        // perform set on time changed listener event
-//        Calendar myCalender = Calendar.getInstance();
-//        simpleTimePicker.setCurrentHour(myCalender.get(Calendar.HOUR));
-//        simpleTimePicker.setCurrentMinute(myCalender.get(Calendar.MINUTE));
-//        updateTime(myCalender.get(Calendar.HOUR),myCalender.get(Calendar.MINUTE));
+        simpleTimePicker.setIs24HourView(false);
         simpleTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                // display a toast with changed values of time picker
-//                Toast.makeText(getActivity(), hourOfDay + "  " + minute, Toast.LENGTH_SHORT).show();
                 myHour = hourOfDay;
                 myMinute = minute;
-
-
-//                time.setText("Time is :: " + hourOfDay + " : " + minute); // set the current time in text view
             }
         });
         TextView dialogButton = dialog.findViewById(R.id.btn_dialog);
         TextView btn_cancel = dialog.findViewById(R.id.btn_cancel);
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
+        dialogButton.setOnClickListener(v -> {
+            Calendar myCalender = Calendar.getInstance();
+            myCalender.set(myYear, myMonth, myday, myHour, myMinute);
+            dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
+            liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
+            textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
+            dialog.dismiss();
         });
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar myCalender = Calendar.getInstance();
-                myCalender.set(myYear, myMonth, myday, myHour, myMinute);
-                dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
-                liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
-                textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
-                dialog.dismiss();
-            }
-        });
-
         dialog.show();
-
     }
 
     // Used to convert 24hr format to 12hr format with AM/PM values
     private void updateTime(int hours, int mins) {
-
         String timeSet = "";
         if (hours > 12) {
             hours -= 12;
@@ -928,18 +834,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             timeSet = "PM";
         else
             timeSet = "AM";
-
-
         String minutes = "";
         if (mins < 10)
             minutes = "0" + mins;
         else
             minutes = String.valueOf(mins);
-
-        // Append in a StringBuilder
         String aTime = new StringBuilder().append(hours).append(':')
                 .append(minutes).append(" ").append(timeSet).toString();
-
         textViewSelectDateTime.setText(aTime);
     }
 
@@ -951,64 +852,185 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         myCalender.set(myYear, myMonth, myday, myHour, myMinute);
         dateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
         liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
-
         textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
     }
-
-    RecyclerView recyclerViewMyVehicle;
+    ViewPager vehiclePager;
     EditText etkm;
     LinearLayout llrate;
     AppCompatButton btnSubmit;
 
     public void show() {
-
         final Dialog d = new Dialog(getActivity());
-//        d.setTitle("NumberPicker");
         d.setContentView(R.layout.dailog_seat);
         AppCompatButton b1 = d.findViewById(R.id.btnSubmit);
-        recyclerViewMyVehicle = d.findViewById(R.id.recyclerViewMyVehicle);
+        vehiclePager = d.findViewById(R.id.vehiclePager);
+        CircleIndicator indicator = d.findViewById(R.id.indicator);
+        RelativeLayout vehicleLayout = d.findViewById(R.id.vehicleLayout);
         etkm = d.findViewById(R.id.etkm);
         llrate = d.findViewById(R.id.llrate);
         btnSubmit = d.findViewById(R.id.btnSubmit);
-        myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this, etkm, 0);
-        recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
-//        Button b2 = d.findViewById(R.id.button2);
+
+        TextView oneTxt = d.findViewById(R.id.oneTxt);
+        TextView twoTxt = d.findViewById(R.id.twoTxt);
+        TextView threeTxt = d.findViewById(R.id.threeTxt);
+        TextView fourTxt = d.findViewById(R.id.fourTxt);
+        TextView fiveTxt = d.findViewById(R.id.fiveTxt);
+
+        if (seat.equals("1")) {
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("2")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("3")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("4")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        } else if (seat.equals("5")) {
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        }
+
+        oneTxt.setOnClickListener(v -> {
+            seat = "1";
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        twoTxt.setOnClickListener(v -> {
+            seat = "2";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        threeTxt.setOnClickListener(v -> {
+            seat = "3";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        fourTxt.setOnClickListener(v -> {
+            seat = "4";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+        });
+        fiveTxt.setOnClickListener(v -> {
+            seat = "5";
+            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        });
+
+
+        if(data!=null){
+            if(data.size()>0){
+                if(data.get(0).getType().equals("two_wheeler")){
+                    oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                    twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    twoTxt.setVisibility(View.GONE);
+                    threeTxt.setVisibility(View.GONE);
+                    fourTxt.setVisibility(View.GONE);
+                    fiveTxt.setVisibility(View.GONE);
+                    seat = "1";
+                    etkm.setText("" + data.get(0).getRatePerKm());
+                }
+            }
+            pagerAdapter = new VehiclePagerAdapter(getContext(), data);
+            vehiclePager.setAdapter(pagerAdapter);
+            indicator.setViewPager(vehiclePager);
+            vehiclePager.setCurrentItem(PagerPosition);
+            vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
+
+                }
+
+                @Override
+                public void onPageSelected(final int i) {
+                    if(data.get(i).getType().equals("two_wheeler")){
+                        oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                        twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        twoTxt.setVisibility(View.GONE);
+                        threeTxt.setVisibility(View.GONE);
+                        fourTxt.setVisibility(View.GONE);
+                        fiveTxt.setVisibility(View.GONE);
+                        seat = "1";
+                    }else {
+                        twoTxt.setVisibility(View.VISIBLE);
+                        threeTxt.setVisibility(View.VISIBLE);
+                        fourTxt.setVisibility(View.VISIBLE);
+                        fiveTxt.setVisibility(View.VISIBLE);
+                    }
+                    PagerPosition = i;
+                    etkm.setText("" + data.get(i).getRatePerKm());
+                    rate_per_km = data.get(i).getRatePerKm();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int i) {
+                }
+            });
+        }
+
         if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
-            recyclerViewMyVehicle.setVisibility(View.GONE);
+            vehicleLayout.setVisibility(View.GONE);
             llrate.setVisibility(View.GONE);
+            twoTxt.setVisibility(View.VISIBLE);
+            threeTxt.setVisibility(View.VISIBLE);
+            fourTxt.setVisibility(View.VISIBLE);
+            fiveTxt.setVisibility(View.VISIBLE);
         } else {
-            recyclerViewMyVehicle.setVisibility(View.VISIBLE);
+            vehicleLayout.setVisibility(View.VISIBLE);
             llrate.setVisibility(View.VISIBLE);
         }
-        final NumberPicker np = d.findViewById(R.id.numberPicker1);
-        np.setMaxValue(5);
-        np.setMinValue(1);
-        np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener(HomeFragment.this);
-        np.setValue(Integer.parseInt(seat));
+
         b1.setOnClickListener(v -> {
-            textViewSelectSeat.setText(np.getValue() + " Seat");
-            seat = String.valueOf(np.getValue());
-            vehicle_name = myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition).getModel();
-            rate_per_km = myVehicleListRideAdapter.verifiedLists.get(myVehicleListRideAdapter.selectionposition).getRatePerKm();
+            textViewSelectSeat.setText(seat + " Seat");
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
-                textViewSelectSeat.setText(seat+" Seats");
-
+                textViewSelectSeat.setText(seat + " Seats");
             } else {
-                textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
-
-
+                rate_per_km =  Integer.parseInt(etkm.getText().toString().trim());
+                textViewSelectSeat.setText("" + data.get(PagerPosition).getModel() + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
             }
             d.dismiss();
         });
-//        b2.setOnClickListener(v -> d.dismiss());
         d.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.show();
-
-
     }
 
     @Override
@@ -1049,22 +1071,14 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setVehicle(List<Datum> data) {
         if (data.size() > 0) {
             this.data = data;
-//            layoutRideVehicle.setVisibility(View.GONE);
-//            layoutRide.setVisibility(View.GONE);
-            //etkm
-//            myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, HomeFragment.this, etkm, 0);
-//            recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-//            recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);
+            isOfferLift = true;
             vehicle_name = data.get(0).getModel();
             rate_per_km = data.get(0).getRatePerKm();
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                 textViewSelectSeat.setText(seat+" Seats");
-
             } else {
-
                 textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
             }
-
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
             presenter.openMyVehicle();
@@ -1073,9 +1087,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void setCreateRideData(CreateLiftResponse createRideData) {
-//        showMessage("Ride Request Send successfully");
+        checkPointsList.clear();
+        wayPoints = "";
         showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage());
-//        layoutRideVehicle.setVisibility(View.GONE);
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
@@ -1085,33 +1099,38 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     @Override
+    public void setOnGoingData(InnerGoingResponse onGoingData) {
+        if(onGoingData.getLifts().size()>0){
+            Constants.isLiftOnGoing = true;
+//            layoutRide.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onclickVehicle(Datum s) {
         List<String> data = new ArrayList<>();
         String listString = "";
         JSONArray jsonArray = new JSONArray();
-//        if (checkPointsList.size() > 1) {
-
         for (int i = 0; i < checkPointsList.size(); i++) {
             JSONObject jsonObject = new JSONObject();
-//                data.add(checkPointsList.get(i).getLat() + "," + checkPointsList.get(i).getLongi());
-            try {
-                jsonObject.put("LatLng", String.valueOf(checkPointsList.get(i).getLat()) + "," + String.valueOf(checkPointsList.get(i).getLongi()));
-                jsonObject.put("country", checkPointsList.get(i).getCountry());
-                jsonObject.put("state", checkPointsList.get(i).getState());
-                jsonObject.put("city", checkPointsList.get(i).getCity());
-                jsonObject.put("location", checkPointsList.get(i).getAddress());
-                jsonObject.put("date", "");
-                jsonObject.put("time", "");
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!checkPointsList.get(i).getAddress().contains("Select Checkpoints")) {
+                try {
+                    jsonObject.put("LatLng", checkPointsList.get(i).getLat() + "," + checkPointsList.get(i).getLongi());
+                    jsonObject.put("country", checkPointsList.get(i).getCountry());
+                    jsonObject.put("state", checkPointsList.get(i).getState());
+                    jsonObject.put("city", checkPointsList.get(i).getCity());
+                    jsonObject.put("location", checkPointsList.get(i).getAddress());
+                    jsonObject.put("date", "");
+                    jsonObject.put("time", "");
+                    jsonArray.put(jsonObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            jsonArray.put(jsonObject);
-//            }
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 listString = String.join(", ", data);
             }
         }
-//        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, "{" + listString + "}", dateTime, liftTime);
         presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), "" + rate_per_km);
     }
 
@@ -1128,15 +1147,93 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         textViewCheckpoints.setText("Checkpoints :" + preferredCallingMode);
     }
 
+    @Override
+    public void getRemainingList(List<CheckPoints> groupLists) {
+        refreshGoogleMap((ArrayList<CheckPoints>) groupLists);
+    }
+
+    @Override
+    public void onDeleteCheckList(int position) {
+        if (checkPointsList.size() > 0) {
+            checkPointsList.remove(position);
+            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
+        }
+    }
+
+
+    public void refreshGoogleMap(ArrayList<CheckPoints> list) {
+
+        int checkPointsCount = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).getAddress().contains("Select Checkpoints"))
+                checkPointsCount++;
+        }
+        textViewCheckpoints.setText("Checkpoints :" + checkPointsCount);
+        wayPoints = "";
+        mGoogleMap.clear();
+        if (bottomSheetCheckPointsDialog != null) {
+            bottomSheetCheckPointsDialog.dismiss();
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i == 0) {
+                if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                    builder.append("=" + list.get(0).getLat() + "," + list.get(0).getLongi());
+                    wayPoints = builder.toString();
+                }
+            } else {
+                if (i != list.size()) {
+                    if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                        builder.append("|" + list.get(i).getLat() + "," + list.get(i).getLongi());
+                    }
+                } else {
+                    if (!list.get(i).getAddress().contains("Select Checkpoints")) {
+                        builder.append("" + list.get(i).getLat() + "," + list.get(i).getLongi());
+                    }
+                }
+            }
+
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(list.get(i).getLat(), list.get(i).getLongi()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                    .title(list.get(i).getCity()));
+
+        }
+        wayPoints = builder.toString();
+        Log.e("Way Points", wayPoints);
+
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(originLat)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                .title("pickup"));
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(destinationLat)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                .title("dropoff"));
+
+        String source = "" + originLat.latitude + "," + originLat.longitude;
+        String destination = "" + destinationLat.latitude + "," + destinationLat.longitude;
+        Log.e("Origin ", "" + source + "\n Destination " + destination);
+        new GetDirection().execute(source, destination);
+    }
+
     class GetDirection extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         protected String doInBackground(String... args) {
-            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            String stringUrl = "";
+            distanceString = "";
+            if (!wayPoints.equals("")) {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&waypoints" + wayPoints + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            } else {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            }
+            Log.e("URL : ", "" + stringUrl);
             StringBuilder response = new StringBuilder();
             try {
                 URL url = new URL(stringUrl);
@@ -1169,10 +1266,17 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
 
                 JSONArray legs = route.getJSONArray("legs");
-                JSONObject steps = legs.getJSONObject(0);
-                JSONObject distance = steps.getJSONObject("distance");
-                distanceString = distance.getString("text");
-
+                JSONObject steps;
+                JSONObject distance = null;
+                Float totalDistance = 0f;
+                for (int i = 0; i < legs.length(); i++) {
+                    steps = legs.getJSONObject(i);
+                    distance = steps.getJSONObject("distance");
+                    String[] total = distance.getString("text").split(" ");
+                    totalDistance += Float.parseFloat(total[0]);
+                }
+                distanceString = "" + totalDistance + " Km";
+                Log.e("Total Distance : ", "" + distanceString);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1192,42 +1296,35 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 dest = pontos.get(i + 1);
                 try {
-                    //here is where it will draw the polyline in your map
                     polyline = mGoogleMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(src.latitude, src.longitude),
                                     new LatLng(dest.latitude, dest.longitude))
                             .width(7).color(Color.GREEN).geodesic(true));
-
-
                 } catch (NullPointerException e) {
                     Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
                 } catch (Exception e2) {
                     Log.e("Error", "Exception onPostExecute: " + e2.toString());
                 }
-
             }
             try {
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(src1);
                 builder.include(dest);
-
-                   /* builder.include(latLngOrigin);
-                    builder.include(latLngDestination);*/
-
                 LatLngBounds bounds = builder.build();
 //                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                 int padding = 250; // offset from edges of the map in pixels
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                 mGoogleMap.moveCamera(cu);
+                getActivity().runOnUiThread(() -> textkm.setText("" + distanceString));
+
             } catch (Exception e) {
 
             }
-            textkm.setText("" + distanceString);
+
         }
     }
 
     private List<LatLng> decodePoly(String encoded) {
-
         List<LatLng> poly = new ArrayList<LatLng>();
         int index = 0, len = encoded.length();
         int lat = 0, lng = 0;
@@ -1335,6 +1432,4 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
-
-
 }

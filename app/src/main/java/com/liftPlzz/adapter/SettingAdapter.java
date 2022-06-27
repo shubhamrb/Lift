@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.AppCompatToggleButton;
@@ -59,11 +60,11 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
             } else if (datum.getSelectedValue().equalsIgnoreCase("0")) {
                 holder.toggleButton.setImageResource(R.drawable.on);
             }
-
         } else {
             holder.toggleButton.setVisibility(View.GONE);
             holder.imgnext.setVisibility(View.VISIBLE);
         }
+
         holder.toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,13 +75,22 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
                 }
             }
         });
+
+        holder.itemRow.setOnClickListener(v -> {
+            if(datum.getOptionType().equalsIgnoreCase(context.getResources().getString(R.string.select_option))){
+                itemListener.onSelectOption(position,datum);
+            }
+        });
 //        holder.ratingBarReview.setRating(settingList.get(position).getRating());
     }
 
 
     public interface ItemListener {
         void onToggleClick(int settingId, int inputValue);
+        void onSelectOption(int position ,Datum data);
     }
+
+
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -90,11 +100,12 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
         ImageView imgnext;
         @BindView(R.id.tv_setting_content)
         AppCompatTextView tvContent;
+        @BindView(R.id.itemRow)
+        RelativeLayout itemRow;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
     }
 }

@@ -22,6 +22,9 @@ public class Lift implements Serializable {
     @SerializedName("lift_type")
     @Expose
     private String liftType;
+    @SerializedName("vehicle_model")
+    @Expose
+    private String vehicle_model;
     @SerializedName("free_seats")
     @Expose
     private Integer freeSeats;
@@ -64,6 +67,19 @@ public class Lift implements Serializable {
     @SerializedName("find_match")
     @Expose
     private Integer findMatch;
+
+    @SerializedName("request_id")
+    @Expose
+    private Integer request_id;
+
+    @SerializedName("is_driver_start")
+    @Expose
+    private Integer is_driver_start;
+
+    @SerializedName("is_user_start")
+    @Expose
+    private Integer is_user_start;
+
     @SerializedName("ride_start")
     @Expose
     private Integer rideStart;
@@ -98,6 +114,31 @@ public class Lift implements Serializable {
     @SerializedName("driver_tracking_id")
     @Expose
     private Integer driver_tracking_id;
+
+
+    public Integer getIs_user_start() {
+        return is_user_start;
+    }
+
+    public void setIs_user_start(Integer is_user_start) {
+        this.is_user_start = is_user_start;
+    }
+
+    public Integer getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(Integer request_id) {
+        this.request_id = request_id;
+    }
+
+    public Integer getIs_driver_start() {
+        return is_driver_start;
+    }
+
+    public void setIs_driver_start(Integer is_driver_start) {
+        this.is_driver_start = is_driver_start;
+    }
 
     public String getTotal_km() {
         return total_km;
@@ -313,5 +354,13 @@ public class Lift implements Serializable {
 
     public void setRate_per_km(String rate_per_km) {
         this.rate_per_km = rate_per_km;
+    }
+
+    public String getVehicle_model() {
+        return vehicle_model;
+    }
+
+    public void setVehicle_model(String vehicle_model) {
+        this.vehicle_model = vehicle_model;
     }
 }

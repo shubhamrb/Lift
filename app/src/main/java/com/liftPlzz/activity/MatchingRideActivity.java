@@ -46,6 +46,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -249,12 +250,8 @@ public class MatchingRideActivity extends AppCompatActivity implements
                     } else {
                         Constants.showMessage(MatchingRideActivity.this, response.body().getMessage(), linearLayout);
                     }
-
-
                 }
             }
-
-
             @Override
             public void onFailure(Call<MatchingRideByCategoryResponse> call, Throwable throwable) {
                 Constants.hideLoader();

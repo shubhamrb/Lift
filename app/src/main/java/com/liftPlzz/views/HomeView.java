@@ -4,8 +4,8 @@ package com.liftPlzz.views;
 import com.liftPlzz.base.RootView;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
-import com.liftPlzz.model.createLift.LiftDetails;
 import com.liftPlzz.model.getVehicle.Datum;
+import com.liftPlzz.model.on_going.InnerGoingResponse;
 
 import java.util.List;
 
@@ -16,4 +16,6 @@ public interface HomeView extends RootView {
     void setVehicle(List<Datum> data);
 
     void setCreateRideData(CreateLiftResponse createRideData);
+
+    void setOnGoingData(InnerGoingResponse onGoingData);
 }

@@ -97,6 +97,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:inputType="textCapCharacters"
                     android:id="@+id/editTextVehicleRegNo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -192,6 +193,7 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/ed_rate_per_km"
+                    android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

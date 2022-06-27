@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +21,7 @@ import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.createProfile.CreateProfileMainResponse;
+import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.UpdateProfileView;
 
@@ -53,10 +55,43 @@ public class UpdateProfilePresenter extends BasePresenter<UpdateProfileView> {
 
     }
 
-    public void updateProfile(String token, String name, String deg, String email, String mobile,String aboutme,String sos) {
+
+    /**
+     * Update Input value with String format
+     */
+    public void updateSetting(String token, int settingId, String inputValue) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateProfileMainResponse> call = api.edit_profile(Constants.API_KEY, "android", token, name, email, mobile, deg, aboutme,sos);
+        Call<SettingModel> call = api.updateUserSetting(Constants.API_KEY, Constants.ANDROID, token, settingId, inputValue);
+        call.enqueue(new Callback<SettingModel>() {
+            @Override
+            public void onResponse(Call<SettingModel> call, Response<SettingModel> response) {
+                view.hideLoader();
+                if (response.body() != null) {
+                    if (response.body().getStatus()) {
+                        view.setUpdateSetting(response.body().getStatus());
+                    } else {
+                        view.showMessage(response.body().getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SettingModel> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage(throwable.getMessage());
+            }
+        });
+    }
+
+    public void updateProfile(String token, String name,
+                              String deg, String email,
+                              String gender,
+                              String mobile,String aboutme,
+                              String sos) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<CreateProfileMainResponse> call = api.edit_profile(Constants.API_KEY, "android", token, name, email,gender, mobile, deg, aboutme,sos);
         call.enqueue(new Callback<CreateProfileMainResponse>() {
             @Override
             public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {
@@ -164,7 +199,6 @@ public class UpdateProfilePresenter extends BasePresenter<UpdateProfileView> {
 
                 }
             }
-
 
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {

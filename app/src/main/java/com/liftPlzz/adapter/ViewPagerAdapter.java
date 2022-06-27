@@ -84,11 +84,14 @@ public class ViewPagerAdapter extends PagerAdapter {
         // referencing the image view from the item.xml file
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageViewMainDetails);
         ImageView img = (ImageView) itemView.findViewById(R.id.img);
+        ImageView addImg = (ImageView) itemView.findViewById(R.id.addImg);
         if (images.size() > 0) {
             Picasso.get().load(images.get(position).getImage()).into(imageView);
         } else {
             Picasso.get().load(R.drawable.images_no_found).into(imageView);
         }
+        addImg.setOnClickListener(v -> itemListener.onAddImage());
+
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,5 +140,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         void onDeleteClick(int s);
 
         void onEditClick(Datum s);
+
+        void onAddImage();
     }
 }

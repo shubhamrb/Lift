@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingLeft="20sp"
+    android:paddingRight="20sp"
+    android:layout_height="150sp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/vehicleImage"
+        android:layout_width="120sp"
+        android:layout_height="120sp"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:paddingLeft="10sp"
+        android:id="@+id/vehicleName"
+        android:layout_marginTop="30sp"
+        android:layout_toRightOf="@+id/vehicleImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:paddingLeft="10sp"
+        android:layout_below="@+id/vehicleName"
+        android:id="@+id/vehicleNumber"
+        android:layout_marginTop="10sp"
+        android:layout_toRightOf="@+id/vehicleImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+</RelativeLayout>

@@ -39,6 +39,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.lifecycle:lifecycle-service:2.4.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -54,7 +55,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.libraries.places:places:2.4.0'
+    implementation 'com.google.android.libraries.places:places:2.5.0'
     implementation 'com.github.dhaval2404:imagepicker-support:1.7.1'
     implementation 'com.facebook.android:facebook-login:5.15.3'
 //    implementation 'com.facebook.android:facebook-login:[8.1)'
@@ -104,7 +105,8 @@ dependencies {
     // Declare the dependency for the Realtime Database library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-database'
-
+    implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
     implementation 'androidx.browser:browser:1.2.0'
+    implementation 'androidx.work:work-runtime:2.7.1'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -24,6 +24,9 @@ public class User {
     @SerializedName("email")
     @Expose
     private String email;
+    @SerializedName("userType")
+    @Expose
+    private String userType;
     @SerializedName("gender")
     @Expose
     private String gender;
@@ -60,6 +63,15 @@ public class User {
     @SerializedName("social_images")
     @Expose
     private List<Object> socialImages = null;
+
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     public Integer getId() {
         return id;

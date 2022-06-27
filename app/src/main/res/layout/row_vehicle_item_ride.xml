@@ -12,6 +12,7 @@
         android:layout_marginTop="@dimen/dp_5"
         android:layout_height="@dimen/dp_60"
         android:src="@drawable/dummy_user" />
+
 <LinearLayout
     android:layout_marginTop="@dimen/dp_5"
     android:layout_gravity="center"

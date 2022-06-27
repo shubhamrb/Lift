@@ -4,55 +4,52 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
+    <RelativeLayout
+        android:id="@+id/itemRow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:elevation="@dimen/dp_5"
-        android:padding="@dimen/dp_10"
-        app:cardCornerRadius="@dimen/dp_5">
+        android:layout_height="50sp"
+        android:paddingLeft="5sp"
+        android:paddingRight="5sp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_setting_content"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_5">
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dp_5"
+            android:text="@string/app_name"
+            android:textColor="@color/colorBlack" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_setting_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="@dimen/dp_5"
-                android:text="@string/app_name"
-                android:textColor="@color/colorBlack" />
+        <!--            <androidx.appcompat.widget.AppCompatToggleButton-->
+        <!--                android:id="@+id/toggle_button"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_alignParentRight="true"-->
+        <!--                android:layout_centerVertical="true"-->
+        <!--                android:layout_margin="@dimen/dp_5" />-->
+        <ImageView
+            android:id="@+id/imgtoggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/off" />
 
-            <!--            <androidx.appcompat.widget.AppCompatToggleButton-->
-            <!--                android:id="@+id/toggle_button"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_alignParentRight="true"-->
-            <!--                android:layout_centerVertical="true"-->
-            <!--                android:layout_margin="@dimen/dp_5" />-->
-            <ImageView
-                android:id="@+id/imgtoggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/off"></ImageView>
+        <ImageView
+            android:id="@+id/imgnext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:rotation="180"
+            android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+            android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/imgnext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:rotation="180"
-                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+    </RelativeLayout>
 
-                android:visibility="gone"></ImageView>
-
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:layout_below="@+id/itemRow"
+        android:background="@color/colorGrey" />
 </RelativeLayout>

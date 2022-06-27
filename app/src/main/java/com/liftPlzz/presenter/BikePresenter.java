@@ -35,7 +35,7 @@ public class BikePresenter extends BasePresenter<BikeView> {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<CreateVehicleResponse> call = api.create_vehicle(key, client, token, type, model, register_number,
-                ratePerKm, insuranceDate, seat, is_default, vehicleSubCategory, front_image, back_image, rc_image);
+                 insuranceDate,ratePerKm, seat, is_default, vehicleSubCategory, front_image, back_image, rc_image);
         call.enqueue(new Callback<CreateVehicleResponse>() {
             @Override
             public void onResponse(Call<CreateVehicleResponse> call, Response<CreateVehicleResponse> response) {
@@ -66,7 +66,7 @@ public class BikePresenter extends BasePresenter<BikeView> {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<CreateVehicleResponse> call = api.updateVehicle(key, client, token, vehicle_id, type, model, register_number,
-                ratePerKm, insuranceDate, seat, is_default, vehicleSubCategory, front_image, back_image, rc_image);
+                insuranceDate,ratePerKm, seat, is_default, vehicleSubCategory, front_image, back_image, rc_image);
         call.enqueue(new Callback<CreateVehicleResponse>() {
             @Override
             public void onResponse(Call<CreateVehicleResponse> call, Response<CreateVehicleResponse> response) {

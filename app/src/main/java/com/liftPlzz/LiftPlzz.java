@@ -12,6 +12,5 @@ public class LiftPlzz extends Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         FacebookSdk.setAutoLogAppEventsEnabled(true);
         Stetho.initializeWithDefaults(this);
-
     }
 }

@@ -1,11 +1,14 @@
 package com.liftPlzz.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +27,7 @@ import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.model.UserInfo.Review;
 import com.liftPlzz.model.UserInfo.User;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
+import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
 
 import org.json.JSONObject;
@@ -72,34 +76,54 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
     AppCompatTextView tvRatingCount;
     @BindView(R.id.recyclerReview)
     RecyclerView recyclerReview;
+
+    @BindView(R.id.layoutProfile)
+    RelativeLayout layoutProfile;
+
     private int userId;
+    private int liftId;
+    private Lift lift;
     private User user;
     private String mobileNo = "";
     private ReviewListAdapter reviewListAdapter;
     private List<Review> reviewList;
+    private String strToken = "";
+    SharedPreferences sharedPreferences;
+    private Boolean IsDriver = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_driver_profile);
+        sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        strToken = sharedPreferences.getString(Constants.TOKEN, "");
         ButterKnife.bind(this);
         if (getIntent() != null) {
             userId = getIntent().getIntExtra(Constants.USER_ID, -1);
+            liftId = getIntent().getIntExtra(Constants.LIFT_ID, -1);
+            IsDriver = getIntent().getBooleanExtra(Constants.IS_DRIVER,false);
         }
         toolBarTitle.setText(getResources().getString(R.string.profile));
 
-        getUserDetailsApi();
+        if(IsDriver){
+            getDriverDetailsApi();
+        }else {
+            getUserDetailsApi();
+        }
+
         reviewList = new ArrayList<>();
         recyclerReview.setLayoutManager(new LinearLayoutManager(this));
         reviewListAdapter = new ReviewListAdapter(this, DriverProfileActivity.this, reviewList);
         recyclerReview.setAdapter(reviewListAdapter);
+
     }
 
 
     public void getUserDetailsApi() {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
+
         Call<UserInfoModel> call = api.getUserDetails(Constants.API_KEY, getResources().getString(R.string.android), userId);
         call.enqueue(new Callback<UserInfoModel>() {
             @Override
@@ -136,18 +160,60 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
                 Toast.makeText(DriverProfileActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    public void getDriverDetailsApi() {
+        Constants.showLoader(this);
+        ApiService api = RetroClient.getApiService();
+
+        Call<UserInfoModel> call = api.getDriverDetails(Constants.API_KEY, getResources().getString(R.string.android), strToken, liftId);
+        call.enqueue(new Callback<UserInfoModel>() {
+            @Override
+            public void onResponse(Call<UserInfoModel> call, Response<UserInfoModel> response) {
+                Constants.hideLoader();
+                if (response.code() == 200) {
+                    try {
+                        String message = response.body().getResponse().getMessage();
+                        if (response.body().getResponse().getStatus()) {
+                            user = response.body().getResponse().getUser();
+                            setUserData(user);
+//                            Toast.makeText(DriverProfileActivity.this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(DriverProfileActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        String message = jsonObject.optString("message");
+                        Toast.makeText(DriverProfileActivity.this, message, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<UserInfoModel> call, Throwable throwable) {
+                Constants.hideLoader();
+                Toast.makeText(DriverProfileActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void setUserData(User userData) {
+        layoutProfile.setVisibility(View.VISIBLE);
         try {
             Glide.with(this).load(userData.getImage()).into(ivUserImage);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        reviewList.clear();
+       /* reviewList.clear();
         reviewList.addAll(userData.getReviews());
-        reviewListAdapter.notifyDataSetChanged();
+        reviewListAdapter.notifyDataSetChanged();*/
         tvDriverName.setText(userData.getName());
 //        tvDriverOtp.setText(getResources().getString(R.string.share_code) + "\n " + userData.getShareCode());
         if (userData.getSettings().getProfilePublicly() != null) {

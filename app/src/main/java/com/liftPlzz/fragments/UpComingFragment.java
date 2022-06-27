@@ -103,7 +103,8 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     @Override
     public void onDriverProfile(Lift lift) {
         Intent intent = new Intent(getActivity(), DriverProfileActivity.class);
-        intent.putExtra(Constants.USER_ID, lift.getUserId());
+        intent.putExtra(Constants.LIFT_ID, lift.getId());
+        intent.putExtra(Constants.IS_DRIVER, true);
         startActivity(intent);
     }
 

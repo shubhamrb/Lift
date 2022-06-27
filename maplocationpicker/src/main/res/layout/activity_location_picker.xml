@@ -9,19 +9,25 @@
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
-        android:visibility="gone"
         android:layout_width="fill_parent"
-
         android:layout_height="fill_parent" />
+
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40sp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_place_red_800_24dp" />
+
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:background="#fff"
-        android:layout_height="match_parent"></LinearLayout>
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/imgSearch"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
@@ -37,13 +43,12 @@
         android:focusedByDefault="true"
         android:gravity="start|center_vertical"
         android:hint="Search Location"
-        android:maxLines="1"
         android:padding="5dp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
         android:textColorHint="@color/colorPrimary"
         android:textCursorDrawable="@null"
         android:textSize="18sp" />
-
-
 
 
     <ImageView
@@ -69,8 +74,8 @@
         android:background="@drawable/white_rounded_corner"
         android:padding="5dp"
         android:layout_margin="6dp"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <EditText
             android:visibility="gone"
             android:id="@+id/addressline1"
@@ -80,8 +85,7 @@
             android:textSize="16sp"
             android:lines="5"
             android:minLines="1"
-            android:inputType="textCapSentences|textMultiLine"
-            />
+            android:inputType="textCapSentences|textMultiLine" />
         <EditText
             android:visibility="gone"
             android:id="@+id/addressline2"
@@ -93,8 +97,7 @@
             android:paddingTop="5dp"
             android:minLines="1"
             android:textSize="16sp"
-            android:inputType="textCapSentences|textMultiLine"
-            />
+            android:inputType="textCapSentences|textMultiLine" />
 
         <TextView
             android:visibility="gone"
@@ -104,8 +107,8 @@
             android:text="city pincode state"
             android:paddingLeft="4dp"
             android:textColor="@color/quantum_grey600"
-            android:textSize="16sp"
-            />
+            android:textSize="16sp" />
+
         <Button
             android:id="@+id/fab_select_location"
             android:layout_width="match_parent"
@@ -113,10 +116,7 @@
             android:layout_margin="5dp"
             android:text="Continue"
             android:textColor="@color/quantum_white_100"
-            android:background="@color/quantum_googgreen500"
-            >
-        </Button>
-
+            android:background="@color/quantum_googgreen500" />
 
     </LinearLayout>
 

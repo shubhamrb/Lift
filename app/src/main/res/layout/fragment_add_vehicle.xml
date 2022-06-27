@@ -31,7 +31,6 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/gotham_medium"
                 android:gravity="center_vertical"
-
                 android:paddingLeft="@dimen/dp_35"
                 android:paddingRight="@dimen/dp_35"
                 android:drawablePadding="@dimen/dp_10"

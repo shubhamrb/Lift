@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface SettingView extends RootView {
     void setSettings(List<Datum> datum);
-
 }
