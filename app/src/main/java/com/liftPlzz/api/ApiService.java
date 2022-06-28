@@ -186,12 +186,18 @@ public interface ApiService {
                                                  @Field("client") String client,
                                                  @Field("token") String token,
                                                  @Field("name") String name,
+                                                 @Field("dob") String dob,
                                                  @Field("email") String email,
                                                  @Field("gender") String gender,
                                                  @Field("mobile") String mobile,
                                                  @Field("designation") String designation,
+                                                 @Field("department") String department,
+                                                 @Field("company") String company,
                                                  @Field("about_me") String about_me,
-                                                 @Field("sos") String sos);
+                                                 @Field("sos") String sos,
+                                                 @Field("is_email_public") int is_email_public,
+                                                 @Field("is_dob_public") int is_dob_public,
+                                                 @Field("is_contact_public") int is_contact_public);
 
     @FormUrlEncoded
     @POST("find-lift")

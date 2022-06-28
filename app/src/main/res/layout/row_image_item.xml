@@ -6,9 +6,11 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     >
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageViewMainDetails"
         android:layout_width="match_parent"
+        android:scaleType="fitXY"
         android:layout_height="match_parent"
         android:src="@drawable/user_image" />
 

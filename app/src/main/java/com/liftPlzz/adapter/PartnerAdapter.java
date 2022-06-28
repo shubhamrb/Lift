@@ -55,8 +55,41 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
     @Override
     public void onBindViewHolder(final PartnerAdapter.ViewHolder holder, final int position) {
         User requestData = arrayList.get(position);
-        holder.tvMobile.setText(requestData.getMobile());
+        holder.tvMobile.setText("Mobile: " + requestData.getMobile());
         holder.tvName.setText(requestData.getName());
+
+        if (requestData.getProfile_percentage() == null)
+            holder.profile_percantage.setText("Profile: --");
+        else
+            holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage());
+        if (requestData.getVehicle_percentage() == null)
+            holder.vehicle_percantage.setText("Vehical: --");
+        else
+            holder.vehicle_percantage.setText("Vehical: " + requestData.getVehicle_percentage());
+        if (requestData.getLocation().getStart_city() == null)
+            holder.from.setText("From: --");
+        else
+            holder.from.setText("From: " + requestData.getLocation().getStart_city());
+        if (requestData.getLocation().getEnd_location() == null)
+            holder.to.setText("To: --");
+        else
+            holder.to.setText("To: " + requestData.getLocation().getEnd_city());
+        if (requestData.getTotal_point() == null)
+            holder.total_point.setText("Total Points: --");
+        else
+            holder.total_point.setText("Total Points: " + requestData.getTotal_point());
+
+        if (requestData.getTotal_km() == null)
+            holder.total_km.setText("Total km: --");
+        else
+            holder.total_km.setText("Total km: " + requestData.getTotal_km());
+        if (requestData.getEvery_seat() == null)
+            holder.every_seat.setText("Every sheet: --");
+        else
+            holder.every_seat.setText("Every sheet: " + requestData.getEvery_seat());
+
+
+
         /*if(requestData.getUserType().equals("Lifter")){
             holder.userType.setVisibility(View.VISIBLE);
             holder.userType.setText(requestData.getUserType());
@@ -126,6 +159,21 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         LinearLayout linearBtn;
         @BindView(R.id.rel_item_request)
         RelativeLayout relItem;
+
+        @BindView(R.id.profile_percantage)
+        AppCompatTextView profile_percantage;
+        @BindView(R.id.vehicle_percantage)
+        AppCompatTextView vehicle_percantage;
+        @BindView(R.id.from)
+        AppCompatTextView from;
+        @BindView(R.id.to)
+        AppCompatTextView to;
+        @BindView(R.id.total_point)
+        AppCompatTextView total_point;
+        @BindView(R.id.total_km)
+        AppCompatTextView total_km;
+        @BindView(R.id.every_seat)
+        AppCompatTextView every_seat;
 
 
         ViewHolder(View itemView) {

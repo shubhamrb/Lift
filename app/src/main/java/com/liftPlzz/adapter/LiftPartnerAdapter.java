@@ -6,9 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.liftPlzz.R;
 import com.liftPlzz.model.on_going.LiftUsers;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
     private OnEndClick onEndClick;
 
 
-    public LiftPartnerAdapter(Context context, List<LiftUsers> list,OnEndClick onEndClick) {
+    public LiftPartnerAdapter(Context context, List<LiftUsers> list, OnEndClick onEndClick) {
         this.context = context;
         this.list = list;
         this.onEndClick = onEndClick;
@@ -43,12 +46,10 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
 
     @Override
     public void onBindViewHolder(final LiftPartnerAdapter.ViewHolder holder, final int position) {
-        holder.leftId.setText("Lift ID : "+list.get(position).getUser_lift_id());
-        holder.userName.setText("Name : "+list.get(position).getName());
-        holder.userNumber.setText("Mobile Number : "+list.get(position).getMobile());
-        if(list.size()==1){
-            holder.endBtn.setVisibility(View.GONE);
-        }
+        holder.leftId.setText("Lift ID : " + list.get(position).getUser_lift_id());
+        holder.userName.setText("Name : " + list.get(position).getName());
+        holder.userNumber.setText("Mobile Number : " + list.get(position).getMobile());
+
         holder.endBtn.setOnClickListener(v -> {
             onEndClick.onButtonClick(list.get(position));
         });
@@ -71,7 +72,7 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
         }
     }
 
-   public interface OnEndClick{
+    public interface OnEndClick {
         void onButtonClick(LiftUsers user);
     }
 }

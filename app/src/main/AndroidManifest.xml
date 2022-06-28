@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.liftPlzz" >
+    package="com.liftPlzz">
 
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning" >
+        tools:ignore="GoogleAppIndexingWarning">
 
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
@@ -46,9 +46,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps_api_key" />
 
-        <activity android:name=".activity.PaymentPackage" />
-        <activity android:name=".activity.PaymentHistory" />
-        <activity android:name=".DriverUserLocationActivity" >
+        <activity
+            android:name=".activity.PaymentPackage"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PaymentHistory"
+            android:exported="false" />
+        <activity
+            android:name=".DriverUserLocationActivity"
+            android:exported="false">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -58,7 +64,9 @@
             <!-- </intent-filter> -->
 
         </activity>
-        <activity android:name=".activity.UserProfileActivity" >
+        <activity
+            android:name=".activity.UserProfileActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -70,12 +78,18 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.StartRideActivity"
+        <activity
+            android:name=".activity.StartRideActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:supportsPictureInPicture="true"/> <!-- <activity android:name=".activity.UserProfileActivity" /> -->
-        <activity android:name=".activity.RideRequestActivity" />
-        <activity android:name=".activity.DriverProfileActivity" />
+            android:supportsPictureInPicture="true" /> <!-- <activity android:name=".activity.UserProfileActivity" /> -->
+        <activity
+            android:name=".activity.RideRequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DriverProfileActivity"
+            android:exported="false" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -88,7 +102,9 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-        <activity android:name=".activity.SplashActivity" >
+        <activity
+            android:name=".activity.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -97,22 +113,25 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.HomeActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:supportsPictureInPicture="true" />
         <activity
             android:name=".activity.AuthActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -124,12 +143,11 @@
             android:foregroundServiceType="location" />
 
 
-
         <service
             android:name=".locationservice.LocationUpdatesService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location" >
+            android:foregroundServiceType="location">
 
             <!-- Any inner elements would go here. -->
         </service>
@@ -140,24 +158,32 @@
 
         <activity
             android:name=".activity.MatchingRideActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.DriverListActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ChatActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TicketListActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CreateTicketActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.TicketDetailsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
-        <receiver android:name=".receiver.SmsReceiver" >
+        <receiver
+            android:name=".receiver.SmsReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

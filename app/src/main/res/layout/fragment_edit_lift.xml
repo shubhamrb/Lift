@@ -12,17 +12,17 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title">
+        android:layout_below="@+id/title"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imgCurrentloc"
@@ -42,14 +42,14 @@
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/layoutRide"/>
+            android:layout_above="@+id/layoutRide" />
 
         <LinearLayout
-            android:layout_marginTop="-40sp"
             android:id="@+id/layoutRide"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_350"
             android:layout_alignParentBottom="true"
+            android:layout_marginTop="-40sp"
             android:background="@drawable/home_bg"
             android:orientation="vertical"
             android:visibility="visible">
@@ -337,11 +337,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_weight="1"
                     android:id="@+id/layoutSelectSeat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_25"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -470,7 +470,6 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
 
 
 </RelativeLayout>

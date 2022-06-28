@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_10"
@@ -42,7 +41,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/app_name"
                     android:textColor="@color/colorBlue"
-                    android:textSize="@dimen/dp_18" />
+                    android:textSize="@dimen/dp_14" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -54,7 +53,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/seats"
                     android:textColor="@color/colorText"
-                    android:textSize="@dimen/dp_18" />
+                    android:textSize="@dimen/dp_14" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -66,21 +65,118 @@
                     android:gravity="center_vertical"
                     android:text="@string/app_name"
                     android:textColor="@color/colorText"
-                    android:textSize="@dimen/dp_18" />
+                    android:textSize="@dimen/dp_14" />
+
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rr_otherinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_request">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/profile_percantage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_percantage"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/vehicle_percantage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="@string/vehicle_percantage"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/profile_percantage"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="From"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/profile_percantage"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="To"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/total_km"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/from"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="Total km"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/total_point"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/from"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="total-point"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/every_seat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/total_km"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center_vertical"
+                    android:text="every seat"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dp_14" />
+
+            </RelativeLayout>
+
         </RelativeLayout>
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/userType"
-            android:textStyle="bold"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:text="@string/app_name"
             android:textColor="@color/colorBlue"
-            android:textSize="@dimen/dp_18" />
+            android:textSize="@dimen/dp_18"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -2,7 +2,6 @@ package com.liftPlzz.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,6 +28,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -38,13 +38,9 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -83,14 +79,12 @@ import com.liftPlzz.R;
 import com.liftPlzz.adapter.LiftPartnerAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
-import com.liftPlzz.locationservice.LiveLocation;
 import com.liftPlzz.locationservice.LocationUpdatesService;
 import com.liftPlzz.locationservice.Utils;
 import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.model.on_going.LiftUsers;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.upcomingLift.Lift;
-import com.liftPlzz.utils.AnimationUtil;
 import com.liftPlzz.utils.Constants;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
@@ -104,13 +98,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.Provider;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -158,7 +151,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-
+    private List<LiftUsers> liftUsersList = new ArrayList<>();
 
     /**
      * Receiver for broadcasts sent by {@link LocationUpdatesService}.
@@ -166,69 +159,73 @@ public class StartRideActivity extends AppCompatActivity implements
     private class MyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
-            Log.e("Driver started is", "Ride " + bywhomRidestarted);
-            if (bywhomRidestarted == 0) {
-                Log.e(TAG, "Location Same location" + startedcount);
-                if (startedcount == 0) {
-                    startedcount = 3;
-                    startDriverLift(location, strToken);
-                    return;
-                } else {
-                    if (location != null) {
+            try {
+                location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
+                Log.e("Driver started is", "Ride " + bywhomRidestarted);
+                if (bywhomRidestarted == 0) {
+                    Log.e(TAG, "Location Same location" + startedcount);
+                    if (startedcount == 0) {
+                        startedcount = 3;
+                        startDriverLift(location, strToken);
+                        return;
+                    } else {
+                        if (location != null) {
 //                Log.e(TAG , "Location Received"+Utils.getLocationText(location));
-                        // ...
-                        if (Previouslocation == null) {
-                            historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
-                        } else if (location.getLatitude() == Previouslocation.getLatitude() || (location.getLongitude() == Previouslocation.getLongitude())) {
-                            Log.e(TAG, "Location is Same");
-                        } else {
-                            historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
-                        }
-                        Previouslocation = location;
-                        String livelocation = String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude());
-                        Log.e(TAG, "Location livelocation" + livelocation);
-                        StoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
-                        StoreLoactiontoDatabaseReference = StoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id).child("location");
-                        StoreLoactiontoDatabaseReference.setValue(livelocation).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.e(TAG, "Location Success");
-                                StoreLoactiontoDatabaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DataSnapshot dataSnapshot) {
-                                        String[] Latbroken = dataSnapshot.getValue().toString().split(",");
-                                        Log.e(TAG, "Location Retrieved" + Latbroken[0] + " and " + Latbroken[1]);
-                                        Location targetLocation = new Location("");//provider name is unnecessary
-                                        targetLocation.setLatitude(Double.parseDouble(Latbroken[0]));//your coords of course
-                                        targetLocation.setLongitude(Double.parseDouble(Latbroken[1]));
+                            // ...
+                            if (Previouslocation == null) {
+                                historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
+                            } else if (location.getLatitude() == Previouslocation.getLatitude() || (location.getLongitude() == Previouslocation.getLongitude())) {
+                                Log.e(TAG, "Location is Same");
+                            } else {
+                                historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
+                            }
+                            Previouslocation = location;
+                            String livelocation = String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude());
+                            Log.e(TAG, "Location livelocation" + livelocation);
+                            StoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                            StoreLoactiontoDatabaseReference = StoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id).child("location");
+                            StoreLoactiontoDatabaseReference.setValue(livelocation).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.e(TAG, "Location Success");
+                                    StoreLoactiontoDatabaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DataSnapshot dataSnapshot) {
+                                            String[] Latbroken = dataSnapshot.getValue().toString().split(",");
+                                            Log.e(TAG, "Location Retrieved" + Latbroken[0] + " and " + Latbroken[1]);
+                                            Location targetLocation = new Location("");//provider name is unnecessary
+                                            targetLocation.setLatitude(Double.parseDouble(Latbroken[0]));//your coords of course
+                                            targetLocation.setLongitude(Double.parseDouble(Latbroken[1]));
 //                                Location retrivedloc = new Location(Latbroken[0] , Latbroken[1]) ;
-                                        placeTheCUrrentmarker(targetLocation);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull @NotNull Exception e) {
-                                        e.printStackTrace();
-                                        Log.e(TAG, "Location Failed");
+                                            placeTheCUrrentmarker(targetLocation);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull @NotNull Exception e) {
+                                            e.printStackTrace();
+                                            Log.e(TAG, "Location Failed");
 
-                                    }
-                                });
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull @NotNull Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    }
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull @NotNull Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
 //                placeTheCUrrentmarker(location);
 //                mDatabase = FirebaseDatabase.getInstance().getReference();
 //                mDatabase.child("LocationMap").child("Drivers").child("1").setValue(name);
 //                Toast.makeText(DriverUserLocationActivity.this, Utils.getLocationText(location),
 //                        Toast.LENGTH_SHORT).show();
+                    }
+                } else if (bywhomRidestarted == 1) {
+                    Log.e("Driver started is", "User" + bywhomRidestarted);
                 }
-            } else if (bywhomRidestarted == 1) {
-                Log.e("Driver started is", "User" + bywhomRidestarted);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -266,6 +263,7 @@ public class StartRideActivity extends AppCompatActivity implements
             mService = binder.getService();
             mBound = true;
         }
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mService = null;
@@ -306,9 +304,9 @@ public class StartRideActivity extends AppCompatActivity implements
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (sos.isEmpty()){
+                if (sos.isEmpty()) {
                     Toast.makeText(mainContext, "Emergency number not found", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
                             "tel", sos, null));
                     startActivity(phoneIntent);
@@ -319,9 +317,9 @@ public class StartRideActivity extends AppCompatActivity implements
         smsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (sos.isEmpty()){
+                if (sos.isEmpty()) {
                     Toast.makeText(mainContext, "Emergency number not found", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + sos));
                     intent.putExtra("sms_body", "Hi");
                     startActivity(intent);
@@ -351,10 +349,10 @@ public class StartRideActivity extends AppCompatActivity implements
         myReceiver = new MyReceiver();
         mapFragment.getMapAsync(this);
 
+        getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             if (lift.getIs_driver_start() == 1) {
                 rel_bottom.setVisibility(View.GONE);
-                getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
                 bywhomRidestarted = 0;
                 buildLocationCallBack();
                 buildLocationRequest();
@@ -570,6 +568,7 @@ public class StartRideActivity extends AppCompatActivity implements
                        LiveLocation.class);
                 intent.setAction("start_service");
                 ContextCompat.startForegroundService(this, intent);*/
+
                 try {
                     String txt = tvStartRide.getText().toString();
                     if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
@@ -590,13 +589,13 @@ public class StartRideActivity extends AppCompatActivity implements
                     } else {
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                             Log.e("Lift", "end by driver");
-                            showEndUserListDialog(onGoingListResponse);
+                            showEndUserListDialog();
                         } else {
-                            getRideEnd(strToken, 2, false);
+                            endRideCinfirmationDialog(false);
                         }
                     }
-                }catch (Exception E){
-                    Log.e("Exception E", ""+E.getMessage());
+                } catch (Exception E) {
+                    Log.e("Exception E", "" + E.getMessage());
                 }
                 break;
         }
@@ -933,6 +932,9 @@ public class StartRideActivity extends AppCompatActivity implements
                 if (response.body().getResponse() != null) {
                     Log.e("RES: ", "" + response.body().getResponse());
                     onGoingListResponse = response.body().getResponse();
+                    liftUsersList.clear();
+                    if (onGoingListResponse.getLifts().size() > 0)
+                        liftUsersList.addAll(onGoingListResponse.getLifts().get(0).getLift_users());
                     /*if (response.body().getResponse().isStatus()) {
                         view.setOnGoingData(response.body().getResponse());
                     } else {
@@ -1203,7 +1205,7 @@ public class StartRideActivity extends AppCompatActivity implements
     }
 
 
-    private void showEndUserListDialog(InnerGoingResponse response) {
+    private void showEndUserListDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(StartRideActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         dialogBuilder.setCancelable(true);
@@ -1212,23 +1214,53 @@ public class StartRideActivity extends AppCompatActivity implements
         AlertDialog alertDialog = dialogBuilder.create();
         TextView titleTxt = dialogView.findViewById(R.id.titleTxt);
         RecyclerView listview = dialogView.findViewById(R.id.userList);
-        Button endRideBtn = dialogView.findViewById(R.id.endRideBtn);
+        Button endAllRideBtn = dialogView.findViewById(R.id.endAllRideBtn);
+
         listview.setLayoutManager(new LinearLayoutManager(this));
-        if (response.getLifts().get(0).getLift_users().size() > 1) {
-            endRideBtn.setVisibility(View.GONE);
-        }
-        LiftPartnerAdapter adapter = new LiftPartnerAdapter(mainContext, response.getLifts().get(0).getLift_users(), new LiftPartnerAdapter.OnEndClick() {
+        LiftPartnerAdapter adapter = new LiftPartnerAdapter(mainContext, liftUsersList, new LiftPartnerAdapter.OnEndClick() {
             @Override
             public void onButtonClick(LiftUsers user) {
                 alertDialog.dismiss();
                 request_id = user.getRequest_id();
-                getRideEnd(strToken, 2, true);
+                endRideCinfirmationDialog(false);
             }
         });
         listview.setAdapter(adapter);
-        endRideBtn.setOnClickListener(v -> {
+
+        endAllRideBtn.setOnClickListener(v -> {
                     alertDialog.dismiss();
-                    getRideEndBYDriver(strToken, 1);
+                    endRideCinfirmationDialog(true);
+                }
+        );
+        alertDialog.show();
+    }
+
+    private void endRideCinfirmationDialog(boolean isAllUsers) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(StartRideActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        dialogBuilder.setCancelable(true);
+        View dialogView = inflater.inflate(R.layout.end_ride_confirmation_layout, null);
+        dialogBuilder.setView(dialogView);
+        AlertDialog alertDialog = dialogBuilder.create();
+        AppCompatTextView title = dialogView.findViewById(R.id.title);
+        Button endRideBtnConfirmation = dialogView.findViewById(R.id.endRideBtnConfirmation);
+        Button cancelBtnConfirmation = dialogView.findViewById(R.id.cancelBtnConfirmation);
+        if (isAllUsers) {
+            title.setText(R.string.do_you_want_to_end_all_rides);
+            endRideBtnConfirmation.setText(R.string.end_all_rides);
+        }
+        endRideBtnConfirmation.setOnClickListener(v -> {
+                    alertDialog.dismiss();
+                    if (isAllUsers) {
+                        getRideEndBYDriver(strToken, 1);
+                    } else {
+                        getRideEnd(strToken, 2, false);
+                    }
+                }
+        );
+
+        cancelBtnConfirmation.setOnClickListener(v -> {
+                    alertDialog.dismiss();
                 }
         );
         alertDialog.show();
@@ -1406,7 +1438,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     sos = userdata.getString("sos");
                     Log.d("sos", sos);
 
-                   } catch (JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -1414,7 +1446,7 @@ public class StartRideActivity extends AppCompatActivity implements
             @Override
             public void onErrorResponse(VolleyError error) {
                 Constants.hideLoader();
-                Log.e("rise vo",""+error.getMessage());
+                Log.e("rise vo", "" + error.getMessage());
             }
         }) {
             @Override

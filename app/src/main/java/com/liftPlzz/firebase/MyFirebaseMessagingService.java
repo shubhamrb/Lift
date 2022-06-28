@@ -14,8 +14,17 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.JsonArray;
 import com.liftPlzz.R;
+import com.liftPlzz.activity.DriverListActivity;
 import com.liftPlzz.activity.MainActivity;
+import com.liftPlzz.activity.RideRequestActivity;
+import com.liftPlzz.utils.Constants;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -47,8 +56,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
@@ -60,13 +67,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 // Handle message within 10 seconds
                 handleNow();
             }*/
-
-        }
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage);
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -129,41 +130,63 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(RemoteMessage messageBody) {
+        try {
+            Map<String, String> params = messageBody.getData();
+            JSONObject object = new JSONObject(params);
+            String type = object.getString("type");
+            JSONObject jObject = new JSONObject(object.getString("details"));
 
-        String[] mesg = messageBody.split("_");
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("id",mesg[1]);
-        intent.putExtra("type",mesg[2]);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = null;
+            if (type.equalsIgnoreCase("cancel-invitation") || type.equalsIgnoreCase("send-invitation")) {
+                String liftId = jObject.getString("LIFT_ID");
+                String subCategoryId = jObject.getString("SUB_CATEGORY_ID");
+                String vehicleType = jObject.getString("VEHICLE_TYPE");
+                intent = new Intent(this, RideRequestActivity.class);
+                if (!liftId.equals(""))
+                    intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
+                if (!subCategoryId.equals(""))
+                    intent.putExtra(Constants.SUB_CATEGORY_ID, Integer.parseInt(subCategoryId));
+                intent.putExtra(Constants.PARTNER, false);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+            } else if (type.equalsIgnoreCase("invitation-status-update")) {
+                String liftId = jObject.getString("LIFT_ID");
+                intent = new Intent(this, RideRequestActivity.class);
+                if (!liftId.equals(""))
+                    intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
+                intent.putExtra(Constants.PARTNER, false);
 
-        String channelId = getString(R.string.default_notification_channel_id);
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.logo_icon)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(mesg[0])
-                        .setAutoCancel(true)
-                        .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                        .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            String channelId = getString(R.string.default_notification_channel_id);
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(this, channelId)
+                            .setSmallIcon(R.drawable.logo_icon)
+                            .setContentTitle(getString(R.string.app_name))
+                            .setContentText(object.getString("body"))
+                            .setAutoCancel(true)
+                            .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                            .setSound(defaultSoundUri)
+                            .setContentIntent(pendingIntent);
 
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // Since android Oreo notification channel is needed.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "Channel human readable title",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 }

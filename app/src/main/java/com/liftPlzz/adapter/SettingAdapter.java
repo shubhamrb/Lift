@@ -56,9 +56,9 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
             holder.toggleButton.setVisibility(View.VISIBLE);
             holder.imgnext.setVisibility(View.GONE);
             if (datum.getSelectedValue().equalsIgnoreCase("1")) {
-                holder.toggleButton.setImageResource(R.drawable.off);
-            } else if (datum.getSelectedValue().equalsIgnoreCase("0")) {
                 holder.toggleButton.setImageResource(R.drawable.on);
+            } else if (datum.getSelectedValue().equalsIgnoreCase("0")) {
+                holder.toggleButton.setImageResource(R.drawable.off);
             }
         } else {
             holder.toggleButton.setVisibility(View.GONE);

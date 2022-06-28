@@ -66,7 +66,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
             vehicleSubcategoryId = getIntent().getIntExtra(Constants.SUB_CATEGORY_ID, -1);
             vehicleType = getIntent().getStringExtra(Constants.VEHICLE_TYPE);
         }
-        toolBarTitle.setText(getResources().getString(R.string.driver_list));
+        toolBarTitle.setText(getResources().getString(R.string.matches_list));
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         driverListAdapter = new DriverListAdapter(this, arrayList, DriverListActivity.this);

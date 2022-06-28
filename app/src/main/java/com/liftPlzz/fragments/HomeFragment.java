@@ -73,6 +73,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.liftPlzz.R;
+import com.liftPlzz.activity.DriverListActivity;
+import com.liftPlzz.activity.DriverProfileActivity;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
@@ -165,6 +167,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @BindView(R.id.smsButton)
     ImageView smsButton;
     int listPos;
+    @BindView(R.id.rr_toolbar)
+    RelativeLayout rr_toolbar;
 
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
@@ -268,7 +272,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
 
-
     private String strToken = "";
 
     public void requestpermisson() {
@@ -346,12 +349,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     }
                 });
         // mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        presenter.getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
     }
 
     @Override
@@ -454,7 +451,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutGiveLift:
-                if (!isOfferLift){
+                if (!isOfferLift) {
                     presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                 }
                 isMultiCheck = true;
@@ -464,7 +461,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorWhite));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorBlack));
                 llchkpoint.setVisibility(View.VISIBLE);
-                if(editTextDropLocation.getText().toString().length()>0) {
+                if (editTextDropLocation.getText().toString().length() > 0) {
                     textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
                 }
                 break;
@@ -476,7 +473,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorBlack));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorWhite));
                 llchkpoint.setVisibility(View.INVISIBLE);
-                if(editTextDropLocation.getText().toString().length()>0) {
+                if (editTextDropLocation.getText().toString().length() > 0) {
                     textViewSelectSeat.setText(seat + " Seats");
                 }
                 break;
@@ -749,7 +746,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         return strAdd;
     }
 
-
     private String getJsonObjectFromLocation(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
@@ -854,6 +850,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         liftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
         textViewSelectDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
     }
+
     ViewPager vehiclePager;
     EditText etkm;
     LinearLayout llrate;
@@ -950,9 +947,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         });
 
 
-        if(data!=null){
-            if(data.size()>0){
-                if(data.get(0).getType().equals("two_wheeler")){
+        if (data != null) {
+            if (data.size() > 0) {
+                if (data.get(0).getType().equals("two_wheeler")) {
                     oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
                     twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                     threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
@@ -978,7 +975,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
                 @Override
                 public void onPageSelected(final int i) {
-                    if(data.get(i).getType().equals("two_wheeler")){
+                    if (data.get(i).getType().equals("two_wheeler")) {
                         oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
                         twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                         threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
@@ -989,7 +986,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         fourTxt.setVisibility(View.GONE);
                         fiveTxt.setVisibility(View.GONE);
                         seat = "1";
-                    }else {
+                    } else {
                         twoTxt.setVisibility(View.VISIBLE);
                         threeTxt.setVisibility(View.VISIBLE);
                         fourTxt.setVisibility(View.VISIBLE);
@@ -1022,8 +1019,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             textViewSelectSeat.setText(seat + " Seat");
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                 textViewSelectSeat.setText(seat + " Seats");
-            } else {
-                rate_per_km =  Integer.parseInt(etkm.getText().toString().trim());
+            } else if (etkm != null && !etkm.toString().trim().equals("")) {
+                rate_per_km = Integer.parseInt(etkm.getText().toString().trim());
                 textViewSelectSeat.setText("" + data.get(PagerPosition).getModel() + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
             }
             d.dismiss();
@@ -1075,9 +1072,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             vehicle_name = data.get(0).getModel();
             rate_per_km = data.get(0).getRatePerKm();
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
-                textViewSelectSeat.setText(seat+" Seats");
+                textViewSelectSeat.setText(seat + " Seats");
             } else {
-                textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km+"/km" + " | " + seat+" Seats");
+                textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
             }
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
@@ -1100,7 +1097,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void setOnGoingData(InnerGoingResponse onGoingData) {
-        if(onGoingData.getLifts().size()>0){
+        if (onGoingData.getLifts().size() > 0) {
             Constants.isLiftOnGoing = true;
 //            layoutRide.setVisibility(View.GONE);
         }
@@ -1431,5 +1428,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        rr_toolbar.setVisibility(View.GONE);
+        layoutRide.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        presenter.getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
+        rr_toolbar.setVisibility(View.VISIBLE);
+        layoutRide.setVisibility(View.VISIBLE);
     }
 }

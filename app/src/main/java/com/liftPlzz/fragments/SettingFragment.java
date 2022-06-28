@@ -121,6 +121,7 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
         RadioGroup genderRadioGroup = dialog.findViewById(R.id.genderRadioGroup);
         RadioButton maleRadio = dialog.findViewById(R.id.maleRadio);
         RadioButton femaleRadio = dialog.findViewById(R.id.femaleRadio);
+        RadioButton anyRadio = dialog.findViewById(R.id.anyRadio);
         TextView cancelBtn = dialog.findViewById(R.id.cancelBtn);
         TextView okayBtn = dialog.findViewById(R.id.okayBtn);
         TextView titleTxt = dialog.findViewById(R.id.titleTxt);
@@ -130,8 +131,11 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
             if (!data.getSelectedValue().equals("0")) {
                 if (data.getSelectedValue().equals("Male")) {
                     maleRadio.setChecked(true);
-                } else {
-                    femaleRadio.setChecked(true);
+                }else if (data.getSelectedValue().equals("Female")) {
+                    maleRadio.setChecked(true);
+                }
+                else {
+                    anyRadio.setChecked(true);
                 }
             }
         }
@@ -149,6 +153,8 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
                     type = "Male";
                 } else if (genderRadioGroup.getCheckedRadioButtonId() == R.id.femaleRadio) {
                     type = "Female";
+                }else if (genderRadioGroup.getCheckedRadioButtonId() == R.id.anyRadio) {
+                    type = "Any";
                 }
                 dialog.dismiss();
                 updateSetting(strToken, data.getId(), type.trim());

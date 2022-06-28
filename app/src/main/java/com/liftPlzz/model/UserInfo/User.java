@@ -65,6 +65,84 @@ public class User {
     @Expose
     private Settings settings;
 
+    public Integer getIs_contact_public() {
+        return is_contact_public;
+    }
+
+    public void setIs_contact_public(Integer is_contact_public) {
+        this.is_contact_public = is_contact_public;
+    }
+
+    public Integer getIs_dob_public() {
+        return is_dob_public;
+    }
+
+    public void setIs_dob_public(Integer is_dob_public) {
+        this.is_dob_public = is_dob_public;
+    }
+
+    public Integer getIs_email_public() {
+        return is_email_public;
+    }
+
+    public void setIs_email_public(Integer is_email_public) {
+        this.is_email_public = is_email_public;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    @SerializedName("is_contact_public")
+    @Expose
+    private Integer is_contact_public;
+    @SerializedName("is_dob_public")
+    @Expose
+    private Integer is_dob_public;
+    @SerializedName("is_email_public")
+    @Expose
+    private Integer is_email_public;
+    @SerializedName("department")
+    @Expose
+    private String department;
+
+    @SerializedName("company")
+    @Expose
+    private String company;
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    @SerializedName("age")
+    @Expose
+    private String age;
+
+    public String getProfile_percentage() {
+        return profile_percentage;
+    }
+
+    @SerializedName("profile_percentage")
+    @Expose
+    private String profile_percentage;
+
+
 
     public Integer getId() {
         return id;

@@ -5,16 +5,20 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,11 +43,11 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
     List<Lift> verifiedLists;
     EditLiftDaiFragment.UpdateRecordListiner listinerUpdate;
 
-    public MyUpcomingLiftAdapter(Context context, List<Lift> verifiedLists, ItemListener itemListener,EditLiftDaiFragment.UpdateRecordListiner listinerUpdate) {
+    public MyUpcomingLiftAdapter(Context context, List<Lift> verifiedLists, ItemListener itemListener, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate) {
         this.context = context;
         this.verifiedLists = verifiedLists;
         this.itemListener = itemListener;
-        this.listinerUpdate=listinerUpdate;
+        this.listinerUpdate = listinerUpdate;
     }
 
     @Override
@@ -87,8 +91,8 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             holder.btn_same_rute.setText(lift.getSameroutevehicle() + " Same Route");
         } else {
             holder.tvStartRide.setVisibility(View.GONE);
-            holder.btn_share_lift.setVisibility(View.GONE);
-            holder.btn_same_rute.setVisibility(View.GONE);
+//            holder.btn_share_lift.setVisibility(View.GONE);
+//            holder.btn_same_rute.setVisibility(View.GONE);
         }
         /*holder.tvStartRide.setVisibility(View.VISIBLE);
         holder.btn_share_lift.setVisibility(View.VISIBLE);*/
@@ -229,17 +233,25 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         AppCompatTextView textViewRideId;
         @BindView(R.id.textViewSeats)
         AppCompatTextView textViewSeats;
-        @BindView(R.id.textViewDateTime) AppCompatTextView textViewDateTime;
-        @BindView(R.id.textDistancekm) AppCompatTextView textDistancekm;
+        @BindView(R.id.textViewDateTime)
+        AppCompatTextView textViewDateTime;
+        @BindView(R.id.textDistancekm)
+        AppCompatTextView textDistancekm;
         @BindView(R.id.tv_cancel)
         AppCompatTextView tvCancel;
 
-        @BindView(R.id.btn_start_ride) AppCompatTextView tvStartRide;
-        @BindView(R.id.btn_share_lift) AppCompatTextView btn_share_lift;
-        @BindView(R.id.btn_same_rute) AppCompatTextView btn_same_rute;
-        @BindView(R.id.textPoints) AppCompatTextView textPoints;
-        @BindView(R.id.textRateparkm) AppCompatTextView textRateparkm;
-        @BindView(R.id.llpoint) LinearLayout llpoint;
+        @BindView(R.id.btn_start_ride)
+        AppCompatTextView tvStartRide;
+        @BindView(R.id.btn_share_lift)
+        AppCompatTextView btn_share_lift;
+        @BindView(R.id.btn_same_rute)
+        AppCompatTextView btn_same_rute;
+        @BindView(R.id.textPoints)
+        AppCompatTextView textPoints;
+        @BindView(R.id.textRateparkm)
+        AppCompatTextView textRateparkm;
+        @BindView(R.id.llpoint)
+        LinearLayout llpoint;
         //  textRateparkm,textPoints
 
         @BindView(R.id.linear_item)
@@ -255,7 +267,13 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                     final Lift lift = verifiedLists.get(getAdapterPosition());
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
-                    String shareBody = "I am inviting you for this ride\n\n"+lift.getTitle()+"\nDate: "+lift.getLiftDate()+" at "+lift.getStart_time()+"\nPoint "+lift.getRate_per_km()+"/km";
+                    String message = "";
+                    if (lift.getLiftType().equalsIgnoreCase("Offer Lift")) {
+                        message = "I am inviting you for this ride\n\n";
+                    } else {
+                        message = "I am looking for this ride\n\n";
+                    }
+                    String shareBody = message + lift.getTitle() + "\nDate: " + lift.getLiftDate() + " at " + lift.getStart_time() + "\nPoint " + lift.getRate_per_km() + "/km";
                     sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share Lift");
                     sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                     context.startActivity(Intent.createChooser(sharingIntent, "LiftPlzz"));
@@ -264,7 +282,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             imMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MoreOptionDailog sheet = new MoreOptionDailog();
+                   /* MoreOptionDailog sheet = new MoreOptionDailog();
                     sheet.listiner(new MoreOptionDailog.ItemSelectListiner() {
                         @Override
                         public void cancel() {
@@ -272,15 +290,39 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                                 itemListener.onCancelClick(verifiedLists.get(getAdapterPosition()).getId());
                             }
                         }
+
                         @Override
                         public void edit() {
                             EditLiftDaiFragment sheet = new EditLiftDaiFragment("edit");
-                            sheet.setLift(verifiedLists.get(getAdapterPosition()),listinerUpdate ,"edit");
-                            sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
-                            sheet.show(((FragmentActivity)context).getSupportFragmentManager().beginTransaction(),"dialog");
+                            sheet.setLift(verifiedLists.get(getAdapterPosition()), listinerUpdate, "edit");
+                            sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style. zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzMyTheme);
+                            sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "dialog");
                         }
                     });
-                    sheet.show(((FragmentActivity)context).getSupportFragmentManager().beginTransaction(), "HomeSlidingMenuFragment");
+                    sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "HomeSlidingMenuFragment");
+                    */
+
+                    PopupMenu popup = new PopupMenu(context, imMore);
+                    //Inflating the Popup using xml file
+                    popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+
+                    //registering popup with OnMenuItemClickListener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.toString().equalsIgnoreCase("delete")){
+                                itemListener.onCancelClick(verifiedLists.get(getAdapterPosition()).getId());
+
+                            }else {
+                                EditLiftDaiFragment sheet = new EditLiftDaiFragment("edit");
+                                sheet.setLift(verifiedLists.get(getAdapterPosition()), listinerUpdate, "edit");
+                                sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
+                                sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "dialog");
+                            }
+                            return true;
+                        }
+                    });
+
+                    popup.show();
                 }
             });
         }

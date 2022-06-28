@@ -4,15 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/title"
-        layout="@layout/toolbar_home_title_layout" />
+    <RelativeLayout
+        android:id="@+id/rr_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/title"
+            layout="@layout/toolbar_home_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/imgCurrentloc"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/rr_toolbar"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dp_10"
@@ -29,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layoutRide"
-        android:layout_below="@+id/title"/>
+        android:layout_below="@+id/rr_toolbar" />
 
     <ImageView
         android:id="@+id/callButton"
@@ -39,21 +48,20 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="150dp"
         android:layout_marginEnd="15dp"
-        android:visibility="visible"
-        android:src="@drawable/telephone"/>
+        android:src="@drawable/telephone"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/smsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/callButton"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="190dp"
         android:layout_marginEnd="15dp"
-        android:visibility="visible"
         android:src="@drawable/sms"
-        android:layout_below="@+id/callButton"
-        />
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/layoutRide"
@@ -99,7 +107,7 @@
                     android:text="@string/find_lift"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/sp_16" />
+                    android:textSize="@dimen/_12sdp" />
 
 
             </LinearLayout>
@@ -127,7 +135,7 @@
                     android:text="@string/offer_lift"
                     android:textAllCaps="false"
                     android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/sp_16" />
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -177,7 +185,7 @@
             android:id="@+id/recyclerViewCheckpoints"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layoutDropLocation"
@@ -358,7 +366,6 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_marginBottom="10sp"
             android:id="@+id/buttonLift"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -366,6 +373,7 @@
             android:layout_marginLeft="@dimen/sp_25"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginRight="@dimen/sp_25"
+            android:layout_marginBottom="10sp"
             android:background="@drawable/rounded_button"
             android:fontFamily="@font/gotham_medium"
             android:gravity="center"
@@ -377,55 +385,55 @@
             android:textSize="@dimen/sp_16" />
     </LinearLayout>
 
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/layoutRideVehicle"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="@dimen/dp_350"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:background="@drawable/home_bg"-->
-<!--        android:orientation="vertical"-->
-<!--        android:visibility="gone">-->
+    <!--    <RelativeLayout-->
+    <!--        android:id="@+id/layoutRideVehicle"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="@dimen/dp_350"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:background="@drawable/home_bg"-->
+    <!--        android:orientation="vertical"-->
+    <!--        android:visibility="gone">-->
 
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/recyclerViewMyVehicle"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="@dimen/dp_5"-->
-<!--            android:layout_marginTop="@dimen/dp_25"-->
-<!--            android:layout_marginRight="@dimen/dp_5"-->
-<!--            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>-->
+    <!--        <androidx.recyclerview.widget.RecyclerView-->
+    <!--            android:id="@+id/recyclerViewMyVehicle"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginLeft="@dimen/dp_5"-->
+    <!--            android:layout_marginTop="@dimen/dp_25"-->
+    <!--            android:layout_marginRight="@dimen/dp_5"-->
+    <!--            android:layout_marginBottom="@dimen/dp_10"></androidx.recyclerview.widget.RecyclerView>-->
 
 
-<!--        <EditText-->
-<!--            android:id="@+id/etkm"-->
-<!--            android:layout_width="@dimen/dp_100"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:gravity="center"-->
-<!--            android:hint="Enter Par Km Price"-->
-<!--            android:inputType="number"-->
-<!--            android:padding="@dimen/dp_10"-->
-<!--            android:layout_marginBottom="@dimen/dp_10"-->
-<!--            android:textSize="@dimen/dp_14" />-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/etkm"-->
+    <!--            android:layout_width="@dimen/dp_100"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentBottom="true"-->
+    <!--            android:layout_centerHorizontal="true"-->
+    <!--            android:gravity="center"-->
+    <!--            android:hint="Enter Par Km Price"-->
+    <!--            android:inputType="number"-->
+    <!--            android:padding="@dimen/dp_10"-->
+    <!--            android:layout_marginBottom="@dimen/dp_10"-->
+    <!--            android:textSize="@dimen/dp_14" />-->
 
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:id="@+id/btnSubmit"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="35dp"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:background="@drawable/rounded_button"-->
-<!--            android:fontFamily="@font/gotham_medium"-->
-<!--            android:layout_marginRight="@dimen/dp_10"-->
-<!--            android:text="Submit"-->
-<!--            android:textAllCaps="false"-->
-<!--            android:layout_marginBottom="@dimen/dp_10"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:textColor="@color/colorWhite"-->
-<!--            android:textSize="@dimen/sp_14" />-->
+    <!--        <androidx.appcompat.widget.AppCompatButton-->
+    <!--            android:id="@+id/btnSubmit"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="35dp"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:background="@drawable/rounded_button"-->
+    <!--            android:fontFamily="@font/gotham_medium"-->
+    <!--            android:layout_marginRight="@dimen/dp_10"-->
+    <!--            android:text="Submit"-->
+    <!--            android:textAllCaps="false"-->
+    <!--            android:layout_marginBottom="@dimen/dp_10"-->
+    <!--            android:layout_alignParentBottom="true"-->
+    <!--            android:textColor="@color/colorWhite"-->
+    <!--            android:textSize="@dimen/sp_14" />-->
 
 
-<!--    </RelativeLayout>-->
+    <!--    </RelativeLayout>-->
 
 </RelativeLayout>

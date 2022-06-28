@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
+import com.liftPlzz.activity.DriverListActivity;
 import com.liftPlzz.activity.DriverProfileActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.activity.RideRequestActivity;
@@ -81,6 +82,8 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     public void onMatchClick(Lift lift) {
         Intent intent = new Intent(getActivity(), MatchingRideActivity.class);
         intent.putExtra(Constants.LIFT_ID, lift.getId());
+        intent.putExtra(Constants.VEHICLE_TYPE, lift.getVehicle_type());
+        intent.putExtra(Constants.SUB_CATEGORY_ID, lift.getVehicle_subcategory());
         startActivity(intent);
     }
 

@@ -85,13 +85,17 @@ public class UpdateProfilePresenter extends BasePresenter<UpdateProfileView> {
     }
 
     public void updateProfile(String token, String name,
-                              String deg, String email,
+                              String deg,
+                              String dep,
+                              String com,
+                              String dob,
+                              String email,
                               String gender,
-                              String mobile,String aboutme,
-                              String sos) {
+                              String mobile, String aboutme,
+                              String sos, int isEmailprivate, int isDobPrivate, int isMobilePrivate) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateProfileMainResponse> call = api.edit_profile(Constants.API_KEY, "android", token, name, email,gender, mobile, deg, aboutme,sos);
+        Call<CreateProfileMainResponse> call = api.edit_profile(Constants.API_KEY, "android", token, name, dob, email, gender, mobile, deg, dep, com, aboutme, sos, isEmailprivate, isDobPrivate, isMobilePrivate);
         call.enqueue(new Callback<CreateProfileMainResponse>() {
             @Override
             public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.liftPlzz"
         minSdkVersion 22
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -70,7 +70,7 @@ dependencies {
 
 
     // lib for Razorpay
-    implementation 'com.razorpay:checkout:1.6.12'
+    implementation 'com.razorpay:checkout:1.6.16'
 
 
 
@@ -108,5 +108,11 @@ dependencies {
     implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
     implementation 'androidx.browser:browser:1.2.0'
     implementation 'androidx.work:work-runtime:2.7.1'
+
+
+    //TODO Raghav
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+
+
 }
 apply plugin: 'com.google.gms.google-services'

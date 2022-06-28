@@ -21,6 +21,7 @@
     <string name="upcoming">Upcoming</string>
     <string name="completed">Completed</string>
     <string name="find_matches">Find Matches</string>
+    <string name="matches_list">Matches List</string>
     <string name="match_found">Match Found</string>
     <string name="no_matches">No Matches</string>
     <string name="no_request_found">No Request found</string>
@@ -120,5 +121,15 @@
         <item>Monthly Tour Plan</item>
     </array>
     <string name="title_activity_get_location">GetLocationActivity</string>
+    <string name="lifted_users">Lifted Users</string>
+    <string name="do_you_want_to_end_ride">Do you want to end ride?</string>
+    <string name="end_all_ride">END ALL RIDE</string>
+    <string name="do_you_want_to_end_all_rides">Do you want to end All rides?</string>
+    <string name="end_all_rides">End All Rides</string>
+    <string name="designaton">Designaton</string>
+    <string name="department">Department</string>
+    <string name="company">Company</string>
+    <string name="profile_percantage">Profile %</string>
+    <string name="vehicle_percantage">Vehicle %</string>
 
 </resources>

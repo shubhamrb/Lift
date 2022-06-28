@@ -40,10 +40,10 @@ public class User {
     private String aboutMe;
     @SerializedName("dob")
     @Expose
-    private String sos;
+    private String dob;
     @SerializedName("sos")
     @Expose
-    private String dob;
+    private String sos;
     @SerializedName("image")
     @Expose
     private String image;
@@ -78,6 +78,43 @@ public class User {
     @SerializedName("profile_percentage")
     @Expose
     private Integer profile_percentage;
+
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    @SerializedName("company")
+    @Expose
+    private String company;
+
+    @SerializedName("department")
+    @Expose
+    private String department;
+
+
+    @SerializedName("is_contact_public")
+    @Expose
+    private Integer is_contact_public;
+    @SerializedName("is_dob_public")
+    @Expose
+    private Integer is_dob_public;
+    @SerializedName("is_email_public")
+    @Expose
+    private Integer is_email_public;
+
 
     public Integer getProfile_percentage() {
         return profile_percentage;

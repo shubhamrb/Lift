@@ -115,6 +115,30 @@ public class Lift implements Serializable {
     @Expose
     private Integer driver_tracking_id;
 
+    public Integer getVehicle_subcategory() {
+        return vehicle_subcategory;
+    }
+
+    public void setVehicle_subcategory(Integer vehicle_subcategory) {
+        this.vehicle_subcategory = vehicle_subcategory;
+    }
+
+    public String getVehicle_type() {
+        return vehicle_type;
+    }
+
+    public void setVehicle_type(String vehicle_type) {
+        this.vehicle_type = vehicle_type;
+    }
+
+    @SerializedName("vehicle_subcategory")
+    @Expose
+    private Integer vehicle_subcategory;
+
+    @SerializedName("vehicle_type")
+    @Expose
+    private String vehicle_type;
+
 
     public Integer getIs_user_start() {
         return is_user_start;

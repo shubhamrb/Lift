@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -18,15 +17,19 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.ReviewListAdapter;
+import com.liftPlzz.adapter.ViewPagerAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
+import com.liftPlzz.model.SocialImage;
 import com.liftPlzz.model.UserInfo.Review;
 import com.liftPlzz.model.UserInfo.User;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
+import com.liftPlzz.model.getVehicle.Datum;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
 
@@ -38,11 +41,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.relex.circleindicator.CircleIndicator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DriverProfileActivity extends AppCompatActivity implements ReviewListAdapter.ItemListener {
+public class DriverProfileActivity extends AppCompatActivity implements ReviewListAdapter.ItemListener, ViewPagerAdapter.ItemListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -76,9 +80,29 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
     AppCompatTextView tvRatingCount;
     @BindView(R.id.recyclerReview)
     RecyclerView recyclerReview;
-
     @BindView(R.id.layoutProfile)
     RelativeLayout layoutProfile;
+
+
+    @BindView(R.id.tv_profile_percentage)
+    AppCompatTextView tv_profile_percentage;
+    @BindView(R.id.tv_designaton)
+    AppCompatTextView tv_designaton;
+    @BindView(R.id.tv_department)
+    AppCompatTextView tv_department;
+    @BindView(R.id.tv_company)
+    AppCompatTextView tv_company;
+    @BindView(R.id.textViewAboutUser)
+    AppCompatTextView textViewAboutUser;
+    @BindView(R.id.tv_age)
+    AppCompatTextView tv_age;
+    @BindView(R.id.viewPagerMain)
+    ViewPager viewPagerMain;
+    ViewPagerAdapter mViewPagerAdapter;
+    @BindView(R.id.indicator)
+    CircleIndicator indicator;
+    List<com.liftPlzz.model.SocialImage> imageslist;
+
 
     private int userId;
     private int liftId;
@@ -102,13 +126,14 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         if (getIntent() != null) {
             userId = getIntent().getIntExtra(Constants.USER_ID, -1);
             liftId = getIntent().getIntExtra(Constants.LIFT_ID, -1);
-            IsDriver = getIntent().getBooleanExtra(Constants.IS_DRIVER,false);
+            IsDriver = getIntent().getBooleanExtra(Constants.IS_DRIVER, false);
         }
+        imageslist = new ArrayList<>();
         toolBarTitle.setText(getResources().getString(R.string.profile));
 
-        if(IsDriver){
+        if (IsDriver) {
             getDriverDetailsApi();
-        }else {
+        } else {
             getUserDetailsApi();
         }
 
@@ -117,13 +142,15 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         reviewListAdapter = new ReviewListAdapter(this, DriverProfileActivity.this, reviewList);
         recyclerReview.setAdapter(reviewListAdapter);
 
-    }
+        mViewPagerAdapter = new ViewPagerAdapter(this, imageslist, this, 1);
+        viewPagerMain.setAdapter(mViewPagerAdapter);
+        indicator.setViewPager(viewPagerMain);
 
+    }
 
     public void getUserDetailsApi() {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
-
         Call<UserInfoModel> call = api.getUserDetails(Constants.API_KEY, getResources().getString(R.string.android), userId);
         call.enqueue(new Callback<UserInfoModel>() {
             @Override
@@ -215,6 +242,12 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         reviewList.addAll(userData.getReviews());
         reviewListAdapter.notifyDataSetChanged();*/
         tvDriverName.setText(userData.getName());
+        tv_profile_percentage.setText("Profile: " +userData.getProfile_percentage() + "%");
+        tv_age.setText("Age "+userData.getAge()+" Years old");
+        tv_designaton.setText(userData.getDesignation());
+        tv_department.setText(userData.getDepartment());
+        tv_company.setText(userData.getCompany());
+        textViewAboutUser.setText(userData.getAbout());
 //        tvDriverOtp.setText(getResources().getString(R.string.share_code) + "\n " + userData.getShareCode());
         if (userData.getSettings().getProfilePublicly() != null) {
             if (userData.getSettings().getProfilePublicly() == 0) {
@@ -244,6 +277,13 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         tvAsRider.setText("" + userData.getLiftGiver());
         tvAsSeeker.setText("" + userData.getLiftTaker());
         tvTotalRide.setText("" + userData.getTotalLift());
+        for (int i = 0; i < userData.getSocialImages().size(); i++) {
+            com.liftPlzz.model.SocialImage obj = new SocialImage();
+            obj.setImage(userData.getSocialImages().get(i).getImage());
+            obj.setImageId(userData.getSocialImages().get(i).getImageId());
+            imageslist.add(obj);
+        }
+        mViewPagerAdapter.notifyDataSetChanged();
     }
 
     @OnClick({R.id.imageViewBack, R.id.tv_call, R.id.tv_chat})
@@ -271,6 +311,21 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
 
     @Override
     public void onclick(int s) {
+
+    }
+
+    @Override
+    public void onDeleteClick(int s) {
+
+    }
+
+    @Override
+    public void onEditClick(Datum s) {
+
+    }
+
+    @Override
+    public void onAddImage() {
 
     }
 }

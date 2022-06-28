@@ -55,11 +55,13 @@ public class ViewPagerAdapter extends PagerAdapter {
     // Layout Inflater
     LayoutInflater mLayoutInflater;
     public ItemListener itemListener;
+    public int type= 0;
 
     // Viewpager Constructor
-    public ViewPagerAdapter(Context context, List<SocialImage> images,ItemListener it) {
+    public ViewPagerAdapter(Context context, List<SocialImage> images,ItemListener it, int type) {
         this.context = context;
         this.images = images;
+        this.type = type;
         this.itemListener = it;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -85,6 +87,13 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageViewMainDetails);
         ImageView img = (ImageView) itemView.findViewById(R.id.img);
         ImageView addImg = (ImageView) itemView.findViewById(R.id.addImg);
+        if (type == 1){
+            img.setVisibility(View.GONE);
+            addImg.setVisibility(View.GONE);
+        }else {
+            img.setVisibility(View.VISIBLE);
+            addImg.setVisibility(View.VISIBLE);
+        }
         if (images.size() > 0) {
             Picasso.get().load(images.get(position).getImage()).into(imageView);
         } else {

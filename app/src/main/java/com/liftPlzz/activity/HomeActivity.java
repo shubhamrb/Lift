@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -54,7 +55,6 @@ import butterknife.ButterKnife;
 
 
 public class HomeActivity extends AppNavigationProvider implements MenuListAdapter.ItemListener {
-
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     @BindView(R.id.placeHolder)
@@ -95,9 +95,9 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         return R.id.placeHolder;
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void enterPipMode() {
+
         Rational aspectRatio = new Rational(2, 3);
         PictureInPictureParams params = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -108,12 +108,11 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             enterPictureInPictureMode(params);
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onPause() {
         super.onPause();
-//        enterPipMode();
+        enterPipMode();
     }
 
     @Override
@@ -146,7 +145,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(3, "Refer & Earn", R.drawable.ic_white_liftplzz));
-      //  menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
+        //  menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(7, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.ic_white_liftplzz));
@@ -156,11 +155,11 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         MenuListAdapter menuListAdapter = new MenuListAdapter(this, menuList, this);
         leftDrawer.setAdapter(menuListAdapter);
         openHomeFragment(PerformFragment.REPLACE);
-      //  printHashKey(this);
+        //  printHashKey(this);
         imfacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Char-pair-112112291298820/"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Char-pair-112112291298820/"));
                 startActivity(intent);
             }
         });
@@ -168,14 +167,14 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         iminstagram.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/___srb/"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/___srb/"));
                 startActivity(intent);
             }
         });
         imtwitter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/srb2305"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/srb2305"));
                 startActivity(intent);
             }
         });
@@ -203,7 +202,6 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             }
         }
     }
-
 
 
     public void openHomeFragment(CompleteLiftData lift) {
@@ -286,7 +284,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         alert.show();
     }
 
-    public void openride(){
+    public void openride() {
         openMyRidesFragment(PerformFragment.REPLACE);
         getSupportFragmentManager().popBackStackImmediate(EditLiftDaiFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
@@ -311,7 +309,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 //             openInventoryFragment(PerformFragment.REPLACE);
         } else if (s == 4) {
             openMyVehicleFragment(PerformFragment.REPLACE);
-        }else if(s==5){
+        } else if (s == 5) {
             openMyChatFragment(PerformFragment.REPLACE);
         } else if (s == 6) {
 //             openContactsFragment(PerformFragment.REPLACE);
@@ -335,7 +333,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             });
             newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             newBuilder.show();
-        } else if (s == 10){
+        } else if (s == 10) {
             Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
             startActivity(intent);
         }
