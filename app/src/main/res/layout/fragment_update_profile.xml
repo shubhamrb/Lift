@@ -14,10 +14,10 @@
             android:layout_height="wrap_content">
 
             <androidx.viewpager.widget.ViewPager
-                android:visibility="gone"
                 android:id="@+id/viewPagerMain"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_250" />
+                android:layout_height="@dimen/dp_250"
+                android:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewBackContact"
@@ -136,7 +136,7 @@
                     <LinearLayout
                         android:id="@+id/layoutProfessionalStatus"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_35sdp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/dp_20"
                         android:layout_marginTop="@dimen/dp_12"
@@ -145,24 +145,37 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/dp_8">
 
-                        <!--                    <TextView
-                                                android:id="@+id/professionalTextView"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:layout_gravity="center"
-                                                android:layout_weight="1"
-                                                android:background="@null"
-                                                android:drawableRight="@drawable/ic_dropdown"
-                                                android:fontFamily="@font/gotham_medium"
-                                                android:gravity="start"
-                                                android:hint="Professional Status"
-                                                android:padding="@dimen/dp_5"
-                                                android:singleLine="true"
-                                                android:textColor="@color/colorText"
-                                                android:textSize="@dimen/sp_16" />-->
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_category"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/gotham_light"
+                            android:gravity="start"
+                            android:spinnerMode="dropdown"
+                            android:textColor="@color/colorPrimary"
+                            android:textColorHint="@color/colorBlack"
+                            android:textSize="12sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutEditTextOther"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_12"
+                        android:layout_marginRight="@dimen/dp_20"
+                        android:background="@drawable/rounded_bg_et_profile"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:padding="@dimen/dp_8">
 
                         <androidx.appcompat.widget.AppCompatEditText
-                            android:id="@+id/editTextDesignation"
+                            android:id="@+id/otherTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -170,7 +183,7 @@
                             android:background="@null"
                             android:fontFamily="@font/gotham_medium"
                             android:gravity="start"
-                            android:hint="Designation "
+                            android:hint="Your Profession"
                             android:padding="@dimen/dp_5"
                             android:singleLine="true"
                             android:textColor="@color/colorText"
@@ -178,7 +191,6 @@
 
 
                     </LinearLayout>
-
                     <LinearLayout
                         android:id="@+id/layoutEditTextDesignation"
                         android:layout_width="match_parent"

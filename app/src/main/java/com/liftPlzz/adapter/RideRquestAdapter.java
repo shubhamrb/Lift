@@ -58,6 +58,30 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         holder.tvName.setText(requestData.getName());
         holder.tvSeats.setText(context.getResources().getString(R.string.seats) + " :" + requestData.getSeats());
 
+
+        if (requestData.getProfile_percentage() == null)
+            holder.profile_percantage.setText("Profile: --");
+        else
+            holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage());
+
+        if (requestData.getLocation().getStart_city() == null)
+            holder.from.setText("From: --");
+        else
+            holder.from.setText("From: " + requestData.getLocation().getStart_city());
+        if (requestData.getLocation().getEnd_city() == null)
+            holder.to.setText("To: --");
+        else
+            holder.to.setText("To: " + requestData.getLocation().getEnd_city());
+        if (requestData.getTotal_point() == null)
+            holder.total_point.setText("Total Points: --");
+        else
+            holder.total_point.setText("Total Points: " + requestData.getTotal_point());
+
+        if (requestData.getTotal_km() == null)
+            holder.total_km.setText("Total km: --");
+        else
+            holder.total_km.setText("Total km: " + requestData.getTotal_km());
+
         if (requestData.getStatus() == 0) {
             holder.linearBtn.setVisibility(View.VISIBLE);
             holder.lblStatus.setVisibility(View.GONE);
@@ -128,6 +152,16 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         @BindView(R.id.rel_item_request)
         RelativeLayout relItem;
 
+        @BindView(R.id.profile_percantage)
+        AppCompatTextView profile_percantage;
+        @BindView(R.id.from)
+        AppCompatTextView from;
+        @BindView(R.id.to)
+        AppCompatTextView to;
+        @BindView(R.id.total_point)
+        AppCompatTextView total_point;
+        @BindView(R.id.total_km)
+        AppCompatTextView total_km;
 
         ViewHolder(View itemView) {
             super(itemView);

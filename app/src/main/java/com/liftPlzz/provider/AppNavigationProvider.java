@@ -1,5 +1,7 @@
 package com.liftPlzz.provider;
 
+import android.os.Bundle;
+
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.fragments.AddVehicleFragment;
 import com.liftPlzz.fragments.ChatUserFragment;
@@ -49,7 +51,13 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     @Override
     public void openHomeFragment(PerformFragment performFragment) {
         HomeFragment homeFragment = new HomeFragment();
-//        CreateProfileFragment homeFragment = new CreateProfileFragment();
+        openFragment(homeFragment, HomeFragment.class.getName(), performFragment, false);
+    }
+
+    @Override
+    public void openHomeFragment(PerformFragment performFragment, Bundle bundle) {
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.setArguments(bundle);
         openFragment(homeFragment, HomeFragment.class.getName(), performFragment, false);
     }
 

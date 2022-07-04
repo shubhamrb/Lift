@@ -131,5 +131,8 @@
     <string name="company">Company</string>
     <string name="profile_percantage">Profile %</string>
     <string name="vehicle_percantage">Vehicle %</string>
+    <string name="recharge_fuel_card">Recharge Fuel Card</string>
+    <string name="request_new_card">Request New Card</string>
+    <string name="available_points">Available Points : </string>
 
 </resources>

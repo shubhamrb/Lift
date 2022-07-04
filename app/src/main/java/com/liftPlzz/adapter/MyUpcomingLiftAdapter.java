@@ -5,8 +5,8 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.PopupMenu;
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.StartRideActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
-import com.liftPlzz.fragments.dailog.MoreOptionDailog;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
 
@@ -139,6 +137,14 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                 }
             }
         });
+        holder.btn_same_rute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemListener != null) {
+                    itemListener.showDialog(lift.getId());
+                }
+            }
+        });
 
 
         if (lift.getFindMatch() == 0) {
@@ -148,7 +154,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             @Override
             public void onClick(View v) {
                 if (lift.getFindMatch() != null && lift.getFindMatch() != 0) {
-                    itemListener.onMatchClick(lift);
+                    itemListener.onMatchClick(lift,lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift)));
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.no_matches), Toast.LENGTH_SHORT).show();
                 }
@@ -256,7 +262,8 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
 
         @BindView(R.id.linear_item)
         LinearLayout linearItem;
-
+        @BindView(R.id.view)
+        View view;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -302,17 +309,17 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                     sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "HomeSlidingMenuFragment");
                     */
 
-                    PopupMenu popup = new PopupMenu(context, imMore);
+                    PopupMenu popup = new PopupMenu(context, view);
                     //Inflating the Popup using xml file
                     popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-
+                    popup.setGravity(Gravity.END);
                     //registering popup with OnMenuItemClickListener
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            if (item.toString().equalsIgnoreCase("delete")){
+                            if (item.toString().equalsIgnoreCase("delete")) {
                                 itemListener.onCancelClick(verifiedLists.get(getAdapterPosition()).getId());
 
-                            }else {
+                            } else {
                                 EditLiftDaiFragment sheet = new EditLiftDaiFragment("edit");
                                 sheet.setLift(verifiedLists.get(getAdapterPosition()), listinerUpdate, "edit");
                                 sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
@@ -336,7 +343,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
     }*/
 
     public interface ItemListener {
-        void onMatchClick(Lift lift);
+        void onMatchClick(Lift lift, boolean isFind);
 
         void onRequestClick(Lift lift);
 
@@ -345,5 +352,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         void onDriverProfile(Lift lift);
 
         void onCancelClick(int Id);
+
+        void showDialog(int Id);
     }
 }

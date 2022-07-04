@@ -153,6 +153,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private LocationCallback locationCallback;
     private List<LiftUsers> liftUsersList = new ArrayList<>();
 
+
     /**
      * Receiver for broadcasts sent by {@link LocationUpdatesService}.
      */
@@ -278,6 +279,8 @@ public class StartRideActivity extends AppCompatActivity implements
     AppCompatTextView toolBarTitle;
     @BindView(R.id.imageViewBack)
     ImageView imageViewBack;
+    @BindView(R.id.imageViewOption)
+    ImageView imageViewOption;
     @BindView(R.id.btn_start_ride)
     AppCompatTextView tvStartRide;
 
@@ -333,6 +336,19 @@ public class StartRideActivity extends AppCompatActivity implements
             lift = (Lift) getIntent().getSerializableExtra(Constants.LIFT_OBJ);
         }
 
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            imageViewOption.setVisibility(View.VISIBLE);
+        } else {
+            imageViewOption.setVisibility(View.GONE);
+        }
+
+        imageViewOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showUsersListDialog();
+            }
+        });
+
 //      getUsers(2);
 
         /*if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
@@ -342,14 +358,17 @@ public class StartRideActivity extends AppCompatActivity implements
         Log.e("lift.getLiftType()", "" + lift.getLiftType());
         HistoryStoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
         startedcount = 0;
-
-        toolBarTitle.setText(getResources().getString(R.string.start_ride));
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            toolBarTitle.setText("Share code : 0" + sharedPreferences.getString(Constants.USER_ID, ""));
+        } else {
+            toolBarTitle.setText(R.string.start_ride);
+        }
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_matching);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         myReceiver = new MyReceiver();
         mapFragment.getMapAsync(this);
 
-        getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
+
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             if (lift.getIs_driver_start() == 1) {
                 rel_bottom.setVisibility(View.GONE);
@@ -376,6 +395,12 @@ public class StartRideActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void showUsersListDialog() {
+        getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""),true);
+
+//        showEndUserListDialog();
     }
 
     @SuppressLint("MissingPermission")
@@ -589,7 +614,9 @@ public class StartRideActivity extends AppCompatActivity implements
                     } else {
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                             Log.e("Lift", "end by driver");
-                            showEndUserListDialog();
+                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""),true);
+
+//                            showEndUserListDialog();
                         } else {
                             endRideCinfirmationDialog(false);
                         }
@@ -639,18 +666,18 @@ public class StartRideActivity extends AppCompatActivity implements
                             Log.e("wholelatlong", "" + wholelatlong.toString());
                             HistoryStoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id)
                                     .child("locationhistory").setValue(wholelatlong.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Log.e("History", "Saved");
-                                    mService.removeLocationUpdates();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull @NotNull Exception e) {
-                                    Log.e("History", "Failed to save");
-                                    e.printStackTrace();
-                                }
-                            });
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.e("History", "Saved");
+                                            mService.removeLocationUpdates();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull @NotNull Exception e) {
+                                            Log.e("History", "Failed to save");
+                                            e.printStackTrace();
+                                        }
+                                    });
 
                             if (mainjson.getJSONArray("user_details").length() == 0) {
                                 Toast.makeText(StartRideActivity.this, "Ride ended successfully,but no user found", Toast.LENGTH_SHORT).show();
@@ -923,23 +950,24 @@ public class StartRideActivity extends AppCompatActivity implements
     }
 
 
-    public void getOnGoing(String token) {
+    public void getOnGoing(String token,boolean showDialog) {
+        Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
         Call<MainOnGoingResponse> call = api.rideOnGoing(Constants.API_KEY, "android", token);
         call.enqueue(new Callback<MainOnGoingResponse>() {
             @Override
             public void onResponse(Call<MainOnGoingResponse> call, Response<MainOnGoingResponse> response) {
+                Constants.hideLoader();
                 if (response.body().getResponse() != null) {
                     Log.e("RES: ", "" + response.body().getResponse());
                     onGoingListResponse = response.body().getResponse();
                     liftUsersList.clear();
-                    if (onGoingListResponse.getLifts().size() > 0)
+                    if (onGoingListResponse.getLifts().size() > 0) {
                         liftUsersList.addAll(onGoingListResponse.getLifts().get(0).getLift_users());
-                    /*if (response.body().getResponse().isStatus()) {
-                        view.setOnGoingData(response.body().getResponse());
-                    } else {
-                        view.showMessage(response.body().getResponse().getMessage());
-                    }*/
+                    }
+                    if (showDialog) {
+                        showEndUserListDialog();
+                    }
                 }
             }
 
@@ -997,7 +1025,7 @@ public class StartRideActivity extends AppCompatActivity implements
         });
     }
 
-    public void getRideEnd(String token, int ridender, boolean isDriverEnd) {
+    public void getRideEnd(String token, boolean isDriverEnd) {
         try {
             if (location == null) {
                 Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
@@ -1022,15 +1050,10 @@ public class StartRideActivity extends AppCompatActivity implements
                     try {
                         Toast.makeText(StartRideActivity.this, "Ride ended successfully", Toast.LENGTH_SHORT).show();
                         if (isDriverEnd) {
-                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
+                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""),false);
                         } else {
                             getInvoice();
                         }
-                        /*if (ridender == 2) {
-                            getInvoice();
-                        } else {
-
-                        }*/
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1206,6 +1229,7 @@ public class StartRideActivity extends AppCompatActivity implements
 
 
     private void showEndUserListDialog() {
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(StartRideActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         dialogBuilder.setCancelable(true);
@@ -1254,7 +1278,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     if (isAllUsers) {
                         getRideEndBYDriver(strToken, 1);
                     } else {
-                        getRideEnd(strToken, 2, false);
+                        getRideEnd(strToken, lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift)));
                     }
                 }
         );

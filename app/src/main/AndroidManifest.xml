@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -16,7 +15,6 @@
  Required only when requesting background location access on
          Android 10 (API level 29) and higher.
     -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
@@ -51,6 +49,10 @@
             android:exported="false" />
         <activity
             android:name=".activity.PaymentHistory"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.PointRedeemActivity"
             android:exported="false" />
         <activity
             android:name=".DriverUserLocationActivity"
@@ -151,10 +153,6 @@
 
             <!-- Any inner elements would go here. -->
         </service>
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".activity.MatchingRideActivity"

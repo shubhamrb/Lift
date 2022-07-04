@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_60"
     android:layout_alignParentTop="true"
@@ -25,13 +26,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/imageViewOption"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toolBarTitle"
-            android:layout_marginLeft="@dimen/dp_50"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_50"
             android:fontFamily="@font/gotham_medium"
             android:gravity="center_vertical"
             android:text=""
@@ -42,5 +44,15 @@
 
     </LinearLayout>
 
-
+    <ImageView
+        android:id="@+id/imageViewOption"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:padding="@dimen/dp_4"
+        android:src="@drawable/menu_icon"
+        android:visibility="gone"
+        app:tint="@color/colorWhite" />
 </RelativeLayout>

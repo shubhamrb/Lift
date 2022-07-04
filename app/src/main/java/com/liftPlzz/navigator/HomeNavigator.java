@@ -1,11 +1,15 @@
 package com.liftPlzz.navigator;
 
 
+import android.os.Bundle;
+
 import com.liftPlzz.base.BaseActivity;
 
 public interface HomeNavigator {
 
     void openHomeFragment(BaseActivity.PerformFragment performFragment);
+
+    void openHomeFragment(BaseActivity.PerformFragment performFragment, Bundle bundle);
 
     void openFeedbackFragment(BaseActivity.PerformFragment performFragment);
 

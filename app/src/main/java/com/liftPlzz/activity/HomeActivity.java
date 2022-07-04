@@ -141,6 +141,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         // menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(10, "Payments & Recharge", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(11, "Points Redemption", R.drawable.ic_white_liftplzz));
         // menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.ic_white_liftplzz));
@@ -335,6 +336,9 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             newBuilder.show();
         } else if (s == 10) {
             Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
+            startActivity(intent);
+        } else if (s == 11) {
+            Intent intent = new Intent(HomeActivity.this, PointRedeemActivity.class);
             startActivity(intent);
         }
     }

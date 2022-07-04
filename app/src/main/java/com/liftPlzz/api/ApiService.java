@@ -26,6 +26,7 @@ import com.liftPlzz.model.matchingridemodel.MatchingRideByCategoryResponse;
 import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.partnerdetails.Example;
+import com.liftPlzz.model.pointsRedemption.PointsModel;
 import com.liftPlzz.model.resendOtp.ResendOtpResponse;
 import com.liftPlzz.model.ridebyvehicletypemodel.DriverByTypeReponse;
 import com.liftPlzz.model.riderequestmodel.RideRequestResponse;
@@ -343,6 +344,14 @@ public interface ApiService {
                                                    @Field("vehicle_type") String vehicleType);
 
     @FormUrlEncoded
+    @POST("matching-rides-for-driver")
+    Call<DriverByTypeReponse> getRideByDriver(@Field("api_key") String api_key,
+                                                   @Field("client") String client,
+                                                   @Field("token") String token,
+                                                   @Field("vehicle_subcategory_id") int subCategoryId,
+                                                   @Field("lift_id") int liftId);
+
+    @FormUrlEncoded
     @POST("send-Invitation-For-Lift")
     Call<ResponseBody> sendInvitation(@Field("api_key") String api_key,
                                       @Field("client") String client,
@@ -553,9 +562,27 @@ public interface ApiService {
                                         @Field("lat") double lat,
                                         @Field("long") double logitute);
 
+    @FormUrlEncoded
+    @POST("card-recharge")
+    Call<PointsModel> rechargeFuelCard(@Field("api_key") String api_key,
+                                       @Field("client") String client,
+                                       @Field("token") String token,
+                                       @Field("point") String points);
 
+    @FormUrlEncoded
+    @POST("card-apply")
+    Call<PointsModel> requestNewCard(@Field("api_key") String api_key,
+                                     @Field("client") String client,
+                                     @Field("token") String token,
+                                     @Field("full_name") String full_name,
+                                     @Field("address") String address,
+                                     @Field("point") String points);
 
-
+    @FormUrlEncoded
+    @POST("card-detail")
+    Call<PointsModel> cardDetail(@Field("api_key") String api_key,
+                                 @Field("client") String client,
+                                 @Field("token") String token);
 
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android
@@ -565,5 +592,6 @@ public interface ApiService {
 //    lat:91.5656252
 //    long:75.0002356
 
+    //X14ybrF0H7tjrwG5w0DMZIs2Two5EiYx73LGmLMF0nt39zLVfEne1NuOhZF9
 
 }

@@ -5,10 +5,8 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
-import android.media.Image;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,15 +15,9 @@ import android.widget.LinearLayout;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
-import com.liftPlzz.dialog.EditLiftDaiFragment;
-import com.liftPlzz.fragments.AddVehicleFragment;
-import com.liftPlzz.fragments.dailog.MoreOptionDailog;
-import com.liftPlzz.fragments.dailog.MoreOptionDeleteDialog;
 import com.liftPlzz.model.getVehicle.Datum;
 import com.squareup.picasso.Picasso;
 
@@ -69,6 +61,20 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         holder.tvRatePerKm.setText(context.getResources().getString(R.string.rate_per_km)
                 + " : " + verifiedLists.get(position).getRatePerKm());
 
+        holder.textViewPercent.setText(verifiedLists.get(position).getVehicle_percentage() + "%");
+
+        switch (verifiedLists.get(position).getPercentage_color()) {
+            case "red":
+                holder.textViewPercent.setTextColor(context.getResources().getColor(R.color.colorRed));
+                break;
+            case "green":
+                holder.textViewPercent.setTextColor(context.getResources().getColor(R.color.quantum_googgreen));
+                break;
+            case "yellow":
+                holder.textViewPercent.setTextColor(context.getResources().getColor(R.color.quantum_yellow400));
+                break;
+        }
+
         if (verifiedLists.get(position).getIsDefault() == 1) {
             holder.textViewDeafult.setVisibility(View.VISIBLE);
         } else {
@@ -87,51 +93,33 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         holder.imMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                itemListener.onDeleteClick(verifiedLists.get(position).getId());
-                MoreOptionDeleteDialog sheet = new MoreOptionDeleteDialog();
-                sheet.listiner(new MoreOptionDeleteDialog.ItemSelectListiner() {
-                    @Override
-                    public void cancel() {
+
+                PopupMenu popup = new PopupMenu(context, holder.view);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                popup.setGravity(Gravity.END);
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.toString().equalsIgnoreCase("delete")) {
                         if (itemListener != null) {
                             itemListener.onDeleteClick(verifiedLists.get(position).getId());
                         }
-                    }
-
-                    @Override
-                    public void edit() {
-                        itemListener.onEditClick(verifiedLists.get(position));
-                    }
-                });
-                sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "HomeSlidingMenuFragment");
-
-
-
-
-
-                /*PopupMenu menu = new PopupMenu(context, v);
-                menu.getMenu().add(Menu.NONE, 1, 1, context.getResources().getString(R.string.edit));
-                menu.getMenu().add(Menu.NONE, 2, 2, context.getResources().getString(R.string.remove));
-                menu.show();
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                        int i = item.getItemId();
-                        if (i == 1) {
-                            //handle Edit
+                    } else {
+                        if (itemListener != null) {
                             itemListener.onEditClick(verifiedLists.get(position));
-                            return true;
-                        } else if (i == 2) {
-                            //handle Remove
-                            itemListener.onDeleteClick(verifiedLists.get(position).getId());
-                            return true;
-                        } else {
-                            return false;
                         }
                     }
+                    return true;
+                });
 
-                });*/
+                popup.show();
 
+            }
+        });
+
+        holder.itemView.setOnClickListener(view -> {
+            if (itemListener != null) {
+                itemListener.onEditClick(verifiedLists.get(position));
             }
         });
     }
@@ -152,8 +140,12 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
         AppCompatTextView textViewSeats;
         @BindView(R.id.tv_rate_per_km)
         AppCompatTextView tvRatePerKm;
+        @BindView(R.id.textViewPercent)
+        AppCompatTextView textViewPercent;
         @BindView(R.id.layoutClick)
         LinearLayout layoutClick;
+        @BindView(R.id.view)
+        View view;
 
 
         ViewHolder(View itemView) {

@@ -35,7 +35,6 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -51,7 +50,6 @@ import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.SocialImage;
 import com.liftPlzz.model.createProfile.Response;
 import com.liftPlzz.model.createProfile.User;
-import com.liftPlzz.model.getsetting.Datum;
 import com.liftPlzz.presenter.UpdateProfilePresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.UpdateProfileView;
@@ -90,10 +88,13 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
 
     @BindView(R.id.editTextName)
     AppCompatEditText editTextName;
-    @BindView(R.id.editTextDesignation)
-    AppCompatEditText editTextDesignation;
+    @BindView(R.id.spinner_category)
+    AppCompatSpinner spinner_category;
     @BindView(R.id.professionalTextView)
     AppCompatEditText professionalTextView;
+
+    @BindView(R.id.otherTextView)
+    AppCompatEditText otherTextView;
     @BindView(R.id.txtCMName)
     AppCompatEditText txtCMName;
     @BindView(R.id.editTextMobile)
@@ -118,6 +119,8 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     ViewPager viewPagerMain;
     @BindView(R.id.layoutProfessionalStatus)
     LinearLayout layoutProfessionalStatus;
+    @BindView(R.id.layoutEditTextOther)
+    LinearLayout layoutEditTextOther;
 
     @BindView(R.id.genderGroup)
     RadioGroup genderGroup;
@@ -166,10 +169,11 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if (user != null) {
             editTextName.setText(user.getName());
+            professionalTextView.setText(user.getDepartment());
+            txtCMName.setText(user.getCompany());
             editTextEmail.setText(user.getEmail());
             txtDOB.setText(user.getDob());
             editTextMobile.setText(user.getMobile());
-            editTextDesignation.setText(user.getDesignation());
             professionalTextView.setText(user.getDepartment());
             editTextAboutUser.setText(user.getAboutMe());
             professional = user.getDesignation();
@@ -186,18 +190,17 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             mViewPagerAdapter = new ViewPagerAdapter(getActivity(), user.getSocialImages());
             // Adding the Adapter to the ViewPager
             viewPagerMain.setAdapter(mViewPagerAdapter);
+
+            populateProfessionalDialog(professional);
         }
     }
 
     private int mYear, mMonth, mDay, mHour, mMinute;
 
-    @OnClick({R.id.editTextDesignation, R.id.imageViewBackContact, R.id.buttonUpdate, R.id.imageViewAddImage, R.id.txtDOB
+    @OnClick({R.id.imageViewBackContact, R.id.buttonUpdate, R.id.imageViewAddImage, R.id.txtDOB
             , R.id.toggle_email, R.id.toggle_dob, R.id.toggle_mobile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.editTextDesignation:
-                showProfessionalDialog(professional);
-                break;
             case R.id.imageViewAddImage:
                 ImagePicker.Companion.with(this)
                         .crop(1080, 700)                    //Crop image(Optional), Check Customization for more option
@@ -217,16 +220,7 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
 
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                txtDOB.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
-                            }
-                        }, mYear, mMonth, mDay);
+                        (view1, year, monthOfYear, dayOfMonth) -> txtDOB.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
                 datePickerDialog.show();
 
                 break;
@@ -246,6 +240,7 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                 } else if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
                         genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
                         genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+
                     String gender = "";
                     if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio) {
                         gender = "Male";
@@ -254,16 +249,26 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     } else if (genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
                         gender = "Not to Share";
                     }
-                    presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
-                            editTextName.getText().toString(),
-                            editTextDesignation.getText().toString(),
-                            professionalTextView.getText().toString(),
-                            txtCMName.getText().toString(),
-                            txtDOB.getText().toString(),
-                            editTextEmail.getText().toString(),
-                            gender, editTextMobile.getText().toString(),
-                            editTextAboutUser.getText().toString(),
-                            editsosnumber.getText().toString(), isEmailPrivate,isDOBPrivate, isMobilePrivate);
+
+                    if (spinner_category.getSelectedItemPosition() != 0) {
+                        if (professionSelection.equals("Others") && otherTextView.getText().toString().trim().equals("")) {
+                            Toast.makeText(getContext(), "Please fill above details", Toast.LENGTH_SHORT).show();
+                        } else {
+                            presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
+                                    editTextName.getText().toString(),
+                                    professionSelection,
+                                    professionalTextView.getText().toString(),
+                                    txtCMName.getText().toString(),
+                                    txtDOB.getText().toString(),
+                                    editTextEmail.getText().toString(),
+                                    gender, editTextMobile.getText().toString(),
+                                    editTextAboutUser.getText().toString(),
+                                    editsosnumber.getText().toString(), isEmailPrivate, isDOBPrivate, isMobilePrivate);
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Please select one of them", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     showMessage("Please Select Gender");
                 }
@@ -372,20 +377,79 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             }
         });
 
-//        titleTxt.setText(professional);
-
         cancelBtn.setOnClickListener(v -> {
             dialog.dismiss();
         });
 
         okayBtn.setOnClickListener(v -> {
 
+
+        });
+        dialog.show();
+    }
+
+    public void populateProfessionalDialog(String professional) {
+        professionSelection = "";
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Select One");
+        list.add("Sales");
+        list.add("Marketing");
+        list.add("HR");
+        list.add("Account");
+        list.add("Back Office");
+        list.add("Govt. Employee");
+        list.add("Self Employed");
+        list.add("Production");
+        list.add("Warehouse");
+        list.add("Others");
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, list);
+        spinner_category.setAdapter(adapter);
+        if (professional != null) {
+            for (int i = 0; i < list.size(); i++) {
+                if (professional.equals(list.get(i))) {
+                    spinner_category.setSelection(i);
+                    break;
+                } else {
+                    if (professional.equals("")) {
+                        spinner_category.setSelection(0);
+                    } else {
+                        spinner_category.setSelection(i);
+                    }
+                }
+            }
+        }
+        spinner_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0) {
+                    if (list.get(position).equals("Others")) {
+                        layoutEditTextOther.setVisibility(View.VISIBLE);
+                        otherTextView.setText(professional);
+                    } else {
+                        layoutEditTextOther.setVisibility(View.GONE);
+                    }
+                    professionSelection = list.get(position);
+                } else {
+                    layoutEditTextOther.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        /*okayBtn.setOnClickListener(v -> {
+
             if (professionalSpinner.getSelectedItemPosition() != 0) {
                 if (professionSelection.equals("Others")) {
                     if (otherEdit.getText().toString().trim().equals("")) {
                         Toast.makeText(getContext(), "Please fill above details", Toast.LENGTH_SHORT).show();
                     } else {
-//                        presenter.updateSetting(sharedPreferences.getString(Constants.TOKEN, ""), 8, otherEdit.getText().toString().trim());
                         editTextDesignation.setText(otherEdit.getText().toString().trim());
                         dialog.dismiss();
                     }
@@ -397,10 +461,8 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             } else {
                 Toast.makeText(getContext(), "Please select one of them", Toast.LENGTH_SHORT).show();
             }
-        });
-        dialog.show();
+        });*/
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -491,12 +553,12 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
 
     @Override
     public void setProfileData(Response response) {
-        getActivity().onBackPressed();
+        Objects.requireNonNull(getActivity()).onBackPressed();
     }
 
     @Override
     public void setUpdateSetting(Boolean status) {
-        if (status) {
+        /*if (status) {
             String gender = "";
             if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
                     genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
@@ -519,8 +581,8 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     editTextEmail.getText().toString(),
                     gender, editTextMobile.getText().toString(),
                     editTextAboutUser.getText().toString(),
-                    editsosnumber.getText().toString(), isEmailPrivate,isDOBPrivate, isMobilePrivate);
-        }
+                    editsosnumber.getText().toString(), isEmailPrivate, isDOBPrivate, isMobilePrivate);
+        }*/
     }
 
     @Override

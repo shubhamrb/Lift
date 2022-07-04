@@ -34,6 +34,7 @@ public class Constants {
     public static final String SEATS_NO = "seats_no";
     public static final String VEHICLE_TYPE = "vehicle_type";
     public static final String SUB_CATEGORY_ID = "sub_category_id";
+    public static final String IS_FIND_LIFT = "find_lift";
 
     public static String NOTIFICATION_TYPE = "";
     public static boolean isLiftOnGoing = false;

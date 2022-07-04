@@ -72,6 +72,10 @@ public class User {
     @Expose
     private String vehicle_percentage;
 
+    @SerializedName("rate_per_km")
+    @Expose
+    private String rate_per_km;
+
     @SerializedName("total_km")
     @Expose
     private String total_km;
@@ -87,6 +91,42 @@ public class User {
     @SerializedName("location")
     @Expose
     private DriveLocation driveLocation;
+
+    public void setProfile_percentage(String profile_percentage) {
+        this.profile_percentage = profile_percentage;
+    }
+
+    public void setTotal_km(String total_km) {
+        this.total_km = total_km;
+    }
+
+    public void setTotal_point(String total_point) {
+        this.total_point = total_point;
+    }
+
+    public DriveLocation getDriveLocation() {
+        return driveLocation;
+    }
+
+    public void setDriveLocation(DriveLocation driveLocation) {
+        this.driveLocation = driveLocation;
+    }
+
+    public void setEvery_seat(String every_seat) {
+        this.every_seat = every_seat;
+    }
+
+    public void setVehicle_percentage(String vehicle_percentage) {
+        this.vehicle_percentage = vehicle_percentage;
+    }
+
+    public String getRate_per_km() {
+        return rate_per_km;
+    }
+
+    public void setRate_per_km(String rate_per_km) {
+        this.rate_per_km = rate_per_km;
+    }
 
     public String getProfile_percentage() {
         return profile_percentage;

@@ -49,6 +49,29 @@ public class Datum {
     @Expose
     private String vehicleSubcategory;
 
+    @SerializedName("vehicle_percentage")
+    @Expose
+    private Integer vehicle_percentage;
+    @SerializedName("percentage_color")
+    @Expose
+    private String percentage_color;
+
+    public Integer getVehicle_percentage() {
+        return vehicle_percentage;
+    }
+
+    public void setVehicle_percentage(Integer vehicle_percentage) {
+        this.vehicle_percentage = vehicle_percentage;
+    }
+
+    public String getPercentage_color() {
+        return percentage_color;
+    }
+
+    public void setPercentage_color(String percentage_color) {
+        this.percentage_color = percentage_color;
+    }
+
     public String getName() {
         return name;
     }

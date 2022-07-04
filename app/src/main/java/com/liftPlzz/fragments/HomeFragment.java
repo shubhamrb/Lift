@@ -74,7 +74,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.DriverListActivity;
-import com.liftPlzz.activity.DriverProfileActivity;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
@@ -85,6 +84,8 @@ import com.liftPlzz.dialog.BottomSheetCheckPointsDialog;
 import com.liftPlzz.model.CheckPoints;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
+import com.liftPlzz.model.createLift.LiftDetails;
+import com.liftPlzz.model.editlift.EditVehicleData;
 import com.liftPlzz.model.getVehicle.Datum;
 import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.presenter.HomePresenter;
@@ -212,6 +213,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Calendar calendar;
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
+    private EditVehicleData lift;
 
 
     @Override
@@ -309,6 +311,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     protected void bindData() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            lift = (EditVehicleData) bundle.getSerializable("liftModel");
+        }
         Constants.isLiftOnGoing = false;
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
@@ -570,6 +576,97 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             }
         });
 
+        if (lift != null) {
+            showListData();
+        }
+    }
+
+    private void showListData() {
+        String startlatlng = lift.getStart_point().getLatLng();
+        String startlat = startlatlng.split(",")[0];
+        String startlong = startlatlng.split(",")[1];
+
+        String endlatlng = lift.getEnd_point().getLatLng();
+        String endlat = endlatlng.split(",")[0];
+        String endlong = endlatlng.split(",")[1];
+
+        pickupLocation = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+        latLngOrigin = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+        originLat = latLngOrigin;
+        StringBuilder strAdd = new StringBuilder().append
+                (lift.getStart_point().getLocation()).append
+                (lift.getStart_point().getCity()).append(",").append
+                (lift.getStart_point().getState());
+        Log.e("result ", "" + strAdd.toString() + "  ");
+        editTextPickupLocation.setText(lift.getStart_point().getLocation());
+        Bundle completeAddress = new Bundle();
+        completeAddress.putString("country", lift.getStart_point().getCountry());
+        completeAddress.putString("state", lift.getStart_point().getState());
+        completeAddress.putString("city", lift.getStart_point().getCity());
+
+        startPoint = getJsonObject(Double.parseDouble(startlat), Double.parseDouble(startlong), completeAddress, strAdd.toString());
+        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+
+        StringBuilder stringBuilder = new StringBuilder().append
+                (lift.getEnd_point().getLocation()).append
+                (lift.getEnd_point().getCity()).append(",").append
+                (lift.getEnd_point().getState());
+        editTextDropLocation.setText(lift.getEnd_point().getLocation());
+        dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+        destinationLat = dropLocation;
+        latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+        Bundle completeendAddress = new Bundle();
+        completeendAddress.putString("country", lift.getEnd_point().getCountry());
+        completeendAddress.putString("state", lift.getEnd_point().getState());
+        completeendAddress.putString("city", lift.getEnd_point().getCity());
+        endPoint = getJsonObject(Double.parseDouble(endlat), Double.parseDouble(endlong), completeendAddress, stringBuilder.toString());
+        destination = endlat + "," + endlong;
+
+        /*if (pickupLocation != null) {
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(pickupLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                    .title("pickup"));
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+            destination = dropLocation.latitude + "," + dropLocation.longitude;
+            new GetDirection().execute(origin, destination);
+            //create lift
+            if (isMultiCheck) {
+                presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+            }
+        }*/
+
+        if (pickupLocation != null && dropLocation != null) {
+            mGoogleMap.clear();
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(pickupLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                    .title("pickup"));
+
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(dropLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                    .title("dropoff"));
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+            destination = dropLocation.latitude + "," + dropLocation.longitude;
+
+            new GetDirection().execute(origin, destination);
+        }
+
+
+        if (lift.getStart_point().getDate() != null && lift.getStart_point().getTime() != null) {
+            dateTime = lift.getStart_point().getDate();
+            liftTime = lift.getStart_point().getTime();
+            textViewSelectDateTime.setText(lift.getStart_point().getDate() + " " + lift.getStart_point().getTime());
+        }
+        if (lift.getLift().getPaidSeats() > 0) {
+            seat = "" + lift.getLift().getPaidSeats();
+            if (lift.getLift().getPaidSeats() < 2) {
+                textViewSelectSeat.setText(seat + " Seat");
+            } else {
+                textViewSelectSeat.setText(seat + " Seats");
+            }
+        }
     }
 
     @Override
@@ -1086,7 +1183,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setCreateRideData(CreateLiftResponse createRideData) {
         checkPointsList.clear();
         wayPoints = "";
-        showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage());
+        showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage(),createRideData.getLiftDetails());
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
@@ -1404,7 +1501,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         alert.show();
     }
 
-    private void showDialogCreateLift(String msg, String subMessage) {
+    private void showDialogCreateLift(String msg, String subMessage, LiftDetails liftDetails) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle(msg);
         alertDialogBuilder.setMessage(subMessage)
@@ -1414,6 +1511,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     public void onClick(DialogInterface dialog, int id) {
                         try {
                             ((HomeActivity) getActivity()).openride();
+                            /*Intent intent = new Intent(getActivity(), DriverListActivity.class);
+                            intent.putExtra(Constants.IS_FIND_LIFT, false);
+                            intent.putExtra(Constants.LIFT_ID, liftDetails.getId());
+                            intent.putExtra(Constants.VEHICLE_TYPE, liftDetails.getLiftType());
+                            intent.putExtra(Constants.SUB_CATEGORY_ID, lift.getVehicle_subcategory());
+                            startActivity(intent);*/
+
                             if (polyline != null) {
                                 polyline.remove();
                             }

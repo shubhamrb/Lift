@@ -29,7 +29,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
 
     EditLiftDaiFragment.UpdateRecordListiner listinerUpdate;
 
-    public CompletedLiftAdapter(Context context, List<CompleteLiftData> verifiedLists,EditLiftDaiFragment.UpdateRecordListiner listinerUpdate,ItemListener itemListener) {
+    public CompletedLiftAdapter(Context context, List<CompleteLiftData> verifiedLists, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, ItemListener itemListener) {
         this.context = context;
         this.verifiedLists = verifiedLists;
         this.itemListener = itemListener;
@@ -57,7 +57,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         holder.textViewRideId.setText(context.getString(R.string.lift_id) + lift.getId());
         holder.textViewSeats.setText(context.getString(R.string.seat) + lift.getPaidSeats());
         holder.textViewDateTime.setText(lift.getLiftDate());
-        holder.textDistancekm.setText("Distance : "+lift.getTotalDistance()+" km");
+        holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
     }
 
 
@@ -88,7 +88,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
                 @Override
                 public void onClick(View v) {
                     EditLiftDaiFragment sheet = new EditLiftDaiFragment("add");
-                    Lift lif=new Lift();
+                    Lift lif = new Lift();
                     lif.setId(verifiedLists.get(getAdapterPosition()).getId());
                     lif.setTitle(verifiedLists.get(getAdapterPosition()).getTitle());
                     lif.setUserId(verifiedLists.get(getAdapterPosition()).getUserId());
@@ -114,9 +114,9 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
 //        lif.setFindMatch(model.ge());
 
 
-                    sheet.setLift(lif,listinerUpdate,"add" );
+                    sheet.setLift(lif, listinerUpdate, "add");
                     sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
-                    sheet.show(((FragmentActivity)context).getSupportFragmentManager().beginTransaction(),"dialog");
+                    sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "dialog");
 
 //                    itemListener.onMatchClick(verifiedLists.get(getAdapterPosition()));
                 }

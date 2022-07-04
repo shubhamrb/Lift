@@ -76,13 +76,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
 
     public void getOnGoing(String token) {
-//        view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<MainOnGoingResponse> call = api.rideOnGoing(Constants.API_KEY, "android", token);
         call.enqueue(new Callback<MainOnGoingResponse>() {
             @Override
             public void onResponse(Call<MainOnGoingResponse> call, Response<MainOnGoingResponse> response) {
-//                view.hideLoader();
                 if (response.body().getResponse() != null) {
                     if (response.body().getResponse().isStatus()) {
                         view.setOnGoingData(response.body().getResponse());

@@ -4,9 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.liftPlzz.model.upcomingLift.Lift;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class EditVehicleData {
+public class EditVehicleData implements Serializable {
 
     @SerializedName("lift")
     @Expose

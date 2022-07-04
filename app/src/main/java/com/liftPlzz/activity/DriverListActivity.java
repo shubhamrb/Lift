@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -54,6 +53,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     private String strToken = "", vehicleType;
     private int vehicleSubcategoryId = -1, liftId = -1;
     private ArrayList<DriverData> arrayList = new ArrayList<>();
+    private boolean isFind=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
             liftId = getIntent().getIntExtra(Constants.LIFT_ID, -1);
             vehicleSubcategoryId = getIntent().getIntExtra(Constants.SUB_CATEGORY_ID, -1);
             vehicleType = getIntent().getStringExtra(Constants.VEHICLE_TYPE);
+            isFind = getIntent().getBooleanExtra(Constants.IS_FIND_LIFT, true);
         }
         toolBarTitle.setText(getResources().getString(R.string.matches_list));
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -80,8 +81,14 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     public void getDriverList() {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
-        Call<DriverByTypeReponse> call = api.getRideByVehicleType(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-                vehicleSubcategoryId, liftId, vehicleType);
+        Call<DriverByTypeReponse> call;
+        if (isFind) {
+            call = api.getRideByVehicleType(Constants.API_KEY, getResources().getString(R.string.android), strToken,
+                    vehicleSubcategoryId, liftId, vehicleType);
+        } else {
+            call = api.getRideByDriver(Constants.API_KEY, getResources().getString(R.string.android), strToken,
+                    vehicleSubcategoryId, liftId);
+        }
         call.enqueue(new Callback<DriverByTypeReponse>() {
             @Override
             public void onResponse(Call<DriverByTypeReponse> call, Response<DriverByTypeReponse> response) {

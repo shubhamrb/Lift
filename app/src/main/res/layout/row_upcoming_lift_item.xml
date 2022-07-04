@@ -51,14 +51,27 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imMore"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:padding="@dimen/dp_5"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_more"></androidx.appcompat.widget.AppCompatImageView>
+                android:layout_alignParentEnd="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_5"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_more" />
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"
+                    android:layout_alignBottom="@id/imMore"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
+
 
         </RelativeLayout>
 
@@ -206,9 +219,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_toRightOf="@+id/textViewDateTime"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_2"
+                android:layout_toRightOf="@+id/textViewDateTime"
                 android:fontFamily="@font/gotham_light"
                 android:gravity="center_vertical|right"
                 android:padding="@dimen/dp_5"
@@ -221,9 +234,9 @@
 
 
         <LinearLayout
-            android:layout_marginTop="5sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
@@ -244,13 +257,13 @@
                 android:textSize="@dimen/sp_16" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:layout_weight="1"
                 android:id="@+id/requestBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_2"
+                android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/gotham_medium"
                 android:gravity="center"
@@ -292,17 +305,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:visibility="visible"
                 android:background="@drawable/rounded_bg_green"
-                android:ellipsize="end"
                 android:elevation="@dimen/dp_5"
+                android:ellipsize="end"
                 android:fontFamily="@font/gotham_medium"
+                android:gravity="center_horizontal"
                 android:padding="@dimen/dp_10"
                 android:text="Share"
-                android:gravity="center_horizontal"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_12"
+                android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/btn_same_rute"

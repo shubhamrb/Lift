@@ -2,47 +2,24 @@ package com.liftPlzz.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.liftPlzz.R;
-import com.liftPlzz.api.ApiService;
-import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.model.SocialImage;
-import com.liftPlzz.model.deleteVehicle.DeleteVehicleMainResponse;
 import com.liftPlzz.model.getVehicle.Datum;
-import com.liftPlzz.utils.Constants;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
@@ -55,10 +32,10 @@ public class ViewPagerAdapter extends PagerAdapter {
     // Layout Inflater
     LayoutInflater mLayoutInflater;
     public ItemListener itemListener;
-    public int type= 0;
+    public int type = 0;
 
     // Viewpager Constructor
-    public ViewPagerAdapter(Context context, List<SocialImage> images,ItemListener it, int type) {
+    public ViewPagerAdapter(Context context, List<SocialImage> images, ItemListener it, int type) {
         this.context = context;
         this.images = images;
         this.type = type;
@@ -87,12 +64,17 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageViewMainDetails);
         ImageView img = (ImageView) itemView.findViewById(R.id.img);
         ImageView addImg = (ImageView) itemView.findViewById(R.id.addImg);
-        if (type == 1){
+        if (type == 1) {
             img.setVisibility(View.GONE);
             addImg.setVisibility(View.GONE);
-        }else {
-            img.setVisibility(View.VISIBLE);
+        } else {
             addImg.setVisibility(View.VISIBLE);
+
+            if (images.get(position).getImageId() != -1) {
+                img.setVisibility(View.VISIBLE);
+            } else {
+                img.setVisibility(View.GONE);
+            }
         }
         if (images.size() > 0) {
             Picasso.get().load(images.get(position).getImage()).into(imageView);
@@ -109,10 +91,10 @@ public class ViewPagerAdapter extends PagerAdapter {
                         .setCancelable(false)
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                if(images.get(position).getImageId()!=null) {
+                                if (images.get(position).getImageId() != null) {
                                     itemListener.onDeleteClick(images.get(position).getImageId());
                                     dialog.dismiss();
-                                }else{
+                                } else {
                                     Toast.makeText(context, "Cant delete this item", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -143,6 +125,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
         container.removeView((RelativeLayout) object);
     }
+
     public interface ItemListener {
         void onclick(int s);
 

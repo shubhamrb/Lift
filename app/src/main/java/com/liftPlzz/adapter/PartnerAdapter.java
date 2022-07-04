@@ -62,15 +62,12 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
             holder.profile_percantage.setText("Profile: --");
         else
             holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage());
-        if (requestData.getVehicle_percentage() == null)
-            holder.vehicle_percantage.setText("Vehical: --");
-        else
-            holder.vehicle_percantage.setText("Vehical: " + requestData.getVehicle_percentage());
+
         if (requestData.getLocation().getStart_city() == null)
             holder.from.setText("From: --");
         else
             holder.from.setText("From: " + requestData.getLocation().getStart_city());
-        if (requestData.getLocation().getEnd_location() == null)
+        if (requestData.getLocation().getEnd_city() == null)
             holder.to.setText("To: --");
         else
             holder.to.setText("To: " + requestData.getLocation().getEnd_city());
@@ -83,40 +80,28 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
             holder.total_km.setText("Total km: --");
         else
             holder.total_km.setText("Total km: " + requestData.getTotal_km());
-        if (requestData.getEvery_seat() == null)
-            holder.every_seat.setText("Every sheet: --");
-        else
-            holder.every_seat.setText("Every sheet: " + requestData.getEvery_seat());
-
-
-
-        /*if(requestData.getUserType().equals("Lifter")){
-            holder.userType.setVisibility(View.VISIBLE);
-            holder.userType.setText(requestData.getUserType());
-        }*/
-
         holder.userType.setVisibility(View.VISIBLE);
         holder.userType.setText(requestData.getUserType());
+
+        if (requestData.getUserType().equalsIgnoreCase("Lifter")) {
+            if (requestData.getVehicle_percentage() == null) {
+                holder.vehicle_percantage.setVisibility(View.INVISIBLE);
+            } else {
+                holder.vehicle_percantage.setText("Vehicle: " + requestData.getProfile_percentage());
+                holder.vehicle_percantage.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (requestData.getRate_per_km() == null) {
+                holder.vehicle_percantage.setVisibility(View.INVISIBLE);
+            } else {
+                holder.vehicle_percantage.setText("Point per km: " + requestData.getRate_per_km()+"/km");
+                holder.vehicle_percantage.setVisibility(View.VISIBLE);
+            }
+        }
+
         holder.linearBtn.setVisibility(View.GONE);
         holder.lblStatus.setVisibility(View.GONE);
         holder.tvSeats.setText(context.getResources().getString(R.string.seats) + " : " + requestData.getSeats());
-//        if (isPartner) {
-//            holder.linearBtn.setVisibility(View.GONE);
-//            holder.lblStatus.setVisibility(View.GONE);
-//        } else {
-//            if (requestData.getStatus() == 0) {
-//                holder.linearBtn.setVisibility(View.VISIBLE);
-//                holder.lblStatus.setVisibility(View.GONE);
-//            } else if (requestData.getStatus() == 1) {
-//                holder.linearBtn.setVisibility(View.GONE);
-//                holder.lblStatus.setVisibility(View.VISIBLE);
-//                holder.lblStatus.setText(context.getResources().getString(R.string.accepted));
-//            } else {
-//                holder.linearBtn.setVisibility(View.GONE);
-//                holder.lblStatus.setVisibility(View.VISIBLE);
-//                holder.lblStatus.setText(context.getResources().getString(R.string.rejected));
-//            }
-//        }
         try {
             Glide.with(context).load(requestData.getImage()).into(holder.imgDriver);
         } catch (Exception e) {
@@ -159,11 +144,10 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         LinearLayout linearBtn;
         @BindView(R.id.rel_item_request)
         RelativeLayout relItem;
-
-        @BindView(R.id.profile_percantage)
-        AppCompatTextView profile_percantage;
         @BindView(R.id.vehicle_percantage)
         AppCompatTextView vehicle_percantage;
+        @BindView(R.id.profile_percantage)
+        AppCompatTextView profile_percantage;
         @BindView(R.id.from)
         AppCompatTextView from;
         @BindView(R.id.to)
@@ -172,9 +156,6 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         AppCompatTextView total_point;
         @BindView(R.id.total_km)
         AppCompatTextView total_km;
-        @BindView(R.id.every_seat)
-        AppCompatTextView every_seat;
-
 
         ViewHolder(View itemView) {
             super(itemView);

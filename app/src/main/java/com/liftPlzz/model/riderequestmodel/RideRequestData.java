@@ -2,6 +2,7 @@ package com.liftPlzz.model.riderequestmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.liftPlzz.model.partnerdetails.User;
 
 public class RideRequestData {
 
@@ -38,6 +39,66 @@ public class RideRequestData {
     @SerializedName("image")
     @Expose
     private String image;
+
+    @SerializedName("profile_percentage")
+    @Expose
+    private String profile_percentage;
+
+    @SerializedName("vehicle_percentage")
+    @Expose
+    private String vehicle_percentage;
+
+    @SerializedName("total_km")
+    @Expose
+    private String total_km;
+
+    @SerializedName("total_point")
+    @Expose
+    private String total_point;
+
+    @SerializedName("location")
+    @Expose
+    private DriveLocation driveLocation;
+
+    public DriveLocation getLocation() {
+        return driveLocation;
+    }
+
+    public void setLocation(DriveLocation driveLocation) {
+        this.driveLocation = driveLocation;
+    }
+
+    public String getProfile_percentage() {
+        return profile_percentage;
+    }
+
+    public void setProfile_percentage(String profile_percentage) {
+        this.profile_percentage = profile_percentage;
+    }
+
+    public String getVehicle_percentage() {
+        return vehicle_percentage;
+    }
+
+    public void setVehicle_percentage(String vehicle_percentage) {
+        this.vehicle_percentage = vehicle_percentage;
+    }
+
+    public String getTotal_km() {
+        return total_km;
+    }
+
+    public void setTotal_km(String total_km) {
+        this.total_km = total_km;
+    }
+
+    public String getTotal_point() {
+        return total_point;
+    }
+
+    public void setTotal_point(String total_point) {
+        this.total_point = total_point;
+    }
 
     public String getImage() {
         return image;
@@ -125,5 +186,57 @@ public class RideRequestData {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public class DriveLocation{
+        public String getEnd_city() {
+            return end_city;
+        }
+
+        public String getEnd_latlong() {
+            return end_latlong;
+        }
+
+        public String getEnd_location() {
+            return end_location;
+        }
+
+        public String getStart_city() {
+            return start_city;
+        }
+
+        public String getStart_latlong() {
+            return start_latlong;
+        }
+
+        public String getStart_location() {
+            return start_location;
+        }
+
+        public String getStart_time() {
+            return start_time;
+        }
+
+        @SerializedName("end_city")
+        @Expose
+        String end_city;
+        @SerializedName("end_latlong")
+        @Expose
+        String end_latlong;
+        @SerializedName("end_location")
+        @Expose
+        String end_location;
+        @SerializedName("start_city")
+        @Expose
+        String start_city;
+        @SerializedName("start_latlong")
+        @Expose
+        String start_latlong;
+        @SerializedName("start_location")
+        @Expose
+        String start_location;
+        @SerializedName("start_time")
+        @Expose
+        String start_time;
     }
 }

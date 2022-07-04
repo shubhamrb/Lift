@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -240,16 +239,21 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             textViewTakerLift.setText(String.valueOf(user.getLiftTaker()));
             textViewGiverLift.setText(String.valueOf(user.getLiftGiver()));
             imageslist = new ArrayList<>();
-            if (user.getImage() != null && !user.getImage().isEmpty()) {
-                SocialImage socialImage = new SocialImage();
-                socialImage.setImage(user.getImage());
-                imageslist.add(socialImage);
-            }
+
             if (user.getSocialImages().size() > 0) {
                 imageslist.addAll(user.getSocialImages());
+            } else {
+                try {
+                    SocialImage socialImage = new SocialImage();
+                    socialImage.setImageId(-1);
+                    socialImage.setImage(user.getImage());
+                    imageslist.add(socialImage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-            mViewPagerAdapter = new ViewPagerAdapter(getActivity(), imageslist, ProfileFragment.this,0);
+            mViewPagerAdapter = new ViewPagerAdapter(getActivity(), imageslist, ProfileFragment.this, 0);
             // Adding the Adapter to the ViewPager
             viewPagerMain.setAdapter(mViewPagerAdapter);
             indicator.setViewPager(viewPagerMain);

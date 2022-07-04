@@ -31,6 +31,7 @@ import com.liftPlzz.model.UserInfo.User;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
 import com.liftPlzz.model.getVehicle.Datum;
 import com.liftPlzz.model.upcomingLift.Lift;
+import com.liftPlzz.utils.AgeCalculator;
 import com.liftPlzz.utils.Constants;
 
 import org.json.JSONObject;
@@ -238,26 +239,33 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-       /* reviewList.clear();
-        reviewList.addAll(userData.getReviews());
-        reviewListAdapter.notifyDataSetChanged();*/
+
         tvDriverName.setText(userData.getName());
-        tv_profile_percentage.setText("Profile: " +userData.getProfile_percentage() + "%");
-        tv_age.setText("Age "+userData.getAge()+" Years old");
+        tv_profile_percentage.setText("Profile: " + userData.getProfile_percentage() + "%");
+        if (userData.getIs_dob_public() != null && userData.getIs_dob_public() != 0 && userData.getDob() != null) {
+            int age = new AgeCalculator().getAge(userData.getDob());
+            tv_age.setText("Age " + age + " Years old");
+            tv_age.setVisibility(View.VISIBLE);
+        } else {
+            tv_age.setVisibility(View.INVISIBLE);
+        }
+
         tv_designaton.setText(userData.getDesignation());
         tv_department.setText(userData.getDepartment());
         tv_company.setText(userData.getCompany());
         textViewAboutUser.setText(userData.getAbout());
-//        tvDriverOtp.setText(getResources().getString(R.string.share_code) + "\n " + userData.getShareCode());
-        if (userData.getSettings().getProfilePublicly() != null) {
-            if (userData.getSettings().getProfilePublicly() == 0) {
-                tvEmail.setVisibility(View.GONE);
-                tvMobile.setVisibility(View.GONE);
-            } else {
-                tvEmail.setVisibility(View.VISIBLE);
-                tvMobile.setVisibility(View.VISIBLE);
-            }
+
+        if (userData.getIs_contact_public() != null && userData.getIs_contact_public() == 0) {
+            tvMobile.setVisibility(View.GONE);
+        } else {
+            tvMobile.setVisibility(View.VISIBLE);
         }
+        if (userData.getIs_email_public() != null && userData.getIs_email_public() == 0) {
+            tvEmail.setVisibility(View.GONE);
+        } else {
+            tvEmail.setVisibility(View.VISIBLE);
+        }
+
         tvEmail.setText(userData.getEmail());
         mobileNo = userData.getMobile();
         tvMobile.setText(mobileNo);
@@ -278,7 +286,7 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         tvAsSeeker.setText("" + userData.getLiftTaker());
         tvTotalRide.setText("" + userData.getTotalLift());
         for (int i = 0; i < userData.getSocialImages().size(); i++) {
-            com.liftPlzz.model.SocialImage obj = new SocialImage();
+            SocialImage obj = new SocialImage();
             obj.setImage(userData.getSocialImages().get(i).getImage());
             obj.setImageId(userData.getSocialImages().get(i).getImageId());
             imageslist.add(obj);
