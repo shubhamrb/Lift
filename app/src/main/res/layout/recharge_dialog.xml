@@ -34,12 +34,12 @@
             android:background="@null"
             android:fontFamily="@font/gotham_light"
             android:gravity="start"
-            android:hint="Enter redeem point."
+            android:hint="Enter amount."
             android:inputType="number"
             android:paddingStart="10dp"
             android:singleLine="true"
-            android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorDark"
             android:textSize="@dimen/sp_16" />
 
     </LinearLayout>
@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/gotham_medium"
         android:gravity="center"
+        android:visibility="gone"
         android:text="10% processing fees + 18% GST"
         android:textColor="@color/colorRed"
         android:textSize="@dimen/sp_12" />

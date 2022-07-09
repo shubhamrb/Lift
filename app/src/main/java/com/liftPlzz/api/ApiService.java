@@ -3,6 +3,7 @@ package com.liftPlzz.api;
 
 import com.google.gson.JsonObject;
 import com.liftPlzz.model.FindLiftResponse;
+import com.liftPlzz.model.recharge.RechargeFuelCardHistory;
 import com.liftPlzz.model.ResponseChatSuggestion;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
 import com.liftPlzz.model.chatuser.ResponseChatUser;
@@ -23,10 +24,11 @@ import com.liftPlzz.model.getTicketList.ResponseTicketList;
 import com.liftPlzz.model.getVehicle.GetVehicleListMainResponse;
 import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.model.matchingridemodel.MatchingRideByCategoryResponse;
-import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.partnerdetails.Example;
 import com.liftPlzz.model.pointsRedemption.PointsModel;
+import com.liftPlzz.model.recharge.RechargeFuelCardHistoryResponse;
+import com.liftPlzz.model.recharge.RechargeHistoryResponse;
 import com.liftPlzz.model.resendOtp.ResendOtpResponse;
 import com.liftPlzz.model.ridebyvehicletypemodel.DriverByTypeReponse;
 import com.liftPlzz.model.riderequestmodel.RideRequestResponse;
@@ -293,6 +295,20 @@ public interface ApiService {
     @Multipart
     @POST("add-social-image")
     Call<CreateProfileMainResponse> add_social_image(@Part("api_key") RequestBody api_key,
+                                                     @Part("client") RequestBody client,
+                                                     @Part("token") RequestBody token,
+                                                     @Part MultipartBody.Part imageFile);
+
+    @Multipart
+    @POST("add-face-image")
+    Call<CreateProfileMainResponse> add_selfie(@Part("api_key") RequestBody api_key,
+                                                     @Part("client") RequestBody client,
+                                                     @Part("token") RequestBody token,
+                                                     @Part MultipartBody.Part imageFile);
+
+    @Multipart
+    @POST("add-govtid-image")
+    Call<CreateProfileMainResponse> add_Id(@Part("api_key") RequestBody api_key,
                                                      @Part("client") RequestBody client,
                                                      @Part("token") RequestBody token,
                                                      @Part MultipartBody.Part imageFile);
@@ -583,6 +599,19 @@ public interface ApiService {
     Call<PointsModel> cardDetail(@Field("api_key") String api_key,
                                  @Field("client") String client,
                                  @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("wallet-recharge-history")
+    Call<RechargeHistoryResponse> rechargeWalletHistory(@Field("api_key") String api_key,
+                                                  @Field("client") String client,
+                                                  @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("fuelcard-recharge-history")
+    Call<RechargeFuelCardHistoryResponse> rechargeFuelCardHistory(@Field("api_key") String api_key,
+                                                                  @Field("client") String client,
+                                                                  @Field("token") String token);
+
 
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android

@@ -32,10 +32,11 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
     public void destroy() {
 
     }
+
     public void getProfile(String token) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateProfileMainResponse> call = api.get_profile(Constants.API_KEY, "android",token);
+        Call<CreateProfileMainResponse> call = api.get_profile(Constants.API_KEY, "android", token);
         call.enqueue(new Callback<CreateProfileMainResponse>() {
             @Override
             public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {
@@ -65,14 +66,14 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
     public void getReview(String token) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<GetReviewMainResponse> call = api.get_review(Constants.API_KEY, "android",token);
+        Call<GetReviewMainResponse> call = api.get_review(Constants.API_KEY, "android", token);
         call.enqueue(new Callback<GetReviewMainResponse>() {
             @Override
             public void onResponse(Call<GetReviewMainResponse> call, Response<GetReviewMainResponse> response) {
                 view.hideLoader();
 
                 if (response.body() != null) {
-                    if (response.code()==200) {
+                    if (response.code() == 200) {
                         view.setReviewData(response.body().getResponse().getData());
                     } else {
                         //  view.hideLoader();
@@ -91,17 +92,18 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             }
         });
     }
-    public void delete_imag(String token,String id) {
+
+    public void delete_imag(String token, String id) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<GetReviewMainResponse> call = api.delete_eimag(Constants.API_KEY, "android",token,id);
+        Call<GetReviewMainResponse> call = api.delete_eimag(Constants.API_KEY, "android", token, id);
         call.enqueue(new Callback<GetReviewMainResponse>() {
             @Override
             public void onResponse(Call<GetReviewMainResponse> call, Response<GetReviewMainResponse> response) {
                 view.hideLoader();
 
                 if (response.body() != null) {
-                    if (response.code()==200) {
+                    if (response.code() == 200) {
                         view.setProfileImageData("success");
                     } else {
                         //  view.hideLoader();
@@ -122,11 +124,9 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
     }
 
 
-
     public void openUpdateProfile() {
         navigator.openUpdateProfileFragment(BaseActivity.PerformFragment.REPLACE);
     }
-
 
 
     public void uploadImage(RequestBody api_key, RequestBody device, RequestBody token, MultipartBody.Part email) {
@@ -141,6 +141,60 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
                 if (response.body() != null) {
                     if (response.body().getResponse().getStatus()) {
                         view.setProfileData(response.body().getResponse());
+                    } else {
+                        //  view.hideLoader();
+                        view.showMessage(response.body().getResponse().getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage(throwable.getMessage());
+            }
+        });
+    }
+
+    public void uploadSelfie(RequestBody api_key, RequestBody device, RequestBody token, MultipartBody.Part email) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<CreateProfileMainResponse> call = api.add_selfie(api_key, device, token, email);
+        call.enqueue(new Callback<CreateProfileMainResponse>() {
+            @Override
+            public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {
+                view.hideLoader();
+
+                if (response.body() != null) {
+                    if (response.body().getResponse().getStatus()) {
+                        view.selfieUploaded(response.body().getResponse());
+                    } else {
+                        //  view.hideLoader();
+                        view.showMessage(response.body().getResponse().getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage(throwable.getMessage());
+            }
+        });
+    }
+
+    public void uploadId(RequestBody api_key, RequestBody device, RequestBody token, MultipartBody.Part email) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<CreateProfileMainResponse> call = api.add_Id(api_key, device, token, email);
+        call.enqueue(new Callback<CreateProfileMainResponse>() {
+            @Override
+            public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {
+                view.hideLoader();
+
+                if (response.body() != null) {
+                    if (response.body().getResponse().getStatus()) {
+                        view.idUploaded(response.body().getResponse());
                     } else {
                         //  view.hideLoader();
                         view.showMessage(response.body().getResponse().getMessage());

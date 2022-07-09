@@ -55,7 +55,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         NotificationData notificationData = notificationList.get(position);
-        holder.tvNotificationText.setText(notificationData.getTitle());
+        holder.tvTitle.setText(notificationData.getTitle());
         holder.tvNotificationText.setText(notificationData.getDescription());
         holder.tvNotificationTime.setText(notificationData.getCreatedAt());
 

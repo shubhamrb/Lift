@@ -369,7 +369,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
                             android:fontFamily="@font/gotham_medium"
-                            android:text="Any" />
+                            android:text="Not to Share" />
 
                     </RadioGroup>
 

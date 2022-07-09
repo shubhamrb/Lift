@@ -55,10 +55,29 @@ public class RideRequestData {
     @SerializedName("total_point")
     @Expose
     private String total_point;
+    @SerializedName("rate_per_km")
+    @Expose
+    private String rate_per_km;
 
     @SerializedName("location")
     @Expose
     private DriveLocation driveLocation;
+
+    public String getRate_per_km() {
+        return rate_per_km;
+    }
+
+    public void setRate_per_km(String rate_per_km) {
+        this.rate_per_km = rate_per_km;
+    }
+
+    public DriveLocation getDriveLocation() {
+        return driveLocation;
+    }
+
+    public void setDriveLocation(DriveLocation driveLocation) {
+        this.driveLocation = driveLocation;
+    }
 
     public DriveLocation getLocation() {
         return driveLocation;

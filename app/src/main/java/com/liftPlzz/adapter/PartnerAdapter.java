@@ -2,6 +2,7 @@ package com.liftPlzz.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,15 +29,17 @@ import butterknife.ButterKnife;
 public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHolder> {
 
 
+    private final SharedPreferences sharedPreferences;
     private Context context;
     private ArrayList<User> arrayList;
-    private boolean isPartner;
+    private boolean isLifter;
 
 
-    public PartnerAdapter(Context context, ArrayList<User> arrayList) {
+    public PartnerAdapter(Context context, ArrayList<User> arrayList,boolean isLifter) {
         this.context = context;
         this.arrayList = arrayList;
-        this.isPartner = isPartner;
+        this.isLifter = isLifter;
+        sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -83,6 +86,19 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         holder.userType.setVisibility(View.VISIBLE);
         holder.userType.setText(requestData.getUserType());
 
+        if (isLifter) {
+            holder.total_point.setVisibility(View.VISIBLE);
+            holder.total_km.setVisibility(View.VISIBLE);
+        } else {
+            if (requestData.getId() != null && String.valueOf(requestData.getId()).equals(sharedPreferences.getString(Constants.USER_ID, ""))) {
+                holder.total_point.setVisibility(View.VISIBLE);
+                holder.total_km.setVisibility(View.VISIBLE);
+            } else {
+                holder.total_point.setVisibility(View.GONE);
+                holder.total_km.setVisibility(View.GONE);
+            }
+        }
+
         if (requestData.getUserType().equalsIgnoreCase("Lifter")) {
             if (requestData.getVehicle_percentage() == null) {
                 holder.vehicle_percantage.setVisibility(View.INVISIBLE);
@@ -90,11 +106,19 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
                 holder.vehicle_percantage.setText("Vehicle: " + requestData.getProfile_percentage());
                 holder.vehicle_percantage.setVisibility(View.VISIBLE);
             }
+
+            if (requestData.getRate_per_km() == null) {
+                holder.textRateparkm.setVisibility(View.GONE);
+            } else {
+                holder.textRateparkm.setText("Rate per km: " + requestData.getRate_per_km() + "/km");
+                holder.textRateparkm.setVisibility(View.VISIBLE);
+            }
         } else {
+            holder.textRateparkm.setVisibility(View.GONE);
             if (requestData.getRate_per_km() == null) {
                 holder.vehicle_percantage.setVisibility(View.INVISIBLE);
             } else {
-                holder.vehicle_percantage.setText("Point per km: " + requestData.getRate_per_km()+"/km");
+                holder.vehicle_percantage.setText("Point per km: " + requestData.getRate_per_km() + "/km");
                 holder.vehicle_percantage.setVisibility(View.VISIBLE);
             }
         }
@@ -156,6 +180,8 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         AppCompatTextView total_point;
         @BindView(R.id.total_km)
         AppCompatTextView total_km;
+        @BindView(R.id.textRateparkm)
+        AppCompatTextView textRateparkm;
 
         ViewHolder(View itemView) {
             super(itemView);

@@ -57,7 +57,7 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         holder.tvMobile.setText(requestData.getMobile());
         holder.tvName.setText(requestData.getName());
         holder.tvSeats.setText(context.getResources().getString(R.string.seats) + " :" + requestData.getSeats());
-
+        holder.textRateparkm.setText("Rate per km : " + requestData.getRate_per_km()+"/km");
 
         if (requestData.getProfile_percentage() == null)
             holder.profile_percantage.setText("Profile: --");
@@ -140,6 +140,9 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         AppCompatTextView tvMobile;
         @BindView(R.id.tv_seats)
         AppCompatTextView tvSeats;
+
+        @BindView(R.id.textRateparkm)
+        AppCompatTextView textRateparkm;
 
         @BindView(R.id.btn_accept)
         AppCompatButton btnAccept;

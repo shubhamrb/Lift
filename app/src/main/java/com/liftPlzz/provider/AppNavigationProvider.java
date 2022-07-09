@@ -16,12 +16,15 @@ import com.liftPlzz.fragments.MyRidesFragment;
 import com.liftPlzz.fragments.MyVehicleFragment;
 import com.liftPlzz.fragments.NotificationFragment;
 import com.liftPlzz.fragments.OTpFragment;
+import com.liftPlzz.fragments.PointWalletFragment;
 import com.liftPlzz.fragments.ProfileFragment;
 import com.liftPlzz.fragments.SettingFragment;
 import com.liftPlzz.fragments.UpdateProfileFragment;
 import com.liftPlzz.navigator.AppNavigator;
 
 public abstract class AppNavigationProvider extends BaseActivity implements AppNavigator {
+
+    private PointWalletFragment pointWalletFragment;
 
     @Override
     public void openLoginFragment(PerformFragment performFragment) {
@@ -115,11 +118,6 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
         openFragment(notificationFragment, NotificationFragment.class.getName(), performFragment, true);
     }
 
-//    @Override
-//    public void openDriverListFragment(PerformFragment performFragment) {
-//        SettingFragment driverListFragment = new SettingFragment();
-//        openFragment(driverListFragment, SettingFragment.class.getName(), performFragment, true);
-//    }
 
     @Override
     public void openSettingFragment(PerformFragment performFragment) {
@@ -131,5 +129,16 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     public void openFaqFragment(PerformFragment performFragment) {
         FaqFragment faqFragment = new FaqFragment();
         openFragment(faqFragment, FaqFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openPointWalletFragment(PerformFragment performFragment) {
+        pointWalletFragment = new PointWalletFragment();
+        openFragment(pointWalletFragment, PointWalletFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public PointWalletFragment getPointWalletFragment() {
+        return pointWalletFragment;
     }
 }

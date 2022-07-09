@@ -124,6 +124,7 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     public void onPartnetDetails(Lift lift) {
         Intent intent = new Intent(getActivity(), RideRequestActivity.class);
         intent.putExtra(Constants.LIFT_ID, lift.getId());
+        intent.putExtra("lifter", lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, "")));
         intent.putExtra(Constants.PARTNER, true);
         startActivity(intent);
     }

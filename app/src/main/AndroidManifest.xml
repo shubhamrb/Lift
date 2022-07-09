@@ -45,15 +45,9 @@
             android:value="@string/maps_api_key" />
 
         <activity
-            android:name=".activity.PaymentPackage"
-            android:exported="false" />
-        <activity
             android:name=".activity.PaymentHistory"
             android:exported="false" />
 
-        <activity
-            android:name=".activity.PointRedeemActivity"
-            android:exported="false" />
         <activity
             android:name=".DriverUserLocationActivity"
             android:exported="false">

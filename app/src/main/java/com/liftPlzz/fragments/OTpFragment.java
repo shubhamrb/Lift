@@ -3,15 +3,14 @@ package com.liftPlzz.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.provider.Telephony;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,8 +36,8 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.liftPlzz.R;
-import com.liftPlzz.SmsListener;
 import com.liftPlzz.activity.HomeActivity;
+import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.resendOtp.Response;
 import com.liftPlzz.model.sendotp.SendOtpResponse;
@@ -73,6 +72,12 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     AppCompatEditText editTextSix;
     @BindView(R.id.textViewResendOtp)
     AppCompatTextView textViewResendOtp;
+    @BindView(R.id.textManual)
+    AppCompatTextView textManual;
+    @BindView(R.id.textViewBack)
+    AppCompatTextView textViewBack;
+    @BindView(R.id.imageViewNext)
+    ImageView imageViewNext;
     @BindView(R.id.reltive)
     RelativeLayout reltive;
 
@@ -87,6 +92,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     private PhoneAuthProvider.ForceResendingToken resendToken;
     private FirebaseAuth firebaseAuth;
     SmsBroadcastReceiver mSmsBroadcastReceiver;
+    private boolean isManual = false;
 
 
     public static void setOtpData(Integer otpData) {
@@ -123,37 +129,25 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         reverseTimer(30, textViewResendOtp);
         firebaseAuth = FirebaseAuth.getInstance();
-//        mSmsBroadcastReceiver = new SmsBroadcastReceiver();
-//        mSmsBroadcastReceiver.setOnOtpListeners(this);
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
-//        getActivity().getApplicationContext().registerReceiver(mSmsBroadcastReceiver, intentFilter);
         sendCode();
-//        if (otpData != null) {
-//            editTextFirstDigits.setText(String.valueOf(otpData.toString().charAt(0)));
-//            editTextSecondsDigits.setText(String.valueOf(otpData.toString().charAt(1)));
-//            editTextThirdDigits.setText(String.valueOf(otpData.toString().charAt(2)));
-//            editTextFourthDigits.setText(String.valueOf(otpData.toString().charAt(3)));
-//            otp = editTextFirstDigits.getText().toString() + editTextSecondsDigits.getText().toString() + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString();
-//            if (otp.length() == 4) {
-//                presenter.verifyOtp(otp, sharedPreferences.getString(Constants.MOBILE, ""));
-//            }
-//        }
 
         SmsReceiver.bindListener(messageText -> {
-            editTextFirstDigits.setText(String.valueOf(messageText.charAt(0)));
-            Log.d("OTP word 1", editTextFirstDigits.getText().toString());
-        editTextSecondsDigits.setText(String.valueOf(messageText.charAt(1)));
-            Log.d("OTP word 2", editTextSecondsDigits.getText().toString());
-        editTextThirdDigits.setText(String.valueOf(messageText.charAt(2)));
-            Log.d("OTP word 3", editTextThirdDigits.getText().toString());
-        editTextFourthDigits.setText(String.valueOf(messageText.charAt(3)));
-            Log.d("OTP word 4", editTextFourthDigits.getText().toString());
-        editTextFive.setText(String.valueOf(messageText.charAt(4)));
-            Log.d("OTP word 5", editTextFive.getText().toString());
-        editTextSix.setText(String.valueOf(messageText.charAt(5)));
-            Log.d("OTP word 6", editTextSix.getText().toString());
+            if (!isManual) {
+                editTextFirstDigits.setText(String.valueOf(messageText.charAt(0)));
+                Log.d("OTP word 1", editTextFirstDigits.getText().toString());
+                editTextSecondsDigits.setText(String.valueOf(messageText.charAt(1)));
+                Log.d("OTP word 2", editTextSecondsDigits.getText().toString());
+                editTextThirdDigits.setText(String.valueOf(messageText.charAt(2)));
+                Log.d("OTP word 3", editTextThirdDigits.getText().toString());
+                editTextFourthDigits.setText(String.valueOf(messageText.charAt(3)));
+                Log.d("OTP word 4", editTextFourthDigits.getText().toString());
+                editTextFive.setText(String.valueOf(messageText.charAt(4)));
+                Log.d("OTP word 5", editTextFive.getText().toString());
+                editTextSix.setText(String.valueOf(messageText.charAt(5)));
+                Log.d("OTP word 6", editTextSix.getText().toString());
+            }
         });
+
         editTextFirstDigits.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -162,16 +156,21 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 if (s.length() > 0) {
                     editTextSecondsDigits.requestFocus();
-
                     otp = editTextFirstDigits.getText().toString() + editTextSecondsDigits.getText().toString()
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
-                        doVerifyCode();
+                        imageViewNext.setEnabled(true);
+                        if (!isManual) {
+                            doVerifyCode();
+                        }
+                    } else {
+                        imageViewNext.setEnabled(false);
                     }
+                } else {
+                    imageViewNext.setEnabled(false);
                 }
             }
 
@@ -195,8 +194,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
-                        doVerifyCode();
+                        imageViewNext.setEnabled(true);
+                        if (!isManual) {
+                            doVerifyCode();
+                        }
+                    } else {
+                        imageViewNext.setEnabled(false);
                     }
+                } else {
+                    imageViewNext.setEnabled(false);
                 }
 
             }
@@ -220,8 +226,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
-                        doVerifyCode();
+                        imageViewNext.setEnabled(true);
+                        if (!isManual) {
+                            doVerifyCode();
+                        }
+                    } else {
+                        imageViewNext.setEnabled(false);
                     }
+                } else {
+                    imageViewNext.setEnabled(false);
                 }
 
             }
@@ -246,8 +259,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
-                        doVerifyCode();
+                        imageViewNext.setEnabled(true);
+                        if (!isManual) {
+                            doVerifyCode();
+                        }
+                    } else {
+                        imageViewNext.setEnabled(false);
                     }
+                } else {
+                    imageViewNext.setEnabled(false);
                 }
 
             }
@@ -257,8 +277,6 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
             }
         });
-
-
         editTextFive.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -274,8 +292,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
-                        doVerifyCode();
+                        imageViewNext.setEnabled(true);
+                        if (!isManual) {
+                            doVerifyCode();
+                        }
+                    } else {
+                        imageViewNext.setEnabled(false);
                     }
+                } else {
+                    imageViewNext.setEnabled(false);
                 }
 
             }
@@ -285,8 +310,6 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
             }
         });
-
-
         editTextSix.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -302,8 +325,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
-                        doVerifyCode();
+                        imageViewNext.setEnabled(true);
+                        if (!isManual) {
+                            doVerifyCode();
+                        }
+                    } else {
+                        imageViewNext.setEnabled(false);
                     }
+                } else {
+                    imageViewNext.setEnabled(false);
                 }
 
             }
@@ -311,6 +341,31 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        textManual.setOnClickListener(view -> {
+            isManual = true;
+            try {
+                editTextFirstDigits.requestFocus();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        imageViewNext.setOnClickListener(view -> {
+            try {
+                doVerifyCode();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        textViewBack.setOnClickListener(view -> {
+            try {
+                presenter.openLogin();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -345,18 +400,9 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     @Override
     public void setLoginData(SendOtpResponse response) {
         if (response.getNewUser() == 1) {
-            //  sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, true).apply();
             sharedPreferences.edit().putString(Constants.TOKEN, response.getToken()).apply();
-//            sharedPreferences.edit().putString(Constants.NAME, response.getData().getName()).apply();
-//            sharedPreferences.edit().putString(Constants.EMAIL, response.getData().getEmail()).apply();
-//            sharedPreferences.edit().putString(Constants.MOBILE, response.getData().getMobile()).apply();
-//            sharedPreferences.edit().putString(Constants.USER_ID, String.valueOf(response.getData().getId())).apply();
-      /*  Intent intent = new Intent(getActivity(), HomeActivity.class);
-        startActivity(intent);
-        getActivity().finish();*/
             presenter.openCreateProfile();
         } else {
-
             sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, true).apply();
             sharedPreferences.edit().putString(Constants.TOKEN, response.getToken()).apply();
             sharedPreferences.edit().putString(Constants.NAME, response.getData().getName()).apply();
@@ -377,19 +423,12 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
     @OnClick(R.id.textViewResendOtp)
     public void onViewClicked() {
-//        presenter.ResendOtp(sharedPreferences.getString(Constants.MOBILE, ""));
         reverseTimer(30, textViewResendOtp);
         resendCode();
     }
 
     private void sendCode() {
         setUpVerificationCallbacks();
-       /* PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                country + mobileNo,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
-                getActivity(),               // Activity (for callback binding)
-                verificationCallbacks);*/
 
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(firebaseAuth)
@@ -403,31 +442,18 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     }
 
 
-
-    /*// below method is use to verify code from Firebase.
-    private void verifyCode(String code) {
-        // below line is used for getting getting
-        // credentials from our verification id and code.
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-
-        // after getting credential we are
-        // calling sign in method.
-        signInWithCredential(credential);
-    }
-}
-*/
-
     private void setUpVerificationCallbacks() {
         verificationCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                signInWithPhoneAuthCredential(phoneAuthCredential);
+                if (!isManual)
+                    signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                   // Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_SHORT).show();
+                    // Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_SHORT).show();
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     Snackbar.make(reltive, "Limit Reached Try Again In a few Hours", Snackbar.LENGTH_LONG).show();
                 }
@@ -469,18 +495,15 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                             Snackbar.make(reltive, "Successful", Snackbar.LENGTH_LONG).show();
                             String cred = task.getResult().getUser().getPhoneNumber();
                             Log.d("mobile no.", cred);
-                            if (cred.isEmpty()){
+                            if (cred.isEmpty()) {
                                 Snackbar.make(reltive, "Mobile Number not found", Snackbar.LENGTH_LONG).show();
                             }
                             cred.replace("+91", "");
-//                            checkUser();
-//                            setLoginData();
                             presenter.sendOtp(mobileNo);
-//                            presenter.sendOtp(cred);
                         } else {
                             if (task.getException() instanceof
                                     FirebaseAuthInvalidCredentialsException) {
-//                                Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -488,14 +511,13 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     }
 
     private void doVerifyCode() {
-//        String otp = etEnterotp.getText().toString();
+
         if (TextUtils.isEmpty(otp) || !TextUtils.isDigitsOnly(otp) || otp.length() != 6) {
             Toast.makeText(getActivity(), "Please enter valid OTP.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        PhoneAuthCredential credential =
-                PhoneAuthProvider.getCredential(phoneVerificationId, otp);
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, otp);
         signInWithPhoneAuthCredential(credential);
 
     }

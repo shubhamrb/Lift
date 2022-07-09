@@ -1,13 +1,9 @@
 package com.liftPlzz.presenter;
 
-import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
-
 import com.liftPlzz.model.resendOtp.ResendOtpResponse;
 import com.liftPlzz.model.sendotp.MainResponse;
 import com.liftPlzz.model.verifyOtp.VerifyOtpMainResponse;
@@ -36,8 +32,8 @@ public class OtpPresenter extends BasePresenter<OtpView> {
 
     }
 
-    public void openOTP() {
-        navigator.openOTPFragment(BaseActivity.PerformFragment.REPLACE);
+    public void openLogin() {
+        navigator.openLoginFragment(BaseActivity.PerformFragment.REPLACE);
     }
 
     public void ResendOtp(String mobile) {

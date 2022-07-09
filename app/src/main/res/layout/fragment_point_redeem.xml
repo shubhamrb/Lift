@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_90"
+        android:layout_margin="@dimen/dp_10"
+        android:backgroundTint="@color/colorDimWhite"
+        android:elevation="@dimen/dp_2"
+        app:cardCornerRadius="@dimen/dp_5">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/daytext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/gotham_medium"
+                android:text="CURRENT POINT"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/daytext"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_5"
+                android:fontFamily="@font/gotham_bold"
+                android:text="00"
+                android:textSize="25sp" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonRecharge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_item"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/sp_25"
+        android:layout_marginRight="@dimen/sp_25"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_40"
+        android:paddingRight="@dimen/dp_40"
+        android:text="@string/recharge_fuel_card"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonRecharge"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/sp_25"
+        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginRight="@dimen/sp_25"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_40"
+        android:paddingRight="@dimen/dp_40"
+        android:text="@string/request_new_card"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewpackage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/buttonRequest">
+
+    </androidx.recyclerview.widget.RecyclerView>
+</RelativeLayout>

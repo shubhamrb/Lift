@@ -84,8 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
                 android:src="@drawable/ic_back"
-                android:tint="@color/colorAccent"
-                android:visibility="gone"></ImageView>
+                android:visibility="gone"
+                app:tint="@color/colorAccent"></ImageView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,6 +135,15 @@
                     android:textAllCaps="false"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
+
+                <ImageView
+                    android:id="@+id/imageViewEdit"
+                    android:layout_width="23dp"
+                    android:layout_height="@dimen/dp_25"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:src="@drawable/ic_pencil"
+                    android:visibility="visible" />
 
             </LinearLayout>
         </LinearLayout>
@@ -339,15 +348,6 @@
                         android:singleLine="true"
                         android:textColor="@color/colorText"
                         android:textSize="@dimen/sp_16" />
-
-                    <ImageView
-                        android:id="@+id/imageViewEdit"
-                        android:layout_width="23dp"
-                        android:layout_height="@dimen/dp_25"
-                        android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:src="@drawable/ic_pencil"
-                        android:visibility="visible" />
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -434,6 +434,75 @@
                     android:singleLine="true"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/verify_face"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:layout_toStartOf="@+id/verified_face"
+                        android:background="@null"
+                        android:drawableLeft="@android:drawable/ic_menu_upload"
+                        android:drawablePadding="@dimen/dp_5"
+                        android:fontFamily="@font/gotham_medium"
+                        android:gravity="center|start"
+                        android:padding="@dimen/dp_8"
+                        android:singleLine="true"
+                        android:text=" Upload your selfie"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/sp_16" />
+
+                    <ImageView
+                        android:id="@+id/verified_face"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:src="@drawable/ic_verified_24" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/verify_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:layout_toStartOf="@+id/verified_id"
+                        android:background="@null"
+                        android:drawableLeft="@android:drawable/ic_menu_upload"
+                        android:drawablePadding="@dimen/dp_5"
+                        android:fontFamily="@font/gotham_medium"
+                        android:gravity="center|start"
+                        android:padding="@dimen/dp_8"
+                        android:singleLine="true"
+                        android:text=" Upload GOVT ID proof"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/sp_16" />
+
+                    <ImageView
+                        android:id="@+id/verified_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:src="@drawable/ic_verified_24" />
+                </RelativeLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"

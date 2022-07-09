@@ -26,6 +26,7 @@
     <string name="no_matches">No Matches</string>
     <string name="no_request_found">No Request found</string>
     <string name="my_lifts">My Lifts</string>
+    <string name="point_wallet">Point Wallet</string>
     <string name="logout">Logout</string>
     <string name="chat">Chat</string>
     <string name="txt_faq">FAQ</string>
@@ -132,7 +133,8 @@
     <string name="profile_percantage">Profile %</string>
     <string name="vehicle_percantage">Vehicle %</string>
     <string name="recharge_fuel_card">Recharge Fuel Card</string>
-    <string name="request_new_card">Request New Card</string>
+    <string name="request_new_card">Apply for Fuel Card</string>
     <string name="available_points">Available Points : </string>
-
+    <string name="purchase_point">Purchase Point</string>
+    <string name="redeem_point">Redeem Point</string>
 </resources>

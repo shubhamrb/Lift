@@ -35,8 +35,6 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -123,12 +121,12 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
             editTextVehicleRegNo.setText(vehicleData.getRegistrationNo());
             editTextVehicleInsuranceDate.setText(vehicleData.getInsurance_date());
             edRatePerKm.setText("" + vehicleData.getRatePerKm());
-            if (vehicleData.getVehicleImageFront() != null) {
+            if (vehicleData.getVehicleImageFront() != null && !vehicleData.getVehicleImageFront().isEmpty()) {
                 Picasso.get().load(vehicleData.getVehicleImageFront()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         imageViewFrontImage.setImageBitmap(bitmap);
-                        fileFront = savebitmap("FrontImage" + System.currentTimeMillis(), bitmap);
+                        fileFront = null;
                     }
 
                     @Override
@@ -143,12 +141,12 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                 });
             }
 
-            if (vehicleData.getVehicleImageBack() != null) {
+            if (vehicleData.getVehicleImageBack() != null && !vehicleData.getVehicleImageBack().isEmpty()) {
                 Picasso.get().load(vehicleData.getVehicleImageBack()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         imageViewBackImage.setImageBitmap(bitmap);
-                        fileBack = savebitmap("BackImage" + System.currentTimeMillis(), bitmap);
+                        fileBack = null;
                     }
 
                     @Override
@@ -163,12 +161,12 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                 });
             }
 
-            if (vehicleData.getRcImage() != null) {
+            if (vehicleData.getRcImage() != null && !vehicleData.getRcImage().isEmpty()) {
                 Picasso.get().load(vehicleData.getRcImage()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         imageViewRcImage.setImageBitmap(bitmap);
-                        fileRC = savebitmap("RcImage" + System.currentTimeMillis(), bitmap);
+                        fileRC = null;
                     }
 
                     @Override
@@ -218,24 +216,39 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                     showMsg("Please enter vehicle model");
                 } else if (editTextVehicleRegNo.getText().toString().isEmpty()) {
                     showMsg("Please enter vehicle registration number");
+                } else if (!editTextVehicleRegNo.getText().toString().replace(" ", "").matches("^[A-Z|a-z]{2}?[0-9]{1,2}?[A-Z|a-z]{0,3}?[0-9]{4}$")) {
+                    showMsg("Please enter the valid vehicle number ");
                 } else if (editTextVehicleInsuranceDate.getText().toString().isEmpty()) {
                     showMsg("Please select vehicle Insurance Date ");
                 } else if (edRatePerKm.getText().toString().isEmpty()) {
                     showMsg(getResources().getString(R.string.please_enter_rate_per_km));
-                } else if (fileFront == null) {
+                }
+                /*else if (!isEdit && fileFront == null) {
                     showMsg("Please select vehicle Front Image");
-                } else if (fileBack == null) {
+                } else if (!isEdit && fileBack == null) {
                     showMsg("Please select vehicle Back Image");
-                } else if (fileRC == null) {
+                } else if (!isEdit && fileRC == null) {
                     showMsg("Please select vehicle RC Image");
-                } else {
-                    //rc_image vehicle_image_back vehicle_image_front
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileFront);
-                    MultipartBody.Part vehicle_image_frontBody = MultipartBody.Part.createFormData("vehicle_image_front", fileFront.getName(), requestFile);
-                    RequestBody requestFileVehicle_image_back = RequestBody.create(MediaType.parse("multipart/form-data"), fileBack);
-                    MultipartBody.Part vehicle_image_backBody = MultipartBody.Part.createFormData("vehicle_image_back", fileBack.getName(), requestFileVehicle_image_back);
-                    RequestBody requestFileRc_image = RequestBody.create(MediaType.parse("multipart/form-data"), fileFront);
-                    MultipartBody.Part rc_imageBody = MultipartBody.Part.createFormData("rc_image", fileFront.getName(), requestFileRc_image);
+                } */
+                else {
+                    MultipartBody.Part vehicle_image_frontBody = null;
+                    MultipartBody.Part vehicle_image_backBody = null;
+                    MultipartBody.Part rc_imageBody = null;
+                    if (fileFront != null) {
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileFront);
+                        vehicle_image_frontBody = fileFront != null ? MultipartBody.Part.createFormData("vehicle_image_front", fileFront.getName(), requestFile) : null;
+                    }
+
+                    if (fileBack != null) {
+                        RequestBody requestFileVehicle_image_back = RequestBody.create(MediaType.parse("multipart/form-data"), fileBack);
+                        vehicle_image_backBody = fileBack != null ? MultipartBody.Part.createFormData("vehicle_image_back", fileBack.getName(), requestFileVehicle_image_back) : null;
+                    }
+
+                    if (fileRC != null) {
+                        RequestBody requestFileRc_image = RequestBody.create(MediaType.parse("multipart/form-data"), fileRC);
+                        rc_imageBody = fileRC != null ? MultipartBody.Part.createFormData("rc_image", fileRC.getName(), requestFileRc_image) : null;
+                    }
+
                     RequestBody api_key = RequestBody.create(okhttp3.MultipartBody.FORM, Constants.API_KEY);
                     RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, "android");
                     RequestBody types = RequestBody.create(okhttp3.MultipartBody.FORM, "two_wheeler");
@@ -251,7 +264,7 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                     if (isEdit) {
                         RequestBody vehicle_id = RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(vehicleData.getId()));
                         presenter.updateVehicle(api_key, device, token, vehicle_id, types, model, RegNo,
-                                ratePerKm,insuranceDate, seats, is_default, vehicleSubCategory, vehicle_image_frontBody, vehicle_image_backBody, rc_imageBody);
+                                ratePerKm, insuranceDate, seats, is_default, vehicleSubCategory, vehicle_image_frontBody, vehicle_image_backBody, rc_imageBody);
 
                     } else {
                         presenter.createVehicle(api_key, device, token, types, model, RegNo,
@@ -285,7 +298,7 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                 VehicleType = 3;
                 break;
             case R.id.editTextVehicleInsuranceDate:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod,BikeFragment.this, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, BikeFragment.this, year, month, day);
                 datePickerDialog.show();
                 break;
         }
@@ -298,33 +311,26 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
             Log.e("hdhdhd", "onActivityResult: " + data.getData().toString());
             if (VehicleType == 1) {
                 try {
+                    Picasso.get().load(data.getData()).into(imageViewFrontImage);
                     fileFront = new File(new URL(data.getDataString()).toURI());
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Picasso.get().load(data.getData()).into(imageViewFrontImage);
             } else if (VehicleType == 2) {
-                Picasso.get().load(data.getData()).into(imageViewBackImage);
                 try {
+                    Picasso.get().load(data.getData()).into(imageViewBackImage);
                     fileBack = new File(new URL(data.getDataString()).toURI());
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                Picasso.get().load(data.getData()).into(imageViewRcImage);
                 try {
+                    Picasso.get().load(data.getData()).into(imageViewRcImage);
                     fileRC = new File(new URL(data.getDataString()).toURI());
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            //File file= =ImagePicker.getFile(data);
         }
     }
 

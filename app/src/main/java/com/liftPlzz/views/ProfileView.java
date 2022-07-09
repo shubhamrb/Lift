@@ -12,6 +12,9 @@ public interface ProfileView extends RootView {
 
     void setProfileData(Response response);
 
+    void selfieUploaded(Response response);
+    void idUploaded(Response response);
+
     void setProfileImageData(String message);
 
     void setReviewData(List<Datum> data);

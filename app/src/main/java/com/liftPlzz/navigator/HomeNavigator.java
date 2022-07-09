@@ -4,6 +4,7 @@ package com.liftPlzz.navigator;
 import android.os.Bundle;
 
 import com.liftPlzz.base.BaseActivity;
+import com.liftPlzz.fragments.PointWalletFragment;
 
 public interface HomeNavigator {
 
@@ -35,5 +36,9 @@ public interface HomeNavigator {
     void openSettingFragment(BaseActivity.PerformFragment performFragment);
 
     void openFaqFragment(BaseActivity.PerformFragment performFragment);
+
+    void openPointWalletFragment(BaseActivity.PerformFragment performFragment);
+
+    PointWalletFragment getPointWalletFragment();
 
 }

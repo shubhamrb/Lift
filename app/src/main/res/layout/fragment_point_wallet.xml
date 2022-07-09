@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_back_title_layout" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/rounded_bg_blue_border"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_1">
+
+        <LinearLayout
+            android:id="@+id/layoutupcoming"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_3"
+            android:background="@drawable/rounded_bg_blue"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_8">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_upcoming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:autoSizeMaxTextSize="@dimen/sp_18"
+                android:autoSizeMinTextSize="@dimen/sp_12"
+                android:autoSizeStepGranularity="@dimen/sp_2"
+                android:autoSizeTextType="uniform"
+                android:drawablePadding="@dimen/dp_10"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_25"
+                android:paddingRight="@dimen/dp_25"
+                android:text="@string/purchase_point"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutcompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_3"
+            android:background="@drawable/rounded_bg_white_new"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_8">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:autoSizeMaxTextSize="@dimen/sp_18"
+                android:autoSizeMinTextSize="@dimen/sp_12"
+                android:autoSizeStepGranularity="@dimen/sp_2"
+                android:autoSizeTextType="uniform"
+                android:drawablePadding="@dimen/dp_10"
+
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_25"
+                android:paddingRight="@dimen/dp_25"
+                android:text="@string/redeem_point"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlack" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpagermyride"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_10">
+
+    </androidx.viewpager.widget.ViewPager>
+</LinearLayout>

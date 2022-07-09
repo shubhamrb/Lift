@@ -1,7 +1,6 @@
 package com.liftPlzz.activity;
 
 import static com.liftPlzz.utils.Constants.NOTIFICATION_TYPE;
-import static com.liftPlzz.utils.Constants.isLiftOnGoing;
 
 import android.app.PictureInPictureParams;
 import android.content.Context;
@@ -20,17 +19,14 @@ import android.util.Log;
 import android.util.Rational;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +40,7 @@ import com.liftPlzz.model.MenuItem;
 import com.liftPlzz.model.completedLift.CompleteLiftData;
 import com.liftPlzz.provider.AppNavigationProvider;
 import com.liftPlzz.utils.Constants;
+import com.razorpay.PaymentResultListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -54,7 +51,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class HomeActivity extends AppNavigationProvider implements MenuListAdapter.ItemListener {
+public class HomeActivity extends AppNavigationProvider implements MenuListAdapter.ItemListener, PaymentResultListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     @BindView(R.id.placeHolder)
@@ -140,8 +137,8 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         }
         // menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(10, "Payments & Recharge", R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(11, "Points Redemption", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(10, "Point Wallet", R.drawable.ic_white_liftplzz));
+//        menuList.add(new MenuItem(11, "Points Redemption", R.drawable.ic_white_liftplzz));
         // menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
         menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.ic_white_liftplzz));
@@ -335,11 +332,19 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             newBuilder.show();
         } else if (s == 10) {
-            Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
-            startActivity(intent);
-        } else if (s == 11) {
-            Intent intent = new Intent(HomeActivity.this, PointRedeemActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
+            startActivity(intent);*/
+            openPointWalletFragment(PerformFragment.REPLACE);
         }
+    }
+
+    @Override
+    public void onPaymentSuccess(String s) {
+        getPointWalletFragment().onPaymentSuccessResponse(s);
+    }
+
+    @Override
+    public void onPaymentError(int i, String s) {
+        getPointWalletFragment().onPaymentErrorResponse(i,s);
     }
 }

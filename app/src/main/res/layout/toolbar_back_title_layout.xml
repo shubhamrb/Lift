@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toStartOf="@+id/imageViewOption"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toolBarTitle"
@@ -41,8 +41,20 @@
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/sp_16" />
 
-
     </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtShareCode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:text="Share Code : "
+        android:textAllCaps="false"
+        android:visibility="gone"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_20" />
 
     <ImageView
         android:id="@+id/imageViewOption"

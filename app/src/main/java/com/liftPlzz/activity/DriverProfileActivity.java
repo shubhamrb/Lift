@@ -292,6 +292,16 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
             imageslist.add(obj);
         }
         mViewPagerAdapter.notifyDataSetChanged();
+
+        if (userData.getReviews()!=null){
+            if (reviewList!=null){
+                reviewList.clear();
+            }else {
+                reviewList=new ArrayList<>();
+            }
+            reviewList.addAll(userData.getReviews());
+            reviewListAdapter.notifyDataSetChanged();
+        }
     }
 
     @OnClick({R.id.imageViewBack, R.id.tv_call, R.id.tv_chat})

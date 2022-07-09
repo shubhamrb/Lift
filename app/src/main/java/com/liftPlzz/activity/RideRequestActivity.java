@@ -57,23 +57,24 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
     private String strToken = "";
     private int liftId, seats;
     private boolean isPartner;
+    private boolean isLifter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_ride_request);
         ButterKnife.bind(this);
         if (getIntent() != null) {
             liftId = getIntent().getIntExtra(Constants.LIFT_ID, -1);
             isPartner = getIntent().getBooleanExtra(Constants.PARTNER, false);
+            isLifter = getIntent().getBooleanExtra("lifter", false);
         }
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         recyclerRequest.setLayoutManager(new LinearLayoutManager(this));
         if (isPartner) {
-            partnerAdapter = new PartnerAdapter(this, arrayListPartner);
+            partnerAdapter = new PartnerAdapter(this, arrayListPartner,isLifter);
             recyclerRequest.setAdapter(partnerAdapter);
             getPartnerDetails();
             toolBarTitle.setText(getResources().getString(R.string.partnet_details));
@@ -103,8 +104,6 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
                     } else {
                         Constants.showMessage(RideRequestActivity.this, response.body().getMessage(), relative);
                     }
-
-
                 }
             }
 

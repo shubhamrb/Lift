@@ -10,6 +10,9 @@ public class User {
     @SerializedName("id")
     @Expose
     private Integer id;
+    @SerializedName("lift_id")
+    @Expose
+    private Integer lift_id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -91,6 +94,14 @@ public class User {
     @SerializedName("location")
     @Expose
     private DriveLocation driveLocation;
+
+    public Integer getLift_id() {
+        return lift_id;
+    }
+
+    public void setLift_id(Integer lift_id) {
+        this.lift_id = lift_id;
+    }
 
     public void setProfile_percentage(String profile_percentage) {
         this.profile_percentage = profile_percentage;

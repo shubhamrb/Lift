@@ -47,6 +47,12 @@ public class User {
     @SerializedName("image")
     @Expose
     private String image;
+    @SerializedName("is_image")
+    @Expose
+    private boolean is_image;
+    @SerializedName("is_govt_id")
+    @Expose
+    private boolean is_govt_id;
     @SerializedName("api_token")
     @Expose
     private String apiToken;
@@ -79,6 +85,22 @@ public class User {
     @Expose
     private Integer profile_percentage;
 
+
+    public boolean isIs_image() {
+        return is_image;
+    }
+
+    public void setIs_image(boolean is_image) {
+        this.is_image = is_image;
+    }
+
+    public boolean isIs_govt_id() {
+        return is_govt_id;
+    }
+
+    public void setIs_govt_id(boolean is_govt_id) {
+        this.is_govt_id = is_govt_id;
+    }
 
     public String getCompany() {
         return company;

@@ -54,10 +54,26 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         holder.tvName.setText("" + driverData.getName());
         holder.tv_time.setText(driverData.getLfit_time());
         holder.tv_na.setText("Point: " + driverData.getTotal_point());
+        holder.price_per_seat.setText("" + driverData.getPrice_per_seat());
+
+
+        if (driverData.getStart_location() == null)
+            holder.from.setText("From: --");
+        else
+            holder.from.setText("From: " + driverData.getStart_location());
+        if (driverData.getEnd_location() == null)
+            holder.to.setText("To: --");
+        else
+            holder.to.setText("To: " + driverData.getEnd_location());
+
+        if (driverData.getTotal_km() == null)
+            holder.total_km.setText("Total km: --");
+        else
+            holder.total_km.setText("Total km: " + driverData.getTotal_km());
         holder.tv_date.setText(driverData.getLiftDate());
         holder.tv_rate.setText("" + driverData.getRating() + " " + "(" + driverData.getTotal_review() + ")");
-        holder.tvRatePerKm.setText("Point per km: " + driverData.getRatePerKm());
-        holder.tv_paid_seat.setText("Paid Seat: " + driverData.getPaidSeats());
+        holder.tvRatePerKm.setText("Point per km: " + driverData.getRatePerKm() + "/km");
+        holder.textViewSeats.setText("Available Seat: " + driverData.getPaidSeats());
         if (driverData.getRequestAlreadySend() == 0) {
             holder.btnSendRequest.setText(context.getResources().getString(R.string.send_request));
         } else {
@@ -100,8 +116,6 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         AppCompatTextView tvName;
         @BindView(R.id.tv_time)
         AppCompatTextView tv_time;
-        @BindView(R.id.tv_paid_seat)
-        AppCompatTextView tv_paid_seat;
         @BindView(R.id.tv_date)
         AppCompatTextView tv_date;
         @BindView(R.id.tv_rate_per_km)
@@ -114,6 +128,17 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         AppCompatButton btnSendRequest;
         @BindView(R.id.relative_item)
         RelativeLayout relItem;
+
+        @BindView(R.id.from)
+        AppCompatTextView from;
+        @BindView(R.id.to)
+        AppCompatTextView to;
+        @BindView(R.id.textViewSeats)
+        AppCompatTextView textViewSeats;
+        @BindView(R.id.total_km)
+        AppCompatTextView total_km;
+        @BindView(R.id.price_per_seat)
+        AppCompatTextView price_per_seat;
 
 
         ViewHolder(View itemView) {

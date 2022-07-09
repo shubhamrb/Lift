@@ -73,7 +73,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.liftPlzz.R;
-import com.liftPlzz.activity.DriverListActivity;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
@@ -391,7 +390,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
                     } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase(getContext().getString(R.string.select_date_time))) {
-                        showMessage("Select Data Time");
+                        showMessage("Select Date Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
@@ -472,6 +471,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutTakeLift:
+                isOfferLift = false;
                 isMultiCheck = false;
                 layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
                 layoutGiveLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg_white));
@@ -621,20 +621,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         completeendAddress.putString("city", lift.getEnd_point().getCity());
         endPoint = getJsonObject(Double.parseDouble(endlat), Double.parseDouble(endlong), completeendAddress, stringBuilder.toString());
         destination = endlat + "," + endlong;
-
-        /*if (pickupLocation != null) {
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(pickupLocation)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-                    .title("pickup"));
-            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
-            destination = dropLocation.latitude + "," + dropLocation.longitude;
-            new GetDirection().execute(origin, destination);
-            //create lift
-            if (isMultiCheck) {
-                presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
-            }
-        }*/
 
         if (pickupLocation != null && dropLocation != null) {
             mGoogleMap.clear();
@@ -1113,6 +1099,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
 
         b1.setOnClickListener(v -> {
+            if (isOfferLift && etkm.getText().toString().isEmpty()) {
+                Toast.makeText(getActivity(), "Rate/km is mandatory.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             textViewSelectSeat.setText(seat + " Seat");
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                 textViewSelectSeat.setText(seat + " Seats");
@@ -1183,7 +1173,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setCreateRideData(CreateLiftResponse createRideData) {
         checkPointsList.clear();
         wayPoints = "";
-        showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage(),createRideData.getLiftDetails());
+        showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage(), createRideData.getLiftDetails());
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");

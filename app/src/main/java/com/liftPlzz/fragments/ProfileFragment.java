@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,6 +81,16 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
     @BindView(R.id.AddPointtextview)
     AppCompatTextView AddPointtextview;
 
+    @BindView(R.id.verify_face)
+    AppCompatTextView verify_face;
+    @BindView(R.id.verify_id)
+    AppCompatTextView verify_id;
+
+    @BindView(R.id.verified_face)
+    ImageView verified_face;
+    @BindView(R.id.verified_id)
+    ImageView verified_id;
+
     @BindView(R.id.layoutReview)
     LinearLayout layoutReview;
     @BindView(R.id.imgback)
@@ -131,6 +142,9 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @BindView(R.id.editTextComapny)
     AppCompatTextView editTextComapny;
+    private int IMAGE_TYPE = 1;
+    private File fileFace = null;
+    private File fileId = null;
 
 
     @Override
@@ -165,7 +179,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     }
 
-    @OnClick({R.id.imageViewBackContact, R.id.imgback, R.id.layoutAbout, R.id.layoutReview, R.id.imageViewEdit, R.id.layoutAddPoint, R.id.textViewReviewCount})
+    @OnClick({R.id.imageViewBackContact, R.id.imgback, R.id.layoutAbout, R.id.layoutReview, R.id.imageViewEdit, R.id.layoutAddPoint, R.id.textViewReviewCount, R.id.verify_face, R.id.verify_id})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBackContact:
@@ -213,8 +227,27 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                 imgback.setVisibility(View.VISIBLE);
 
                 break;
+            case R.id.verify_face:
+                ImagePicker.Companion.with(this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)
+                        .cameraOnly()//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start();
+                IMAGE_TYPE = 1;
+                break;
+            case R.id.verify_id:
+                ImagePicker.Companion.with(this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)
+                        .cameraOnly()//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start();
+                IMAGE_TYPE = 2;
+                break;
         }
     }
+
 
     @Override
     public void setProfileData(Response response) {
@@ -252,12 +285,31 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                     e.printStackTrace();
                 }
             }
-
+            if (user.isIs_image()) {
+                verified_face.setImageTintList(ColorStateList.valueOf(getActivity().getResources().getColor(R.color.colorPrimary)));
+            }else {
+                verified_face.setImageTintList(ColorStateList.valueOf(getActivity().getResources().getColor(R.color.quantum_orange)));
+            }
+            if (user.isIs_govt_id()) {
+                verified_id.setImageTintList(ColorStateList.valueOf(getActivity().getResources().getColor(R.color.colorPrimary)));
+            }else {
+                verified_id.setImageTintList(ColorStateList.valueOf(getActivity().getResources().getColor(R.color.quantum_orange)));
+            }
             mViewPagerAdapter = new ViewPagerAdapter(getActivity(), imageslist, ProfileFragment.this, 0);
             // Adding the Adapter to the ViewPager
             viewPagerMain.setAdapter(mViewPagerAdapter);
             indicator.setViewPager(viewPagerMain);
         }
+    }
+
+    @Override
+    public void selfieUploaded(Response response) {
+        verified_face.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void idUploaded(Response response) {
+        verified_id.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -289,6 +341,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @Override
     public void onAddImage() {
+        IMAGE_TYPE = 3;
         ImagePicker.Companion.with(this)
                 .crop(1080, 700)                    //Crop image(Optional), Check Customization for more option
                 .compress(1024)            //Final image size will be less than 1 MB(Optional)
@@ -300,24 +353,58 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            Log.e("hdhdhd", "onActivityResult: " + data.getData().toString());
-            File file = null;
-            try {
-                file = new File(new URL(data.getDataString()).toURI());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+
+            if (IMAGE_TYPE == 1) {
+                try {
+                    fileFace = new File(new URL(data.getDataString()).toURI());
+
+                    verify_face.setText(fileFace.getName());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileFace);
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("image", fileFace.getName(), requestFile);
+
+                    RequestBody api_key = RequestBody.create(MultipartBody.FORM, Constants.API_KEY);
+                    RequestBody device = RequestBody.create(MultipartBody.FORM, "android");
+                    RequestBody token = RequestBody.create(MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
+                    presenter.uploadSelfie(api_key, device, token, body);
+
+
+                } catch (URISyntaxException | MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            } else if (IMAGE_TYPE == 2) {
+                try {
+                    fileId = new File(new URL(data.getDataString()).toURI());
+
+                    verify_id.setText(fileId.getName());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileId);
+                    MultipartBody.Part body = MultipartBody.Part.createFormData("image", fileId.getName(), requestFile);
+
+                    RequestBody api_key = RequestBody.create(MultipartBody.FORM, Constants.API_KEY);
+                    RequestBody device = RequestBody.create(MultipartBody.FORM, "android");
+                    RequestBody token = RequestBody.create(MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
+                    presenter.uploadId(api_key, device, token, body);
+
+
+                } catch (URISyntaxException | MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            } else if (IMAGE_TYPE == 3) {
+                File file = null;
+                try {
+                    file = new File(new URL(data.getDataString()).toURI());
+                } catch (URISyntaxException | MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+                RequestBody api_key = RequestBody.create(okhttp3.MultipartBody.FORM, Constants.API_KEY);
+                RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, "android");
+                RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
+                presenter.uploadImage(api_key, device, token, body);
+
             }
-            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
-            RequestBody api_key = RequestBody.create(okhttp3.MultipartBody.FORM, Constants.API_KEY);
-            RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, "android");
-            RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
-            presenter.uploadImage(api_key, device, token, body);
-
-            //File file= =ImagePicker.getFile(data);
         }
     }
 

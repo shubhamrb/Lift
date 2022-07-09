@@ -277,6 +277,8 @@ public class StartRideActivity extends AppCompatActivity implements
     Toolbar toolbar;
     @BindView(R.id.toolBarTitle)
     AppCompatTextView toolBarTitle;
+    @BindView(R.id.txtShareCode)
+    AppCompatTextView txtShareCode;
     @BindView(R.id.imageViewBack)
     ImageView imageViewBack;
     @BindView(R.id.imageViewOption)
@@ -359,9 +361,10 @@ public class StartRideActivity extends AppCompatActivity implements
         HistoryStoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
         startedcount = 0;
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            toolBarTitle.setText("Share code : 0" + sharedPreferences.getString(Constants.USER_ID, ""));
+            txtShareCode.setVisibility(View.VISIBLE);
         } else {
             toolBarTitle.setText(R.string.start_ride);
+            txtShareCode.setVisibility(View.GONE);
         }
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_matching);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
@@ -398,7 +401,7 @@ public class StartRideActivity extends AppCompatActivity implements
     }
 
     private void showUsersListDialog() {
-        getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""),true);
+        getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), true);
 
 //        showEndUserListDialog();
     }
@@ -614,7 +617,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     } else {
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                             Log.e("Lift", "end by driver");
-                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""),true);
+                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), true);
 
 //                            showEndUserListDialog();
                         } else {
@@ -730,19 +733,12 @@ public class StartRideActivity extends AppCompatActivity implements
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject base = new JSONObject(response.toString());
+                    JSONObject base = new JSONObject(response);
                     Log.e("base", "is" + base);
                     if (base.getBoolean("status")) {
                         rel_bottom.setVisibility(View.VISIBLE);
                         isAlreadyStarted = true;
-//                        tvStartRide.setText("End Ride");
                         tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
-                        /*try {
-                            Toast.makeText(StartRideActivity.this, base.getString("message"), Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            Toast.makeText(StartRideActivity.this, "Drive started", Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }*/
                         Toast.makeText(StartRideActivity.this, "Please wait we are getting live location", Toast.LENGTH_LONG).show();
                         Log.d("usersresponse liftstart", response);
                         ridestarted = false;
@@ -950,7 +946,7 @@ public class StartRideActivity extends AppCompatActivity implements
     }
 
 
-    public void getOnGoing(String token,boolean showDialog) {
+    public void getOnGoing(String token, boolean showDialog) {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
         Call<MainOnGoingResponse> call = api.rideOnGoing(Constants.API_KEY, "android", token);
@@ -1050,7 +1046,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     try {
                         Toast.makeText(StartRideActivity.this, "Ride ended successfully", Toast.LENGTH_SHORT).show();
                         if (isDriverEnd) {
-                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""),false);
+                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), false);
                         } else {
                             getInvoice();
                         }
@@ -1460,6 +1456,8 @@ public class StartRideActivity extends AppCompatActivity implements
                     JSONObject responsee = jObject.getJSONObject("response");
                     JSONObject userdata = responsee.getJSONObject("user");
                     sos = userdata.getString("sos");
+                    txtShareCode.setText("Share code : " + userdata.getString("share_code"));
+
                     Log.d("sos", sos);
 
                 } catch (JSONException e) {

@@ -1,6 +1,5 @@
 package com.liftPlzz.model.ridebyvehicletypemodel;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -49,12 +48,60 @@ public class DriverData {
     @Expose
     private String image;
 
+    @SerializedName("total_km")
+    @Expose
+    private String total_km;
+
+    @SerializedName("start_location")
+    @Expose
+    private String start_location;
+
+    @SerializedName("end_location")
+    @Expose
+    private String end_location;
+
+    @SerializedName("price_per_seat")
+    @Expose
+    private String price_per_seat;
+
     @SerializedName("start_point_distance")
     @Expose
     private Double startPointDistance;
     @SerializedName("end_point_distance")
     @Expose
     private Double endPointDistance;
+
+    public String getPrice_per_seat() {
+        return price_per_seat;
+    }
+
+    public void setPrice_per_seat(String price_per_seat) {
+        this.price_per_seat = price_per_seat;
+    }
+
+    public String getStart_location() {
+        return start_location;
+    }
+
+    public void setStart_location(String start_location) {
+        this.start_location = start_location;
+    }
+
+    public String getEnd_location() {
+        return end_location;
+    }
+
+    public void setEnd_location(String end_location) {
+        this.end_location = end_location;
+    }
+
+    public String getTotal_km() {
+        return total_km;
+    }
+
+    public void setTotal_km(String total_km) {
+        this.total_km = total_km;
+    }
 
     public Float getTotal_point() {
         return total_point;
@@ -113,7 +160,6 @@ public class DriverData {
     }
 
 
-
     public Integer getPaidSeats() {
         return paidSeats;
     }
@@ -137,7 +183,6 @@ public class DriverData {
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public String getImage() {

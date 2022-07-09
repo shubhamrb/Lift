@@ -110,7 +110,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
 
 
         //textRateparkm,textPoints
-        holder.textRateparkm.setText("Rate per km : " + lift.getRate_per_km());
+        holder.textRateparkm.setText("Rate per km : " + lift.getRate_per_km()+"/km");
         holder.textPoints.setText("Total points : " + lift.getTotal_points());
         holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
 

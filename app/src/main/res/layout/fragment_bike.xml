@@ -60,8 +60,8 @@
                     android:hint="e.g. Sunny"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorBlack"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/colorDark"
                     android:textSize="@dimen/sp_16" />
 
             </LinearLayout>
@@ -109,8 +109,8 @@
                     android:hint="Registration Number"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorBlack"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/colorDark"
                     android:textSize="@dimen/sp_16" />
 
             </LinearLayout>
@@ -155,8 +155,8 @@
                     android:hint="2020-07-18"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorBlack"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/colorDark"
                     android:textSize="@dimen/sp_16" />
 
             </LinearLayout>
@@ -204,8 +204,8 @@
                     android:hint="@string/rate_per_km"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorBlack"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHint="@color/colorDark"
                     android:textSize="@dimen/sp_16" />
 
             </LinearLayout>
