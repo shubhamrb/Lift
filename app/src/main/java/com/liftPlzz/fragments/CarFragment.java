@@ -243,6 +243,8 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                     showMsg("Please enter vehicle model");
                 } else if (editTextVehicleRegNo.getText().toString().isEmpty()) {
                     showMsg("Please enter vehicle registration number");
+                } else if (!editTextVehicleRegNo.getText().toString().replace(" ", "").matches("^[A-Z|a-z]{2}?[0-9]{1,2}?[A-Z|a-z]{0,3}?[0-9]{4}$")) {
+                    showMsg("Please enter the valid vehicle number ");
                 } else if (editTextVehicleInsuranceDate.getText().toString().isEmpty()) {
                     showMsg("Please select vehicle Insurance Date ");
                 } else if (edRatePerKm.getText().toString().isEmpty()) {

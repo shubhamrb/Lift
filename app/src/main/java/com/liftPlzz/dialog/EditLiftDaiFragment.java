@@ -32,6 +32,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -81,8 +83,10 @@ import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.EditLiftView;
 import com.shivtechs.maplocationpicker.LocationPickerActivity;
 import com.shivtechs.maplocationpicker.MapUtility;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -92,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
@@ -395,9 +400,9 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         }
 
         textViewLiftName.setText("" + (data.getLift().getLiftType().equals("offer") ? "Offer Lift" : "Find Lift"));
-        if(data.getLift().getLiftType().equals("offer")){
+        if (data.getLift().getLiftType().equals("offer")) {
             llchkpoint.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             llchkpoint.setVisibility(View.INVISIBLE);
 
         }
@@ -445,7 +450,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     public void setTimeEdit(EditVehicleData data) {
         myHour = Integer.parseInt(data.getStart_point().getTime().split(":")[0]);
         myMinute = Integer.parseInt(data.getStart_point().getTime().split(":")[1]);
-        ;
         Calendar myCalender = Calendar.getInstance();
         myYear = Integer.parseInt(data.getStart_point().getDate().split("-")[0]);
         myMonth = Integer.parseInt(data.getStart_point().getDate().split("-")[1]);
@@ -460,11 +464,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
             textViewSelectSeat.setText("" + data.getLift().getPaidSeats() + " Seat");
         }
-
-        /*if (data.getLift().getLiftType().equals("offer")) {
-            rate_per_km = data.getLift().getRate_per_km();
-            textViewSelectSeat.setText("" + vehicleName + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
-        }*/
 
         seat = String.valueOf(data.getLift().getPaidSeats());
     }
@@ -538,26 +537,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
         bottomSheetCheckPointsDialog.setSelectionListner(EditLiftDaiFragment.this);
         progressBar.setVisibility(View.VISIBLE);
-       /* FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("gfggf", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-                        presenter.updateToken(sharedPreferences.getString(Constants.TOKEN, ""), token);
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("hfhfh", msg);
-                    }
-                });*/
-        // mapFragment.getMapAsync(this);
-
-        // casetFindRideDatall api for get lift detail
         presenter.getEditVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "" + lift.getId());
         presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "");
     }
@@ -585,12 +564,20 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
-                    } else {
+                    }
+                    else {
+                        if (selectedVehicleData==null){
+                            for (int i = 0; i < vehicleList.size(); i++) {
+                                if (vehicleId == vehicleList.get(i).getId()) {
+                                    selectedVehicleData = vehicleList.get(i);
+                                    Log.e("DIDN'T FIND : ","IT");
+                                    break;
+                                }
+                            }
+                        }
                         if (action.equalsIgnoreCase("add")) {
-//                            presenter.getRepeatVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
                             onclickVehicle(selectedVehicleData);
                         } else {
-//                            presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""),textkm.getText().toString());
                             onclickVehicle(selectedVehicleData);
                         }
                     }
@@ -607,9 +594,9 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         // JAGNARAYAN
                         Log.e("call update find", "" + liftdata.getLift().getId());
                         if (action.equalsIgnoreCase("add")) {
-                            presenter.repeatfindLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime,textkm.getText().toString());
+                            presenter.repeatfindLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString());
                         } else {
-                            presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "test ride", seat, startPoint, endPoint, dateTime, "" + liftdata.getLift().getId(), liftTime,textkm.getText().toString());
+                            presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "test ride", seat, startPoint, endPoint, dateTime, "" + liftdata.getLift().getId(), liftTime, textkm.getText().toString());
                         }
                     }
                 }
@@ -644,7 +631,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             case R.id.layoutSelectSeat:
                 show();
                 break;
-                case R.id.imageViewBack:
+            case R.id.imageViewBack:
                 dismiss();
                 break;
             case R.id.layoutSelectDateTime:
@@ -1033,12 +1020,13 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         myYear = year;
         myday = dayOfMonth;
         myMonth = month;
-        myHour=hour = calendar.get(Calendar.HOUR_OF_DAY);
-        myMinute=minute = calendar.get(Calendar.MINUTE);
-        showDialog(getActivity(),"Time Picker");
+        myHour = hour = calendar.get(Calendar.HOUR_OF_DAY);
+        myMinute = minute = calendar.get(Calendar.MINUTE);
+        showDialog(getActivity(), "Time Picker");
 //        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), EditLiftDaiFragment.this, hour, minute, DateFormat.is24HourFormat(getActivity()));
 //        timePickerDialog.show();
     }
+
     public void showDialog(Activity activity, String msg) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1120,36 +1108,53 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         TextView fourTxt = d.findViewById(R.id.fourTxt);
         TextView fiveTxt = d.findViewById(R.id.fiveTxt);
 
-        if (seat.equals("1")) {
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-        } else if (seat.equals("2")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-        } else if (seat.equals("3")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-        } else if (seat.equals("4")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-        } else if (seat.equals("5")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+        twoTxt.setVisibility(View.VISIBLE);
+        threeTxt.setVisibility(View.VISIBLE);
+        fourTxt.setVisibility(View.VISIBLE);
+        fiveTxt.setVisibility(View.VISIBLE);
+
+        switch (seat) {
+            case "1":
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+
+                twoTxt.setVisibility(View.GONE);
+                threeTxt.setVisibility(View.GONE);
+                fourTxt.setVisibility(View.GONE);
+                fiveTxt.setVisibility(View.GONE);
+
+                break;
+            case "2":
+                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                break;
+            case "3":
+                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                break;
+            case "4":
+                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                break;
+            case "5":
+                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                break;
         }
 
         oneTxt.setOnClickListener(v -> {
@@ -1208,31 +1213,15 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             }
         }
 
-        if(vehicleList.size()>0){
-            if(vehicleList.get(0).getType().equals("two_wheeler")){
-                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                twoTxt.setVisibility(View.GONE);
-                threeTxt.setVisibility(View.GONE);
-                fourTxt.setVisibility(View.GONE);
-                fiveTxt.setVisibility(View.GONE);
-                seat = "1";
-                etkm.setText("" + vehicleList.get(0).getRatePerKm());
-            }
-        }
-
         pagerAdapter = new VehiclePagerAdapter(getContext(), vehicleList);
         vehiclePager.setAdapter(pagerAdapter);
         indicator.setViewPager(vehiclePager);
 
-        if (vehicleList.size() > 0) {
+        /*if (vehicleList.size() > 0) {
             if (selectedPos != -1) {
                 selectedVehicleData = vehicleList.get(selectedPos);
             }
-        }
+        }*/
         etkm.setText("" + rate_per_km);
         vehiclePager.setCurrentItem(selectedPos);
         vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -1243,7 +1232,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
             @Override
             public void onPageSelected(final int i) {
-                if(vehicleList.get(i).getType().equals("two_wheeler")){
+                if (vehicleList.get(i).getType().equals("two_wheeler")) {
                     oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
                     twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                     threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
@@ -1253,8 +1242,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                     threeTxt.setVisibility(View.GONE);
                     fourTxt.setVisibility(View.GONE);
                     fiveTxt.setVisibility(View.GONE);
-                    seat = "1";
-                }else {
+                } else {
                     twoTxt.setVisibility(View.VISIBLE);
                     threeTxt.setVisibility(View.VISIBLE);
                     fourTxt.setVisibility(View.VISIBLE);
@@ -1262,7 +1250,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 }
                 PagerPosition = i;
                 etkm.setText("" + vehicleList.get(i).getRatePerKm());
-                selectedVehicleData = vehicleList.get(i);
             }
 
             @Override
@@ -1271,8 +1258,17 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             }
         });
 
-
         b1.setOnClickListener(v -> {
+            if (etkm.getText().toString().isEmpty()){
+                Toast.makeText(getActivity(), "Rate/km is mandatory.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (vehicleList.get(PagerPosition).getType().equals("two_wheeler")) {
+                seat = "1";
+            }
+
+            selectedVehicleData = vehicleList.get(PagerPosition);
             selectedVehicleData.setRatePerKm(Integer.parseInt(etkm.getText().toString()));
             rate_per_km = etkm.getText().toString();
             if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
@@ -1311,10 +1307,10 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     }
 
     @Override
-    public void setFindRideData(FindLiftResponse findRideData,String action) {
+    public void setFindRideData(FindLiftResponse findRideData, String action) {
         Log.e("setFindRideData", "" + new Gson().toJson(findRideData));
         showMessage(findRideData.getMessage());
-        showDialogFindLift(findRideData,action);
+        showDialogFindLift(findRideData, action);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
     }
@@ -1324,50 +1320,21 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
         if (dataList.size() > 0) {
             vehicleList = dataList;
-            selectedVehicleData = vehicleList.get(0);
-//            vehicleName = vehicleList.get(0).getModel();
-//            rate_per_km = ""+vehicleList.get(0).getRatePerKm();
-            /*if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
-                textViewSelectSeat.setText(seat + " Seats");
-            } else {
-                textViewSelectSeat.setText("" + vehicleName + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
-            }*/
-
-            /*layoutRideVehicle.setVisibility(View.VISIBLE);
-            layoutRide.setVisibility(View.GONE);
-            pagerAdapter = new VehiclePagerAdapter(getContext(), dataList);
-            vehiclePager.setAdapter(pagerAdapter);
-            indicator.setViewPager(vehiclePager);
-            etkm.setText("" + dataList.get(0).getRatePerKm());
-            selectedVehicleData = dataList.get(0);
-            vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int i, float v, int i1) {
+            for (int i = 0; i < vehicleList.size(); i++) {
+                if (vehicleId == vehicleList.get(i).getId()) {
+                    selectedVehicleData = vehicleList.get(i);
+                    break;
                 }
-                @Override
-                public void onPageSelected(final int i) {
-                    selectedVehicleData = dataList.get(i);
-                    Log.e("KM/", "" + dataList.get(i).getRatePerKm());
-                    etkm.setText("" + dataList.get(i).getRatePerKm());
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int i) {
-
-                }
-            });*/
-                /*myVehicleListRideAdapter = new MyVehicleListRideAdapter(getContext(), data, EditLiftDaiFragment.this, etkm,vehicle_id);
-                recyclerViewMyVehicle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-                recyclerViewMyVehicle.setAdapter(myVehicleListRideAdapter);*/
+            }
         } else {
             showMessage("No Vehicle find.Please Add Your Vehicle");
         }
     }
 
     @Override
-    public void setCreateRideData(CreateLiftResponse createRideData,String ac) {
+    public void setCreateRideData(CreateLiftResponse createRideData, String ac) {
 //        showMessage("Ride Request Send successfully");
-        showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage(),ac);
+        showDialogCreateLift(createRideData.getMessage(), createRideData.getSubMessage(), ac);
         layoutRideVehicle.setVisibility(View.GONE);
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
@@ -1376,7 +1343,9 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         llchkpoint.setVisibility(View.VISIBLE);
         recyclerViewCheckpoints.setVisibility(View.GONE);
     }
+
     int vehicle_id;
+
     @Override
     public void getLiftDetail(EditVehicleData data) {
         Log.e("getLiftDetail", "" + new Gson().toJson(data));
@@ -1424,12 +1393,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 listString = String.join(", ", data);
             }
         }
-//        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, "{" + listString + "}", dateTime, liftTime);
-       if(action.equalsIgnoreCase("add")){
-           presenter.repeatoffercreateLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), rate_per_km);
-       }else {
-           presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, String.valueOf(liftdata.getLift().getId()), liftTime, textkm.getText().toString(), rate_per_km);
-       }
+        if (action.equalsIgnoreCase("add")) {
+            presenter.repeatoffercreateLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), rate_per_km);
+        } else {
+            presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, String.valueOf(liftdata.getLift().getId()), liftTime, textkm.getText().toString(), rate_per_km);
+        }
         // JAGNARAYAN
     }
 
@@ -1616,7 +1584,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     }
 
 
-    private void showDialogFindLift(FindLiftResponse findRideData,String action) {
+    private void showDialogFindLift(FindLiftResponse findRideData, String action) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle(findRideData.getMessage());
         alertDialogBuilder.setMessage(findRideData.getSubMessage())
@@ -1626,10 +1594,10 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // jagnarayan
-                            if(action.equalsIgnoreCase("add")){
-                                ((HomeActivity)getActivity()).openride();
+                            if (action.equalsIgnoreCase("add")) {
+                                ((HomeActivity) getActivity()).openride();
                                 dismiss();
-                            }else {
+                            } else {
                                 dismissDailog();
                             }
 
@@ -1648,12 +1616,12 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         public void onClick(DialogInterface dialog, int id) {
                             try {
                                 // jagnarayan
-                                if(action.equalsIgnoreCase("add")){
-                                    ((HomeActivity)getActivity()).openride();
+                                if (action.equalsIgnoreCase("add")) {
+                                    ((HomeActivity) getActivity()).openride();
                                     dismiss();
 //                                    ((HomeActivity)getActivity()).onclick(2);
 
-                                }else {
+                                } else {
                                     dismissDailog();
                                 }
                             } catch (Exception E) {
@@ -1675,7 +1643,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         dismiss();
     }
 
-    private void showDialogCreateLift(String msg, String subMessage,String action) {
+    private void showDialogCreateLift(String msg, String subMessage, String action) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle(msg);
         alertDialogBuilder.setMessage(subMessage)
@@ -1684,11 +1652,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            if(action.equalsIgnoreCase("add")){
-                                ((HomeActivity)getActivity()).openride();
+                            if (action.equalsIgnoreCase("add")) {
+                                ((HomeActivity) getActivity()).openride();
                                 dismiss();
 
-                            }else {
+                            } else {
                                 dismissDailog();
                             }
                             //  need for referesh data

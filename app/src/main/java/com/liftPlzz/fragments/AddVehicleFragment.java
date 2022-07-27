@@ -80,6 +80,11 @@ public class AddVehicleFragment extends BaseFragment<AddVehiclePresenter, AddVeh
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if (!isEdit) {
+            CarFragment.setIsEdit(false);
+            CarFragment.setVehicleData(null);
+            BikeFragment.setIsEdit(false);
+            BikeFragment.setVehicleData(null);
+
             toolBarTitle.setText(getResources().getString(R.string.add_vehicle));
             SectionPagerAddVehicleAdapter sectionPagerAdapter =
                     new SectionPagerAddVehicleAdapter(getChildFragmentManager(), 2);
