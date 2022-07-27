@@ -166,7 +166,7 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
 
             editTextVehicleInsuranceDate.setText(vehicleData.getInsurance_date());
             vehicleSubCategoryEdit = vehicleData.getVehicleSubcategoryId();
-            if (vehicleData.getVehicleImageFront() != null) {
+            if (vehicleData.getVehicleImageFront() != null && !vehicleData.getVehicleImageFront().isEmpty()) {
                 Picasso.get().load(vehicleData.getVehicleImageFront()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -186,7 +186,7 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 });
             }
 
-            if (vehicleData.getVehicleImageBack() != null) {
+            if (vehicleData.getVehicleImageBack() != null && !vehicleData.getVehicleImageBack().isEmpty()) {
                 Picasso.get().load(vehicleData.getVehicleImageBack()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -206,7 +206,7 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 });
             }
 
-            if (vehicleData.getRcImage() != null) {
+            if (vehicleData.getRcImage() != null && !vehicleData.getRcImage().isEmpty()) {
                 Picasso.get().load(vehicleData.getRcImage()).into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

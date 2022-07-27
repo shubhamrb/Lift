@@ -74,6 +74,18 @@ public class DriverData {
     @Expose
     private Double endPointDistance;
 
+    @SerializedName("request_status")
+    @Expose
+    private int request_status;
+
+    public int getRequest_status() {
+        return request_status;
+    }
+
+    public void setRequest_status(int request_status) {
+        this.request_status = request_status;
+    }
+
     public Integer getVacant_seats() {
         return vacant_seats;
     }

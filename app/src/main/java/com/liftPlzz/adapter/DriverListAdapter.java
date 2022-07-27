@@ -97,13 +97,26 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
                 holder.tv_na.setVisibility(View.GONE);
             }
         }
-
-
         holder.textVacantSeats.setText(" " + driverData.getVacant_seats());
+
+        holder.btnSendRequest.setVisibility(View.VISIBLE);
         if (driverData.getRequestAlreadySend() == 0) {
             holder.btnSendRequest.setText(context.getResources().getString(R.string.send_request));
+            holder.request_status.setVisibility(View.GONE);
         } else {
             holder.btnSendRequest.setText(context.getResources().getString(R.string.cancel_request));
+            holder.request_status.setVisibility(View.VISIBLE);
+
+            if (driverData.getRequest_status() == 0) {
+                holder.request_status.setText("Request pending");
+            } else if (driverData.getRequest_status() == 1) {
+                holder.request_status.setText("Request accepted");
+            } else if (driverData.getRequest_status() == 2) {
+                holder.request_status.setText("Request rejected");
+            } else if (driverData.getRequest_status() == 3) {
+                holder.request_status.setText("Request canceled");
+                holder.btnSendRequest.setVisibility(View.GONE);
+            }
         }
 
         try {
@@ -165,6 +178,8 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         AppCompatTextView total_km;
         @BindView(R.id.price_per_seat)
         AppCompatTextView price_per_seat;
+        @BindView(R.id.request_status)
+        AppCompatTextView request_status;
 
         @BindView(R.id.textVacantSeats)
         AppCompatTextView textVacantSeats;

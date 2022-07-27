@@ -441,7 +441,8 @@ public interface ApiService {
     Call<ResponseBody> cancelInvitation(@Field("api_key") String api_key,
                                         @Field("client") String client,
                                         @Field("token") String token,
-                                        @Field("lift_id") int liftId);
+                                        @Field("lift_id") int liftId,
+                                        @Field("reason") String reason);
 
     @FormUrlEncoded
     @POST("partner-detail")

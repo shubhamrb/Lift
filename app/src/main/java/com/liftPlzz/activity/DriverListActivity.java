@@ -1,15 +1,20 @@
 package com.liftPlzz.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,7 +58,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     private String strToken = "", vehicleType;
     private int vehicleSubcategoryId = -1, liftId = -1;
     private ArrayList<DriverData> arrayList = new ArrayList<>();
-    private boolean isFind=true;
+    private boolean isFind = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +75,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
         toolBarTitle.setText(getResources().getString(R.string.matches_list));
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
-        driverListAdapter = new DriverListAdapter(this, arrayList, DriverListActivity.this,isFind);
+        driverListAdapter = new DriverListAdapter(this, arrayList, DriverListActivity.this, isFind);
         recyclerViewDriver.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewDriver.setAdapter(driverListAdapter);
 
@@ -116,27 +121,23 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
 
     @Override
     public void onSendButtonClick(DriverData driverData) {
-//        if (driverData.getRequestAlreadySend() == 0) {
-//            sendInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()));
-//        } else {
-//            //cancel
-//            sendInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()));
-//        }
-        sendCancelInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend());
+        if (driverData.getRequestAlreadySend() == 0) {
+            sendCancelInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend(), null);
+        } else {
+            reasonDialog(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend());
+        }
     }
 
-    public void sendCancelInvitation(int liftId, int fromLiftId, int requestAlreadySend) {
+    public void sendCancelInvitation(int liftId, int fromLiftId, int requestAlreadySend, String reason) {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
-        Call<ResponseBody> call = null;
+        Call<ResponseBody> call;
         if (requestAlreadySend == 0) {
-            //if requestAlradySend is 0 than sendrequest will be called
             call = api.sendInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken,
                     liftId, fromLiftId);
         } else {
-            //if requestAlradySend is 1 than cancelRequest will be called
             call = api.cancelInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-                    liftId);
+                    liftId, reason);
         }
 
 
@@ -152,10 +153,6 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
                         Toast.makeText(DriverListActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (status) {
                             getDriverList();
-//                            Intent intent = new Intent(DriverListActivity.this, HomeActivity.class);
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-//                            finish();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -179,6 +176,27 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
             }
         });
 
+    }
+
+    public void reasonDialog(int liftId, int fromLiftId, int requestAlreadySend) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.block_reason_dialog);
+        AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
+        TextView titleTxt = dialog.findViewById(R.id.titleTxt);
+        EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
+
+        titleTxt.setText("Reason to cancel?");
+
+        buttonSubmit.setOnClickListener(v -> {
+            if (editTextPoints.getText().toString().trim().equals("")) {
+                Toast.makeText(this, "Please enter the reason", Toast.LENGTH_SHORT).show();
+            } else {
+                sendCancelInvitation(liftId, fromLiftId, requestAlreadySend, editTextPoints.getText().toString());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
