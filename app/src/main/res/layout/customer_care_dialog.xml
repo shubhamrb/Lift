@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_100sdp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20sp">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="phone"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/colorRed"
+        android:textColorLink="@color/colorRed"
+        android:textSize="@dimen/sp_20" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="email"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/colorBlack"
+        android:textColorLink="@color/colorBlack"
+        android:textSize="@dimen/sp_16" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

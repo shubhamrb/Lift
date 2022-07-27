@@ -3,6 +3,7 @@ package com.liftPlzz.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -48,6 +49,10 @@ public class PointWalletFragment extends BaseFragment<AddVehiclePresenter, AddVe
     LinearLayout layoutcompleted;
     @BindView(R.id.viewpagermyride)
     ViewPager viewpagermyride;
+    @BindView(R.id.img_transaction)
+    ImageView img_transaction;
+    @BindView(R.id.img_redeem)
+    ImageView img_redeem;
 
     @Override
     protected int createLayout() {
@@ -86,11 +91,16 @@ public class PointWalletFragment extends BaseFragment<AddVehiclePresenter, AddVe
                     layoutcompleted.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                     textViewCar.setTextColor(getResources().getColor(R.color.colorWhite));
                     textCompleted.setTextColor(getResources().getColor(R.color.colorBlack));
+                    img_transaction.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorWhite)));
+                    img_redeem.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlack)));
+
                 } else {
                     layoutcompleted.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));
                     layoutupcoming.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                     textViewCar.setTextColor(getResources().getColor(R.color.colorBlack));
                     textCompleted.setTextColor(getResources().getColor(R.color.colorWhite));
+                    img_redeem.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorWhite)));
+                    img_transaction.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlack)));
                 }
                 viewpagermyride.setCurrentItem(i);
             }
@@ -132,10 +142,10 @@ public class PointWalletFragment extends BaseFragment<AddVehiclePresenter, AddVe
         }
     }
 
-    public void onPaymentErrorResponse(int i,String s) {
+    public void onPaymentErrorResponse(int i, String s) {
         try {
             PurchasePointFragment fragment = (PurchasePointFragment) viewpagermyride.getAdapter().instantiateItem(viewpagermyride, viewpagermyride.getCurrentItem());
-            fragment.onPaymentError(i,s);
+            fragment.onPaymentError(i, s);
         } catch (Exception e) {
             Log.e("Exception in success", e.toString());
             e.printStackTrace();

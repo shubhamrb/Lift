@@ -23,6 +23,17 @@ public class ChatUser {
     @SerializedName("image")
     @Expose
     private String image;
+    @SerializedName("is_contact_public")
+    @Expose
+    private int is_contact_public;
+
+    public int getIs_contact_public() {
+        return is_contact_public;
+    }
+
+    public void setIs_contact_public(int is_contact_public) {
+        this.is_contact_public = is_contact_public;
+    }
 
     public Integer getId() {
         return id;

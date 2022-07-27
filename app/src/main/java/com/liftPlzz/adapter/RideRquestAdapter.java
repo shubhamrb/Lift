@@ -2,6 +2,7 @@ package com.liftPlzz.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,25 +24,30 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.ViewHolder> {
 
 
+    private final SharedPreferences sharedPreferences;
     private Context context;
     private ArrayList<RideRequestData> arrayList;
     public ItemListener itemListener;
+    public boolean isLifter;
 
 
-    public RideRquestAdapter(Context context, ArrayList<RideRequestData> arrayList, ItemListener itemListener) {
+    public RideRquestAdapter(Context context, ArrayList<RideRequestData> arrayList, ItemListener itemListener, boolean isLifter) {
         this.context = context;
         this.arrayList = arrayList;
         this.itemListener = itemListener;
+        this.isLifter = isLifter;
+        sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
     }
 
     @Override
     public int getItemCount() {
         return arrayList.size();
-//        return 10;
     }
 
     @Override
@@ -54,10 +60,15 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
     @Override
     public void onBindViewHolder(final RideRquestAdapter.ViewHolder holder, final int position) {
         RideRequestData requestData = arrayList.get(position);
-        holder.tvMobile.setText(requestData.getMobile());
+
+        if (requestData.getIs_contact_public()==0){
+            holder.tvMobile.setVisibility(View.GONE);
+        }else {
+            holder.tvMobile.setText(requestData.getMobile());
+            holder.tvMobile.setVisibility(View.VISIBLE);
+        }
         holder.tvName.setText(requestData.getName());
         holder.tvSeats.setText(context.getResources().getString(R.string.seats) + " :" + requestData.getSeats());
-        holder.textRateparkm.setText("Rate per km : " + requestData.getRate_per_km()+"/km");
 
         if (requestData.getProfile_percentage() == null)
             holder.profile_percantage.setText("Profile: --");
@@ -72,10 +83,7 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
             holder.to.setText("To: --");
         else
             holder.to.setText("To: " + requestData.getLocation().getEnd_city());
-        if (requestData.getTotal_point() == null)
-            holder.total_point.setText("Total Points: --");
-        else
-            holder.total_point.setText("Total Points: " + requestData.getTotal_point());
+
 
         if (requestData.getTotal_km() == null)
             holder.total_km.setText("Total km: --");
@@ -93,6 +101,24 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
             holder.linearBtn.setVisibility(View.GONE);
             holder.lblStatus.setVisibility(View.VISIBLE);
             holder.lblStatus.setText(context.getResources().getString(R.string.rejected));
+        }
+
+        if (requestData.getTotal_point() == null)
+            holder.total_point.setText("Total Points: --");
+        else
+            holder.total_point.setText("Total Points: " + requestData.getTotal_point());
+        if (isLifter) {
+            holder.textRateparkm.setVisibility(View.GONE);
+            holder.total_point.setVisibility(View.VISIBLE);
+        } else {
+            holder.textRateparkm.setText("Rate per km : " + requestData.getRate_per_km() + "/km");
+            holder.textRateparkm.setVisibility(View.VISIBLE);
+
+            if (requestData.getUserId().equals(sharedPreferences.getString(Constants.USER_ID,""))){
+                holder.total_point.setVisibility(View.VISIBLE);
+            }else {
+                holder.total_point.setVisibility(View.GONE);
+            }
         }
 
         try {
@@ -133,7 +159,7 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.img_driver)
-        AppCompatImageView imgDriver;
+        CircleImageView imgDriver;
         @BindView(R.id.tv_name)
         AppCompatTextView tvName;
         @BindView(R.id.tv_mobile_no)

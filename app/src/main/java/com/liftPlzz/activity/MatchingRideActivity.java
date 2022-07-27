@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -46,7 +45,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +79,7 @@ public class MatchingRideActivity extends AppCompatActivity implements
     private MatchingRideAdapter matchingRideAdapter;
     private ArrayList<MatchingRideResponse> arrayList = new ArrayList<>();
     SharedPreferences sharedPreferences;
-
+    private boolean isFind = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +89,8 @@ public class MatchingRideActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         if (getIntent() != null) {
             liftId = getIntent().getIntExtra(Constants.LIFT_ID, -1);
+            isFind = getIntent().getBooleanExtra(Constants.IS_FIND_LIFT, true);
+
         }
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         toolBarTitle.setText(getResources().getString(R.string.driver_list));
@@ -252,6 +252,7 @@ public class MatchingRideActivity extends AppCompatActivity implements
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<MatchingRideByCategoryResponse> call, Throwable throwable) {
                 Constants.hideLoader();
@@ -264,6 +265,7 @@ public class MatchingRideActivity extends AppCompatActivity implements
     @Override
     public void onCategoryClick(MatchingRideResponse matchingRideResponse) {
         Intent intent = new Intent(MatchingRideActivity.this, DriverListActivity.class);
+        intent.putExtra(Constants.IS_FIND_LIFT, isFind);
         intent.putExtra(Constants.LIFT_ID, liftId);
         intent.putExtra(Constants.VEHICLE_TYPE, matchingRideResponse.getType());
         intent.putExtra(Constants.SUB_CATEGORY_ID, matchingRideResponse.getId());

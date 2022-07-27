@@ -17,5 +17,5 @@ public interface ProfileView extends RootView {
 
     void setProfileImageData(String message);
 
-    void setReviewData(List<Datum> data);
+//    void setReviewData(List<Datum> data);
 }

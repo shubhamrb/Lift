@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHolder> {
 
@@ -58,7 +59,12 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
     @Override
     public void onBindViewHolder(final PartnerAdapter.ViewHolder holder, final int position) {
         User requestData = arrayList.get(position);
-        holder.tvMobile.setText("Mobile: " + requestData.getMobile());
+        if (requestData.getIs_contact_public()==0){
+            holder.tvMobile.setVisibility(View.GONE);
+        }else {
+            holder.tvMobile.setText("Mobile: " + requestData.getMobile());
+            holder.tvMobile.setVisibility(View.VISIBLE);
+        }
         holder.tvName.setText(requestData.getName());
 
         if (requestData.getProfile_percentage() == null)
@@ -147,7 +153,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.img_driver)
-        AppCompatImageView imgDriver;
+        CircleImageView imgDriver;
         @BindView(R.id.tv_name)
         AppCompatTextView tvName;
         @BindView(R.id.tv_mobile_no)

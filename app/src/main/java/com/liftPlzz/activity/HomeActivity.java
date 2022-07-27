@@ -2,7 +2,7 @@ package com.liftPlzz.activity;
 
 import static com.liftPlzz.utils.Constants.NOTIFICATION_TYPE;
 
-import android.app.PictureInPictureParams;
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,11 +12,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Rational;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -24,14 +22,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.MenuListAdapter;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
@@ -42,13 +49,19 @@ import com.liftPlzz.provider.AppNavigationProvider;
 import com.liftPlzz.utils.Constants;
 import com.razorpay.PaymentResultListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class HomeActivity extends AppNavigationProvider implements MenuListAdapter.ItemListener, PaymentResultListener {
@@ -68,7 +81,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     NavigationView navView;
     TextView textViewName;
     TextView textViewNumber;
-    ImageView imageViewConactImage;
+    CircleImageView imageViewConactImage;
     View header;
     LocationManager locationManager;
 
@@ -86,38 +99,30 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     private final String id = "";
     private final String type = "";
     private Boolean isOpen = false;
+    private String referral_id = null;
 
     @Override
     public int getPlaceHolder() {
         return R.id.placeHolder;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void enterPipMode() {
 
-        Rational aspectRatio = new Rational(2, 3);
-        PictureInPictureParams params = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            params = new PictureInPictureParams.Builder().setAspectRatio(aspectRatio)
-                    .build();
-        }
-        if (params != null)
-            enterPictureInPictureMode(params);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onPause() {
         super.onPause();
-        enterPipMode();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
+        referral_id = getIntent().getStringExtra("referral_id");
+
+        if (referral_id != null) {
+            sendReferral();
+        }
 
         fragmentManager = getSupportFragmentManager();
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -132,22 +137,24 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             closeDrawer();
             openProfileFragment(PerformFragment.REPLACE);
         });
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            showGPSDisabledAlertToUser();
-        }
+//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            showGPSDisabledAlertToUser();
+
+        checkAndRequestPermissions();
+//        }
         // menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(10, "Point Wallet", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.my_ride));
+        menuList.add(new MenuItem(10, "Point Wallet", R.drawable.wallet));
 //        menuList.add(new MenuItem(11, "Points Redemption", R.drawable.ic_white_liftplzz));
         // menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(3, "Refer & Earn", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.my_vehicle));
+        menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.chats));
+        menuList.add(new MenuItem(3, "Refer & Earn", R.drawable.refer));
         //  menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(9, getResources().getString(R.string.logout), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.help));
+//        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.setting));
+        menuList.add(new MenuItem(9, getResources().getString(R.string.logout), R.drawable.logout));
 
         leftDrawer.setLayoutManager(new LinearLayoutManager(this));
         MenuListAdapter menuListAdapter = new MenuListAdapter(this, menuList, this);
@@ -187,6 +194,66 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 
     }
 
+    private void sendReferral() {
+        /*API call*/
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/refferal_accepted", response -> {
+            try {
+                JSONObject jObject = new JSONObject(response);
+                Log.d("success", jObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("api_key", Constants.API_KEY);
+                params.put("client", Constants.ANDROID);
+                params.put("token", sharedPreferences.getString(Constants.TOKEN, ""));
+                return params;
+            }
+        };
+        queue.add(sr);
+    }
+
+    private boolean checkAndRequestPermissions() {
+        int locationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int coarsePermision = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (coarsePermision != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), 1);
+            return false;
+        }
+        return true;
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                }
+            }
+
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -211,20 +278,6 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        /*HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentByTag(HomeFragment.class.getName());
-        if(isLiftOnGoing){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if(homeFragment!=null && homeFragment.isVisible()){
-                    enterPipMode();
-                }else {
-                    super.onBackPressed();
-                }
-            }else {
-                super.onBackPressed();
-            }
-        }else {
-            super.onBackPressed();
-        }*/
     }
 
     @Override
@@ -235,6 +288,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     public void openDrawer() {
         textViewName.setText(sharedPreferences.getString(Constants.NAME, ""));
         textViewNumber.setText(sharedPreferences.getString(Constants.EMAIL, ""));
+        Glide.with(this).load(sharedPreferences.getString(Constants.IMAGE, "hhh")).into(imageViewConactImage);
         drawerLayout.openDrawer(Gravity.LEFT);
     }
 
@@ -294,26 +348,18 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             drawerLayout.closeDrawer(Gravity.LEFT);
         }
         if (s == 1) {
-            //getSupportFragmentManager().popBackStack(FeedbackFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//             openFeedbackFragment(PerformFragment.REPLACE);
         } else if (s == 2) {
-//            Intent intent = new Intent(HomeActivity.this, MatchingRideActivity.class);
-//            intent.putExtra(Constants.LIFT_ID, lift.getId());
-//            startActivity(intent);
             openMyRidesFragment(PerformFragment.REPLACE);
         } else if (s == 3) {
-            Intent intent = new Intent(HomeActivity.this, PaymentHistory.class);
-            startActivity(intent);
-//             openInventoryFragment(PerformFragment.REPLACE);
+            /*Intent intent = new Intent(HomeActivity.this, PaymentHistory.class);
+            startActivity(intent);*/
+            buildDynamicLink("https://charpair.com/" + sharedPreferences.getString(Constants.USER_ID, ""));
         } else if (s == 4) {
             openMyVehicleFragment(PerformFragment.REPLACE);
         } else if (s == 5) {
             openMyChatFragment(PerformFragment.REPLACE);
         } else if (s == 6) {
-//             openContactsFragment(PerformFragment.REPLACE);
-//             openDriverListFragment(PerformFragment.REPLACE);
-            Intent intent = new Intent(HomeActivity.this, TicketListActivity.class);
-            startActivity(intent);
+            openHelpFragment(PerformFragment.REPLACE);
         } else if (s == 7) {
             openFaqFragment(PerformFragment.REPLACE);
         } else if (s == 8) {
@@ -332,8 +378,6 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             newBuilder.show();
         } else if (s == 10) {
-            /*Intent intent = new Intent(HomeActivity.this, PaymentPackage.class);
-            startActivity(intent);*/
             openPointWalletFragment(PerformFragment.REPLACE);
         }
     }
@@ -345,6 +389,26 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 
     @Override
     public void onPaymentError(int i, String s) {
-        getPointWalletFragment().onPaymentErrorResponse(i,s);
+        getPointWalletFragment().onPaymentErrorResponse(i, s);
     }
+
+    private void buildDynamicLink(String link) {
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse(link))
+                .setDomainUriPrefix("https://charpair.com")
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder("com.liftPlzz").build())
+                .buildShortDynamicLink().addOnSuccessListener(shortDynamicLink -> {
+                    String inviteLink = shortDynamicLink.getShortLink().toString();
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Invite link : " + inviteLink);
+                    sendIntent.setType("text/*");
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                }).addOnFailureListener(Throwable::printStackTrace);
+
+
+    }
+
 }

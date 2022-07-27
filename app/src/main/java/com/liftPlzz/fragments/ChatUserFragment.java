@@ -88,10 +88,7 @@ public class ChatUserFragment extends BaseFragment<ChatUserPresenter, ChatUserVi
                 intent.putExtra("charuser",new Gson().toJson(chatUser));
                 startActivity(intent);
             }
-            @Override
-            public void onUserImageClick(int id) {
 
-            }
         }));
     }
 }

@@ -62,6 +62,17 @@ public class RideRequestData {
     @SerializedName("location")
     @Expose
     private DriveLocation driveLocation;
+    @SerializedName("is_contact_public")
+    @Expose
+    private int is_contact_public;
+
+    public int getIs_contact_public() {
+        return is_contact_public;
+    }
+
+    public void setIs_contact_public(int is_contact_public) {
+        this.is_contact_public = is_contact_public;
+    }
 
     public String getRate_per_km() {
         return rate_per_km;

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_faq"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbarNew"
+        layout="@layout/toolbar_back_title_layout" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarNew"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <RelativeLayout
+            android:id="@+id/itemReport"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_setting_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:text="Report and issue or problem"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/imgnext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+
+        <RelativeLayout
+            android:id="@+id/itemFaq"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/dp_5"
+                android:text="Faq"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+
+        <RelativeLayout
+            android:id="@+id/itemUse"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:text="How to use charpair"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+
+        <RelativeLayout
+            android:id="@+id/itemCustomerSupport"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:text="Chat with customer support"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+
+        <RelativeLayout
+            android:id="@+id/itemContact"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:paddingLeft="5sp"
+            android:paddingRight="5sp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:text="Contact to customer care"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:rotation="180"
+                android:src="@drawable/quantum_ic_arrow_back_grey600_24"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+    </LinearLayout>
+
+</RelativeLayout>

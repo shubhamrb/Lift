@@ -9,9 +9,7 @@ import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
 import com.liftPlzz.model.getVehicle.GetVehicleListMainResponse;
-import com.liftPlzz.model.on_going.InnerGoingResponse;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
-import com.liftPlzz.model.sendotp.MainResponse;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.HomeView;
 
@@ -45,10 +43,10 @@ public class HomePresenter extends BasePresenter<HomeView> {
         navigator.openLearningFragment(BaseActivity.PerformFragment.REPLACE);
     }
 
-    public void getVehicle(String token,String tot_km) {
+    public void getVehicle(String token, String tot_km) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token,tot_km);
+        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token, tot_km);
         call.enqueue(new Callback<GetVehicleListMainResponse>() {
             @Override
             public void onResponse(Call<GetVehicleListMainResponse> call, Response<GetVehicleListMainResponse> response) {
@@ -68,7 +66,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
             @Override
             public void onFailure(Call<GetVehicleListMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
 
@@ -93,12 +91,10 @@ public class HomePresenter extends BasePresenter<HomeView> {
             @Override
             public void onFailure(Call<MainOnGoingResponse> call, Throwable throwable) {
 //                view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
-
-
 
 
     public void updateToken(String token, String FCMToken) {
@@ -118,11 +114,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
     public void findLift(String token, String title, String requir_seats, String start_point, String end_point, String lift_date,
-                         String liftTime,String tot) {
+                         String liftTime, String tot) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<FindLiftResponse> call = api.find_lift(Constants.API_KEY, "android", token, title, requir_seats, start_point, end_point, lift_date,
-                liftTime,tot);
+                liftTime, tot);
         call.enqueue(new Callback<FindLiftResponse>() {
             @Override
             public void onResponse(Call<FindLiftResponse> call, Response<FindLiftResponse> response) {
@@ -144,34 +140,35 @@ public class HomePresenter extends BasePresenter<HomeView> {
             @Override
             public void onFailure(Call<FindLiftResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
-///offer lift
+
+    ///offer lift
     public void createLift(String token, String vehicle_id,
                            String lift_type, String free_seats,
                            String paid_seats, String start_ponit,
                            String end_point, String checkpoints,
                            String lift_date, String liftTime,
-                           String tot,String rate_per_km) {
+                           String tot, String rate_per_km) {
 
-        Log.e("Token",token);
-        Log.e("vehicle_id",vehicle_id);
-        Log.e("lift_type",lift_type);
-        Log.e("free_seats",free_seats);
-        Log.e("paid_seats",paid_seats);
-        Log.e("start_ponit",start_ponit);
-        Log.e("end_point",end_point);
-        Log.e("checkpoints",checkpoints);
-        Log.e("lift_date",lift_date);
-        Log.e("liftTime",liftTime);
-        Log.e("tot",tot);
-        Log.e("rate_per_km",rate_per_km);
+        Log.e("Token", token);
+        Log.e("vehicle_id", vehicle_id);
+        Log.e("lift_type", lift_type);
+        Log.e("free_seats", free_seats);
+        Log.e("paid_seats", paid_seats);
+        Log.e("start_ponit", start_ponit);
+        Log.e("end_point", end_point);
+        Log.e("checkpoints", checkpoints);
+        Log.e("lift_date", lift_date);
+        Log.e("liftTime", liftTime);
+        Log.e("tot", tot);
+        Log.e("rate_per_km", rate_per_km);
 
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date, liftTime,tot,rate_per_km);
+        Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date, liftTime, tot, rate_per_km);
         call.enqueue(new Callback<CreateLiftResponse>() {
             @Override
             public void onResponse(Call<CreateLiftResponse> call, Response<CreateLiftResponse> response) {
@@ -191,7 +188,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
             @Override
             public void onFailure(Call<CreateLiftResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

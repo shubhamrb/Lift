@@ -79,7 +79,7 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
             getPartnerDetails();
             toolBarTitle.setText(getResources().getString(R.string.partnet_details));
         } else {
-            rideRquestAdapter = new RideRquestAdapter(this, arrayListRide, RideRequestActivity.this);
+            rideRquestAdapter = new RideRquestAdapter(this, arrayListRide, RideRequestActivity.this,isLifter);
             recyclerRequest.setAdapter(rideRquestAdapter);
             getRideRequestApi();
             toolBarTitle.setText(getResources().getString(R.string.ride_request));

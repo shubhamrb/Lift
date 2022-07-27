@@ -55,8 +55,7 @@ public class BikePresenter extends BasePresenter<BikeView> {
             @Override
             public void onFailure(Call<CreateVehicleResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
-            }
+                view.showMessage("Check your internet connection");            }
         });
 
     }

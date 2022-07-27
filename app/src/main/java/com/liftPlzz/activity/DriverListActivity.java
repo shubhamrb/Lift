@@ -70,7 +70,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
         toolBarTitle.setText(getResources().getString(R.string.matches_list));
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
-        driverListAdapter = new DriverListAdapter(this, arrayList, DriverListActivity.this);
+        driverListAdapter = new DriverListAdapter(this, arrayList, DriverListActivity.this,isFind);
         recyclerViewDriver.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewDriver.setAdapter(driverListAdapter);
 

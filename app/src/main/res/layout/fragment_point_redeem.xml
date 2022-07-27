@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="@font/gotham_medium"
-                android:text="CURRENT POINT"
+                android:text="AVAILABLE POINT"
                 android:textSize="15sp" />
 
             <TextView

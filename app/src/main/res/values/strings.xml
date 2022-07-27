@@ -31,7 +31,7 @@
     <string name="chat">Chat</string>
     <string name="txt_faq">FAQ</string>
     <string name="my_contribution">My Contribution</string>
-    <string name="help_ticket">Help/Ticket</string>
+    <string name="help_ticket">Help &amp; Support</string>
     <string name="groups">Groups</string>
     <string name="setting">Setting</string>
     <string name="my_vehicle">My Vehicle</string>
@@ -137,4 +137,5 @@
     <string name="available_points">Available Points : </string>
     <string name="purchase_point">Purchase Point</string>
     <string name="redeem_point">Redeem Point</string>
+    <string name="transaction">Transaction</string>
 </resources>

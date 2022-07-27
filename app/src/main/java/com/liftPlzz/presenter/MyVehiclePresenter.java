@@ -31,10 +31,10 @@ public class MyVehiclePresenter extends BasePresenter<MyVehicleView> {
 
     }
 
-    public void getVehicle(String token,String tot_km) {
+    public void getVehicle(String token, String tot_km) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token,tot_km);
+        Call<GetVehicleListMainResponse> call = api.get_vehicle_list(Constants.API_KEY, "android", token, tot_km);
         call.enqueue(new Callback<GetVehicleListMainResponse>() {
             @Override
             public void onResponse(Call<GetVehicleListMainResponse> call, Response<GetVehicleListMainResponse> response) {
@@ -54,15 +54,16 @@ public class MyVehiclePresenter extends BasePresenter<MyVehicleView> {
             @Override
             public void onFailure(Call<GetVehicleListMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
 
     }
-    public void deleteVehicle(String token,String vehicle_id) {
+
+    public void deleteVehicle(String token, String vehicle_id) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<DeleteVehicleMainResponse> call = api.delete_vehicle(Constants.API_KEY, "android", token,vehicle_id);
+        Call<DeleteVehicleMainResponse> call = api.delete_vehicle(Constants.API_KEY, "android", token, vehicle_id);
         call.enqueue(new Callback<DeleteVehicleMainResponse>() {
             @Override
             public void onResponse(Call<DeleteVehicleMainResponse> call, Response<DeleteVehicleMainResponse> response) {
@@ -80,11 +81,12 @@ public class MyVehiclePresenter extends BasePresenter<MyVehicleView> {
             @Override
             public void onFailure(Call<DeleteVehicleMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
 
     }
+
     public void openAddVehicle() {
         navigator.openAddVehicleFragment(BaseActivity.PerformFragment.REPLACE);
     }

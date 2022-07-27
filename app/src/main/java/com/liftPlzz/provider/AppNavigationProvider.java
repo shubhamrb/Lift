@@ -4,12 +4,14 @@ import android.os.Bundle;
 
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.fragments.AddVehicleFragment;
+import com.liftPlzz.fragments.BlockFragment;
 import com.liftPlzz.fragments.ChatUserFragment;
 import com.liftPlzz.fragments.ContactsFragment;
 import com.liftPlzz.fragments.CreateProfileFragment;
 import com.liftPlzz.fragments.ELearningFragment;
 import com.liftPlzz.fragments.FaqFragment;
 import com.liftPlzz.fragments.FeedbackFragment;
+import com.liftPlzz.fragments.HelpFragment;
 import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.fragments.LoginFragment;
 import com.liftPlzz.fragments.MyRidesFragment;
@@ -18,8 +20,11 @@ import com.liftPlzz.fragments.NotificationFragment;
 import com.liftPlzz.fragments.OTpFragment;
 import com.liftPlzz.fragments.PointWalletFragment;
 import com.liftPlzz.fragments.ProfileFragment;
+import com.liftPlzz.fragments.ReviewsFragment;
 import com.liftPlzz.fragments.SettingFragment;
 import com.liftPlzz.fragments.UpdateProfileFragment;
+import com.liftPlzz.fragments.UsersFragment;
+import com.liftPlzz.fragments.VideosFragment;
 import com.liftPlzz.navigator.AppNavigator;
 
 public abstract class AppNavigationProvider extends BaseActivity implements AppNavigator {
@@ -27,15 +32,21 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     private PointWalletFragment pointWalletFragment;
 
     @Override
-    public void openLoginFragment(PerformFragment performFragment) {
+    public void openLoginFragment(PerformFragment performFragment, String referral_id) {
+        Bundle bundle = new Bundle();
+        bundle.putString("referral_id", referral_id);
         LoginFragment loginFragment = new LoginFragment();
+        loginFragment.setArguments(bundle);
         openFragment(loginFragment, LoginFragment.class.getName(), performFragment, false);
     }
 
 
     @Override
-    public void openCreateProfileFragment(PerformFragment performFragment) {
+    public void openCreateProfileFragment(PerformFragment performFragment, String referral_id) {
+        Bundle bundle = new Bundle();
+        bundle.putString("referral_id", referral_id);
         CreateProfileFragment createProfileFragment = new CreateProfileFragment();
+        createProfileFragment.setArguments(bundle);
         openFragment(createProfileFragment, CreateProfileFragment.class.getName(), performFragment, false);
     }
 
@@ -46,8 +57,11 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     }
 
     @Override
-    public void openOTPFragment(PerformFragment performFragment) {
+    public void openOTPFragment(PerformFragment performFragment, String referral_id) {
+        Bundle bundle = new Bundle();
+        bundle.putString("referral_id", referral_id);
         OTpFragment oTpFragment = new OTpFragment();
+        oTpFragment.setArguments(bundle);
         openFragment(oTpFragment, LoginFragment.class.getName(), performFragment, false);
     }
 
@@ -132,6 +146,12 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     }
 
     @Override
+    public void openVideosFragment(PerformFragment performFragment) {
+        VideosFragment videosFragment = new VideosFragment();
+        openFragment(videosFragment, VideosFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
     public void openPointWalletFragment(PerformFragment performFragment) {
         pointWalletFragment = new PointWalletFragment();
         openFragment(pointWalletFragment, PointWalletFragment.class.getName(), performFragment, true);
@@ -140,5 +160,29 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     @Override
     public PointWalletFragment getPointWalletFragment() {
         return pointWalletFragment;
+    }
+
+    @Override
+    public void openHelpFragment(PerformFragment performFragment) {
+        HelpFragment helpFragment = new HelpFragment();
+        openFragment(helpFragment, HelpFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openReviewsFragment(PerformFragment performFragment) {
+        ReviewsFragment reviewsFragment = new ReviewsFragment();
+        openFragment(reviewsFragment, ReviewsFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openBlockFragment(PerformFragment performFragment) {
+        BlockFragment blockFragment = new BlockFragment();
+        openFragment(blockFragment, BlockFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openUsersFragment(PerformFragment performFragment) {
+        UsersFragment blockFragment = new UsersFragment();
+        openFragment(blockFragment, UsersFragment.class.getName(), performFragment, true);
     }
 }

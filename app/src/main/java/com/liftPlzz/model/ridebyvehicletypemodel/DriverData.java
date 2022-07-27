@@ -28,6 +28,9 @@ public class DriverData {
     @SerializedName("paid_seats")
     @Expose
     private Integer paidSeats;
+    @SerializedName("vacant_seats")
+    @Expose
+    private Integer vacant_seats;
     @SerializedName("rate_per_km")
     @Expose
     private Integer ratePerKm;
@@ -70,6 +73,14 @@ public class DriverData {
     @SerializedName("end_point_distance")
     @Expose
     private Double endPointDistance;
+
+    public Integer getVacant_seats() {
+        return vacant_seats;
+    }
+
+    public void setVacant_seats(Integer vacant_seats) {
+        this.vacant_seats = vacant_seats;
+    }
 
     public String getPrice_per_seat() {
         return price_per_seat;

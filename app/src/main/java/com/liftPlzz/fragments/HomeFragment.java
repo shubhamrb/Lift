@@ -380,6 +380,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
+                    } else if (textkm.getText().toString().equalsIgnoreCase("")) {
+                        showMessage("Drop off location is too close");
                     } else {
                         presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString());
                     }
@@ -963,28 +965,28 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         } else if (seat.equals("2")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
             twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
             threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         } else if (seat.equals("3")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
             threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         } else if (seat.equals("4")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         } else if (seat.equals("5")) {
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
         }
 
@@ -998,7 +1000,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         });
         twoTxt.setOnClickListener(v -> {
             seat = "2";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
             twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
             threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
@@ -1006,33 +1008,33 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         });
         threeTxt.setOnClickListener(v -> {
             seat = "3";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
             threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         });
         fourTxt.setOnClickListener(v -> {
             seat = "4";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         });
         fiveTxt.setOnClickListener(v -> {
             seat = "5";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
         });
 
 
         if (data != null) {
             if (data.size() > 0) {
-                if (data.get(0).getType().equals("two_wheeler")) {
+                if (data.get(PagerPosition).getType().equals("two_wheeler")) {
                     oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
                     twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                     threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
@@ -1046,6 +1048,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     etkm.setText("" + data.get(0).getRatePerKm());
                 }
             }
+            etkm.setText("" + data.get(PagerPosition).getRatePerKm());
             pagerAdapter = new VehiclePagerAdapter(getContext(), data);
             vehiclePager.setAdapter(pagerAdapter);
             indicator.setViewPager(vehiclePager);
@@ -1357,7 +1360,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     steps = legs.getJSONObject(i);
                     distance = steps.getJSONObject("distance");
                     String[] total = distance.getString("text").split(" ");
-                    totalDistance += Float.parseFloat(total[0]);
+                    totalDistance += Float.parseFloat(total[0].replace(",", ""));
                 }
                 distanceString = "" + totalDistance + " Km";
                 Log.e("Total Distance : ", "" + distanceString);

@@ -32,7 +32,11 @@ public interface HomeNavigator {
 
     void openUpdateProfileFragment(BaseActivity.PerformFragment performFragment);
 
-    //    void openDriverListFragment(BaseActivity.PerformFragment performFragment);
+    void openBlockFragment(BaseActivity.PerformFragment performFragment);
+    void openUsersFragment(BaseActivity.PerformFragment performFragment);
+
+    void openReviewsFragment(BaseActivity.PerformFragment performFragment);
+
     void openSettingFragment(BaseActivity.PerformFragment performFragment);
 
     void openFaqFragment(BaseActivity.PerformFragment performFragment);
@@ -40,5 +44,9 @@ public interface HomeNavigator {
     void openPointWalletFragment(BaseActivity.PerformFragment performFragment);
 
     PointWalletFragment getPointWalletFragment();
+
+    void openHelpFragment(BaseActivity.PerformFragment performFragment);
+
+    void openVideosFragment(BaseActivity.PerformFragment performFragment);
 
 }

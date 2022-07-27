@@ -1,21 +1,5 @@
 package com.liftPlzz.presenter;
 
-import android.os.Build;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.liftPlzz.R;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BaseActivity;
@@ -24,12 +8,6 @@ import com.liftPlzz.model.createProfile.CreateProfileMainResponse;
 import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.UpdateProfileView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -79,7 +57,7 @@ public class UpdateProfilePresenter extends BasePresenter<UpdateProfileView> {
             @Override
             public void onFailure(Call<SettingModel> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -117,7 +95,7 @@ public class UpdateProfilePresenter extends BasePresenter<UpdateProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -207,7 +185,7 @@ public class UpdateProfilePresenter extends BasePresenter<UpdateProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

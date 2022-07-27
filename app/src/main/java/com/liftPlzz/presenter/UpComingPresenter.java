@@ -56,7 +56,7 @@ public class UpComingPresenter extends BasePresenter<UpComingView> {
             @Override
             public void onFailure(Call<UpcomingLiftResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -94,7 +94,7 @@ public class UpComingPresenter extends BasePresenter<UpComingView> {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

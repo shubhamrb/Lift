@@ -4,7 +4,6 @@ import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.getFaq.ResponseFaq;
-import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.FaqView;
 
@@ -49,7 +48,7 @@ public class FaqPresenter extends BasePresenter<FaqView> {
             @Override
             public void onFailure(Call<ResponseFaq> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

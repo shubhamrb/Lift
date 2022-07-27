@@ -79,15 +79,17 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
         holder.itemRow.setOnClickListener(v -> {
             if(datum.getOptionType().equalsIgnoreCase(context.getResources().getString(R.string.select_option))){
                 itemListener.onSelectOption(position,datum);
+            }else if (datum.getOptionType().equalsIgnoreCase("action")){
+                itemListener.onSelectAction(position,datum);
             }
         });
-//        holder.ratingBarReview.setRating(settingList.get(position).getRating());
     }
 
 
     public interface ItemListener {
         void onToggleClick(int settingId, int inputValue);
         void onSelectOption(int position ,Datum data);
+        void onSelectAction(int position ,Datum data);
     }
 
 

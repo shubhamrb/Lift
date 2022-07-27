@@ -1,15 +1,18 @@
 package com.liftPlzz.activity;
 
+import static android.Manifest.permission.CALL_PHONE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -85,22 +90,20 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
     private ArrayList arrayListSuggestion = new ArrayList();
 
     //tv_mob,tv_name,img_driver,img_back
-    TextView tv_mob,tv_name;
-    ImageView img_driver,img_back,img_call;
+    TextView tv_name;
+    ImageView img_back, img_call;
+    CircleImageView img_driver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_chat);
-//        mChatAddButton = (ImageButton) findViewById(R.id.chatAddButton);
         mChatSendButton = (ImageButton) findViewById(R.id.chatSendButton);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         tvText = (TextView) findViewById(R.id.tv_text);
 
-        tv_mob = (TextView) findViewById(R.id.tv_mob);
         tv_name = (TextView) findViewById(R.id.tv_name);
-        img_driver = (ImageView) findViewById(R.id.img_driver);
+        img_driver = (CircleImageView) findViewById(R.id.img_driver);
         img_back = (ImageView) findViewById(R.id.img_back);
         img_call = (ImageView) findViewById(R.id.img_call);
         img_back.setOnClickListener(new View.OnClickListener() {
@@ -114,26 +117,39 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
         sharedPreferences = this.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
         //-----GETING FROM INTENT----
-//        mChatUser = getIntent().getStringExtra("user_id");
         mChatUser = getIntent().getStringExtra(Constants.USER_ID);
         String userName = getIntent().getStringExtra("user_name");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         chatSuggestionAdapter = new ChatSuggestionAdapter(arrayListSuggestion, this, this);
 
-        try{
-           // intent.putExtra("charuser",new Gson().toJson(chatUser));
-            String chatuserstring=getIntent().getStringExtra("charuser");
-            final ChatUser chatUser=new Gson().fromJson(chatuserstring,ChatUser.class);
+        try {
+            // intent.putExtra("charuser",new Gson().toJson(chatUser));
+            String chatuserstring = getIntent().getStringExtra("charuser");
+            final ChatUser chatUser = new Gson().fromJson(chatuserstring, ChatUser.class);
 
             tv_name.setText(chatUser.getName());
-            tv_mob.setText(chatUser.getMobile());
+            if (chatUser.getIs_contact_public()==0){
+                img_call.setVisibility(View.GONE);
+            }else {
+                img_call.setVisibility(View.VISIBLE);
+            }
             img_call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + chatUser.getMobile()));
 
-                    intent.setData(Uri.parse("tel:" +chatUser.getMobile()));
-                    startActivity(intent);
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                        startActivity(intent);
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestPermissions(new String[]{CALL_PHONE}, 1);
+                        } else {
+                            final String[] PERMISSIONS_STORAGE = {CALL_PHONE};
+                            ActivityCompat.requestPermissions(ChatActivity.this, PERMISSIONS_STORAGE, 9);
+                            startActivity(intent);
+                        }
+                    }
                 }
             });
 
@@ -145,11 +161,10 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
                 e.printStackTrace();
             }
 
-        }catch (Exception E){
+        } catch (Exception E) {
 
         }
 
-//        int mNoOfColumns = Constants.calculateNoOfColumns(getApplicationContext(),R.id.tv_title);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 this,

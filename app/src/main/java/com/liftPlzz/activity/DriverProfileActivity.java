@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.ReviewListAdapter;
 import com.liftPlzz.adapter.ViewPagerAdapter;
@@ -29,6 +31,7 @@ import com.liftPlzz.model.SocialImage;
 import com.liftPlzz.model.UserInfo.Review;
 import com.liftPlzz.model.UserInfo.User;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
+import com.liftPlzz.model.chatuser.ChatUser;
 import com.liftPlzz.model.getVehicle.Datum;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.AgeCalculator;
@@ -102,6 +105,8 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
     ViewPagerAdapter mViewPagerAdapter;
     @BindView(R.id.indicator)
     CircleIndicator indicator;
+    @BindView(R.id.linear_rating)
+    LinearLayout linear_rating;
     List<com.liftPlzz.model.SocialImage> imageslist;
 
 
@@ -119,7 +124,6 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_driver_profile);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
@@ -293,18 +297,18 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         }
         mViewPagerAdapter.notifyDataSetChanged();
 
-        if (userData.getReviews()!=null){
-            if (reviewList!=null){
+        if (userData.getReviews() != null) {
+            if (reviewList != null) {
                 reviewList.clear();
-            }else {
-                reviewList=new ArrayList<>();
+            } else {
+                reviewList = new ArrayList<>();
             }
             reviewList.addAll(userData.getReviews());
             reviewListAdapter.notifyDataSetChanged();
         }
     }
 
-    @OnClick({R.id.imageViewBack, R.id.tv_call, R.id.tv_chat})
+    @OnClick({R.id.imageViewBack, R.id.tv_call, R.id.tv_chat, R.id.linear_rating})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
@@ -319,10 +323,22 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
                 break;
 
             case R.id.tv_chat:
-//                Toast.makeText(DriverProfileActivity.this, "Coming soon....", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(DriverProfileActivity.this, ChatActivity.class);
                 intent.putExtra(Constants.USER_ID, String.valueOf(userId));
+                ChatUser chatUser = new ChatUser();
+                chatUser.setId(userId);
+                chatUser.setName(user.getName());
+                chatUser.setMobile(user.getMobile());
+                chatUser.setImage(user.getImage());
+                intent.putExtra("charuser", new Gson().toJson(chatUser));
                 startActivity(intent);
+                break;
+            case R.id.linear_rating:
+//                if (user != null && user.getReviews().size() > 0) {
+                    Intent reviewIntent = new Intent(DriverProfileActivity.this, DriverReviewsActivity.class);
+                    reviewIntent.putExtra(Constants.USER_ID, String.valueOf(userId));
+                    startActivity(reviewIntent);
+//                }
                 break;
         }
     }
@@ -344,6 +360,16 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
 
     @Override
     public void onAddImage() {
+
+    }
+
+    @Override
+    public void onLikeClick(int s) {
+
+    }
+
+    @Override
+    public void onDislikeClick(int s) {
 
     }
 }

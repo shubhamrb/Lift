@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_driver"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_60"
@@ -208,6 +208,22 @@
                 android:visibility="visible">
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_reject"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center"
+                    android:padding="@dimen/dp_5"
+                    android:text="@string/reject"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/sp_16" />
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_accept"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -224,23 +240,6 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/sp_16" />
 
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_reject"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_5"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_5"
-                    android:text="@string/reject"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/sp_16" />
             </LinearLayout>
 
         </RelativeLayout>

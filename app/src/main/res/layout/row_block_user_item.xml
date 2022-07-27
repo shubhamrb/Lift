@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_5"
+    android:orientation="horizontal"
+    android:padding="@dimen/dp_10">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageViewConactImage"
+        android:layout_width="@dimen/dp_35"
+        android:layout_height="@dimen/dp_35"
+        android:layout_centerVertical="true"
+        android:src="@drawable/dummy_user" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_toStartOf="@id/btn_block"
+        android:layout_toEndOf="@+id/imageViewConactImage"
+        android:ellipsize="end"
+        android:fontFamily="@font/gotham_medium"
+        android:maxLines="1"
+        android:padding="@dimen/dp_5"
+        android:text="User1"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/sp_16" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btn_block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_2"
+        android:background="@drawable/rounded_button"
+        android:ellipsize="end"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:text="Unblock"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
+
+</RelativeLayout>

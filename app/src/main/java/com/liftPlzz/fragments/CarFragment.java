@@ -9,6 +9,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -151,10 +154,16 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
         presenter.getSubCategory(Constants.API_KEY, getResources().getString(R.string.android),
                 strToken, getResources().getString(R.string.four_wheeler));
         spinnerCategory.setOnItemSelectedListener(this);
+        InputFilter[] editFilters = editTextVehicleRegNo.getFilters();
+        InputFilter[] newFilters = new InputFilter[editFilters.length + 1];
+        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
+        newFilters[editFilters.length] = new InputFilter.AllCaps();
+        editTextVehicleRegNo.setFilters(newFilters);
         if (isEdit) {
             editTextVehicleModel.setText(vehicleData.getModel());
-            editTextVehicleRegNo.setText(vehicleData.getRegistrationNo());
             edRatePerKm.setText("" + vehicleData.getRatePerKm());
+            editTextVehicleRegNo.setText(vehicleData.getRegistrationNo());
+
             editTextVehicleInsuranceDate.setText(vehicleData.getInsurance_date());
             vehicleSubCategoryEdit = vehicleData.getVehicleSubcategoryId();
             if (vehicleData.getVehicleImageFront() != null) {

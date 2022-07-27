@@ -55,7 +55,7 @@ public class NotificationPresenter extends BasePresenter<NotificationView> {
             @Override
             public void onFailure(Call<ResponseNotification> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="@font/gotham_medium"
-                android:text="CURRENT POINT"
+                android:text="AVAILABLE POINT"
                 android:textSize="15sp" />
 
             <TextView
@@ -40,39 +40,30 @@
 
     </androidx.cardview.widget.CardView>
 
-    <RelativeLayout
-        android:id="@+id/rl_head"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonRecharge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/card_item"
-        android:layout_margin="@dimen/_10sdp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/gotham_medium"
-            android:text="Transaction History"
-            android:textSize="15sp"
-            android:textStyle="normal" />
-
-        <TextView
-            android:id="@+id/buttonRecharge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:fontFamily="@font/gotham_regular"
-            android:text=" Purchase Point "
-            android:padding="@dimen/_5sdp"
-            android:textColor="@color/colorWhite"
-            android:background="@drawable/rounded_button"
-            android:textSize="15sp" />
-    </RelativeLayout>
+        android:layout_below="@id/card_item"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/sp_25"
+        android:layout_marginRight="@dimen/sp_25"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_40"
+        android:paddingRight="@dimen/dp_40"
+        android:text="@string/purchase_point"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewpackage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rl_head">
+        android:layout_below="@+id/buttonRecharge">
 
     </androidx.recyclerview.widget.RecyclerView>
 

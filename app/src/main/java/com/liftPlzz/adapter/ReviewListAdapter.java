@@ -5,9 +5,11 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatRatingBar;
@@ -56,9 +58,6 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
             size = driverReviewList.size();
         }
         return size;
-
-//        return verifiedLists.size();
-
     }
 
     @Override
@@ -82,6 +81,26 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
             } else {
                 Picasso.get().load(R.drawable.images_no_found).transform(new CircleTransform()).into(holder.imageViewProfileImage);
             }
+
+            holder.textViewLike.setText("" + verifiedLists.get(position).getTotal_like());
+            holder.textViewDislike.setText("" + verifiedLists.get(position).getTotal_dislike());
+            if (verifiedLists.get(position).isIs_like()) {
+                holder.img_like.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
+            } else {
+                holder.img_like.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.quantum_grey)));
+            }
+            if (verifiedLists.get(position).isIs_dislike()) {
+                holder.img_dislike.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorRed)));
+            } else {
+                holder.img_dislike.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.quantum_grey)));
+            }
+
+            holder.img_like.setOnClickListener(view -> {
+                itemListener.onLikeClick(verifiedLists.get(position).getReviewId());
+            });
+            holder.img_dislike.setOnClickListener(view -> {
+                itemListener.onDislikeClick(verifiedLists.get(position).getReviewId());
+            });
         } else {
             //driver review
             holder.ratingBarReview.setRating(driverReviewList.get(position).getRating());
@@ -93,20 +112,33 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
             } else {
                 Picasso.get().load(R.drawable.images_no_found).transform(new CircleTransform()).into(holder.imageViewProfileImage);
             }
+
+            holder.textViewLike.setText("" + driverReviewList.get(position).getTotal_like());
+            holder.textViewDislike.setText("" + driverReviewList.get(position).getTotal_dislike());
+            if (driverReviewList.get(position).isIs_like()) {
+                holder.img_like.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
+            } else {
+                holder.img_like.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.quantum_grey)));
+            }
+            if (driverReviewList.get(position).isIs_dislike()) {
+                holder.img_dislike.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorRed)));
+            } else {
+                holder.img_dislike.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.quantum_grey)));
+            }
+
+            holder.img_like.setOnClickListener(view -> {
+                itemListener.onLikeClick(driverReviewList.get(position).getReviewId());
+            });
+            holder.img_dislike.setOnClickListener(view -> {
+                itemListener.onDislikeClick(driverReviewList.get(position).getReviewId());
+            });
         }
-       /* holder.ratingBarReview.setRating(verifiedLists.get(position).getRating());
-        holder.textViewUserName.setText(verifiedLists.get(position).getFromUser());
-        holder.textViewReview.setText(verifiedLists.get(position).getFeedback());
-        holder.textViewTime.setText(verifiedLists.get(position).getReviewDate());
-        if (verifiedLists.get(position).getUserImage() != null && !verifiedLists.get(position).getUserImage().isEmpty()) {
-            Picasso.get().load(verifiedLists.get(position).getUserImage()).transform(new CircleTransform()).into(holder.imageViewProfileImage);
-        } else {
-            Picasso.get().load(R.drawable.images_no_found).transform(new CircleTransform()).into(holder.imageViewProfileImage);
-        }*/
+
+
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.imageViewConactImage)
         AppCompatImageView imageViewProfileImage;
         @BindView(R.id.textViewUserName)
@@ -117,6 +149,14 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         AppCompatTextView textViewReview;
         @BindView(R.id.ratingBarReview)
         AppCompatRatingBar ratingBarReview;
+        @BindView(R.id.img_like)
+        ImageView img_like;
+        @BindView(R.id.img_dislike)
+        ImageView img_dislike;
+        @BindView(R.id.textViewLike)
+        AppCompatTextView textViewLike;
+        @BindView(R.id.textViewDislike)
+        AppCompatTextView textViewDislike;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -126,6 +166,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
     }
 
     public interface ItemListener {
-        void onclick(int s);
+        void onLikeClick(int s);
+        void onDislikeClick(int s);
     }
 }

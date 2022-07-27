@@ -32,8 +32,8 @@ public class OtpPresenter extends BasePresenter<OtpView> {
 
     }
 
-    public void openLogin() {
-        navigator.openLoginFragment(BaseActivity.PerformFragment.REPLACE);
+    public void openLogin(String referral_id) {
+        navigator.openLoginFragment(BaseActivity.PerformFragment.REPLACE, referral_id);
     }
 
     public void ResendOtp(String mobile) {
@@ -62,7 +62,7 @@ public class OtpPresenter extends BasePresenter<OtpView> {
             @Override
             public void onFailure(Call<ResendOtpResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -93,13 +93,13 @@ public class OtpPresenter extends BasePresenter<OtpView> {
             @Override
             public void onFailure(Call<VerifyOtpMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
 
-    public void openCreateProfile() {
-        navigator.openCreateProfileFragment(BaseActivity.PerformFragment.REPLACE);
+    public void openCreateProfile(String referral_id) {
+        navigator.openCreateProfileFragment(BaseActivity.PerformFragment.REPLACE, referral_id);
     }
 
     public void sendOtp(String mobile) {
@@ -128,7 +128,7 @@ public class OtpPresenter extends BasePresenter<OtpView> {
             @Override
             public void onFailure(Call<MainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

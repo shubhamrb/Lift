@@ -6,6 +6,7 @@ import com.liftPlzz.base.BasePresenter;
 import com.liftPlzz.model.createVehicle.CreateVehicleResponse;
 import com.liftPlzz.model.vehiclesubcategory.VehicleSubCategoryModel;
 import com.liftPlzz.views.CarView;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -52,7 +53,7 @@ public class CarPresenter extends BasePresenter<CarView> {
             @Override
             public void onFailure(Call<CreateVehicleResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
 
@@ -82,7 +83,7 @@ public class CarPresenter extends BasePresenter<CarView> {
             @Override
             public void onFailure(Call<CreateVehicleResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -107,7 +108,7 @@ public class CarPresenter extends BasePresenter<CarView> {
             @Override
             public void onFailure(Call<VehicleSubCategoryModel> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

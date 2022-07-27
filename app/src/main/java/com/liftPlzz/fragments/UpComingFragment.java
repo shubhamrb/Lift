@@ -103,8 +103,8 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
             intent = new Intent(getActivity(), MatchingRideActivity.class);
         } else {
             intent = new Intent(getActivity(), DriverListActivity.class);
-            intent.putExtra(Constants.IS_FIND_LIFT, isFind);
         }
+        intent.putExtra(Constants.IS_FIND_LIFT, isFind);
         intent.putExtra(Constants.LIFT_ID, lift.getId());
         intent.putExtra(Constants.VEHICLE_TYPE, lift.getVehicle_type());
         intent.putExtra(Constants.SUB_CATEGORY_ID, lift.getVehicle_subcategory());
@@ -113,8 +113,9 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     }
 
     @Override
-    public void onRequestClick(Lift lift) {
+    public void onRequestClick(Lift lift, boolean isFind) {
         Intent intent = new Intent(getActivity(), RideRequestActivity.class);
+        intent.putExtra("lifter", lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, "")));
         intent.putExtra(Constants.LIFT_ID, lift.getId());
         intent.putExtra(Constants.PARTNER, false);
         startActivity(intent);

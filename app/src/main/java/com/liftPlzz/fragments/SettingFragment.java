@@ -1,7 +1,9 @@
 package com.liftPlzz.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.Window;
@@ -21,11 +23,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonObject;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.SettingAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BaseFragment;
+import com.liftPlzz.model.createProfile.User;
 import com.liftPlzz.model.getsetting.Datum;
 import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.presenter.SettingPresenter;
@@ -57,6 +61,7 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
     RecyclerView recyclerViewSetting;
     String strToken = "";
     String professionSelection = "";
+    private User userData;
 
     @Override
     protected int createLayout() {
@@ -78,6 +83,10 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         toolBarTitle.setText(getResources().getString(R.string.setting));
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
+        loadSettings();
+    }
+
+    private void loadSettings() {
         presenter.getSettingList(strToken);
     }
 
@@ -88,8 +97,44 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
 
     @Override
     public void setSettings(List<Datum> settingData) {
+        Datum d1 = new Datum();
+        d1.setId(settingData.size() + 1);
+        d1.setOptionType("");
+        d1.setType("Account Setting");
+        d1.setOptionType("action");
+
+        Datum d2 = new Datum();
+        d2.setId(settingData.size() + 2);
+        d2.setOptionType("");
+        d2.setType("Block User");
+        d2.setOptionType("action");
+
+        Datum d3 = new Datum();
+        d3.setId(settingData.size() + 3);
+        d3.setOptionType("");
+        d3.setType("Reset to default");
+        d3.setOptionType("action");
+        settingData.add(d1);
+        settingData.add(d2);
+        settingData.add(d3);
+
         recyclerViewSetting.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewSetting.setAdapter(new SettingAdapter(getContext(), settingData, SettingFragment.this));
+    }
+
+    @Override
+    public void setProfileData(com.liftPlzz.model.createProfile.Response response) {
+        userData = response.getUser();
+        if (userData != null) {
+            UpdateProfileFragment.setUser(userData);
+        }
+        presenter.openUpdateProfile();
+    }
+
+    @Override
+    public void onSuccessReset(JsonObject jsonObject) {
+        showMessage(jsonObject.get("message").getAsString());
+        loadSettings();
     }
 
     @Override
@@ -99,14 +144,37 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
 
     @Override
     public void onSelectOption(int position, Datum data) {
-        if (data.getType().trim().equals("Lift For whom")) {
+        if (data.getShortCode().equals("lift_for_whome")) {
             showLiftWhomDialog(data);
-        } else if (data.getType().trim().equals("Age Between")) {
+        } else if (data.getShortCode().equals("age_between")) {
             showAgeDialog(data);
-        } else if (data.getType().trim().equals("Rating Selection")) {
+        } else if (data.getShortCode().equals("rating_selection")) {
             showRatingDialog(data);
-        } else if (data.getType().trim().equals("Professional Status")) {
+        } else if (data.getShortCode().equals("professional_status")) {
             showProfessionalDialog(data);
+        }
+    }
+
+    @Override
+    public void onSelectAction(int position, Datum data) {
+        if (data.getType().trim().equals("Account Setting")) {
+            presenter.getProfile(strToken);
+        } else if (data.getType().trim().equals("Block User")) {
+            //go to block list
+            presenter.openBlock();
+        } else if (data.getType().trim().equals("Reset to default")) {
+            //reset setting
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Reset to default")
+                    .setMessage("Do you really want to reset to default?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            presenter.reset(strToken);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
         }
     }
 
@@ -131,10 +199,9 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
             if (!data.getSelectedValue().equals("0")) {
                 if (data.getSelectedValue().equals("Male")) {
                     maleRadio.setChecked(true);
-                }else if (data.getSelectedValue().equals("Female")) {
+                } else if (data.getSelectedValue().equals("Female")) {
                     maleRadio.setChecked(true);
-                }
-                else {
+                } else {
                     anyRadio.setChecked(true);
                 }
             }
@@ -153,7 +220,7 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
                     type = "Male";
                 } else if (genderRadioGroup.getCheckedRadioButtonId() == R.id.femaleRadio) {
                     type = "Female";
-                }else if (genderRadioGroup.getCheckedRadioButtonId() == R.id.anyRadio) {
+                } else if (genderRadioGroup.getCheckedRadioButtonId() == R.id.anyRadio) {
                     type = "Any";
                 }
                 dialog.dismiss();
@@ -287,9 +354,9 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
                     professionalSpinner.setSelection(i);
                     break;
                 } else {
-                    if(data.getSelectedValue().equals("0")){
+                    if (data.getSelectedValue().equals("0")) {
                         professionalSpinner.setSelection(0);
-                    }else {
+                    } else {
                         professionalSpinner.setSelection(i);
                     }
                 }
@@ -306,7 +373,7 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
                         otherEdit.setVisibility(View.GONE);
                     }
                     professionSelection = list.get(position);
-                }else {
+                } else {
                     otherEdit.setVisibility(View.GONE);
                 }
             }
@@ -329,7 +396,7 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
                 if (professionSelection.equals("Others")) {
                     if (otherEdit.getText().toString().trim().equals("")) {
                         Toast.makeText(getContext(), "Please fill above details", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         updateSetting(strToken, data.getId(), otherEdit.getText().toString().trim());
                         dialog.dismiss();
                     }

@@ -57,15 +57,15 @@ public class CreateProfilePresenter extends BasePresenter<CreateProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
 
-    public void updateProfile(RequestBody key,RequestBody client,RequestBody token, RequestBody name, RequestBody deg, RequestBody email, RequestBody mobile, RequestBody aboutme, MultipartBody.Part image) {
+    public void updateProfile(RequestBody key, RequestBody client, RequestBody token, RequestBody name, RequestBody deg, RequestBody email, RequestBody mobile, RequestBody aboutme, MultipartBody.Part image) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateProfileMainResponse> call = api.create_profile_image(key,client , token, name, email, mobile, deg, aboutme,image);
+        Call<CreateProfileMainResponse> call = api.create_profile_image(key, client, token, name, email, mobile, deg, aboutme, image);
         call.enqueue(new Callback<CreateProfileMainResponse>() {
             @Override
             public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {

@@ -4,6 +4,7 @@ package com.liftPlzz.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
     ImageView layoutLine1;
     @BindView(R.id.layoutEditText)
     LinearLayout layoutEditText;
+    private String referral_id = null;
 
     @Override
     protected int createLayout() {
@@ -68,10 +70,15 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
     @Override
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            referral_id = bundle.getString("referral_id");
+        }
     }
 
 
-    @OnClick({ R.id.imageViewNext})
+    @OnClick({R.id.imageViewNext})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewNext:
@@ -93,12 +100,12 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
         OTpFragment.setOtpData(response.getOtp());
         OTpFragment.setMobileNumber(response.getData().getMobile());
         OTpFragment.setNewUser(response.getNewUser());
-        presenter.openOTP();
+        presenter.openOTP(referral_id);
     }
 
     public void otpScreen(String mobileNo) {
         OTpFragment.setMobileNumber(mobileNo);
-        presenter.openOTP();
+        presenter.openOTP(referral_id);
     }
 
 

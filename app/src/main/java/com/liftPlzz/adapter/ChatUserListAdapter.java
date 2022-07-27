@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.liftPlzz.R;
 import com.liftPlzz.model.chatuser.ChatUser;
-import com.liftPlzz.model.ridebyvehicletypemodel.DriverData;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatUserListAdapter extends RecyclerView.Adapter<ChatUserListAdapter.ViewHolder> {
 
@@ -51,8 +51,13 @@ public class ChatUserListAdapter extends RecyclerView.Adapter<ChatUserListAdapte
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ChatUser driverData = arrayList.get(position);
         holder.tvName.setText(driverData.getName());
-        holder.tvMobile.setText(driverData.getMobile());
 
+        if (driverData.getIs_contact_public()==0){
+            holder.tvMobile.setVisibility(View.GONE);
+        }else {
+            holder.tvMobile.setText(driverData.getMobile());
+            holder.tvMobile.setVisibility(View.VISIBLE);
+        }
 
         try {
             Glide.with(context).load(driverData.getImage())
@@ -68,7 +73,7 @@ public class ChatUserListAdapter extends RecyclerView.Adapter<ChatUserListAdapte
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.img_driver)
-        AppCompatImageView imgDriver;
+        CircleImageView imgDriver;
         @BindView(R.id.tv_name)
         AppCompatTextView tvName;
         @BindView(R.id.tv_mob)
@@ -83,7 +88,7 @@ public class ChatUserListAdapter extends RecyclerView.Adapter<ChatUserListAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("call this","call here");
+                    Log.e("call this", "call here");
                     itemListener.onSendButtonClick(arrayList.get(getAdapterPosition()));
                 }
             });
@@ -92,7 +97,5 @@ public class ChatUserListAdapter extends RecyclerView.Adapter<ChatUserListAdapte
 
     public interface ItemListener {
         void onSendButtonClick(ChatUser chatUser);
-
-        void onUserImageClick(int id);
     }
 }

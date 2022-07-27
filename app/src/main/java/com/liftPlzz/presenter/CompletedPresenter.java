@@ -54,7 +54,7 @@ public class CompletedPresenter extends BasePresenter<CompletedView> {
             @Override
             public void onFailure(Call<ResponseCompletedLift> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

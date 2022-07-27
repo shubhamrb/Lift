@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_driver"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_60"

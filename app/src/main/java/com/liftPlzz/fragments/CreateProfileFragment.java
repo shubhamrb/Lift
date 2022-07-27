@@ -1,6 +1,8 @@
 package com.liftPlzz.fragments;
 
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -57,16 +58,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-
-import static android.app.Activity.RESULT_OK;
-import static com.liftPlzz.utils.Constants.EMAIL;
 
 
 /**
@@ -107,6 +104,7 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
     boolean isImage = false;
     File file;
     SignInButton signInButton;
+    private String referral_id = null;
 
     public static void setUser(User user) {
         CreateProfileFragment.user = user;
@@ -130,6 +128,10 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
 
     @Override
     protected void bindData() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            referral_id = bundle.getString("referral_id");
+        }
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         mCallbackManager = CallbackManager.Factory.create();
         editTextMobile.setText(sharedPreferences.getString(Constants.MOBILE, ""));
@@ -212,6 +214,7 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
                 });
         printKeyHash(getActivity());
     }
+
     public static String printKeyHash(Context context) {
         PackageInfo packageInfo;
         String key = null;
@@ -235,8 +238,7 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
             }
         } catch (PackageManager.NameNotFoundException e1) {
             Log.e("Name not found", e1.toString());
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             Log.e("No such an algorithm", e.toString());
         } catch (Exception e) {
             Log.e("Exception", e.toString());
@@ -352,6 +354,7 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
         sharedPreferences.edit().putString(Constants.MOBILE, response.getUser().getMobile()).apply();
         sharedPreferences.edit().putString(Constants.USER_ID, String.valueOf(response.getUser().getId())).apply();
         Intent intent = new Intent(getActivity(), HomeActivity.class);
+        intent.putExtra("referral_id", referral_id);
         startActivity(intent);
         getActivity().finish();
     }

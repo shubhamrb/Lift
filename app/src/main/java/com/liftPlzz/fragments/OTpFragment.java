@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -37,7 +38,6 @@ import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.HomeActivity;
-import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.resendOtp.Response;
 import com.liftPlzz.model.sendotp.SendOtpResponse;
@@ -93,6 +93,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     private FirebaseAuth firebaseAuth;
     SmsBroadcastReceiver mSmsBroadcastReceiver;
     private boolean isManual = false;
+    private String referral_id;
 
 
     public static void setOtpData(Integer otpData) {
@@ -127,6 +128,11 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     @Override
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            referral_id = bundle.getString("referral_id");
+        }
         reverseTimer(30, textViewResendOtp);
         firebaseAuth = FirebaseAuth.getInstance();
         sendCode();
@@ -363,7 +369,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
         textViewBack.setOnClickListener(view -> {
             try {
-                presenter.openLogin();
+                presenter.openLogin(referral_id);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -401,7 +407,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     public void setLoginData(SendOtpResponse response) {
         if (response.getNewUser() == 1) {
             sharedPreferences.edit().putString(Constants.TOKEN, response.getToken()).apply();
-            presenter.openCreateProfile();
+            presenter.openCreateProfile(referral_id);
         } else {
             sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, true).apply();
             sharedPreferences.edit().putString(Constants.TOKEN, response.getToken()).apply();
@@ -409,7 +415,9 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
             sharedPreferences.edit().putString(Constants.EMAIL, response.getData().getEmail()).apply();
             sharedPreferences.edit().putString(Constants.MOBILE, response.getData().getMobile()).apply();
             sharedPreferences.edit().putString(Constants.USER_ID, String.valueOf(response.getData().getId())).apply();
+            sharedPreferences.edit().putString(Constants.IMAGE, String.valueOf(response.getData().getImage())).apply();
             Intent intent = new Intent(getActivity(), HomeActivity.class);
+            intent.putExtra("referral_id", referral_id);
             startActivity(intent);
             getActivity().finish();
 

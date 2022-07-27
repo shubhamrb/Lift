@@ -86,6 +86,13 @@ public class User {
     @SerializedName("total_point")
     @Expose
     private String total_point;
+    @SerializedName("is_contact_public")
+    @Expose
+    private int is_contact_public;
+
+    @SerializedName("is_block")
+    @Expose
+    private boolean is_block;
 
     public DriveLocation getLocation() {
         return driveLocation;
@@ -94,6 +101,23 @@ public class User {
     @SerializedName("location")
     @Expose
     private DriveLocation driveLocation;
+
+
+    public boolean isIs_block() {
+        return is_block;
+    }
+
+    public void setIs_block(boolean is_block) {
+        this.is_block = is_block;
+    }
+
+    public int getIs_contact_public() {
+        return is_contact_public;
+    }
+
+    public void setIs_contact_public(int is_contact_public) {
+        this.is_contact_public = is_contact_public;
+    }
 
     public Integer getLift_id() {
         return lift_id;

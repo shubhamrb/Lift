@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rel_faq"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbarNew"
+        layout="@layout/toolbar_back_title_layout" />
+
+
+    <LinearLayout
+        android:id="@+id/rl_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarNew"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <RatingBar
+                android:id="@+id/totalRating"
+                style="@style/Widget.AppCompat.RatingBar.Indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="0"
+                android:scaleX=".7"
+                android:scaleY=".7"
+                android:stepSize="1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textTotalRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:fontFamily="@font/gotham_medium"
+                android:padding="@dimen/dp_5"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@color/quantum_grey"
+                android:textSize="@dimen/sp_14" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/quantum_grey" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textFive"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/star_select"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/gotham_medium"
+                    android:padding="@dimen/dp_5"
+                    android:text="5"
+                    android:textAlignment="center"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14"
+                    app:drawableTint="@color/colorBlack" />
+
+                <ProgressBar
+                    android:id="@+id/progressFive"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/textFive"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textTotalFive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/progressFive"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:text="0"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textFour"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/star_select"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/gotham_medium"
+                    android:padding="@dimen/dp_5"
+                    android:text="4"
+                    android:textAlignment="center"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14"
+                    app:drawableTint="@color/colorBlack" />
+
+                <ProgressBar
+                    android:id="@+id/progressFour"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/textFour"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textTotalFour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/progressFour"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:text="0"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textThree"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/star_select"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/gotham_medium"
+                    android:padding="@dimen/dp_5"
+                    android:text="3"
+                    android:textAlignment="center"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14"
+                    app:drawableTint="@color/colorBlack" />
+
+                <ProgressBar
+                    android:id="@+id/progressThree"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/textThree"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textTotalThree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/progressThree"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:text="0"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textTwo"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/star_select"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/gotham_medium"
+                    android:padding="@dimen/dp_5"
+                    android:text="2"
+                    android:textAlignment="center"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14"
+                    app:drawableTint="@color/colorBlack" />
+
+                <ProgressBar
+                    android:id="@+id/progressTwo"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/textTwo"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textTotalTwo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/progressTwo"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:text="0"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textOne"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/star_select"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/gotham_medium"
+                    android:padding="@dimen/dp_5"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14"
+                    app:drawableTint="@color/colorBlack" />
+
+                <ProgressBar
+                    android:id="@+id/progressOne"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/textOne"
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progress="0" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textTotalOne"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/progressOne"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="start"
+                    android:padding="@dimen/dp_5"
+                    android:text="0"
+                    android:textColor="@color/quantum_grey"
+                    android:textSize="@dimen/sp_14" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/rl_top"
+        android:background="@color/colorGrey" />
+
+    <Spinner
+        android:id="@+id/filter_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view"
+        android:background="@null"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginBottom="@dimen/_3sdp" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/filter_spinner"
+        android:background="@color/colorGrey"
+        android:layout_marginBottom="@dimen/_10sdp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view1"
+        tools:listitem="@layout/row_review_item" />
+</RelativeLayout>

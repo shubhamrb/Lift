@@ -1,67 +1,75 @@
 package com.liftPlzz.activity;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
-import android.view.WindowManager;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.liftPlzz.R;
 import com.liftPlzz.utils.Constants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SplashActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences sharedPreferencesIntro;
+    private String referral_id = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_splash);
-//        printKeyHash(this);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         sharedPreferencesIntro =
                 getSharedPreferences(Constants.SHARED_PREF_INTRO, Context.MODE_PRIVATE);
+        initFirebaseAnalytics();
+    }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (sharedPreferencesIntro.getBoolean(Constants.IS_INTRO, false)) {
-                    if (sharedPreferences.getBoolean(Constants.IS_LOGIN, false)) {
-                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                        finish();
-                    } else {
-                        startActivity(new Intent(SplashActivity.this, AuthActivity.class));
-                        finish();
+    private void initFirebaseAnalytics() {
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, pendingDynamicLinkData -> {
+                    Uri deepLink;
+                    if (pendingDynamicLinkData != null && pendingDynamicLinkData.getLink() != null) {
+                        deepLink = pendingDynamicLinkData.getLink();
+                        List<String> pathSeg = deepLink.getPathSegments();
+                        if (pathSeg.size() > 1) {
+                            referral_id = pathSeg.get(1);
+                            Log.e("Referral_id", referral_id);
+                        }
                     }
+                    goToNext();
+                })
+                .addOnFailureListener(this, e -> {
+                    goToNext();
+                });
+    }
+
+    private void goToNext() {
+        new Handler().postDelayed(() -> {
+            if (sharedPreferencesIntro.getBoolean(Constants.IS_INTRO, false)) {
+                if (sharedPreferences.getBoolean(Constants.IS_LOGIN, false)) {
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("referral_id", referral_id));
                 } else {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
+                    startActivity(new Intent(SplashActivity.this, AuthActivity.class).putExtra("referral_id", referral_id));
                 }
+            } else {
+                startActivity(new Intent(SplashActivity.this, MainActivity.class).putExtra("referral_id", referral_id));
             }
+            finish();
         }, 2000);
-
-
     }
 
     public static String printKeyHash(Context context) {
@@ -87,8 +95,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         } catch (PackageManager.NameNotFoundException e1) {
             Log.e("Name not found", e1.toString());
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             Log.e("No such an algorithm", e.toString());
         } catch (Exception e) {
             Log.e("Exception", e.toString());
@@ -96,6 +103,4 @@ public class SplashActivity extends AppCompatActivity {
 
         return key;
     }
-
-
 }

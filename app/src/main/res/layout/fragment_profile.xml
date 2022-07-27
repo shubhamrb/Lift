@@ -61,38 +61,48 @@
             android:src="@drawable/profile_icon"
             android:visibility="gone" />
 
-        <me.relex.circleindicator.CircleIndicator
-            android:id="@+id/indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_40"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_10"
-            android:padding="@dimen/dp_3"
-            app:ci_drawable="@drawable/dot_green"
-            app:ci_drawable_unselected="@drawable/dot_grey" />
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/_10sdp">
 
             <ImageView
                 android:id="@+id/imgback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20sp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
                 android:src="@drawable/ic_back"
                 android:visibility="gone"
-                app:tint="@color/colorAccent"></ImageView>
+                app:tint="@color/colorAccent" />
+
+            <me.relex.circleindicator.CircleIndicator
+                android:id="@+id/indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_40"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_10"
+                android:padding="@dimen/dp_3"
+                app:ci_drawable="@drawable/dot_green"
+                app:ci_drawable_unselected="@drawable/dot_grey" />
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewRating"
@@ -103,12 +113,25 @@
                     android:drawablePadding="@dimen/dp_5"
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dp_20"
-                    android:paddingRight="@dimen/dp_20"
                     android:text="1/5"
                     android:textAllCaps="false"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:background="@color/colorBlack" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewReviewCount"
@@ -117,35 +140,39 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dp_20"
-                    android:paddingRight="@dimen/dp_20"
                     android:text="(0 Reviews)"
                     android:textAllCaps="false"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/profilePercentTxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/dp_20"
-                    android:paddingRight="@dimen/dp_20"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/sp_16" />
-
-                <ImageView
-                    android:id="@+id/imageViewEdit"
-                    android:layout_width="23dp"
-                    android:layout_height="@dimen/dp_25"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginEnd="@dimen/dp_10"
-                    android:src="@drawable/ic_pencil"
-                    android:visibility="visible" />
-
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:background="@color/colorBlack" />
             </LinearLayout>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/profilePercentTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:textAllCaps="false"
+                android:textColor="@color/colorText"
+                android:textSize="@dimen/sp_16" />
+
+            <ImageView
+                android:id="@+id/imageViewEdit"
+                android:layout_width="23dp"
+                android:layout_height="@dimen/dp_25"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:src="@drawable/ic_pencil"
+                android:visibility="visible" />
+
         </LinearLayout>
 
         <View
@@ -314,7 +341,6 @@
         <ScrollView
             android:id="@+id/scrollViewAbout"
             android:layout_width="match_parent"
-
             android:layout_height="wrap_content">
 
             <LinearLayout
@@ -503,7 +529,6 @@
                         android:src="@drawable/ic_verified_24" />
                 </RelativeLayout>
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -655,6 +680,7 @@
 
                     </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
 
         </ScrollView>
@@ -663,7 +689,7 @@
             android:id="@+id/recyclerViewReview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_310"
-            android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
+            android:visibility="gone" />
 
     </LinearLayout>
 

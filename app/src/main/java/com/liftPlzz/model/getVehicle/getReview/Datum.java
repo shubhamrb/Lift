@@ -5,104 +5,117 @@ import com.google.gson.annotations.SerializedName;
 
 public class Datum {
 
-@SerializedName("review_id")
-@Expose
-private Integer reviewId;
-@SerializedName("user_image")
-@Expose
-private String userImage;
-@SerializedName("from_user")
-@Expose
-private String fromUser;
-@SerializedName("to_user")
-@Expose
-private String toUser;
-@SerializedName("review_category")
-@Expose
-private String reviewCategory;
-@SerializedName("review_question")
-@Expose
-private String reviewQuestion;
-@SerializedName("rating")
-@Expose
-private Integer rating;
-@SerializedName("feedback")
-@Expose
-private String feedback;
-@SerializedName("review_date")
-@Expose
-private String reviewDate;
+    @SerializedName("review_id")
+    @Expose
+    private Integer reviewId;
+    @SerializedName("user_image")
+    @Expose
+    private String userImage;
+    @SerializedName("from_user")
+    @Expose
+    private String fromUser;
+    @SerializedName("rating")
+    @Expose
+    private Integer rating;
+    @SerializedName("feedback")
+    @Expose
+    private String feedback;
+    @SerializedName("review_date")
+    @Expose
+    private String reviewDate;
+    @SerializedName("total_like")
+    @Expose
+    private Integer total_like;
 
-public Integer getReviewId() {
-return reviewId;
-}
+    @SerializedName("total_dislike")
+    @Expose
+    private Integer total_dislike;
 
-public void setReviewId(Integer reviewId) {
-this.reviewId = reviewId;
-}
+    @SerializedName("is_like")
+    @Expose
+    private boolean is_like;
 
-public String getUserImage() {
-return userImage;
-}
+    @SerializedName("is_dislike")
+    @Expose
+    private boolean is_dislike;
 
-public void setUserImage(String userImage) {
-this.userImage = userImage;
-}
+    public Integer getReviewId() {
+        return reviewId;
+    }
 
-public String getFromUser() {
-return fromUser;
-}
+    public void setReviewId(Integer reviewId) {
+        this.reviewId = reviewId;
+    }
 
-public void setFromUser(String fromUser) {
-this.fromUser = fromUser;
-}
+    public String getUserImage() {
+        return userImage;
+    }
 
-public String getToUser() {
-return toUser;
-}
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
 
-public void setToUser(String toUser) {
-this.toUser = toUser;
-}
+    public String getFromUser() {
+        return fromUser;
+    }
 
-public String getReviewCategory() {
-return reviewCategory;
-}
+    public void setFromUser(String fromUser) {
+        this.fromUser = fromUser;
+    }
 
-public void setReviewCategory(String reviewCategory) {
-this.reviewCategory = reviewCategory;
-}
+    public Integer getRating() {
+        return rating;
+    }
 
-public String getReviewQuestion() {
-return reviewQuestion;
-}
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
 
-public void setReviewQuestion(String reviewQuestion) {
-this.reviewQuestion = reviewQuestion;
-}
+    public String getFeedback() {
+        return feedback;
+    }
 
-public Integer getRating() {
-return rating;
-}
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
 
-public void setRating(Integer rating) {
-this.rating = rating;
-}
+    public String getReviewDate() {
+        return reviewDate;
+    }
 
-public String getFeedback() {
-return feedback;
-}
+    public void setReviewDate(String reviewDate) {
+        this.reviewDate = reviewDate;
+    }
 
-public void setFeedback(String feedback) {
-this.feedback = feedback;
-}
+    public Integer getTotal_like() {
+        return total_like;
+    }
 
-public String getReviewDate() {
-return reviewDate;
-}
+    public void setTotal_like(Integer total_like) {
+        this.total_like = total_like;
+    }
 
-public void setReviewDate(String reviewDate) {
-this.reviewDate = reviewDate;
-}
+    public Integer getTotal_dislike() {
+        return total_dislike;
+    }
 
+    public void setTotal_dislike(Integer total_dislike) {
+        this.total_dislike = total_dislike;
+    }
+
+    public boolean isIs_like() {
+        return is_like;
+    }
+
+    public void setIs_like(boolean is_like) {
+        this.is_like = is_like;
+    }
+
+    public boolean isIs_dislike() {
+        return is_dislike;
+    }
+
+    public void setIs_dislike(boolean is_dislike) {
+        this.is_dislike = is_dislike;
+    }
 }

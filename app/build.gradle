@@ -65,6 +65,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-dynamic-links'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
@@ -113,6 +114,8 @@ dependencies {
     //TODO Raghav
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
+    implementation 'pub.devrel:easypermissions:3.0.0'
 
 }
 apply plugin: 'com.google.gms.google-services'

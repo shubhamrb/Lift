@@ -1,24 +1,27 @@
 package com.liftPlzz.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.liftPlzz.R;
 import com.liftPlzz.model.ridebyvehicletypemodel.DriverData;
+import com.liftPlzz.utils.Constants;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.ViewHolder> {
 
@@ -26,18 +29,20 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
     private Context context;
     private ArrayList<DriverData> arrayList;
     private ItemListener itemListener;
+    private boolean isFind = true;
+    private final SharedPreferences sharedPreferences;
 
-
-    public DriverListAdapter(Context context, ArrayList<DriverData> arrayList, ItemListener itemListener) {
+    public DriverListAdapter(Context context, ArrayList<DriverData> arrayList, ItemListener itemListener, boolean isFind) {
         this.context = context;
         this.arrayList = arrayList;
         this.itemListener = itemListener;
+        this.isFind = isFind;
+        sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+
     }
 
     @Override
     public int getItemCount() {
-//        if (arrayList == null)
-//            return 0;
         return arrayList.size();
     }
 
@@ -53,7 +58,6 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         DriverData driverData = arrayList.get(position);
         holder.tvName.setText("" + driverData.getName());
         holder.tv_time.setText(driverData.getLfit_time());
-        holder.tv_na.setText("Point: " + driverData.getTotal_point());
         holder.price_per_seat.setText("" + driverData.getPrice_per_seat());
 
 
@@ -72,8 +76,30 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
             holder.total_km.setText("Total km: " + driverData.getTotal_km());
         holder.tv_date.setText(driverData.getLiftDate());
         holder.tv_rate.setText("" + driverData.getRating() + " " + "(" + driverData.getTotal_review() + ")");
-        holder.tvRatePerKm.setText("Point per km: " + driverData.getRatePerKm() + "/km");
-        holder.textViewSeats.setText("Available Seat: " + driverData.getPaidSeats());
+
+        if (isFind) {
+            holder.tvRatePerKm.setText("Point per km: " + driverData.getRatePerKm() + "/km");
+            holder.textViewSeats.setText(" " + driverData.getPaidSeats());
+            holder.tvRatePerKm.setVisibility(View.VISIBLE);
+            holder.textViewSeats.setVisibility(View.VISIBLE);
+            holder.img_filled_seat.setVisibility(View.VISIBLE);
+            holder.tv_na.setVisibility(View.GONE);
+
+        } else {
+            holder.tvRatePerKm.setVisibility(View.GONE);
+            holder.textViewSeats.setVisibility(View.GONE);
+            holder.img_filled_seat.setVisibility(View.GONE);
+
+            if (driverData.getUserId().equals(sharedPreferences.getString(Constants.USER_ID, ""))) {
+                holder.tv_na.setText("Point: " + driverData.getTotal_point());
+                holder.tv_na.setVisibility(View.VISIBLE);
+            } else {
+                holder.tv_na.setVisibility(View.GONE);
+            }
+        }
+
+
+        holder.textVacantSeats.setText(" " + driverData.getVacant_seats());
         if (driverData.getRequestAlreadySend() == 0) {
             holder.btnSendRequest.setText(context.getResources().getString(R.string.send_request));
         } else {
@@ -111,7 +137,7 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.img_driver)
-        AppCompatImageView imgDriver;
+        CircleImageView imgDriver;
         @BindView(R.id.tv_name)
         AppCompatTextView tvName;
         @BindView(R.id.tv_time)
@@ -139,6 +165,13 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         AppCompatTextView total_km;
         @BindView(R.id.price_per_seat)
         AppCompatTextView price_per_seat;
+
+        @BindView(R.id.textVacantSeats)
+        AppCompatTextView textVacantSeats;
+        @BindView(R.id.img_filled_seat)
+        ImageView img_filled_seat;
+        @BindView(R.id.img_vacant_seat)
+        ImageView img_vacant_seat;
 
 
         ViewHolder(View itemView) {

@@ -8,6 +8,7 @@ public class MenuItem {
         this.title = title;
         this.icon = icon;
     }
+
     int id;
     String title;
     int icon;

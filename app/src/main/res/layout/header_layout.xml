@@ -14,12 +14,11 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_5">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageViewConactImage"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
             android:layout_gravity="center"
-            android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher_round" />
 
         <LinearLayout

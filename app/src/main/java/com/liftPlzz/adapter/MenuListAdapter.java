@@ -5,9 +5,11 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -54,6 +56,7 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.textViewName.setText(verifiedLists.get(position).getTitle());
         holder.imageViewConactImage.setImageResource(verifiedLists.get(position).getIcon());
+        holder.imageViewConactImage.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorWhite)));
 
     }
 
@@ -63,7 +66,7 @@ public class MenuListAdapter extends RecyclerView.Adapter<MenuListAdapter.ViewHo
         @BindView(R.id.textViewName)
         AppCompatTextView textViewName;
         @BindView(R.id.imageViewConactImage)
-        AppCompatImageView imageViewConactImage;
+        ImageView imageViewConactImage;
 
         ViewHolder(View itemView) {
             super(itemView);

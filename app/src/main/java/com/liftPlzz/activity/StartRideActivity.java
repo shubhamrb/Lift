@@ -2,6 +2,7 @@ package com.liftPlzz.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,6 +22,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Rational;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -60,10 +64,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -99,6 +105,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +159,11 @@ public class StartRideActivity extends AppCompatActivity implements
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private List<LiftUsers> liftUsersList = new ArrayList<>();
+    private List<LatLng> pontos = new ArrayList<>();
+    private Polyline polyline;
+    private String wayPoints = "";
+    private Marker startMarker;
+    private boolean isTrackingPath = false;
 
 
     /**
@@ -171,8 +183,6 @@ public class StartRideActivity extends AppCompatActivity implements
                         return;
                     } else {
                         if (location != null) {
-//                Log.e(TAG , "Location Received"+Utils.getLocationText(location));
-                            // ...
                             if (Previouslocation == null) {
                                 historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
                             } else if (location.getLatitude() == Previouslocation.getLatitude() || (location.getLongitude() == Previouslocation.getLongitude())) {
@@ -197,8 +207,7 @@ public class StartRideActivity extends AppCompatActivity implements
                                             Location targetLocation = new Location("");//provider name is unnecessary
                                             targetLocation.setLatitude(Double.parseDouble(Latbroken[0]));//your coords of course
                                             targetLocation.setLongitude(Double.parseDouble(Latbroken[1]));
-//                                Location retrivedloc = new Location(Latbroken[0] , Latbroken[1]) ;
-                                            placeTheCUrrentmarker(targetLocation);
+//                                            placeTheCUrrentmarker(targetLocation);
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -216,11 +225,6 @@ public class StartRideActivity extends AppCompatActivity implements
                                 }
                             });
                         }
-//                placeTheCUrrentmarker(location);
-//                mDatabase = FirebaseDatabase.getInstance().getReference();
-//                mDatabase.child("LocationMap").child("Drivers").child("1").setValue(name);
-//                Toast.makeText(DriverUserLocationActivity.this, Utils.getLocationText(location),
-//                        Toast.LENGTH_SHORT).show();
                     }
                 } else if (bywhomRidestarted == 1) {
                     Log.e("Driver started is", "User" + bywhomRidestarted);
@@ -239,11 +243,19 @@ public class StartRideActivity extends AppCompatActivity implements
                 .draggable(true)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
                 .title("Driver"));
-        /*AnimationUtil.animateMarkerTo(
-                mDriverMarker,
-                latLngOrigin);*/
+
+        boolean contains = mGoogleMap.getProjection()
+                .getVisibleRegion()
+                .latLngBounds
+                .contains(latLngOrigin);
+
         if (!apimazoomcompleted) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
+        } else {
+            if (!contains) {
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(latLngOrigin).zoom(15.0f).build();
+                mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
         }
         apimazoomcompleted = true;
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -304,6 +316,54 @@ public class StartRideActivity extends AppCompatActivity implements
         smsButton = findViewById(R.id.smsButton);
         callButton.setBackgroundResource(R.drawable.telephone);
         smsButton.setBackgroundResource(R.drawable.sms);
+        mainContext = this;
+        HistoryStoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        startedcount = 0;
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_matching);
+        strToken = sharedPreferences.getString(Constants.TOKEN, "");
+        if (getIntent() != null) {
+            lift = (Lift) getIntent().getSerializableExtra(Constants.LIFT_OBJ);
+        }
+
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            imageViewOption.setVisibility(View.VISIBLE);
+        } else {
+            imageViewOption.setVisibility(View.GONE);
+        }
+
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            txtShareCode.setVisibility(View.VISIBLE);
+        } else {
+            toolBarTitle.setText(R.string.start_ride);
+            txtShareCode.setVisibility(View.GONE);
+        }
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            if (lift.getIs_driver_start() == 1) {
+                rel_bottom.setVisibility(View.GONE);
+                bywhomRidestarted = 0;
+                buildLocationCallBack();
+                buildLocationRequest();
+                getLocationAPI();
+            } else {
+                tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
+            }
+        } else if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            getUsers(2);
+            if (lift.getIs_user_start() == 1) {
+                tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
+                Log.e("Lift", "Found");
+                request_id = lift.getRequest_id();
+                buildLocationCallBack();
+                buildLocationRequest();
+                getLocationAPI();
+            } else {
+                tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
+            }
+        } else {
+            Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
+        }
+
         sosnumbers();
 
         callButton.setOnClickListener(new View.OnClickListener() {
@@ -333,16 +393,6 @@ public class StartRideActivity extends AppCompatActivity implements
             }
         });
 
-        mainContext = this;
-        if (getIntent() != null) {
-            lift = (Lift) getIntent().getSerializableExtra(Constants.LIFT_OBJ);
-        }
-
-        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            imageViewOption.setVisibility(View.VISIBLE);
-        } else {
-            imageViewOption.setVisibility(View.GONE);
-        }
 
         imageViewOption.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -351,59 +401,15 @@ public class StartRideActivity extends AppCompatActivity implements
             }
         });
 
-//      getUsers(2);
-
-        /*if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
-
-        }*/
-
         Log.e("lift.getLiftType()", "" + lift.getLiftType());
-        HistoryStoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        startedcount = 0;
-        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            txtShareCode.setVisibility(View.VISIBLE);
-        } else {
-            toolBarTitle.setText(R.string.start_ride);
-            txtShareCode.setVisibility(View.GONE);
-        }
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_matching);
-        strToken = sharedPreferences.getString(Constants.TOKEN, "");
+
         myReceiver = new MyReceiver();
         mapFragment.getMapAsync(this);
 
-
-        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            if (lift.getIs_driver_start() == 1) {
-                rel_bottom.setVisibility(View.GONE);
-                bywhomRidestarted = 0;
-                buildLocationCallBack();
-                buildLocationRequest();
-                getLocationAPI();
-            } else {
-                tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
-            }
-        } else if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            getUsers(2);
-            if (lift.getIs_user_start() == 1) {
-                tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
-                Log.e("Lift", "Found");
-//                getUsers(2);
-                request_id = lift.getRequest_id();
-                buildLocationCallBack();
-                buildLocationRequest();
-                getLocationAPI();
-            } else {
-                tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
-            }
-        } else {
-            Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
-        }
     }
 
     private void showUsersListDialog() {
         getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), true);
-
-//        showEndUserListDialog();
     }
 
     @SuppressLint("MissingPermission")
@@ -446,16 +452,11 @@ public class StartRideActivity extends AppCompatActivity implements
 
 
     private void InitLocation(String user_id, String tracking_lift_id) {
-        // Check that the user hasn't revoked permissions by going to Settings.
         if (Utils.requestingLocationUpdates(this)) {
             if (!checkPermissions()) {
                 requestPermissions();
             }
         }
-
-//        tvStartRide.setText(mainContext.getString(R.string.end_ride));
-
-        //++++++++++++++++++++++++++++++++Database+++++++++++++++++++++++++++++++++++++++
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -468,12 +469,13 @@ public class StartRideActivity extends AppCompatActivity implements
                     return;
                 }
                 startpoint = Objects.requireNonNull(dataSnapshot.getValue()).toString().split(",");
-                if (driverlocationcount == 0) {
+                /*if (driverlocationcount == 0) {
                     placeDriver(startpoint, 0);
                     driverlocationcount = 1;
                 } else {
                     placeDriver(startpoint, 1);
-                }
+                }*/
+                placeDriver(startpoint);
                 driverstarted = true;
             }
 
@@ -489,7 +491,7 @@ public class StartRideActivity extends AppCompatActivity implements
         lastKnownLocation.addValueEventListener(postListener);
     }
 
-    private void placeDriver(String[] startpoint, int driverlocationcountx) {
+    /*private void placeDriver(String[] startpoint, int driverlocationcountx) {
         Log.d("usersresponse1", String.valueOf(startpoint));
         double latitude = Double.parseDouble(startpoint[0]);
         double longitude = Double.parseDouble(startpoint[1]);
@@ -497,13 +499,17 @@ public class StartRideActivity extends AppCompatActivity implements
         if (driverlocationcountx == 0) {
             prelatLng = new LatLng(latitude, longitude);
             Log.d("usersresponse1", "" + driverlocationcount);
-            mGoogleMap.addMarker(new MarkerOptions()
+
+            if (startMarker != null) {
+                startMarker.remove();
+            }
+            startMarker = mGoogleMap.addMarker(new MarkerOptions()
                     .position(prelatLng)
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker())
                     .title("Driver Start here"));
+
             linelocationList.add(prelatLng);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
         } else {
             driverlocationcount = 1;
             linelocationList.add(latLng);
@@ -511,34 +517,69 @@ public class StartRideActivity extends AppCompatActivity implements
             polyOptions.color(Color.RED);
             polyOptions.width(5);
             polyOptions.addAll(linelocationList);
-            mGoogleMap.clear();
-            mGoogleMap.addPolyline(polyOptions);
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (LatLng latLngx : linelocationList) {
-                builder.include(latLngx);
+
+            if (startMarker != null) {
+                startMarker.remove();
             }
-            final LatLngBounds bounds = builder.build();
-            //BOUND_PADDING is an int to specify padding of bound.. try 100.
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-            mGoogleMap.animateCamera(cu);
+            if (mDriverMarker!=null){
+                mDriverMarker.remove();
+            }
+            mGoogleMap.addPolyline(polyOptions);
 
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mGoogleMap.addMarker(new MarkerOptions()
+
+            startMarker = mGoogleMap.addMarker(new MarkerOptions()
                     .position(prelatLng)
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker())
                     .title("Start"));
+
 
             mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker())
                     .title("Driver"));
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
         }
 
-//
+        */
+    /*   mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));*//*
 
+        try {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(prelatLng);
+            builder.include(latLng);
+            LatLngBounds bounds = builder.build();
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+            mGoogleMap.moveCamera(cu);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }*/
+
+
+    private void placeDriver(String[] startpoint) {
+        Log.d("usersresponse1", Arrays.toString(startpoint));
+
+        double latitude = Double.parseDouble(startpoint[0]);
+        double longitude = Double.parseDouble(startpoint[1]);
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        String current = latitude + "," + longitude;
+
+        if (mDriverMarker != null) {
+            mDriverMarker.remove();
+        }
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.defaultMarker())
+                .title("Driver"));
+
+        new GetDirection().execute(current, lift.getEndLatlong());
     }
 
     /**
@@ -591,12 +632,6 @@ public class StartRideActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btn_start_ride:
-               /*Intent intent = new Intent(
-                        this,
-                       LiveLocation.class);
-                intent.setAction("start_service");
-                ContextCompat.startForegroundService(this, intent);*/
-
                 try {
                     String txt = tvStartRide.getText().toString();
                     if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
@@ -618,8 +653,6 @@ public class StartRideActivity extends AppCompatActivity implements
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                             Log.e("Lift", "end by driver");
                             getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), true);
-
-//                            showEndUserListDialog();
                         } else {
                             endRideCinfirmationDialog(false);
                         }
@@ -825,55 +858,49 @@ public class StartRideActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         if (ActivityCompat.checkSelfPermission(StartRideActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(StartRideActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more detai ls.
             return;
         }
-//        mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-//        LatLng latLngOrigin = new LatLng(22.7244, 75.8839);
-//        origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-//        pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-//        googleMap.addMarker(new MarkerOptions()
-//                .position(latLngOrigin)
-//                .draggable(true)
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-//                .title("First"));
-
-        // [START_EXCLUDE silent]
-//        editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
-//        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-        // Zoom in the Google Map
-//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-//        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
-//        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+        setSrcDestPath();
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
+    private void setSrcDestPath() {
+        if (lift != null) {
+            if (lift.getStartLatlong() != null && lift.getEndLatlong() != null) {
+                LatLng originLatLng = new LatLng(Double.parseDouble(lift.getStartLatlong().split(",")[0]), Double.parseDouble(lift.getStartLatlong().split(",")[1]));
+                LatLng destLatLng = new LatLng(Double.parseDouble(lift.getEndLatlong().split(",")[0]), Double.parseDouble(lift.getEndLatlong().split(",")[1]));
 
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(originLatLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                        .title("pickup"));
+
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(destLatLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                        .title("dropoff"));
+                String origin = lift.getStartLatlong();
+                String destination = lift.getEndLatlong();
+
+                new GetDirection().execute(origin, destination);
+            }
+        }
     }
 
     class GetDirection extends AsyncTask<String, String, String> {
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         protected String doInBackground(String... args) {
-//            String stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
-            String stringUrl = "";
+            String stringUrl;
+            if (!wayPoints.equals("")) {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&waypoints" + wayPoints + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            } else {
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+            }
+            Log.e("URL : ", "" + stringUrl);
             StringBuilder response = new StringBuilder();
             try {
                 URL url = new URL(stringUrl);
@@ -883,22 +910,26 @@ public class StartRideActivity extends AppCompatActivity implements
                     BufferedReader input = new BufferedReader(
                             new InputStreamReader(httpconn.getInputStream()),
                             8192);
-                    String strLine = null;
+                    String strLine;
 
                     while ((strLine = input.readLine()) != null) {
                         response.append(strLine);
                     }
                     input.close();
                 }
+
                 String jsonOutput = response.toString();
+
                 JSONObject jsonObject = new JSONObject(jsonOutput);
+
                 // routesArray contains ALL routes
                 JSONArray routesArray = jsonObject.getJSONArray("routes");
                 // Grab the first route
                 JSONObject route = routesArray.getJSONObject(0);
+
                 JSONObject poly = route.getJSONObject("overview_polyline");
                 String polyline = poly.getString("points");
-//                pontos = decodePoly(polyline);
+                pontos = decodePoly(polyline);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -908,41 +939,85 @@ public class StartRideActivity extends AppCompatActivity implements
         }
 
         protected void onPostExecute(String file_url) {
-
-        }
-
-
-        private List<LatLng> decodePoly(String encoded) {
-            List<LatLng> poly = new ArrayList<LatLng>();
-            int index = 0, len = encoded.length();
-            int lat = 0, lng = 0;
-            while (index < len) {
-                int b, shift = 0, result = 0;
-                do {
-                    b = encoded.charAt(index++) - 63;
-                    result |= (b & 0x1f) << shift;
-                    shift += 5;
-                } while (b >= 0x20);
-                int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-                lat += dlat;
-
-                shift = 0;
-                result = 0;
-                do {
-                    b = encoded.charAt(index++) - 63;
-                    result |= (b & 0x1f) << shift;
-                    shift += 5;
-                } while (b >= 0x20);
-                int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-                lng += dlng;
-
-                LatLng p = new LatLng((((double) lat / 1E5)),
-                        (((double) lng / 1E5)));
-                poly.add(p);
+            LatLng src1 = null;
+            LatLng dest = null;
+            if (polyline != null) {
+                polyline.remove();
             }
-            return poly;
+            for (int i = 0; i < pontos.size() - 1; i++) {
+                Log.e("call poly ", "loop = " + i);
+                LatLng src = pontos.get(i);
+                if (i == 0) {
+                    src1 = src;
+                }
+                dest = pontos.get(i + 1);
+                try {
+                    if (!isTrackingPath) {
+                        mGoogleMap.addPolyline(new PolylineOptions()
+                                .add(new LatLng(src.latitude, src.longitude),
+                                        new LatLng(dest.latitude, dest.longitude))
+                                .width(7).color(Color.BLUE).geodesic(true));
+                    } else {
+                        polyline = mGoogleMap.addPolyline(new PolylineOptions()
+                                .add(new LatLng(src.latitude, src.longitude),
+                                        new LatLng(dest.latitude, dest.longitude))
+                                .width(7).color(Color.GREEN).geodesic(true));
+                    }
+
+                } catch (NullPointerException e) {
+                    Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
+                } catch (Exception e2) {
+                    Log.e("Error", "Exception onPostExecute: " + e2.toString());
+                }
+            }
+            isTrackingPath = true;
+
+            try {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(src1);
+                builder.include(dest);
+                LatLngBounds bounds = builder.build();
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+                mGoogleMap.moveCamera(cu);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private List<LatLng> decodePoly(String encoded) {
+        List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
         }
 
+        return poly;
     }
 
 
@@ -1164,7 +1239,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     JSONObject data = jObject.getJSONObject("data");
                     users = data.getJSONArray("user");
                     tracking_lift_id = data.getString("tracking_lift_id");
-                    if (type == 1) {
+                    /*if (type == 1) {
                         for (int i = 0; i < users.length(); i++) {
                             JSONObject user = users.getJSONObject(i);
                             String[] startpoint = new String[0];
@@ -1175,16 +1250,16 @@ public class StartRideActivity extends AppCompatActivity implements
                                 e.printStackTrace();
                             }
                         }
-                    } else {
-                        try {
-                            JSONObject driver = data.getJSONObject("driver");
-                            driver_id = driver.getString("user_id");
-                            InitLocation(driver_id, tracking_lift_id);
-                        } catch (Exception e) {
-                            Toast.makeText(StartRideActivity.this, "Driver not found or driver has not started the ride", Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
+                    } else {*/
+                    try {
+                        JSONObject driver = data.getJSONObject("driver");
+                        driver_id = driver.getString("user_id");
+                        InitLocation(driver_id, tracking_lift_id);
+                    } catch (Exception e) {
+                        Toast.makeText(StartRideActivity.this, "Driver not found or driver has not started the ride", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
                     }
+                    //}
                 } catch (JSONException e) {
                     Toast.makeText(StartRideActivity.this, "No valid ride information found", Toast.LENGTH_SHORT).show();
                     mService.removeLocationUpdates();
@@ -1515,7 +1590,6 @@ public class StartRideActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-//        mService.removeLocationUpdates();
         ridestarted = false;
         startedcount = 0;
         stopLocationUpdates();
@@ -1524,7 +1598,34 @@ public class StartRideActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        finish();
-        super.onBackPressed();
+        if (lift != null && lift.getIs_driver_start() == 1) {
+            enterPipMode();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    private void enterPipMode() {
+        try {
+            Display d = getWindowManager()
+                    .getDefaultDisplay();
+            Point p = new Point();
+            d.getSize(p);
+            int width = p.x;
+            int height = p.y;
+
+            Rational ratio = new Rational(width, height);
+            PictureInPictureParams.Builder pip_Builder = new PictureInPictureParams.Builder();
+            pip_Builder.setAspectRatio(ratio).build();
+            enterPictureInPictureMode(pip_Builder.build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            super.onBackPressed();
+        }
     }
 }

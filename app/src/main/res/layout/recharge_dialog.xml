@@ -32,7 +32,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@null"
-            android:fontFamily="@font/gotham_light"
+            android:fontFamily="@font/gotham_bold"
             android:gravity="start"
             android:hint="Enter amount."
             android:inputType="number"
@@ -40,7 +40,7 @@
             android:singleLine="true"
             android:textColor="@color/colorBlack"
             android:textColorHint="@color/colorDark"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_18" />
 
     </LinearLayout>
 
@@ -50,10 +50,10 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/gotham_medium"
         android:gravity="center"
-        android:visibility="gone"
         android:text="10% processing fees + 18% GST"
         android:textColor="@color/colorRed"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="match_parent"

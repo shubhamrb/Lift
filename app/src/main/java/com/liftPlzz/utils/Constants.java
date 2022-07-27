@@ -16,6 +16,7 @@ public class Constants {
     public static final String TOKEN = "token";
 
     public static final String USER_ID = "user_id";
+    public static final String IMAGE = "image";
     public static final String PARTNER = "patner";
     public static final String NAME = "name";
     public static final String EMAIL = "email";

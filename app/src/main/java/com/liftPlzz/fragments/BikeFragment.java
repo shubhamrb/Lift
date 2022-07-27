@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -115,11 +116,15 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-
+        InputFilter[] editFilters = editTextVehicleRegNo.getFilters();
+        InputFilter[] newFilters = new InputFilter[editFilters.length + 1];
+        System.arraycopy(editFilters, 0, newFilters, 0, editFilters.length);
+        newFilters[editFilters.length] = new InputFilter.AllCaps();
+        editTextVehicleRegNo.setFilters(newFilters);
         if (isEdit) {
             editTextVehicleModel.setText(vehicleData.getModel());
-            editTextVehicleRegNo.setText(vehicleData.getRegistrationNo());
             editTextVehicleInsuranceDate.setText(vehicleData.getInsurance_date());
+            editTextVehicleRegNo.setText(vehicleData.getRegistrationNo());
             edRatePerKm.setText("" + vehicleData.getRatePerKm());
             if (vehicleData.getVehicleImageFront() != null && !vehicleData.getVehicleImageFront().isEmpty()) {
                 Picasso.get().load(vehicleData.getVehicleImageFront()).into(new Target() {

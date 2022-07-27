@@ -110,7 +110,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
 
 
         //textRateparkm,textPoints
-        holder.textRateparkm.setText("Rate per km : " + lift.getRate_per_km()+"/km");
+        holder.textRateparkm.setText("Rate per km : " + lift.getRate_per_km() + "/km");
         holder.textPoints.setText("Total points : " + lift.getTotal_points());
         holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
 
@@ -154,7 +154,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             @Override
             public void onClick(View v) {
                 if (lift.getFindMatch() != null && lift.getFindMatch() != 0) {
-                    itemListener.onMatchClick(lift,lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift)));
+                    itemListener.onMatchClick(lift, lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift)));
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.no_matches), Toast.LENGTH_SHORT).show();
                 }
@@ -169,7 +169,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             @Override
             public void onClick(View v) {
                 if (lift.getTotalRequest() != null && lift.getTotalRequest() != 0) {
-                    itemListener.onRequestClick(lift);
+                    itemListener.onRequestClick(lift,lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift)));
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.no_request_found), Toast.LENGTH_SHORT).show();
                 }
@@ -345,7 +345,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
     public interface ItemListener {
         void onMatchClick(Lift lift, boolean isFind);
 
-        void onRequestClick(Lift lift);
+        void onRequestClick(Lift lift,boolean isFind);
 
         void onPartnetDetails(Lift lift);
 

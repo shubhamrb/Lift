@@ -58,40 +58,11 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
 
-    public void getReview(String token) {
-        view.showLoader();
-        ApiService api = RetroClient.getApiService();
-        Call<GetReviewMainResponse> call = api.get_review(Constants.API_KEY, "android", token);
-        call.enqueue(new Callback<GetReviewMainResponse>() {
-            @Override
-            public void onResponse(Call<GetReviewMainResponse> call, Response<GetReviewMainResponse> response) {
-                view.hideLoader();
-
-                if (response.body() != null) {
-                    if (response.code() == 200) {
-                        view.setReviewData(response.body().getResponse().getData());
-                    } else {
-                        //  view.hideLoader();
-                        view.showMessage(response.body().getResponse().getMessage());
-                    }
-
-
-                }
-            }
-
-
-            @Override
-            public void onFailure(Call<GetReviewMainResponse> call, Throwable throwable) {
-                view.hideLoader();
-                view.showMessage(throwable.getMessage());
-            }
-        });
-    }
 
     public void delete_imag(String token, String id) {
         view.showLoader();
@@ -118,7 +89,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             @Override
             public void onFailure(Call<GetReviewMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -126,6 +97,10 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
 
     public void openUpdateProfile() {
         navigator.openUpdateProfileFragment(BaseActivity.PerformFragment.REPLACE);
+    }
+
+    public void openReviews() {
+        navigator.openReviewsFragment(BaseActivity.PerformFragment.REPLACE);
     }
 
 
@@ -151,7 +126,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -178,7 +153,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }
@@ -205,7 +180,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
             @Override
             public void onFailure(Call<CreateProfileMainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

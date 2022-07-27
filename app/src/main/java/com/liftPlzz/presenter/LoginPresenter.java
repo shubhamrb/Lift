@@ -30,12 +30,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
     }
 
-    public void openOTP() {
-        navigator.openOTPFragment(BaseActivity.PerformFragment.REPLACE);
+    public void openOTP(String referral_id) {
+        navigator.openOTPFragment(BaseActivity.PerformFragment.REPLACE, referral_id);
     }
 
     public void sendOtp(String mobile) {
-         view.showLoader();
+        view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<MainResponse> call = api.sendOTP(Constants.API_KEY, "android", mobile);
         call.enqueue(new Callback<MainResponse>() {
@@ -45,7 +45,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
                 if (response.body() != null) {
                     if (response.body().getResponse().getStatus()) {
-                            view.setLoginData(response.body().getResponse());
+                        view.setLoginData(response.body().getResponse());
 
                     } else {
                         //  view.hideLoader();
@@ -60,7 +60,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             @Override
             public void onFailure(Call<MainResponse> call, Throwable throwable) {
                 view.hideLoader();
-                view.showMessage(throwable.getMessage());
+                view.showMessage("Check your internet connection");
             }
         });
     }

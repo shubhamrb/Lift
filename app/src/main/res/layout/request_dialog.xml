@@ -38,8 +38,8 @@
             android:inputType="textCapSentences"
             android:paddingStart="10dp"
             android:singleLine="true"
-            android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorDark"
             android:textSize="@dimen/sp_16" />
 
     </LinearLayout>
@@ -69,8 +69,8 @@
             android:hint="Enter your full address"
             android:inputType="textCapSentences"
             android:padding="10dp"
-            android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorDark"
             android:textSize="@dimen/sp_16" />
 
     </LinearLayout>
@@ -101,8 +101,8 @@
             android:inputType="number"
             android:paddingStart="10dp"
             android:singleLine="true"
-            android:textColor="@color/colorPrimary"
-            android:textColorHint="@color/colorBlack"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorDark"
             android:textSize="@dimen/sp_16" />
 
     </LinearLayout>
@@ -111,13 +111,12 @@
         android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/gotham_medium"
+        android:fontFamily="@font/gotham_bold"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
-        android:text="* Min. 500 points is requir to apply for new card
-and card &amp; courier charges applicable"
+        android:text="*To apply for new card, min 500 points required to redeem\n*Card &amp; Courier charges applicable"
         android:textColor="@color/colorRed"
         android:textSize="@dimen/sp_12" />
 

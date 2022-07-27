@@ -2,8 +2,8 @@ package com.liftPlzz.api;
 
 
 import com.google.gson.JsonObject;
+import com.liftPlzz.model.BlockUserResponse;
 import com.liftPlzz.model.FindLiftResponse;
-import com.liftPlzz.model.recharge.RechargeFuelCardHistory;
 import com.liftPlzz.model.ResponseChatSuggestion;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
 import com.liftPlzz.model.chatuser.ResponseChatUser;
@@ -17,11 +17,11 @@ import com.liftPlzz.model.editlift.GetVehicleEditResponse;
 import com.liftPlzz.model.findVehicle.FindVehicleResponse;
 import com.liftPlzz.model.getFaq.ResponseFaq;
 import com.liftPlzz.model.getNotification.ResponseNotification;
-import com.liftPlzz.model.getVehicle.getReview.GetReviewMainResponse;
 import com.liftPlzz.model.getTicketCategory.ResponseTicketCategory;
 import com.liftPlzz.model.getTicketDetails.ResponseTicketDetails;
 import com.liftPlzz.model.getTicketList.ResponseTicketList;
 import com.liftPlzz.model.getVehicle.GetVehicleListMainResponse;
+import com.liftPlzz.model.getVehicle.getReview.GetReviewMainResponse;
 import com.liftPlzz.model.getsetting.SettingModel;
 import com.liftPlzz.model.matchingridemodel.MatchingRideByCategoryResponse;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
@@ -36,6 +36,7 @@ import com.liftPlzz.model.sendotp.MainResponse;
 import com.liftPlzz.model.upcomingLift.UpcomingLiftResponse;
 import com.liftPlzz.model.vehiclesubcategory.VehicleSubCategoryModel;
 import com.liftPlzz.model.verifyOtp.VerifyOtpMainResponse;
+import com.liftPlzz.model.videos.upcomingLift.VideosResponse;
 import com.liftPlzz.model.viewRideDetails.ViewRideDetailsResponse;
 
 import org.json.JSONObject;
@@ -79,6 +80,7 @@ public interface ApiService {
                                                       @Field("client") String client,
                                                       @Field("token") String token,
                                                       @Field("total_km") String total_km);
+
     @FormUrlEncoded
     @POST("edit-lift")
     Call<GetVehicleEditResponse> get_lift_detail(@Field("api_key") String api_key,
@@ -154,19 +156,36 @@ public interface ApiService {
                                                    @Field("about_me") String about_me);
 
     @FormUrlEncoded
-    @POST("get-review")
+    @POST("get-user-review")
     Call<GetReviewMainResponse> get_review(@Field("api_key") String api_key,
                                            @Field("client") String client,
-                                           @Field("token") String token);
+                                           @Field("token") String token,
+                                           @Field("user_id") String user_id,
+                                           @Field("filter_type") String filter_type);
+
+    @FormUrlEncoded
+    @POST("review-like")
+    Call<GetReviewMainResponse> like_review(@Field("api_key") String api_key,
+                                            @Field("client") String client,
+                                            @Field("token") String token,
+                                            @Field("review_id") int review_id);
+
+    @FormUrlEncoded
+    @POST("review-dislike")
+    Call<GetReviewMainResponse> dislike_review(@Field("api_key") String api_key,
+                                               @Field("client") String client,
+                                               @Field("token") String token,
+                                               @Field("review_id") int review_id);
+
     @FormUrlEncoded
     @POST("remove-social-image")
     Call<GetReviewMainResponse> delete_eimag(@Field("api_key") String api_key,
-                                           @Field("client") String client,
-                                           @Field("token") String token,
-                                           @Field("id") String id);
+                                             @Field("client") String client,
+                                             @Field("token") String token,
+                                             @Field("id") String id);
 
-     // ------------jagnarayan-----------//
-     //  https://charpair.com/api/chat-user-list
+    // ------------jagnarayan-----------//
+    //  https://charpair.com/api/chat-user-list
     @FormUrlEncoded
     @POST("chat-user-list")
     Call<ResponseChatUser> getChatUser(@Field("api_key") String api_key,
@@ -218,18 +237,18 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("update-lift")
     Call<FindLiftResponse> findUpdate_lift(@Field("api_key") String api_key,
-                                     @Field("client") String client,
-                                     @Field("token") String token,
-                                     @Field("title") String title,
-                                     @Field("paid_seats") String requir_seats,
-                                     @Field("start_point") String start_point,
-                                     @Field("end_point") String end_point,
-                                     @Field("lift_date") String lift_date,
-                                     @Field("lift_id") String lift_id,
-                                     @Field("lift_time") String liftTime,
-                                     @Field("total_km") String total_km);
+                                           @Field("client") String client,
+                                           @Field("token") String token,
+                                           @Field("title") String title,
+                                           @Field("paid_seats") String requir_seats,
+                                           @Field("start_point") String start_point,
+                                           @Field("end_point") String end_point,
+                                           @Field("lift_date") String lift_date,
+                                           @Field("lift_id") String lift_id,
+                                           @Field("lift_time") String liftTime,
+                                           @Field("total_km") String total_km);
 
-      // FIND UPDATE  paid_seats,  , lift_id
+    // FIND UPDATE  paid_seats,  , lift_id
 
 
     //checkpoints
@@ -237,19 +256,19 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("update-lift")
     Call<CreateLiftResponse> offerUpdate_lift(@Field("api_key") String api_key,
-                                         @Field("client") String client,
-                                         @Field("token") String token,
-                                         @Field("vehicle_id") String vehicle_id,
-                                         @Field("lift_type") String lift_type,
-                                         @Field("free_seats") String free_seats,
-                                         @Field("paid_seats") String paid_seats,
-                                         @Field("start_point") String start_point,
-                                         @Field("end_point") String end_point,
-                                         @Field("checkpoints") String checkpoints,
-                                         @Field("lift_date") String lift_date,
-                                         @Field("lift_id") String lift_id,
-                                         @Field("lift_time") String liftTime,
-                                         @Field("total_km") String total_km, @Field("rate_per_km") String rate_per_km);
+                                              @Field("client") String client,
+                                              @Field("token") String token,
+                                              @Field("vehicle_id") String vehicle_id,
+                                              @Field("lift_type") String lift_type,
+                                              @Field("free_seats") String free_seats,
+                                              @Field("paid_seats") String paid_seats,
+                                              @Field("start_point") String start_point,
+                                              @Field("end_point") String end_point,
+                                              @Field("checkpoints") String checkpoints,
+                                              @Field("lift_date") String lift_date,
+                                              @Field("lift_id") String lift_id,
+                                              @Field("lift_time") String liftTime,
+                                              @Field("total_km") String total_km, @Field("rate_per_km") String rate_per_km);
 
     @FormUrlEncoded
     @POST("create-lift")
@@ -271,12 +290,17 @@ public interface ApiService {
 //     ,
 
 
-
     @FormUrlEncoded
     @POST("get-profile")
     Call<CreateProfileMainResponse> get_profile(@Field("api_key") String api_key,
                                                 @Field("client") String client,
                                                 @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("setting-reset")
+    Call<JsonObject> reset_setting(@Field("api_key") String api_key,
+                                   @Field("client") String client,
+                                   @Field("token") String token);
 
     @FormUrlEncoded
     @POST("my-upcomming-lifts")
@@ -302,16 +326,16 @@ public interface ApiService {
     @Multipart
     @POST("add-face-image")
     Call<CreateProfileMainResponse> add_selfie(@Part("api_key") RequestBody api_key,
-                                                     @Part("client") RequestBody client,
-                                                     @Part("token") RequestBody token,
-                                                     @Part MultipartBody.Part imageFile);
+                                               @Part("client") RequestBody client,
+                                               @Part("token") RequestBody token,
+                                               @Part MultipartBody.Part imageFile);
 
     @Multipart
     @POST("add-govtid-image")
     Call<CreateProfileMainResponse> add_Id(@Part("api_key") RequestBody api_key,
-                                                     @Part("client") RequestBody client,
-                                                     @Part("token") RequestBody token,
-                                                     @Part MultipartBody.Part imageFile);
+                                           @Part("client") RequestBody client,
+                                           @Part("token") RequestBody token,
+                                           @Part MultipartBody.Part imageFile);
 
 
     @FormUrlEncoded
@@ -362,10 +386,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("matching-rides-for-driver")
     Call<DriverByTypeReponse> getRideByDriver(@Field("api_key") String api_key,
-                                                   @Field("client") String client,
-                                                   @Field("token") String token,
-                                                   @Field("vehicle_subcategory_id") int subCategoryId,
-                                                   @Field("lift_id") int liftId);
+                                              @Field("client") String client,
+                                              @Field("token") String token,
+                                              @Field("vehicle_subcategory_id") int subCategoryId,
+                                              @Field("lift_id") int liftId);
 
     @FormUrlEncoded
     @POST("send-Invitation-For-Lift")
@@ -491,6 +515,21 @@ public interface ApiService {
                                                    @Field("token") String token);
 
     @FormUrlEncoded
+    @POST("block-unblock-user-list")
+    Call<BlockUserResponse> getBlockedUsers(@Field("api_key") String api_key,
+                                            @Field("client") String client,
+                                            @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("block-unblock-user")
+    Call<JsonObject> blockUser(@Field("api_key") String api_key,
+                               @Field("client") String client,
+                               @Field("token") String token,
+                               @Field("user_id") int user_id,
+                               @Field("reason") String reason
+    );
+
+    @FormUrlEncoded
     @POST("my-completed-lifts")
     Call<ResponseCompletedLift> getCompletedLift(@Field("api_key") String api_key,
                                                  @Field("client") String client,
@@ -530,24 +569,6 @@ public interface ApiService {
                                     @Field("token") String token,
                                     @Field("lift_id") int liftId);
 
-//    @FormUrlEncoded
-//    @POST("liftstart-codematch")
-//    Call<ResponseBody> liftStartCodeMatch(@Field("api_key") String api_key,
-//                                          @Field("client") String client,
-//                                          @Field("token") String token,
-//                                          @Field("request_id") int requestId,
-//                                          @Field("code") int code,
-//                                          @Field("lat") double lat,
-//                                          @Field("long") double logitute);
-
-//    @FormUrlEncoded
-//    @POST("ride-end")
-//    Call<ResponseBody> rideEnd(@Field("api_key") String api_key,
-//                                          @Field("client") String client,
-//                                          @Field("token") String token,
-//                                          @Field("request_id") int requestId,
-//                                          @Field("lat") double lat,
-//                                          @Field("long") double logitute);
 
     @FormUrlEncoded
     @POST("ride-end")
@@ -557,6 +578,7 @@ public interface ApiService {
                              @Field("request_id") int requestId,
                              @Field("lat") double lat,
                              @Field("long") double logitute);
+
     @FormUrlEncoded
     @POST("driver-liftend")
     Call<JsonObject> ridebyDriverEnd(@Field("api_key") String api_key,
@@ -565,7 +587,6 @@ public interface ApiService {
                                      @Field("lift_id") int requestId,
                                      @Field("lat") double lat,
                                      @Field("long") double logitute);
-
 
 
     @FormUrlEncoded
@@ -603,8 +624,8 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("wallet-recharge-history")
     Call<RechargeHistoryResponse> rechargeWalletHistory(@Field("api_key") String api_key,
-                                                  @Field("client") String client,
-                                                  @Field("token") String token);
+                                                        @Field("client") String client,
+                                                        @Field("token") String token);
 
     @FormUrlEncoded
     @POST("fuelcard-recharge-history")
@@ -612,6 +633,9 @@ public interface ApiService {
                                                                   @Field("client") String client,
                                                                   @Field("token") String token);
 
+
+    @GET("how_to_use_videos")
+    Call<VideosResponse> getVideos();
 
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android
