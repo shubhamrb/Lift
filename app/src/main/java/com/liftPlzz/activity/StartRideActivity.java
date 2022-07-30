@@ -2,6 +2,7 @@ package com.liftPlzz.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -24,8 +25,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Rational;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -164,6 +168,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private String wayPoints = "";
     private Marker startMarker;
     private boolean isTrackingPath = false;
+    private Dialog dialog;
 
 
     /**
@@ -1585,6 +1590,12 @@ public class StartRideActivity extends AppCompatActivity implements
                 Log.e("it is", "the user no location needed");
                 e.printStackTrace();
             }
+            try {
+                registerReceiver(receiver, new IntentFilter("FBR-IMAGE"));
+            } catch (Exception e) {
+                Log.e("it is", "the user no location needed");
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1627,5 +1638,95 @@ public class StartRideActivity extends AppCompatActivity implements
             e.printStackTrace();
             super.onBackPressed();
         }
+    }
+
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                String title = intent.getStringExtra("title");
+                String details = intent.getStringExtra("details");
+                JSONObject jsonObject = new JSONObject(details);
+                showNotificationDialog(title, jsonObject.getString("request_id"));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    public void showNotificationDialog(String title, String request_id) {
+        try {
+            if (dialog == null) {
+                dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.user_ride_end_dialog);
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+
+                wlp.gravity = Gravity.TOP | Gravity.START;
+                wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                wlp.y = 120;
+                window.setAttributes(wlp);
+
+
+
+                AppCompatTextView tv = dialog.findViewById(R.id.tv);
+                AppCompatTextView btnOk = dialog.findViewById(R.id.buttonOk);
+                AppCompatTextView btnCancel = dialog.findViewById(R.id.buttonCancel);
+
+                tv.setText(title);
+
+                btnOk.setOnClickListener(v -> {
+                    dialog.cancel();
+                    rideEndAccept(request_id);
+                });
+                btnCancel.setOnClickListener(v -> {
+                    dialog.cancel();
+                });
+
+                dialog.setOnCancelListener(dialogInterface -> {
+                    dialog = null;
+                });
+                dialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void rideEndAccept(String request_id) {
+        Constants.showLoader(this);
+        ApiService api = RetroClient.getApiService();
+        Call<JsonObject> call = api.rideEndRequestAccept(Constants.API_KEY, Constants.ANDROID, strToken, Integer.parseInt(request_id));
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Constants.hideLoader();
+                if (response.code() == 200) {
+                    try {
+                        Toast.makeText(StartRideActivity.this, "Request accepted.", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        String message = jsonObject.optString("message");
+                        Toast.makeText(StartRideActivity.this, message, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                Constants.hideLoader();
+                Toast.makeText(StartRideActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

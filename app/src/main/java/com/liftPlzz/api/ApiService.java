@@ -581,6 +581,13 @@ public interface ApiService {
                              @Field("long") double logitute);
 
     @FormUrlEncoded
+    @POST("ride-end-accept-by-driver")
+    Call<JsonObject> rideEndRequestAccept(@Field("api_key") String api_key,
+                             @Field("client") String client,
+                             @Field("token") String token,
+                             @Field("request_id") int requestId);
+
+    @FormUrlEncoded
     @POST("driver-liftend")
     Call<JsonObject> ridebyDriverEnd(@Field("api_key") String api_key,
                                      @Field("client") String client,

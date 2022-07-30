@@ -5,12 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.Log;
 
 import com.liftPlzz.SmsListener;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SmsReceiver extends BroadcastReceiver {
     private static SmsListener mListener;

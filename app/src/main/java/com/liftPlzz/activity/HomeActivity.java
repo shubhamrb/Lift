@@ -37,6 +37,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.liftPlzz.R;
@@ -368,6 +369,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             final AlertDialog.Builder newBuilder = new AlertDialog.Builder(this);
             newBuilder.setMessage("Are you sure you want to Logout?");
             newBuilder.setPositiveButton("Yes", (dialog, which) -> {
+                FirebaseAuth.getInstance().signOut();
                 sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, false).apply();
                 sharedPreferences.edit().clear().apply();
                 Intent intent = new Intent(HomeActivity.this, AuthActivity.class);
