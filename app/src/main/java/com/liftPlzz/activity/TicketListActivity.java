@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.TicketListAdapter;
 import com.liftPlzz.api.ApiService;
@@ -38,7 +37,7 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
     TicketListAdapter ticketListAdapter;
     SharedPreferences sharedPreferences;
     @BindView(R.id.rel_driver)
-    RelativeLayout relativeLayout;
+    LinearLayout relativeLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.imageViewBack)
@@ -48,7 +47,7 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
     @BindView(R.id.rvTicketList)
     RecyclerView rvTicketList;
     @BindView(R.id.btn_add)
-    FloatingActionButton floatingButtonAdd;
+    ImageView floatingButtonAdd;
     private String strToken = "", vehicleType;
     private ArrayList<TicketListData> arrayList = new ArrayList<>();
 
@@ -102,72 +101,6 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
         });
 
     }
-
-//    @Override
-//    public void onSendButtonClick(DriverData driverData) {
-////        if (driverData.getRequestAlreadySend() == 0) {
-////            sendInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()));
-////        } else {
-////            //cancel
-////            sendInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()));
-////        }
-//        sendCancelInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend());
-//    }
-
-//    public void sendCancelInvitation(int liftId, int fromLiftId, int requestAlreadySend) {
-//        Constants.showLoader(this);
-//        ApiService api = RetroClient.getApiService();
-//        Call<ResponseBody> call = null;
-//        if (requestAlreadySend == 0) {
-//            //if requestAlradySend is 0 than sendrequest will be called
-//            call = api.sendInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-//                    liftId, fromLiftId);
-//        } else {
-//            //if requestAlradySend is 1 than cancelRequest will be called
-//            call = api.cancelInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-//                    liftId);
-//        }
-//
-//
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                Constants.hideLoader();
-//                if (response.code() == 200) {
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(response.body().string());
-//                        boolean status = jsonObject.optBoolean("status");
-//                        String message = jsonObject.optString("message");
-//                        Toast.makeText(TicketListActivity.this, message, Toast.LENGTH_SHORT).show();
-//                        if (status) {
-//                            Intent intent = new Intent(TicketListActivity.this, HomeActivity.class);
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-//                            finish();
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-//                        String message = jsonObject.optString("message");
-//                        Toast.makeText(TicketListActivity.this, message, Toast.LENGTH_SHORT).show();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
-//                Constants.hideLoader();
-//                Constants.showMessage(TicketListActivity.this, throwable.getMessage(), relativeLayout);
-//            }
-//        });
-//
-//    }
 
     @Override
     public void onItemClick(int id) {

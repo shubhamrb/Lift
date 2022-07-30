@@ -1,36 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rel_driver"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/toolbarNew"
-        layout="@layout/toolbar_back_title_layout" />
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:background="@color/colorPrimary"
+        android:elevation="@dimen/dp_2"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/imageViewBack"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/dp_5"
+            android:padding="@dimen/dp_4"
+            android:src="@drawable/back_white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/btn_add"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/toolBarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_50"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center_vertical"
+                android:text=""
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_16" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btn_add"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:src="@drawable/add_button_white"
+            app:tint="@color/colorWhite" />
+    </RelativeLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTicketList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbarNew" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-
-        android:layout_marginLeft="@dimen/sp_25"
-        android:layout_marginRight="@dimen/sp_25"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:contentDescription="@string/create_ticket"
-        android:fontFamily="@font/gotham_medium"
-        android:gravity="end|bottom"
-        android:src="@drawable/add_button_white"
-        android:text="@string/send_request"
-        android:textSize="@dimen/sp_16" />
-
-</RelativeLayout>
+        android:layout_height="wrap_content" />
+</LinearLayout>
