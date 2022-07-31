@@ -166,7 +166,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-                            doVerifyCode();
+//                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -198,7 +198,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-                            doVerifyCode();
+//                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -230,7 +230,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-                            doVerifyCode();
+//                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -263,7 +263,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-                            doVerifyCode();
+//                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -296,7 +296,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-                            doVerifyCode();
+//                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -329,7 +329,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-                            doVerifyCode();
+//                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -450,8 +450,8 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
         verificationCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                /*if (!isManual)
-                    signInWithPhoneAuthCredential(phoneAuthCredential);*/
+                if (!isManual)
+                    signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
@@ -497,17 +497,11 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Snackbar.make(reltive, "Successful", Snackbar.LENGTH_LONG).show();
-                            String cred = task.getResult().getUser().getPhoneNumber();
-                            Log.d("mobile no.", cred);
-                            if (cred.isEmpty()) {
-                                Snackbar.make(reltive, "Mobile Number not found", Snackbar.LENGTH_LONG).show();
-                            }
-                            cred.replace("+91", "");
                             presenter.sendOtp(mobileNo);
                         } else {
                             if (task.getException() instanceof
                                     FirebaseAuthInvalidCredentialsException) {
-//                                Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
                             }
                         }
                     }

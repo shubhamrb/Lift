@@ -354,7 +354,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         } else if (s == 3) {
             /*Intent intent = new Intent(HomeActivity.this, PaymentHistory.class);
             startActivity(intent);*/
-            buildDynamicLink("https://charpair.com/" + sharedPreferences.getString(Constants.USER_ID, ""));
+            buildDynamicLink("https://charpair.page.link/" + sharedPreferences.getString(Constants.USER_ID, ""));
         } else if (s == 4) {
             openMyVehicleFragment(PerformFragment.REPLACE);
         } else if (s == 5) {
@@ -397,7 +397,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     private void buildDynamicLink(String link) {
         FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setLink(Uri.parse(link))
-                .setDomainUriPrefix("https://charpair.com")
+                .setDomainUriPrefix("https://charpair.page.link")
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder("com.liftPlzz").build())
                 .buildShortDynamicLink().addOnSuccessListener(shortDynamicLink -> {
                     String inviteLink = shortDynamicLink.getShortLink().toString();
