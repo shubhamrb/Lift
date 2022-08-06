@@ -169,6 +169,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private Marker startMarker;
     private boolean isTrackingPath = false;
     private Dialog dialog;
+    private DirectionsRoute currentRoute;
 
 
     /**
@@ -411,6 +412,14 @@ public class StartRideActivity extends AppCompatActivity implements
         myReceiver = new MyReceiver();
         mapFragment.getMapAsync(this);
 
+        /*txtShareCode.setOnClickListener(view -> {
+            boolean simulateRoute = true;
+            NavigationLauncherOptions options = NavigationLauncherOptions.builder()
+                    .directionsRoute(currentRoute)
+                    .shouldSimulateRoute(simulateRoute)
+                    .build();
+            NavigationLauncher.startNavigation(this, options);
+        });*/
     }
 
     private void showUsersListDialog() {
@@ -585,7 +594,31 @@ public class StartRideActivity extends AppCompatActivity implements
                 .title("Driver"));
 
         new GetDirection().execute(current, lift.getEndLatlong());
+
+        /*com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[0]), Double.parseDouble(lift.getEndLatlong().split(",")[1]));
+        com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(latitude, longitude);
+
+        getRoute(originPoint, destinationPoint);*/
     }
+
+    /*private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
+        NavigationRoute.builder(this)
+                .accessToken(Mapbox.getAccessToken())
+                .origin(originPoint)
+                .destination(destinationPoint).build().getRoute(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        if (response.body() != null && response.body().routes().size() > 1) {
+                            currentRoute = response.body().routes().get(0);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+                    }
+                });
+    }*/
 
     /**
      * Returns the current state of the permissions needed.
@@ -1668,7 +1701,6 @@ public class StartRideActivity extends AppCompatActivity implements
                 wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
                 wlp.y = 120;
                 window.setAttributes(wlp);
-
 
 
                 AppCompatTextView tv = dialog.findViewById(R.id.tv);
