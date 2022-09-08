@@ -1,2 +1,23 @@
-include ':app',':maplocationpicker'
-rootProject.name='LiftPlzz'
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven {
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = "mapbox"
+                password = "sk.eyJ1Ijoia29tYWxyYWdoYXZ6aWdseSIsImEiOiJjbDdlaml1cW0wMTEyM25scXc0ZWd0d3RuIn0.sy_5U7Uzfy_BmfAMD8cOAw"
+            }
+        }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://mapbox.bintray.com/mapbox' }
+    }
+}
+include ':app', ':maplocationpicker'
+rootProject.name = 'LiftPlzz'

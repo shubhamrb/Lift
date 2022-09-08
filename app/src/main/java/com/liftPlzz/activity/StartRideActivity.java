@@ -96,6 +96,12 @@ import com.liftPlzz.model.on_going.LiftUsers;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -412,14 +418,17 @@ public class StartRideActivity extends AppCompatActivity implements
         myReceiver = new MyReceiver();
         mapFragment.getMapAsync(this);
 
-        /*txtShareCode.setOnClickListener(view -> {
-            boolean simulateRoute = true;
-            NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                    .directionsRoute(currentRoute)
-                    .shouldSimulateRoute(simulateRoute)
-                    .build();
-            NavigationLauncher.startNavigation(this, options);
-        });*/
+        txtShareCode.setOnClickListener(view -> {
+            if (currentRoute!=null){
+                boolean simulateRoute = true;
+                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
+                        .directionsRoute(currentRoute)
+                        .shouldSimulateRoute(simulateRoute)
+                        .build();
+                NavigationLauncher.startNavigation(this, options);
+            }
+        });
+
     }
 
     private void showUsersListDialog() {
@@ -595,30 +604,30 @@ public class StartRideActivity extends AppCompatActivity implements
 
         new GetDirection().execute(current, lift.getEndLatlong());
 
-        /*com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[0]), Double.parseDouble(lift.getEndLatlong().split(",")[1]));
-        com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(latitude, longitude);
+        com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
+        com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(longitude, latitude);
 
-        getRoute(originPoint, destinationPoint);*/
+        getRoute(originPoint, destinationPoint);
     }
 
-    /*private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
+    private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
         NavigationRoute.builder(this)
                 .accessToken(Mapbox.getAccessToken())
                 .origin(originPoint)
                 .destination(destinationPoint).build().getRoute(new Callback<DirectionsResponse>() {
                     @Override
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                        if (response.body() != null && response.body().routes().size() > 1) {
+                        if (response.body() != null && response.body().routes().size() > 0) {
                             currentRoute = response.body().routes().get(0);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
+                        t.printStackTrace();
                     }
                 });
-    }*/
+    }
 
     /**
      * Returns the current state of the permissions needed.

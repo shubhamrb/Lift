@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.liftPlzz"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
@@ -116,6 +116,8 @@ dependencies {
 
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
     implementation 'pub.devrel:easypermissions:3.0.0'
+
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.5'
 
 }
 apply plugin: 'com.google.gms.google-services'
