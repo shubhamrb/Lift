@@ -303,6 +303,10 @@ public class StartRideActivity extends AppCompatActivity implements
     AppCompatTextView toolBarTitle;
     @BindView(R.id.txtShareCode)
     AppCompatTextView txtShareCode;
+
+    @BindView(R.id.btn_navigate)
+    RelativeLayout btn_navigate;
+
     @BindView(R.id.imageViewBack)
     ImageView imageViewBack;
     @BindView(R.id.imageViewOption)
@@ -418,9 +422,9 @@ public class StartRideActivity extends AppCompatActivity implements
         myReceiver = new MyReceiver();
         mapFragment.getMapAsync(this);
 
-        txtShareCode.setOnClickListener(view -> {
-            if (currentRoute!=null){
-                boolean simulateRoute = true;
+        btn_navigate.setOnClickListener(view -> {
+            if (currentRoute != null) {
+                boolean simulateRoute = false;
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                         .directionsRoute(currentRoute)
                         .shouldSimulateRoute(simulateRoute)
@@ -599,15 +603,20 @@ public class StartRideActivity extends AppCompatActivity implements
         mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .draggable(true)
-                .icon(BitmapDescriptorFactory.defaultMarker())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.car_marker))
                 .title("Driver"));
 
-        new GetDirection().execute(current, lift.getEndLatlong());
-
-        com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
-        com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(longitude, latitude);
-
-        getRoute(originPoint, destinationPoint);
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            if (!isTrackingPath){
+                new GetDirection().execute(current, lift.getEndLatlong());
+            }
+            com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
+            com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(longitude, latitude);
+            getRoute(originPoint, destinationPoint);
+        } else{
+            btn_navigate.setVisibility(View.GONE);
+            new GetDirection().execute(current, lift.getEndLatlong());
+        }
     }
 
     private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
@@ -619,12 +628,14 @@ public class StartRideActivity extends AppCompatActivity implements
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
                         if (response.body() != null && response.body().routes().size() > 0) {
                             currentRoute = response.body().routes().get(0);
+                            btn_navigate.setVisibility(View.VISIBLE);
                         }
                     }
 
                     @Override
                     public void onFailure(Call<DirectionsResponse> call, Throwable t) {
                         t.printStackTrace();
+                        btn_navigate.setVisibility(View.GONE);
                     }
                 });
     }
