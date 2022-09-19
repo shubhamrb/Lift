@@ -597,20 +597,11 @@ public class StartRideActivity extends AppCompatActivity implements
 
         String current = latitude + "," + longitude;
 
-        if (mDriverMarker != null) {
-            mDriverMarker.remove();
-        }
+
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.car_marker))
-                .title("Driver"));
 
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            if (!isTrackingPath) {
-                new GetDirection().execute(current, lift.getEndLatlong());
-            }
+            new GetDirection().execute(current, lift.getEndLatlong());
             com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
             com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(longitude, latitude);
             getRoute(originPoint, destinationPoint);
@@ -989,6 +980,7 @@ public class StartRideActivity extends AppCompatActivity implements
                 JSONObject poly = route.getJSONObject("overview_polyline");
                 String polyline = poly.getString("points");
                 pontos = decodePoly(polyline);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1003,6 +995,7 @@ public class StartRideActivity extends AppCompatActivity implements
             if (polyline != null) {
                 polyline.remove();
             }
+
             for (int i = 0; i < pontos.size() - 1; i++) {
                 Log.e("call poly ", "loop = " + i);
                 LatLng src = pontos.get(i);
@@ -1039,9 +1032,17 @@ public class StartRideActivity extends AppCompatActivity implements
                     CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                     mGoogleMap.moveCamera(cu);
                 } else {
+                    if (mDriverMarker != null) {
+                        mDriverMarker.remove();
+                    }
+                    mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
+                            .position(pontos.get(0))
+                            .draggable(true)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.car_marker))
+                            .title("Driver"));
                     LatLngBounds bounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                     try {
-                        if (!oneTimeZoomed || bounds.contains(src1)) {
+                        if (!oneTimeZoomed || !bounds.contains(src1)) {
                             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(src1, 35.0f));
                             oneTimeZoomed = true;
                         }
