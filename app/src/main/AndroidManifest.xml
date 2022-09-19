@@ -29,7 +29,12 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity
+            android:name=".activity.Navigation.MapboxNavigationActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:supportsPictureInPicture="true"/>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -42,7 +47,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -61,12 +65,9 @@
         <activity
             android:name=".activity.PaymentHistory"
             android:exported="false" />
-
         <activity
             android:name=".DriverUserLocationActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".activity.UserProfileActivity"
             android:exported="true">
@@ -150,8 +151,6 @@
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />
-
-
         <service
             android:name=".locationservice.LocationUpdatesService"
             android:enabled="true"
@@ -185,11 +184,10 @@
             android:name=".activity.TicketDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.YoutubeActivity"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"/>
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="false" />
 
         <receiver
             android:name=".receiver.SmsReceiver"

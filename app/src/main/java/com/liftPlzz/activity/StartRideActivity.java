@@ -86,6 +86,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.liftPlzz.R;
+import com.liftPlzz.activity.Navigation.NavigationLauncher;
 import com.liftPlzz.adapter.LiftPartnerAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
@@ -99,7 +100,6 @@ import com.liftPlzz.utils.Constants;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.razorpay.Checkout;
@@ -174,6 +174,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private String wayPoints = "";
     private Marker startMarker;
     private boolean isTrackingPath = false;
+    private boolean oneTimeZoomed = false;
     private Dialog dialog;
     private DirectionsRoute currentRoute;
 
@@ -607,13 +608,13 @@ public class StartRideActivity extends AppCompatActivity implements
                 .title("Driver"));
 
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            if (!isTrackingPath){
+            if (!isTrackingPath) {
                 new GetDirection().execute(current, lift.getEndLatlong());
             }
             com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
             com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(longitude, latitude);
             getRoute(originPoint, destinationPoint);
-        } else{
+        } else {
             btn_navigate.setVisibility(View.GONE);
             new GetDirection().execute(current, lift.getEndLatlong());
         }
@@ -1037,12 +1038,21 @@ public class StartRideActivity extends AppCompatActivity implements
                     LatLngBounds bounds = builder.build();
                     CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                     mGoogleMap.moveCamera(cu);
+                } else {
+                    LatLngBounds bounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
+                    try {
+                        if (!oneTimeZoomed || bounds.contains(src1)) {
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(src1, 35.0f));
+                            oneTimeZoomed = true;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             isTrackingPath = true;
-
         }
     }
 
