@@ -1028,19 +1028,20 @@ public class StartRideActivity extends AppCompatActivity implements
                     Log.e("Error", "Exception onPostExecute: " + e2.toString());
                 }
             }
-            isTrackingPath = true;
 
             try {
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(src1);
-                builder.include(dest);
-                LatLngBounds bounds = builder.build();
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-                mGoogleMap.moveCamera(cu);
-
+                if (!isTrackingPath) {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(src1);
+                    builder.include(dest);
+                    LatLngBounds bounds = builder.build();
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+                    mGoogleMap.moveCamera(cu);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            isTrackingPath = true;
 
         }
     }
