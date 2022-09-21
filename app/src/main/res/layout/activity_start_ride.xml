@@ -44,18 +44,30 @@
         android:id="@+id/btn_navigate"
         android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
         android:layout_above="@id/rel_bottom"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:background="@drawable/ic_circle"
         android:backgroundTint="@color/colorPrimary"
+        android:gravity="center"
         android:visibility="gone">
 
         <ImageView
+            android:id="@+id/img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:src="@drawable/navigation" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/gotham_medium"
+            android:text="Start"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_12" />
     </RelativeLayout>
 
     <RelativeLayout

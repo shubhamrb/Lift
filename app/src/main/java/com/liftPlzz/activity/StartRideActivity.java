@@ -171,6 +171,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private List<LiftUsers> liftUsersList = new ArrayList<>();
     private List<LatLng> pontos = new ArrayList<>();
     private Polyline polyline;
+    List<Polyline> polylineList = new ArrayList<>();
     private String wayPoints = "";
     private Marker startMarker;
     private boolean isTrackingPath = false;
@@ -362,18 +363,21 @@ public class StartRideActivity extends AppCompatActivity implements
                 buildLocationCallBack();
                 buildLocationRequest();
                 getLocationAPI();
+                turnByTurnNavigation();
             } else {
                 tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
             }
         } else if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             getUsers(2);
             if (lift.getIs_user_start() == 1) {
+                bywhomRidestarted = 1;
                 tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
                 Log.e("Lift", "Found");
                 request_id = lift.getRequest_id();
                 buildLocationCallBack();
                 buildLocationRequest();
                 getLocationAPI();
+                turnByTurnNavigation();
             } else {
                 tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
             }
@@ -434,6 +438,12 @@ public class StartRideActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    private void turnByTurnNavigation() {
+        com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
+        com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getStartLatlong().split(",")[1]), Double.parseDouble(lift.getStartLatlong().split(",")[0]));
+        getRoute(originPoint, destinationPoint);
     }
 
     private void showUsersListDialog() {
@@ -600,15 +610,7 @@ public class StartRideActivity extends AppCompatActivity implements
 
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
-            new GetDirection().execute(current, lift.getEndLatlong());
-            com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
-            com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(longitude, latitude);
-            getRoute(originPoint, destinationPoint);
-        } else {
-            btn_navigate.setVisibility(View.GONE);
-            new GetDirection().execute(current, lift.getEndLatlong());
-        }
+        new GetDirection().execute(current, lift.getEndLatlong());
     }
 
     private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
@@ -827,6 +829,7 @@ public class StartRideActivity extends AppCompatActivity implements
                         ridestarted = false;
                         bywhomRidestarted = 0;
                         mService.requestLocationUpdates();
+                        turnByTurnNavigation();
                         getUsers(1);
                     } else {
                         Toast.makeText(StartRideActivity.this, "Drive already started", Toast.LENGTH_SHORT).show();
@@ -995,6 +998,10 @@ public class StartRideActivity extends AppCompatActivity implements
             if (polyline != null) {
                 polyline.remove();
             }
+            for (Polyline polyline : polylineList) {
+                polyline.remove();
+            }
+            polylineList.clear();
 
             for (int i = 0; i < pontos.size() - 1; i++) {
                 Log.e("call poly ", "loop = " + i);
@@ -1014,6 +1021,8 @@ public class StartRideActivity extends AppCompatActivity implements
                                 .add(new LatLng(src.latitude, src.longitude),
                                         new LatLng(dest.latitude, dest.longitude))
                                 .width(7).color(Color.GREEN).geodesic(true));
+
+                        polylineList.add(polyline);
                     }
 
                 } catch (NullPointerException e) {
@@ -1141,6 +1150,7 @@ public class StartRideActivity extends AppCompatActivity implements
                             tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
                             bywhomRidestarted = 1;
                             mService.requestLocationUpdates();
+                            turnByTurnNavigation();
                         } else {
                             Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                         }
