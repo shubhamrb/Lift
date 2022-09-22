@@ -32,6 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -97,6 +98,7 @@ import com.liftPlzz.model.on_going.LiftUsers;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
+import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -168,7 +170,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-    private List<LiftUsers> liftUsersList = new ArrayList<>();
+    private final List<LiftUsers> liftUsersList = new ArrayList<>();
     private List<LatLng> pontos = new ArrayList<>();
     private Polyline polyline;
     List<Polyline> polylineList = new ArrayList<>();
@@ -205,7 +207,7 @@ public class StartRideActivity extends AppCompatActivity implements
                                 historylocationList.add(new LatLng(location.getLatitude(), location.getLongitude()));
                             }
                             Previouslocation = location;
-                            String livelocation = String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude());
+                            String livelocation = location.getLatitude() + "," + location.getLongitude();
                             Log.e(TAG, "Location livelocation" + livelocation);
                             StoreLoactiontoDatabaseReference = FirebaseDatabase.getInstance().getReference();
                             StoreLoactiontoDatabaseReference = StoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id).child("location");
@@ -319,6 +321,18 @@ public class StartRideActivity extends AppCompatActivity implements
     @BindView(R.id.rel_bottom)
     RelativeLayout rel_bottom;
 
+    @BindView(R.id.rl_arrival)
+    LinearLayout rl_arrival;
+
+    @BindView(R.id.txt_arrival_time)
+    AppCompatTextView txt_arrival_time;
+
+    @BindView(R.id.txt_distance)
+    AppCompatTextView txt_distance;
+
+    @BindView(R.id.txt_arrival_status)
+    AppCompatTextView txt_arrival_status;
+
     private String strToken = "";
     private Lift lift;
 
@@ -358,6 +372,7 @@ public class StartRideActivity extends AppCompatActivity implements
         }
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             if (lift.getIs_driver_start() == 1) {
+                getUsers(1);
                 rel_bottom.setVisibility(View.GONE);
                 bywhomRidestarted = 0;
                 buildLocationCallBack();
@@ -607,31 +622,86 @@ public class StartRideActivity extends AppCompatActivity implements
 
         String current = latitude + "," + longitude;
 
-
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-        new GetDirection().execute(current, lift.getEndLatlong());
+        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            //join all checkpoints
+            new GetDirection().execute(current, lift.getEndLatlong());
+        } else {
+            if (bywhomRidestarted == 1) {
+                txt_arrival_status.setText("Reaching in : ");
+                new GetDirection().execute(current, lift.getEndLatlong());
+                /*reaching time*/
+                showArrivalTimeCard(latitude, longitude, lift.getEndLatlong());
+            } else {
+                txt_arrival_status.setText("Arriving in : ");
+                new GetDirection().execute(current, lift.getStartLatlong());
+                /*arrival time*/
+                showArrivalTimeCard(latitude, longitude, lift.getStartLatlong());
+            }
+        }
+    }
+
+    private void showArrivalTimeCard(double curLat, double curLong, String lastLatlong) {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = "https://api.mapbox.com/directions/v5/mapbox/driving-traffic/" + curLong + "," + curLat + ";" + Double.parseDouble(lastLatlong.split(",")[1]) + "," + Double.parseDouble(lastLatlong.split(",")[0]) + "?geometries=geojson&access_token=" + Mapbox.getAccessToken();
+        StringRequest sr = new StringRequest(Request.Method.GET, url, response -> {
+            try {
+                JSONObject base = new JSONObject(response);
+                JSONArray routeArray = base.getJSONArray("routes");
+                JSONObject jsonObject = routeArray.getJSONObject(0);
+                double duration = jsonObject.getDouble("duration");
+                double distance = jsonObject.getDouble("distance");
+
+                Log.e("RESPONSE : ", duration + " : " + distance);
+                double finalTime = duration / 60;
+                double finalDist = distance / 1609;
+
+                txt_arrival_time.setText(Math.round(finalTime) + " min");
+                txt_distance.setText(Math.round(finalDist) + " mi");
+                rl_arrival.setVisibility(View.VISIBLE);
+            } catch (JSONException e) {
+                rl_arrival.setVisibility(View.GONE);
+//                Toast.makeText(StartRideActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }, error -> {
+            rl_arrival.setVisibility(View.GONE);
+//            Toast.makeText(StartRideActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+        queue.add(sr);
     }
 
     private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
-        NavigationRoute.builder(this)
+        NavigationRoute.Builder builder = NavigationRoute.builder(this)
                 .accessToken(Mapbox.getAccessToken())
                 .origin(originPoint)
-                .destination(destinationPoint).build().getRoute(new Callback<DirectionsResponse>() {
-                    @Override
-                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                        if (response.body() != null && response.body().routes().size() > 0) {
-                            currentRoute = response.body().routes().get(0);
-                            btn_navigate.setVisibility(View.VISIBLE);
-                        }
-                    }
+                .destination(destinationPoint)
+                .profile(DirectionsCriteria.PROFILE_DRIVING);
 
-                    @Override
-                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-                        t.printStackTrace();
-                        btn_navigate.setVisibility(View.GONE);
-                    }
-                });
+        if (wayPoints != null && !wayPoints.isEmpty()) {
+            for (String waypoint : wayPoints.split("\\|")) {
+                com.mapbox.geojson.Point point = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(waypoint.split(",")[1]), Double.parseDouble(waypoint.split(",")[0]));
+                builder.addWaypoint(point);
+            }
+        }
+        builder.build().getRoute(new Callback<DirectionsResponse>() {
+            @Override
+            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                if (response.body() != null && response.body().routes().size() > 0) {
+                    currentRoute = response.body().routes().get(0);
+                    btn_navigate.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                t.printStackTrace();
+                btn_navigate.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
@@ -751,7 +821,7 @@ public class StartRideActivity extends AppCompatActivity implements
                                 wholelatlong.append(historylocationList.get(x).latitude);
                                 wholelatlong.append(")");
                             }
-                            Log.e("wholelatlong", "" + wholelatlong.toString());
+                            Log.e("wholelatlong", "" + wholelatlong);
                             HistoryStoreLoactiontoDatabaseReference.child("LocationMap").child("Drivers").child(sharedPreferences.getString(Constants.USER_ID, "")).child(tracking_lift_id)
                                     .child("locationhistory").setValue(wholelatlong.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -1026,9 +1096,9 @@ public class StartRideActivity extends AppCompatActivity implements
                     }
 
                 } catch (NullPointerException e) {
-                    Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
+                    Log.e("Error", "NullPointerException onPostExecute: " + e);
                 } catch (Exception e2) {
-                    Log.e("Error", "Exception onPostExecute: " + e2.toString());
+                    Log.e("Error", "Exception onPostExecute: " + e2);
                 }
             }
 
@@ -1149,6 +1219,7 @@ public class StartRideActivity extends AppCompatActivity implements
                             tvStartRide.setText(getResources().getString(R.string.end_ride));
                             tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
                             bywhomRidestarted = 1;
+                            getUsers(2);
                             mService.requestLocationUpdates();
                             turnByTurnNavigation();
                         } else {
@@ -1319,18 +1390,23 @@ public class StartRideActivity extends AppCompatActivity implements
                     JSONObject data = jObject.getJSONObject("data");
                     users = data.getJSONArray("user");
                     tracking_lift_id = data.getString("tracking_lift_id");
-                    /*if (type == 1) {
+                    StringBuilder builder = new StringBuilder();
+                    if (type == 1) {
                         for (int i = 0; i < users.length(); i++) {
                             JSONObject user = users.getJSONObject(i);
-                            String[] startpoint = new String[0];
                             try {
-                                startpoint = user.getString("start_points").split(",");
-                                placeUser(startpoint);
+                                if (i == 0) {
+                                    builder.append(user.getString("start_points"));
+                                } else {
+                                    builder.append("|").append(user.getString("start_points"));
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-                    } else {*/
+                        wayPoints = builder.toString();
+//                        wayPoints = "22.7412138,75.9002981";
+                    }
                     try {
                         JSONObject driver = data.getJSONObject("driver");
                         driver_id = driver.getString("user_id");
@@ -1489,7 +1565,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     droplocation.setText("Drop Location : " + etlocation);
                     datee.setText("Date : " + date);
                     distancee.setText("Distance : " + distance);
-                    kmpoint.setText("Per KM Point : " + perkm.toString());
+                    kmpoint.setText("Per KM Point : " + perkm);
                     totalpointt.setText("Total Point : " + totalpoint);
                     AlertDialog alertDialog = dialogBuilder.create();
                     paybtn.setOnClickListener(new View.OnClickListener() {
