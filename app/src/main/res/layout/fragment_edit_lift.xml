@@ -350,8 +350,9 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="@dimen/dp_5"
                         android:layout_marginRight="@dimen/dp_5"
-                        android:src="@drawable/seat"
-                        android:visibility="visible" />
+                        android:src="@drawable/seat_outline"
+                        android:visibility="visible"
+                        app:tint="@color/colorBlack" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textViewSelectSeat"

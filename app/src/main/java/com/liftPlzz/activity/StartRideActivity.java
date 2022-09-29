@@ -251,6 +251,14 @@ public class StartRideActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if (myReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+        }
+        super.onDestroy();
+    }
+
     private void placeTheCUrrentmarker(Location location) {
         LatLng latLngOrigin = new LatLng(location.getLatitude(), location.getLongitude());
         mGoogleMap.clear();
@@ -371,8 +379,8 @@ public class StartRideActivity extends AppCompatActivity implements
             txtShareCode.setVisibility(View.GONE);
         }
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+            getUsers(1);
             if (lift.getIs_driver_start() == 1) {
-                getUsers(1);
                 rel_bottom.setVisibility(View.GONE);
                 bywhomRidestarted = 0;
                 buildLocationCallBack();
@@ -518,7 +526,9 @@ public class StartRideActivity extends AppCompatActivity implements
                 if (dataSnapshot.getValue() == null) {
                     Log.e("dataSnapshot", "dataSnapshot is null");
                     driverstarted = false;
-                    Toast.makeText(StartRideActivity.this, "Driver has not started the ride", Toast.LENGTH_SHORT).show();
+                    if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                        Toast.makeText(StartRideActivity.this, "Driver has not started the ride", Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
                 startpoint = Objects.requireNonNull(dataSnapshot.getValue()).toString().split(",");
@@ -657,10 +667,21 @@ public class StartRideActivity extends AppCompatActivity implements
 
                 Log.e("RESPONSE : ", duration + " : " + distance);
                 double finalTime = duration / 60;
-                double finalDist = distance / 1609;
 
-                txt_arrival_time.setText(Math.round(finalTime) + " min");
-                txt_distance.setText(Math.round(finalDist) + " mi");
+//                double S = duration % 60;
+                double H = duration / 60;
+                double M = H % 60;
+                H = H / 60;
+
+                double finalDist = distance / 1000;
+
+//                if (H != 0.0) {
+                txt_arrival_time.setText(Math.round(H) + " hr " + Math.round(M) + " min");
+//                } else {
+//                    txt_arrival_time.setText(Math.round(M) + " min");
+//                }
+
+                txt_distance.setText(Math.round(finalDist) + " km");
                 rl_arrival.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 rl_arrival.setVisibility(View.GONE);

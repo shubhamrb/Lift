@@ -166,6 +166,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     ImageView callButton;
     @BindView(R.id.smsButton)
     ImageView smsButton;
+    @BindView(R.id.btn_swap)
+    ImageView btn_swap;
     int listPos;
     @BindView(R.id.rr_toolbar)
     RelativeLayout rr_toolbar;
@@ -213,6 +215,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
     private EditVehicleData lift;
+    private Intent srcIntent, destIntent;
 
 
     @Override
@@ -354,7 +357,127 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     }
                 });
         // mapFragment.getMapAsync(this);
+
+        btn_swap.setOnClickListener(view -> {
+            swapLocation();
+        });
     }
+
+    private void swapLocation() {
+        if (srcIntent != null) {
+            pickupLocation = null;
+            locationSelect = 2;
+            generateSwappedLocation(srcIntent);
+        } else if (destIntent != null) {
+            dropLocation = null;
+            locationSelect = 1;
+            generateSwappedLocation(destIntent);
+        }
+    }
+
+    private void generateSwappedLocation(Intent data) {
+        try {
+            if (data != null && data.getStringExtra(MapUtility.ADDRESS) != null) {
+                String address = data.getStringExtra(MapUtility.ADDRESS);
+                double currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
+                double currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0);
+
+                if (locationSelect == 1) {
+                    pickupLocation = new LatLng(currentLatitude, currentLongitude);
+                    latLngOrigin = new LatLng(currentLatitude, currentLongitude);
+                    originLat = latLngOrigin;
+
+
+                    editTextPickupLocation.setText(address);
+
+                    startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude);
+                    if (dropLocation != null) {
+                        mGoogleMap.clear();
+                        mGoogleMap.addMarker(new MarkerOptions()
+                                .position(pickupLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                .title("pickup"));
+
+                        mGoogleMap.addMarker(new MarkerOptions()
+                                .position(dropLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                                .title("dropoff"));
+                        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+                        destination = dropLocation.latitude + "," + dropLocation.longitude;
+
+                        new GetDirection().execute(origin, destination);
+
+                        Intent temp = srcIntent;
+                        srcIntent = destIntent;
+                        destIntent = temp;
+
+                    } else {
+                        if (srcIntent != null) {
+                            locationSelect = 2;
+                            generateSwappedLocation(srcIntent);
+                        } else {
+                            mGoogleMap.clear();
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(pickupLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                    .title("pickup"));
+                            Intent temp = srcIntent;
+                            srcIntent = destIntent;
+                            destIntent = temp;
+                            editTextDropLocation.setText("");
+                        }
+
+                    }
+                } else if (locationSelect == 2) {
+
+                    editTextDropLocation.setText(address);
+                    dropLocation = new LatLng(currentLatitude, currentLongitude);
+                    destinationLat = dropLocation;
+                    latLngDestination = new LatLng(currentLatitude, currentLongitude);
+                    endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude);
+                    destination = currentLatitude + "," + currentLongitude;
+                    mGoogleMap.clear();
+                    mGoogleMap.addMarker(new MarkerOptions()
+                            .position(dropLocation)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                            .title("dropoff"));
+
+                    if (pickupLocation != null) {
+                        mGoogleMap.addMarker(new MarkerOptions()
+                                .position(pickupLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                .title("pickup"));
+                        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+                        destination = dropLocation.latitude + "," + dropLocation.longitude;
+                        new GetDirection().execute(origin, destination);
+                        Intent temp = srcIntent;
+                        srcIntent = destIntent;
+                        destIntent = temp;
+                    } else {
+                        if (destIntent != null) {
+                            /*to swap*/
+                            locationSelect = 1;
+                            generateSwappedLocation(destIntent);
+                        } else {
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(dropLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                                    .title("dropoff"));
+                            Intent temp = srcIntent;
+                            srcIntent = destIntent;
+                            destIntent = temp;
+                            editTextPickupLocation.setText("");
+                        }
+
+                    }
+
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onStart() {
@@ -409,6 +532,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 if (isMultiCheck) {
                     if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("enter dropoff location first");
+                    } else if (editTextPickupLocation.getText().toString().isEmpty()) {
+                        showMessage("enter pickup location first");
                     } else {
                         CheckPoints checkPoints = new CheckPoints();
                         checkPoints.setId(checkPointsList.size() + 1);
@@ -504,7 +629,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void fetchLocation() {
-        if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -527,7 +652,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -578,6 +703,15 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             }
         });
 
+
+        if (currentLocation != null) {
+            destIntent = null;
+            dropLocation = null;
+            srcIntent = new Intent();
+            srcIntent.putExtra(MapUtility.ADDRESS, editTextPickupLocation.getText().toString());
+            srcIntent.putExtra(MapUtility.LATITUDE, currentLocation.getLatitude());
+            srcIntent.putExtra(MapUtility.LONGITUDE, currentLocation.getLongitude());
+        }
         if (lift != null) {
             showListData();
         }
@@ -702,7 +836,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADDRESS_PICKER_REQUEST) {
             try {
                 if (data != null && data.getStringExtra(MapUtility.ADDRESS) != null) {
@@ -722,6 +855,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                      */
 
                     if (locationSelect == 1) {
+                        srcIntent = data;
+
                         pickupLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngOrigin = new LatLng(currentLatitude, currentLongitude);
                         originLat = latLngOrigin;
@@ -755,6 +890,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     .title("pickup"));
                         }
                     } else if (locationSelect == 2) {
+                        destIntent = data;
                         StringBuilder stringBuilder = new StringBuilder().append
                                 (completeAddress.getString("addressline2")).append
                                 (completeAddress.getString("city")).append(",").append
@@ -1231,6 +1367,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void setCallBackSelectionCheckPointsDelete(int preferredCallingMode) {
+        if (preferredCallingMode > 0) {
+            btn_swap.setVisibility(View.GONE);
+        }else {
+            btn_swap.setVisibility(View.VISIBLE);
+        }
         textViewCheckpoints.setText("Checkpoints :" + preferredCallingMode);
     }
 
@@ -1255,6 +1396,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             if (!list.get(i).getAddress().contains("Select Checkpoints"))
                 checkPointsCount++;
         }
+        if (checkPointsCount > 0) {
+            btn_swap.setVisibility(View.GONE);
+        }else {
+            btn_swap.setVisibility(View.VISIBLE);
+        }
+
         textViewCheckpoints.setText("Checkpoints :" + checkPointsCount);
         wayPoints = "";
         mGoogleMap.clear();
