@@ -58,8 +58,6 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         DriverData driverData = arrayList.get(position);
         holder.tvName.setText("" + driverData.getName());
         holder.tv_time.setText(driverData.getLfit_time());
-        holder.price_per_seat.setText("" + driverData.getPrice_per_seat());
-
 
         if (driverData.getStart_location() == null)
             holder.from.setText("From: --");
@@ -78,18 +76,22 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         holder.tv_rate.setText("" + driverData.getRating() + " " + "(" + driverData.getTotal_review() + ")");
 
         if (isFind) {
+            holder.price_per_seat.setText("" + driverData.getPrice_per_seat());
             holder.tvRatePerKm.setText("Point per km: " + driverData.getRatePerKm() + "/km");
             holder.textViewSeats.setText(" " + driverData.getPaidSeats());
             holder.tvRatePerKm.setVisibility(View.VISIBLE);
             holder.textViewSeats.setVisibility(View.VISIBLE);
             holder.img_filled_seat.setVisibility(View.VISIBLE);
             holder.tv_na.setVisibility(View.GONE);
-
+            holder.textVacantSeats.setText(" " + driverData.getVacant_seats());
         } else {
+            holder.price_per_seat.setVisibility(View.GONE);
             holder.tvRatePerKm.setVisibility(View.GONE);
             holder.textViewSeats.setVisibility(View.GONE);
             holder.img_filled_seat.setVisibility(View.GONE);
+            holder.img_vacant_seat.setVisibility(View.GONE);
 
+            holder.textVacantSeats.setText("Looking for : " + driverData.getVacant_seats() + " seat");
             if (driverData.getUserId().equals(sharedPreferences.getString(Constants.USER_ID, ""))) {
                 holder.tv_na.setText("Point: " + driverData.getTotal_point());
                 holder.tv_na.setVisibility(View.VISIBLE);
@@ -97,7 +99,7 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
                 holder.tv_na.setVisibility(View.GONE);
             }
         }
-        holder.textVacantSeats.setText(" " + driverData.getVacant_seats());
+
 
         holder.btnSendRequest.setVisibility(View.VISIBLE);
         if (driverData.getRequestAlreadySend() == 0) {

@@ -304,6 +304,7 @@
                 android:id="@+id/btn_share_lift"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_gravity="right"
                 android:background="@drawable/rounded_bg_green"
                 android:elevation="@dimen/dp_5"
@@ -321,7 +322,7 @@
                 android:id="@+id/btn_same_rute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:layout_gravity="right"
                 android:background="@drawable/rounded_bg_green"
                 android:elevation="@dimen/dp_5"
@@ -335,21 +336,41 @@
                 android:textSize="@dimen/sp_12"
                 android:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/btn_start_ride"
+            <RelativeLayout
+                android:id="@+id/btn_start_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/rounded_bg_green"
-                android:elevation="@dimen/dp_5"
-                android:ellipsize="end"
-                android:fontFamily="@font/gotham_medium"
-                android:padding="@dimen/dp_10"
-                android:text="@string/start_ride"
-                android:textAllCaps="false"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/sp_12"
-                android:visibility="visible" />
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/rounded_bg_green">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btn_start_ride"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="@dimen/dp_5"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/gotham_medium"
+                    android:padding="@dimen/dp_10"
+                    android:text="@string/start_ride"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/sp_12"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/btn_navigation"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:rotation="90"
+                    android:visibility="gone"
+                    android:src="@drawable/navigation" />
+            </RelativeLayout>
+
 
         </RelativeLayout>
 

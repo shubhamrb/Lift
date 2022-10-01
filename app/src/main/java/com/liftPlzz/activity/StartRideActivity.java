@@ -457,7 +457,11 @@ public class StartRideActivity extends AppCompatActivity implements
                         .directionsRoute(currentRoute)
                         .shouldSimulateRoute(simulateRoute)
                         .build();
-                NavigationLauncher.startNavigation(this, options);
+                if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                    NavigationLauncher.startNavigation(this, options, txtShareCode.getText().toString());
+                } else {
+                    NavigationLauncher.startNavigation(this, options, null);
+                }
             }
         });
 

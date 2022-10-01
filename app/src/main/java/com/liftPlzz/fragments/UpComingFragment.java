@@ -73,6 +73,11 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         presenter.getUpcomingLift(strToken);
     }
 

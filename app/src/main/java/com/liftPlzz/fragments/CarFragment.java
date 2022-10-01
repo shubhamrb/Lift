@@ -9,9 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,8 +40,6 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -160,6 +156,73 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
         newFilters[editFilters.length] = new InputFilter.AllCaps();
         editTextVehicleRegNo.setFilters(newFilters);
         if (isEdit) {
+            seat = "" + vehicleData.getSeats();
+            textViewSeat1.setSelected(true);
+            textViewSeat2.setSelected(false);
+            textViewSeat3.setSelected(false);
+            textViewSeat4.setSelected(false);
+            textViewSeat5.setSelected(false);
+            textViewSeat6.setSelected(false);
+            textViewSeat7.setSelected(false);
+
+            if (seat.equals("1")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(false);
+                textViewSeat3.setSelected(false);
+                textViewSeat4.setSelected(false);
+                textViewSeat5.setSelected(false);
+                textViewSeat6.setSelected(false);
+                textViewSeat7.setSelected(false);
+            } else if (seat.equals("2")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(false);
+                textViewSeat4.setSelected(false);
+                textViewSeat5.setSelected(false);
+                textViewSeat6.setSelected(false);
+                textViewSeat7.setSelected(false);
+            } else if (seat.equals("3")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(false);
+                textViewSeat5.setSelected(false);
+                textViewSeat6.setSelected(false);
+                textViewSeat7.setSelected(false);
+            } else if (seat.equals("4")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
+                textViewSeat5.setSelected(false);
+                textViewSeat6.setSelected(false);
+                textViewSeat7.setSelected(false);
+            } else if (seat.equals("5")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
+                textViewSeat5.setSelected(true);
+                textViewSeat6.setSelected(false);
+                textViewSeat7.setSelected(false);
+            } else if (seat.equals("6")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
+                textViewSeat5.setSelected(true);
+                textViewSeat6.setSelected(true);
+                textViewSeat7.setSelected(false);
+            } else if (seat.equals("7")) {
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
+                textViewSeat5.setSelected(true);
+                textViewSeat6.setSelected(true);
+                textViewSeat7.setSelected(true);
+            }
+
             editTextVehicleModel.setText(vehicleData.getModel());
             edRatePerKm.setText("" + vehicleData.getRatePerKm());
             editTextVehicleRegNo.setText(vehicleData.getRegistrationNo());

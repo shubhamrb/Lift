@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -181,16 +184,44 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     public void reasonDialog(int liftId, int fromLiftId, int requestAlreadySend) {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.block_reason_dialog);
+        dialog.setContentView(R.layout.request_cancel_reason_dialog);
+        dialog.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        RadioGroup reason_group = dialog.findViewById(R.id.reason_group);
+        RadioButton radio1 = dialog.findViewById(R.id.radio1);
+        RadioButton radio2 = dialog.findViewById(R.id.radio2);
+        RadioButton radio3 = dialog.findViewById(R.id.radio3);
+        LinearLayout layoutEditText = dialog.findViewById(R.id.layoutEditText);
+
+
         AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
         TextView titleTxt = dialog.findViewById(R.id.titleTxt);
         EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
 
         titleTxt.setText("Reason to cancel?");
 
+        reason_group.setOnCheckedChangeListener((radioGroup, i) -> {
+            if (i == R.id.radio4) {
+                layoutEditText.setVisibility(View.VISIBLE);
+            } else {
+                layoutEditText.setVisibility(View.GONE);
+            }
+        });
+
         buttonSubmit.setOnClickListener(v -> {
-            if (editTextPoints.getText().toString().trim().equals("")) {
-                Toast.makeText(this, "Please enter the reason", Toast.LENGTH_SHORT).show();
+            String reason;
+            if (reason_group.getCheckedRadioButtonId() == R.id.radio1) {
+                reason = radio1.getText().toString();
+            } else if (reason_group.getCheckedRadioButtonId() == R.id.radio2) {
+                reason = radio2.getText().toString();
+            } else if (reason_group.getCheckedRadioButtonId() == R.id.radio3) {
+                reason = radio3.getText().toString();
+            } else {
+                reason = editTextPoints.getText().toString();
+            }
+
+            if (reason.trim().equals("")) {
+                Toast.makeText(this, "Please select the reason", Toast.LENGTH_SHORT).show();
             } else {
                 sendCancelInvitation(liftId, fromLiftId, requestAlreadySend, editTextPoints.getText().toString());
                 dialog.dismiss();

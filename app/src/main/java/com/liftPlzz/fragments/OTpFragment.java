@@ -44,6 +44,7 @@ import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.OtpReceivedInterface;
 import com.liftPlzz.views.OtpView;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -492,7 +493,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
 
     private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(Objects.requireNonNull(getActivity()), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {

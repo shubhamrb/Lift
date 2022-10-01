@@ -32,7 +32,7 @@ public class NavigationLauncher {
      * @param activity must be launched from another {@link Activity}
      * @param options  with fields to customize the navigation view
      */
-    public static void startNavigation(Activity activity, NavigationLauncherOptions options) {
+    public static void startNavigation(Activity activity, NavigationLauncherOptions options, String share_code) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -50,6 +50,7 @@ public class NavigationLauncher {
         editor.apply();
 
         Intent navigationActivity = new Intent(activity, MapboxNavigationActivity.class);
+        navigationActivity.putExtra("share_code", share_code);
         storeInitialMapPosition(options, navigationActivity);
         activity.startActivity(navigationActivity);
     }

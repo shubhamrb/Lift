@@ -10,6 +10,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -162,6 +163,8 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @Override
     protected void bindData() {
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         presenter.getProfile(sharedPreferences.getString(Constants.TOKEN, ""));
@@ -201,7 +204,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             case R.id.textViewRating:
             case R.id.textViewReviewCount:
 //                if (userData.getTotalReview() != 0){
-                    presenter.openReviews();
+                presenter.openReviews();
 //                }
                 break;
             case R.id.imgback:

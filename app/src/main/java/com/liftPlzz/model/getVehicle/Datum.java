@@ -52,9 +52,20 @@ public class Datum {
     @SerializedName("vehicle_percentage")
     @Expose
     private Integer vehicle_percentage;
+    @SerializedName("seats")
+    @Expose
+    private Integer seats;
     @SerializedName("percentage_color")
     @Expose
     private String percentage_color;
+
+    public Integer getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Integer seats) {
+        this.seats = seats;
+    }
 
     public Integer getVehicle_percentage() {
         return vehicle_percentage;

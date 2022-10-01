@@ -9,9 +9,11 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Rational;
 import android.view.Display;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.liftPlzz.R;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
@@ -33,13 +35,22 @@ public class MapboxNavigationActivity extends AppCompatActivity implements OnNav
         NavigationListener {
 
     private NavigationView navigationView;
+    private AppCompatTextView txtShareCode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.Theme_AppCompat_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
+        String share_code = getIntent().getStringExtra("share_code");
+
         navigationView = findViewById(R.id.navigationView);
+        txtShareCode = findViewById(R.id.txtShareCode);
+        if (share_code != null) {
+            txtShareCode.setText(share_code);
+            txtShareCode.setVisibility(View.VISIBLE);
+        }
+
         navigationView.onCreate(savedInstanceState);
         initialize();
     }
@@ -69,7 +80,7 @@ public class MapboxNavigationActivity extends AppCompatActivity implements OnNav
 //            super.onBackPressed();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 enterPipMode();
-            }else {
+            } else {
                 super.onBackPressed();
             }
         }

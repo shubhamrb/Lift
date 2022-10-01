@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -70,34 +71,26 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         if (lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift))) {
             //find lift
             holder.llpoint.setVisibility(View.GONE);
-            holder.tvLiftType.setText(lift.getLiftType());
-//            holder.btnRequest.setText("" + lift.getFindMatch() + " " + context.getResources().getString(R.string.match_found));
         } else {
             //offer lift
             holder.llpoint.setVisibility(View.VISIBLE);
-            holder.tvLiftType.setText(lift.getLiftType());
-//            holder.btnRequest.setText("" + lift.getTotalRequest() + " " + context.getResources().getString(R.string.request));
-            /*if (lift.getIsBooked() == 1) {
-                holder.btnRequest.setVisibility(View.GONE);
-            }*/
         }
+        holder.tvLiftType.setText(lift.getLiftType());
         //todo if ride_start will be 1 it will show the ride start button
         if (lift.getRideStart() == 1) {
             holder.tvStartRide.setVisibility(View.VISIBLE);
             holder.btn_share_lift.setVisibility(View.VISIBLE);
-            holder.btn_same_rute.setVisibility(View.VISIBLE);
-            holder.btn_same_rute.setText(lift.getSameroutevehicle() + " Same Route");
+            if (lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift))) {
+                holder.btn_same_rute.setVisibility(View.GONE);
+            } else {
+                holder.btn_same_rute.setVisibility(View.VISIBLE);
+                holder.btn_same_rute.setText(lift.getSameroutevehicle() + " Same Route");
+            }
+
         } else {
             holder.tvStartRide.setVisibility(View.GONE);
-//            holder.btn_share_lift.setVisibility(View.GONE);
-//            holder.btn_same_rute.setVisibility(View.GONE);
         }
-        /*holder.tvStartRide.setVisibility(View.VISIBLE);
-        holder.btn_share_lift.setVisibility(View.VISIBLE);*/
-        //        if   "is_booked": 0,      then this button will be hide
-//        if   "is_booked": 1,    then 'Partner details' button will show,
-//        if   "is_booked": 0,      then   '0 match found' button will be same
-//        if 'is_booked': 1,   then '0 match found' button will be hide and will show  'driver-profile
+
         if (lift.getIsBooked() == 0) {
             holder.partnerBtn.setVisibility(View.GONE);
         } else {
@@ -116,15 +109,21 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
 
         if (lift.getLiftType().equals(context.getResources().getString(R.string.find_lift))) {
             if (lift.getIs_user_start() == 1) {
-                holder.tvStartRide.setText(context.getResources().getString(R.string.end_ride));
+                holder.tvStartRide.setVisibility(View.GONE);
+                holder.btn_navigation.setVisibility(View.VISIBLE);
             } else {
                 holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
+                holder.btn_navigation.setVisibility(View.GONE);
+                holder.tvStartRide.setVisibility(View.VISIBLE);
             }
         } else {
             if (lift.getIs_driver_start() == 1) {
-                holder.tvStartRide.setText(context.getResources().getString(R.string.end_ride));
+                holder.tvStartRide.setVisibility(View.GONE);
+                holder.btn_navigation.setVisibility(View.VISIBLE);
             } else {
                 holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
+                holder.btn_navigation.setVisibility(View.GONE);
+                holder.tvStartRide.setVisibility(View.VISIBLE);
             }
         }
 
@@ -169,7 +168,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             @Override
             public void onClick(View v) {
                 if (lift.getTotalRequest() != null && lift.getTotalRequest() != 0) {
-                    itemListener.onRequestClick(lift,lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift)));
+                    itemListener.onRequestClick(lift, lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift)));
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.no_request_found), Toast.LENGTH_SHORT).show();
                 }
@@ -203,7 +202,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         });
 
 
-        holder.tvStartRide.setOnClickListener(new View.OnClickListener() {
+        holder.btn_start_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, StartRideActivity.class);
@@ -258,6 +257,12 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         AppCompatTextView textRateparkm;
         @BindView(R.id.llpoint)
         LinearLayout llpoint;
+
+        @BindView(R.id.btn_navigation)
+        ImageView btn_navigation;
+
+        @BindView(R.id.btn_start_map)
+        RelativeLayout btn_start_map;
         //  textRateparkm,textPoints
 
         @BindView(R.id.linear_item)
@@ -345,7 +350,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
     public interface ItemListener {
         void onMatchClick(Lift lift, boolean isFind);
 
-        void onRequestClick(Lift lift,boolean isFind);
+        void onRequestClick(Lift lift, boolean isFind);
 
         void onPartnetDetails(Lift lift);
 
