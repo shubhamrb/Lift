@@ -7,6 +7,9 @@ import com.liftPlzz.model.completedLift.ResponseCompletedLift;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.CompletedView;
 
+import org.json.JSONObject;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,6 +56,39 @@ public class CompletedPresenter extends BasePresenter<CompletedView> {
 
             @Override
             public void onFailure(Call<ResponseCompletedLift> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage("Check your internet connection");
+            }
+        });
+    }
+
+    public void getDeleteLift(String token, int liftId) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<ResponseBody> call = api.deleteMyLift(Constants.API_KEY, Constants.ANDROID, token, liftId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                view.hideLoader();
+
+                if (response.body() != null && response.code() == 200) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        boolean status = jsonObject.optBoolean("status");
+                        String message = jsonObject.optString("message");
+                        view.deleteLiftData(message);
+                        view.showMessage(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    view.showMessage("Something went wrong");
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
                 view.hideLoader();
                 view.showMessage("Check your internet connection");
             }

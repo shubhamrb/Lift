@@ -401,7 +401,7 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 break;
             case R.id.textViewSeat2:
                 seat = "2";
-                textViewSeat1.setSelected(false);
+                textViewSeat1.setSelected(true);
                 textViewSeat2.setSelected(true);
                 textViewSeat3.setSelected(false);
                 textViewSeat4.setSelected(false);
@@ -411,8 +411,8 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 break;
             case R.id.textViewSeat3:
                 seat = "3";
-                textViewSeat1.setSelected(false);
-                textViewSeat2.setSelected(false);
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
                 textViewSeat3.setSelected(true);
                 textViewSeat4.setSelected(false);
                 textViewSeat5.setSelected(false);
@@ -421,9 +421,9 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 break;
             case R.id.textViewSeat4:
                 seat = "4";
-                textViewSeat1.setSelected(false);
-                textViewSeat2.setSelected(false);
-                textViewSeat3.setSelected(false);
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
                 textViewSeat4.setSelected(true);
                 textViewSeat5.setSelected(false);
                 textViewSeat6.setSelected(false);
@@ -431,32 +431,32 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 break;
             case R.id.textViewSeat5:
                 seat = "5";
-                textViewSeat1.setSelected(false);
-                textViewSeat2.setSelected(false);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
                 textViewSeat5.setSelected(true);
                 textViewSeat6.setSelected(false);
                 textViewSeat7.setSelected(false);
                 break;
             case R.id.textViewSeat6:
                 seat = "6";
-                textViewSeat1.setSelected(false);
-                textViewSeat2.setSelected(false);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
+                textViewSeat5.setSelected(true);
                 textViewSeat6.setSelected(true);
                 textViewSeat7.setSelected(false);
                 break;
             case R.id.textViewSeat7:
                 seat = "7";
-                textViewSeat1.setSelected(false);
-                textViewSeat2.setSelected(false);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
+                textViewSeat1.setSelected(true);
+                textViewSeat2.setSelected(true);
+                textViewSeat3.setSelected(true);
+                textViewSeat4.setSelected(true);
+                textViewSeat5.setSelected(true);
+                textViewSeat6.setSelected(true);
                 textViewSeat7.setSelected(true);
                 break;
         }

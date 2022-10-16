@@ -257,19 +257,28 @@
                     android:paddingBottom="5sp">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/profile_percantage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/person_24"
+                        android:drawablePadding="@dimen/_5sdp"
                         android:fontFamily="@font/gotham_medium"
-                        android:gravity="center_vertical"
-                        android:textColor="@color/colorBlack"
+                        android:gravity="center"
+                        android:text="0%"
+                        android:textColor="@color/colorText"
                         android:textSize="@dimen/dp_16" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/vehicle_percantage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/car_selected"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:drawableTint="@color/colorPrimary"
                         android:fontFamily="@font/gotham_medium"
                         android:gravity="center_vertical"
-                        android:textColor="@color/colorBlack"
+                        android:text="0%"
+                        android:textColor="@color/colorText"
                         android:textSize="@dimen/dp_16" />
 
                     <androidx.appcompat.widget.AppCompatTextView

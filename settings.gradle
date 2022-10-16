@@ -19,5 +19,5 @@ dependencyResolutionManagement {
         maven { url 'https://mapbox.bintray.com/mapbox' }
     }
 }
-include ':app', ':maplocationpicker'
+include ':app'
 rootProject.name = 'LiftPlzz'

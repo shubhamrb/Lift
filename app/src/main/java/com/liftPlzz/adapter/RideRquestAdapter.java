@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,9 +60,9 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
     public void onBindViewHolder(final RideRquestAdapter.ViewHolder holder, final int position) {
         RideRequestData requestData = arrayList.get(position);
 
-        if (requestData.getIs_contact_public()==0){
+        if (requestData.getIs_contact_public() == 0) {
             holder.tvMobile.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.tvMobile.setText(requestData.getMobile());
             holder.tvMobile.setVisibility(View.VISIBLE);
         }
@@ -72,9 +71,20 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
 
         if (requestData.getProfile_percentage() == null)
             holder.profile_percantage.setText("Profile: --");
-        else
-            holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage());
-
+        else {
+            holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage().getPercantage() + "%");
+            switch (requestData.getProfile_percentage().getColor()) {
+                case "red":
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
+                    break;
+                case "green":
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
+                    break;
+                case "orange":
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
+                    break;
+            }
+        }
         if (requestData.getLocation().getStart_city() == null)
             holder.from.setText("From: --");
         else
@@ -114,9 +124,9 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
             holder.textRateparkm.setText("Rate per km : " + requestData.getRate_per_km() + "/km");
             holder.textRateparkm.setVisibility(View.VISIBLE);
 
-            if (requestData.getUserId().equals(sharedPreferences.getString(Constants.USER_ID,""))){
+            if (requestData.getUserId().equals(sharedPreferences.getString(Constants.USER_ID, ""))) {
                 holder.total_point.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.total_point.setVisibility(View.GONE);
             }
         }

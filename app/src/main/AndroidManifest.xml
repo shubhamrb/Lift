@@ -88,6 +88,11 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:supportsPictureInPicture="true" /> <!-- <activity android:name=".activity.UserProfileActivity" /> -->
+
+        <activity
+            android:name=".LocationPicker.LocationPickerActivity"
+            android:exported="false" />
+
         <activity
             android:name=".activity.RideRequestActivity"
             android:exported="false" />

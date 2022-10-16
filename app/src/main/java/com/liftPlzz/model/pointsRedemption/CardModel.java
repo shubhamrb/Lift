@@ -8,6 +8,10 @@ public class CardModel {
     @Expose
     private String card_number;
 
+    @SerializedName("card_expiry")
+    @Expose
+    private String card_expiry;
+
     @SerializedName("full_name")
     @Expose
     private String full_name;
@@ -15,6 +19,14 @@ public class CardModel {
     @SerializedName("current_point")
     @Expose
     private int current_point;
+
+    public String getCard_expiry() {
+        return card_expiry;
+    }
+
+    public void setCard_expiry(String card_expiry) {
+        this.card_expiry = card_expiry;
+    }
 
     public String getCard_number() {
         return card_number;

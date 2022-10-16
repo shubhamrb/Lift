@@ -70,8 +70,8 @@ public class MyVehicleListAdapter extends RecyclerView.Adapter<MyVehicleListAdap
             case "green":
                 holder.textViewPercent.setTextColor(context.getResources().getColor(R.color.quantum_googgreen));
                 break;
-            case "yellow":
-                holder.textViewPercent.setTextColor(context.getResources().getColor(R.color.quantum_yellow400));
+            case "orange":
+                holder.textViewPercent.setTextColor(context.getResources().getColor(R.color.quantum_orange));
                 break;
         }
 

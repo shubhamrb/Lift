@@ -1,12 +1,17 @@
 package com.liftPlzz.adapter;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -81,6 +86,11 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         @BindView(R.id.linear_item)
         LinearLayout linearItem;
 
+        @BindView(R.id.imMore)
+        ImageView imMore;
+        @BindView(R.id.view)
+        View view;
+
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -122,10 +132,34 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
                 }
             });
 
+            imMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popup = new PopupMenu(context, view);
+                    //Inflating the Popup using xml file
+                    popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                    popup.setGravity(Gravity.END);
+                    Menu menu = popup.getMenu();
+                    menu.removeItem(R.id.edit);
+                    //registering popup with OnMenuItemClickListener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.toString().equalsIgnoreCase("delete")) {
+                                itemListener.onDeleteClick(verifiedLists.get(getAdapterPosition()).getId());
+                            }
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+                }
+            });
         }
     }
 
     public interface ItemListener {
         void onMatchClick(CompleteLiftData lift);
+
+        void onDeleteClick(int Id);
     }
 }

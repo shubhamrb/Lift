@@ -62,9 +62,15 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
     @BindView(R.id.recyclerViewpackage)
     RecyclerView recyclerViewpackage;
     @BindView(R.id.buttonRecharge)
-    TextView buttonRecharge;
+    AppCompatButton buttonRecharge;
     @BindView(R.id.pointtext)
     TextView pointtext;
+    @BindView(R.id.nametext)
+    TextView nametext;
+    @BindView(R.id.card_number)
+    TextView card_number;
+    @BindView(R.id.validity_text)
+    TextView validity_text;
     String strToken = "";
     ArrayList<RechargeHistory> rechargeHistories;
     String description;
@@ -112,6 +118,17 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
                         CardModel cardModel = response.body().getCardModel();
                         if (cardModel != null) {
                             pointtext.setText(String.format(Locale.getDefault(), "%d", cardModel.getCurrent_point()));
+                            nametext.setText(cardModel.getFull_name());
+                            String card_no = cardModel.getCard_number();
+
+                            if (card_number.length() != 16) {
+                                card_number.setText("0000 **** **** 0000");
+                            } else {
+                                card_number.setText(card_no.substring(0, 4) + " **** **** " + card_no.substring(12));//2305 0000 0004 1111
+                            }
+                            String card_val = cardModel.getCard_expiry();
+                            validity_text.setText(card_val.split("-")[1] + "/" + card_val.split("-")[0].substring(2));
+
                             getRechargeHistory();
                         }
                     } else {

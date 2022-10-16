@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,7 +35,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
     private boolean isLifter;
 
 
-    public PartnerAdapter(Context context, ArrayList<User> arrayList,boolean isLifter) {
+    public PartnerAdapter(Context context, ArrayList<User> arrayList, boolean isLifter) {
         this.context = context;
         this.arrayList = arrayList;
         this.isLifter = isLifter;
@@ -59,9 +58,9 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
     @Override
     public void onBindViewHolder(final PartnerAdapter.ViewHolder holder, final int position) {
         User requestData = arrayList.get(position);
-        if (requestData.getIs_contact_public()==0){
+        if (requestData.getIs_contact_public() == 0) {
             holder.tvMobile.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.tvMobile.setText("Mobile: " + requestData.getMobile());
             holder.tvMobile.setVisibility(View.VISIBLE);
         }
@@ -69,9 +68,21 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
 
         if (requestData.getProfile_percentage() == null)
             holder.profile_percantage.setText("Profile: --");
-        else
-            holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage());
+        else {
+            holder.profile_percantage.setText("Profile: " + requestData.getProfile_percentage().getPercantage() + "%");
 
+            switch (requestData.getProfile_percentage().getColor()) {
+                case "red":
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
+                    break;
+                case "green":
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
+                    break;
+                case "orange":
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
+                    break;
+            }
+        }
         if (requestData.getLocation().getStart_city() == null)
             holder.from.setText("From: --");
         else
@@ -109,7 +120,18 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
             if (requestData.getVehicle_percentage() == null) {
                 holder.vehicle_percantage.setVisibility(View.INVISIBLE);
             } else {
-                holder.vehicle_percantage.setText("Vehicle: " + requestData.getProfile_percentage());
+                holder.vehicle_percantage.setText("Vehicle: " + requestData.getVehicle_percentage().getPercantage() + "%");
+                switch (requestData.getVehicle_percentage().getColor()) {
+                    case "red":
+                        holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
+                        break;
+                    case "green":
+                        holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
+                        break;
+                    case "orange":
+                        holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
+                        break;
+                }
                 holder.vehicle_percantage.setVisibility(View.VISIBLE);
             }
 

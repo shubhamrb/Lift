@@ -31,6 +31,7 @@ import com.liftPlzz.model.recharge.RechargeFuelCardHistoryResponse;
 import com.liftPlzz.model.recharge.RechargeHistoryResponse;
 import com.liftPlzz.model.resendOtp.ResendOtpResponse;
 import com.liftPlzz.model.ridebyvehicletypemodel.DriverByTypeReponse;
+import com.liftPlzz.model.ridehistorymodel.RideHistoryResponse;
 import com.liftPlzz.model.riderequestmodel.RideRequestResponse;
 import com.liftPlzz.model.sendotp.MainResponse;
 import com.liftPlzz.model.upcomingLift.UpcomingLiftResponse;
@@ -375,6 +376,12 @@ public interface ApiService {
                                                                    @Field("lift_id") int liftId);
 
     @FormUrlEncoded
+    @POST("search-history")
+    Call<RideHistoryResponse> getRideHistory(@Field("api_key") String api_key,
+                                             @Field("client") String client,
+                                             @Field("token") String token);
+
+    @FormUrlEncoded
     @POST("matching-rides-by-vehicle-type")
     Call<DriverByTypeReponse> getRideByVehicleType(@Field("api_key") String api_key,
                                                    @Field("client") String client,
@@ -570,6 +577,12 @@ public interface ApiService {
                                     @Field("token") String token,
                                     @Field("lift_id") int liftId);
 
+    @FormUrlEncoded
+    @POST("lift-delete")
+    Call<ResponseBody> deleteMyLift(@Field("api_key") String api_key,
+                                    @Field("client") String client,
+                                    @Field("token") String token,
+                                    @Field("lift_id") int liftId);
 
     @FormUrlEncoded
     @POST("ride-end")
@@ -583,9 +596,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("ride-end-accept-by-driver")
     Call<JsonObject> rideEndRequestAccept(@Field("api_key") String api_key,
-                             @Field("client") String client,
-                             @Field("token") String token,
-                             @Field("request_id") int requestId);
+                                          @Field("client") String client,
+                                          @Field("token") String token,
+                                          @Field("request_id") int requestId);
 
     @FormUrlEncoded
     @POST("driver-liftend")

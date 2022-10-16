@@ -2,6 +2,7 @@ package com.liftPlzz.model.riderequestmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.liftPlzz.model.PercentageModel;
 import com.liftPlzz.model.partnerdetails.User;
 
 public class RideRequestData {
@@ -42,11 +43,11 @@ public class RideRequestData {
 
     @SerializedName("profile_percentage")
     @Expose
-    private String profile_percentage;
+    private PercentageModel profile_percentage;
 
     @SerializedName("vehicle_percentage")
     @Expose
-    private String vehicle_percentage;
+    private PercentageModel vehicle_percentage;
 
     @SerializedName("total_km")
     @Expose
@@ -98,19 +99,19 @@ public class RideRequestData {
         this.driveLocation = driveLocation;
     }
 
-    public String getProfile_percentage() {
+    public PercentageModel getProfile_percentage() {
         return profile_percentage;
     }
 
-    public void setProfile_percentage(String profile_percentage) {
+    public void setProfile_percentage(PercentageModel profile_percentage) {
         this.profile_percentage = profile_percentage;
     }
 
-    public String getVehicle_percentage() {
+    public PercentageModel getVehicle_percentage() {
         return vehicle_percentage;
     }
 
-    public void setVehicle_percentage(String vehicle_percentage) {
+    public void setVehicle_percentage(PercentageModel vehicle_percentage) {
         this.vehicle_percentage = vehicle_percentage;
     }
 

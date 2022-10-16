@@ -2,6 +2,7 @@ package com.liftPlzz.model.partnerdetails;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.liftPlzz.model.PercentageModel;
 
 import java.util.List;
 
@@ -69,11 +70,11 @@ public class User {
 
     @SerializedName("profile_percentage")
     @Expose
-    private String profile_percentage;
+    private PercentageModel profile_percentage;
 
     @SerializedName("vehicle_percentage")
     @Expose
-    private String vehicle_percentage;
+    private PercentageModel vehicle_percentage;
 
     @SerializedName("rate_per_km")
     @Expose
@@ -127,7 +128,7 @@ public class User {
         this.lift_id = lift_id;
     }
 
-    public void setProfile_percentage(String profile_percentage) {
+    public void setProfile_percentage(PercentageModel profile_percentage) {
         this.profile_percentage = profile_percentage;
     }
 
@@ -151,7 +152,7 @@ public class User {
         this.every_seat = every_seat;
     }
 
-    public void setVehicle_percentage(String vehicle_percentage) {
+    public void setVehicle_percentage(PercentageModel vehicle_percentage) {
         this.vehicle_percentage = vehicle_percentage;
     }
 
@@ -163,11 +164,11 @@ public class User {
         this.rate_per_km = rate_per_km;
     }
 
-    public String getProfile_percentage() {
+    public PercentageModel getProfile_percentage() {
         return profile_percentage;
     }
 
-    public String getVehicle_percentage() {
+    public PercentageModel getVehicle_percentage() {
         return vehicle_percentage;
     }
 
@@ -331,7 +332,7 @@ public class User {
         this.seats = seats;
     }
 
-    public class DriveLocation{
+    public class DriveLocation {
         public String getEnd_city() {
             return end_city;
         }

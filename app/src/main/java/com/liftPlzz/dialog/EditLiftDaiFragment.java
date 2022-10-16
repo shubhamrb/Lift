@@ -65,6 +65,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
+import com.liftPlzz.LocationPicker.LocationPickerActivity;
+import com.liftPlzz.LocationPicker.MapUtility;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
@@ -81,8 +83,6 @@ import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.presenter.EditLiftPresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.EditLiftView;
-import com.shivtechs.maplocationpicker.LocationPickerActivity;
-import com.shivtechs.maplocationpicker.MapUtility;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

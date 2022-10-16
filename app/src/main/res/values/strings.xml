@@ -138,4 +138,7 @@
     <string name="purchase_point">Purchase Point</string>
     <string name="redeem_point">Redeem Point</string>
     <string name="transaction">Transaction</string>
+    <string name="show_location_picker">Show Location Picker</string>
+    <string name="addressline1_hint">Enter Flat No / Floor / Landmark </string>
+    <string name="edittext_hint">"Click here to edit address location"</string>
 </resources>

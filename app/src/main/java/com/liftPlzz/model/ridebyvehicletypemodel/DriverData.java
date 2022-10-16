@@ -2,6 +2,7 @@ package com.liftPlzz.model.ridebyvehicletypemodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.liftPlzz.model.PercentageModel;
 
 public class DriverData {
     @SerializedName("id")
@@ -77,6 +78,30 @@ public class DriverData {
     @SerializedName("request_status")
     @Expose
     private int request_status;
+
+    @SerializedName("profile_percentage")
+    @Expose
+    private PercentageModel profile_percentage;
+
+    @SerializedName("vehicle_percentage")
+    @Expose
+    private PercentageModel vehicle_percentage;
+
+    public PercentageModel getProfile_percentage() {
+        return profile_percentage;
+    }
+
+    public void setProfile_percentage(PercentageModel profile_percentage) {
+        this.profile_percentage = profile_percentage;
+    }
+
+    public PercentageModel getVehicle_percentage() {
+        return vehicle_percentage;
+    }
+
+    public void setVehicle_percentage(PercentageModel vehicle_percentage) {
+        this.vehicle_percentage = vehicle_percentage;
+    }
 
     public int getRequest_status() {
         return request_status;
