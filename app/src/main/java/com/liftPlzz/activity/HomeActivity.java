@@ -138,62 +138,83 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             closeDrawer();
             openProfileFragment(PerformFragment.REPLACE);
         });
-//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-//            showGPSDisabledAlertToUser();
-
         checkAndRequestPermissions();
-//        }
-        // menuList.add(new MenuItem(1, getResources().getString(R.string.post_list), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(2, getResources().getString(R.string.my_lifts), R.drawable.my_ride));
-        menuList.add(new MenuItem(10, "Point Wallet", R.drawable.wallet));
-//        menuList.add(new MenuItem(11, "Points Redemption", R.drawable.ic_white_liftplzz));
-        // menuList.add(new MenuItem(9, "Payments Recharge", R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(4, getResources().getString(R.string.my_vehicle), R.drawable.my_vehicle));
-        menuList.add(new MenuItem(5, getResources().getString(R.string.my_chat), R.drawable.chats));
-        menuList.add(new MenuItem(3, "Refer & Earn", R.drawable.refer));
-        //  menuList.add(new MenuItem(11, "Follow Char Pair", R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(1, getResources().getString(R.string.my_lifts), R.drawable.my_ride));
+        menuList.add(new MenuItem(2, "Point Wallet", R.drawable.wallet));
+        menuList.add(new MenuItem(3, getResources().getString(R.string.my_vehicle), R.drawable.my_vehicle));
+        menuList.add(new MenuItem(4, getResources().getString(R.string.my_chat), R.drawable.chats));
+        menuList.add(new MenuItem(5, "Refer & Earn", R.drawable.refer));
         menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.help));
-//        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_faq), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.setting));
-        menuList.add(new MenuItem(9, getResources().getString(R.string.logout), R.drawable.logout));
+        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_feedback), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(8, getResources().getString(R.string.txt_suggestion), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(9, getResources().getString(R.string.setting), R.drawable.setting));
+        menuList.add(new MenuItem(10, getResources().getString(R.string.logout), R.drawable.logout));
 
         leftDrawer.setLayoutManager(new LinearLayoutManager(this));
         MenuListAdapter menuListAdapter = new MenuListAdapter(this, menuList, this);
         leftDrawer.setAdapter(menuListAdapter);
         openHomeFragment(PerformFragment.REPLACE);
         //  printHashKey(this);
-        imfacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Char-pair-112112291298820/"));
-                startActivity(intent);
-            }
+        imfacebook.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Char-pair-112112291298820/"));
+            startActivity(intent);
         });
-
-        iminstagram.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/___srb/"));
-                startActivity(intent);
-            }
+        iminstagram.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/___srb/"));
+            startActivity(intent);
         });
-        imtwitter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/srb2305"));
-                startActivity(intent);
-            }
+        imtwitter.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/srb2305"));
+            startActivity(intent);
         });
-        imlinkedin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/saurabh-sahu/"));
-                startActivity(intent);
-            }
+        imlinkedin.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/saurabh-sahu/"));
+            startActivity(intent);
         });
-
-
     }
+
+    @Override
+    public void onclick(int s) {
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        }
+        if (s == 1) {
+            openMyRidesFragment(PerformFragment.REPLACE);
+        } else if (s == 2) {
+            openPointWalletFragment(PerformFragment.REPLACE);
+        } else if (s == 3) {
+            openMyVehicleFragment(PerformFragment.REPLACE);
+        } else if (s == 4) {
+            openMyChatFragment(PerformFragment.REPLACE);
+        } else if (s == 5) {
+            buildDynamicLink("https://charpair.page.link/" + sharedPreferences.getString(Constants.USER_ID, ""));
+        } else if (s == 6) {
+            openHelpFragment(PerformFragment.REPLACE);
+        } else if (s == 7) {
+            /*feedback*/
+            openFeedbackSuggestionFragment(PerformFragment.REPLACE, "Feedback");
+        } else if (s == 8) {
+            /*suggestion*/
+            openFeedbackSuggestionFragment(PerformFragment.REPLACE, "Suggestion");
+        } else if (s == 9) {
+            openSettingFragment(PerformFragment.REPLACE);
+        } else if (s == 10) {
+            final AlertDialog.Builder newBuilder = new AlertDialog.Builder(this);
+            newBuilder.setMessage("Are you sure you want to Logout?");
+            newBuilder.setPositiveButton("Yes", (dialog, which) -> {
+                FirebaseAuth.getInstance().signOut();
+                sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, false).apply();
+                sharedPreferences.edit().clear().apply();
+                Intent intent = new Intent(HomeActivity.this, AuthActivity.class);
+                startActivity(intent);
+                finish();
+
+            });
+            newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            newBuilder.show();
+        }
+    }
+
 
     private void sendReferral() {
         /*API call*/
@@ -343,46 +364,6 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 
     }
 
-    @Override
-    public void onclick(int s) {
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            drawerLayout.closeDrawer(Gravity.LEFT);
-        }
-        if (s == 1) {
-        } else if (s == 2) {
-            openMyRidesFragment(PerformFragment.REPLACE);
-        } else if (s == 3) {
-            /*Intent intent = new Intent(HomeActivity.this, PaymentHistory.class);
-            startActivity(intent);*/
-            buildDynamicLink("https://charpair.page.link/" + sharedPreferences.getString(Constants.USER_ID, ""));
-        } else if (s == 4) {
-            openMyVehicleFragment(PerformFragment.REPLACE);
-        } else if (s == 5) {
-            openMyChatFragment(PerformFragment.REPLACE);
-        } else if (s == 6) {
-            openHelpFragment(PerformFragment.REPLACE);
-        } else if (s == 7) {
-            openFaqFragment(PerformFragment.REPLACE);
-        } else if (s == 8) {
-            openSettingFragment(PerformFragment.REPLACE);
-        } else if (s == 9) {
-            final AlertDialog.Builder newBuilder = new AlertDialog.Builder(this);
-            newBuilder.setMessage("Are you sure you want to Logout?");
-            newBuilder.setPositiveButton("Yes", (dialog, which) -> {
-                FirebaseAuth.getInstance().signOut();
-                sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, false).apply();
-                sharedPreferences.edit().clear().apply();
-                Intent intent = new Intent(HomeActivity.this, AuthActivity.class);
-                startActivity(intent);
-                finish();
-
-            });
-            newBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-            newBuilder.show();
-        } else if (s == 10) {
-            openPointWalletFragment(PerformFragment.REPLACE);
-        }
-    }
 
     @Override
     public void onPaymentSuccess(String s) {

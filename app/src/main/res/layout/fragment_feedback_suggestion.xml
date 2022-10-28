@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_faq"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbarNew"
+        layout="@layout/toolbar_back_title_layout" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarNew"
+        android:layout_margin="@dimen/dp_5"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/login_et_bg"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="start"
+            android:hint="Your Name"
+            android:inputType="textPersonName"
+            android:padding="@dimen/dp_10"
+            android:text=""
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorText"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/login_et_bg"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="start"
+            android:hint="Your Email"
+            android:inputType="textEmailAddress"
+            android:padding="@dimen/dp_10"
+            android:text=""
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorText"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/login_et_bg"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="start"
+            android:hint="Contact Number"
+            android:inputType="phone"
+            android:padding="@dimen/dp_10"
+            android:text=""
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorText"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@drawable/login_et_bg"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="start"
+            android:hint="@string/txt_feedback"
+            android:inputType="textMultiLine"
+            android:padding="@dimen/dp_10"
+            android:text=""
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorText"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/sp_25"
+        android:layout_marginRight="@dimen/sp_25"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/gotham_medium"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_40"
+        android:paddingRight="@dimen/dp_40"
+        android:text="Submit"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_16" />
+
+</RelativeLayout>

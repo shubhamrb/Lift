@@ -34,6 +34,9 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
 
     @BindView(R.id.toolBarTitle)
     AppCompatTextView toolBarTitle;
+    @BindView(R.id.imageViewHome)
+    ImageView imageViewHome;
+
     SharedPreferences sharedPreferences;
     @BindView(R.id.imageViewBack)
     ImageView imageViewBack;
@@ -68,6 +71,7 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         toolBarTitle.setText(getResources().getString(R.string.my_lifts));
+        imageViewHome.setVisibility(View.VISIBLE);
         SectionPagerMyRidesAdapter sectionPagerAdapter =
                 new SectionPagerMyRidesAdapter(getChildFragmentManager(), 2);
         viewpagermyride.setAdapter(sectionPagerAdapter);
@@ -122,10 +126,11 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
         }
     }
 
-    @OnClick({R.id.imageViewBack, R.id.layoutupcoming, R.id.layoutcompleted})
+    @OnClick({R.id.imageViewBack, R.id.imageViewHome, R.id.layoutupcoming, R.id.layoutcompleted})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
+            case R.id.imageViewHome:
                 getActivity().onBackPressed();
                 break;
             case R.id.layoutupcoming:

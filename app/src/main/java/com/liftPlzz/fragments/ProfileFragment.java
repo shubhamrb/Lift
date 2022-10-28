@@ -263,7 +263,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             if (!user.getAboutMe().isEmpty()) {
                 textViewAboutUser.setText(user.getAboutMe());
             }
-            profilePercentTxt.setText(user.getProfile_percentage() + " %");
+            profilePercentTxt.setText(user.getProfile_percentage().getPercantage() + " %");
             textViewMobile.setText(user.getMobile());
             textViewEmail.setText(user.getEmail());
             tvShareCode.setText("" + user.getShareCode());

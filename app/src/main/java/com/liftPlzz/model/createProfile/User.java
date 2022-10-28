@@ -2,6 +2,7 @@ package com.liftPlzz.model.createProfile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.liftPlzz.model.PercentageModel;
 import com.liftPlzz.model.SocialImage;
 
 import java.util.List;
@@ -83,7 +84,7 @@ public class User {
 
     @SerializedName("profile_percentage")
     @Expose
-    private Integer profile_percentage;
+    private PercentageModel profile_percentage;
 
 
     public boolean isIs_image() {
@@ -138,11 +139,11 @@ public class User {
     private Integer is_email_public;
 
 
-    public Integer getProfile_percentage() {
+    public PercentageModel getProfile_percentage() {
         return profile_percentage;
     }
 
-    public void setProfile_percentage(Integer profile_percentage) {
+    public void setProfile_percentage(PercentageModel profile_percentage) {
         this.profile_percentage = profile_percentage;
     }
 

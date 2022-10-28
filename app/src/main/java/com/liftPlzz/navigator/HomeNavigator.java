@@ -33,6 +33,7 @@ public interface HomeNavigator {
     void openUpdateProfileFragment(BaseActivity.PerformFragment performFragment);
 
     void openBlockFragment(BaseActivity.PerformFragment performFragment);
+
     void openUsersFragment(BaseActivity.PerformFragment performFragment);
 
     void openReviewsFragment(BaseActivity.PerformFragment performFragment);
@@ -46,6 +47,8 @@ public interface HomeNavigator {
     PointWalletFragment getPointWalletFragment();
 
     void openHelpFragment(BaseActivity.PerformFragment performFragment);
+
+    void openFeedbackSuggestionFragment(BaseActivity.PerformFragment performFragment, String type);
 
     void openVideosFragment(BaseActivity.PerformFragment performFragment);
 

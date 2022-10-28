@@ -30,6 +30,8 @@
     <string name="logout">Logout</string>
     <string name="chat">Chat</string>
     <string name="txt_faq">FAQ</string>
+    <string name="txt_feedback">Feedback</string>
+    <string name="txt_suggestion">Suggestion</string>
     <string name="my_contribution">My Contribution</string>
     <string name="help_ticket">Help &amp; Support</string>
     <string name="groups">Groups</string>

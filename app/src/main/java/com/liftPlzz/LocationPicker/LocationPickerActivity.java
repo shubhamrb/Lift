@@ -152,6 +152,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private FrameLayout mapFrame;
     private Button txtSelectLocation;
     private ImageView moving_pointer;
+    private ImageView imgCurrentloc;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -177,7 +178,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
         mapFrame = findViewById(R.id.frame);
         ll_history = findViewById(R.id.ll_history);
-        ImageView imgCurrentloc = findViewById(R.id.imgCurrentloc);
+        imgCurrentloc = findViewById(R.id.imgCurrentloc);
         LinearLayout input_layout = findViewById(R.id.input_layout);
         txtSelectLocation = findViewById(R.id.fab_select_location);
         ImageView directionTool = findViewById(R.id.direction_tool);
@@ -298,6 +299,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 ll_history.setVisibility(View.GONE);
                 txt_showmap.setVisibility(View.GONE);
                 mapFrame.setVisibility(View.VISIBLE);
+                imgCurrentloc.setVisibility(View.VISIBLE);
                 txtSelectLocation.setVisibility(View.VISIBLE);
                 moving_pointer.setVisibility(View.VISIBLE);
             }
@@ -386,6 +388,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 ll_history.setVisibility(View.GONE);
                 txt_showmap.setVisibility(View.GONE);
                 mapFrame.setVisibility(View.VISIBLE);
+                imgCurrentloc.setVisibility(View.VISIBLE);
                 txtSelectLocation.setVisibility(View.VISIBLE);
                 moving_pointer.setVisibility(View.VISIBLE);
 

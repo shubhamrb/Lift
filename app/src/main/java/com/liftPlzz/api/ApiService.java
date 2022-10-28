@@ -658,6 +658,20 @@ public interface ApiService {
     @GET("how_to_use_videos")
     Call<VideosResponse> getVideos();
 
+    @FormUrlEncoded
+    @POST("feedback")
+    Call<BlockUserResponse> submitFeedback(@Field("api_key") String api_key,
+                                           @Field("client") String client,
+                                           @Field("token") String token,
+                                           @Field("message") String message);
+
+    @FormUrlEncoded
+    @POST("suggestion")
+    Call<BlockUserResponse> submitSuggestion(@Field("api_key") String api_key,
+                                             @Field("client") String client,
+                                             @Field("token") String token,
+                                             @Field("message") String message);
+
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android
 //    token:NRy4MvEaDj5O04r8S6GGSZAJ7T5tv1QvS969rtgyYe7qdyKv8q6wjWBozH5I

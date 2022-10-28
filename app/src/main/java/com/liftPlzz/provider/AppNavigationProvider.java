@@ -11,6 +11,7 @@ import com.liftPlzz.fragments.CreateProfileFragment;
 import com.liftPlzz.fragments.ELearningFragment;
 import com.liftPlzz.fragments.FaqFragment;
 import com.liftPlzz.fragments.FeedbackFragment;
+import com.liftPlzz.fragments.FeedbackSuggestionFragment;
 import com.liftPlzz.fragments.HelpFragment;
 import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.fragments.LoginFragment;
@@ -166,6 +167,15 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     public void openHelpFragment(PerformFragment performFragment) {
         HelpFragment helpFragment = new HelpFragment();
         openFragment(helpFragment, HelpFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openFeedbackSuggestionFragment(PerformFragment performFragment, String type) {
+        FeedbackSuggestionFragment feedbackSuggestionFragment = new FeedbackSuggestionFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("type", type);
+        feedbackSuggestionFragment.setArguments(bundle);
+        openFragment(feedbackSuggestionFragment, FeedbackSuggestionFragment.class.getName(), performFragment, true);
     }
 
     @Override

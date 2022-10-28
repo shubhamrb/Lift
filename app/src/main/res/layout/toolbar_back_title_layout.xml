@@ -67,4 +67,15 @@
         android:src="@drawable/menu_icon"
         android:visibility="gone"
         app:tint="@color/colorWhite" />
+
+    <ImageView
+        android:id="@+id/imageViewHome"
+        android:layout_width="@dimen/dp_30"
+        android:layout_height="@dimen/dp_30"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:src="@drawable/home_24"
+        android:visibility="gone"
+        app:tint="@color/colorWhite" />
 </RelativeLayout>
