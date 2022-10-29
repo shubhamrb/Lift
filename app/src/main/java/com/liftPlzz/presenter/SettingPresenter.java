@@ -43,7 +43,7 @@ public class SettingPresenter extends BasePresenter<SettingView> {
                 view.hideLoader();
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
-                        view.setSettings(response.body().getData());
+                        view.setSettings(response.body());
                     } else {
                         view.showMessage(response.body().getMessage());
                     }
@@ -120,6 +120,17 @@ public class SettingPresenter extends BasePresenter<SettingView> {
 
     public void openUpdateProfile() {
         navigator.openUpdateProfileFragment(BaseActivity.PerformFragment.REPLACE);
+    }
+
+    public void openFaq() {
+        navigator.openFaqFragment(BaseActivity.PerformFragment.REPLACE);
+    }
+    public void openHowToUse() {
+        navigator.openVideosFragment(BaseActivity.PerformFragment.REPLACE);
+    }
+
+    public void openSettingOption(String title, int id) {
+        navigator.openSettingOptionFragment(BaseActivity.PerformFragment.REPLACE, title, id);
     }
 
     public void openBlock() {

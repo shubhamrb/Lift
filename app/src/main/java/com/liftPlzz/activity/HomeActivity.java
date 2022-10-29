@@ -144,11 +144,10 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         menuList.add(new MenuItem(3, getResources().getString(R.string.my_vehicle), R.drawable.my_vehicle));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_chat), R.drawable.chats));
         menuList.add(new MenuItem(5, "Refer & Earn", R.drawable.refer));
-        menuList.add(new MenuItem(6, getResources().getString(R.string.help_ticket), R.drawable.help));
-        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_feedback), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(8, getResources().getString(R.string.txt_suggestion), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(9, getResources().getString(R.string.setting), R.drawable.setting));
-        menuList.add(new MenuItem(10, getResources().getString(R.string.logout), R.drawable.logout));
+        menuList.add(new MenuItem(6, getResources().getString(R.string.txt_feedback), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_suggestion), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.setting));
+        menuList.add(new MenuItem(9, getResources().getString(R.string.logout), R.drawable.logout));
 
         leftDrawer.setLayoutManager(new LinearLayoutManager(this));
         MenuListAdapter menuListAdapter = new MenuListAdapter(this, menuList, this);
@@ -188,17 +187,15 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             openMyChatFragment(PerformFragment.REPLACE);
         } else if (s == 5) {
             buildDynamicLink("https://charpair.page.link/" + sharedPreferences.getString(Constants.USER_ID, ""));
-        } else if (s == 6) {
-            openHelpFragment(PerformFragment.REPLACE);
-        } else if (s == 7) {
+        }else if (s == 6) {
             /*feedback*/
             openFeedbackSuggestionFragment(PerformFragment.REPLACE, "Feedback");
-        } else if (s == 8) {
+        } else if (s == 7) {
             /*suggestion*/
             openFeedbackSuggestionFragment(PerformFragment.REPLACE, "Suggestion");
-        } else if (s == 9) {
+        } else if (s == 8) {
             openSettingFragment(PerformFragment.REPLACE);
-        } else if (s == 10) {
+        } else if (s == 9) {
             final AlertDialog.Builder newBuilder = new AlertDialog.Builder(this);
             newBuilder.setMessage("Are you sure you want to Logout?");
             newBuilder.setPositiveButton("Yes", (dialog, which) -> {

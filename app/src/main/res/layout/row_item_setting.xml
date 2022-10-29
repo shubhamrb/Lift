@@ -19,20 +19,14 @@
             android:text="@string/app_name"
             android:textColor="@color/colorBlack" />
 
-        <!--            <androidx.appcompat.widget.AppCompatToggleButton-->
-        <!--                android:id="@+id/toggle_button"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_alignParentRight="true"-->
-        <!--                android:layout_centerVertical="true"-->
-        <!--                android:layout_margin="@dimen/dp_5" />-->
         <ImageView
             android:id="@+id/imgtoggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/off" />
+            android:src="@drawable/off"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/imgnext"
@@ -42,7 +36,7 @@
             android:layout_centerVertical="true"
             android:rotation="180"
             android:src="@drawable/quantum_ic_arrow_back_grey600_24"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </RelativeLayout>
 

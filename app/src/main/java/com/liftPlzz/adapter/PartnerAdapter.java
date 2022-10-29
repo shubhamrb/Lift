@@ -3,7 +3,9 @@ package com.liftPlzz.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -11,7 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -33,12 +37,15 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
     private Context context;
     private ArrayList<User> arrayList;
     private boolean isLifter;
+    private ItemListener itemListener;
+    private int lift_id;
 
-
-    public PartnerAdapter(Context context, ArrayList<User> arrayList, boolean isLifter) {
+    public PartnerAdapter(Context context, ArrayList<User> arrayList, boolean isLifter, int lift_id, ItemListener itemListener) {
         this.context = context;
         this.arrayList = arrayList;
         this.isLifter = isLifter;
+        this.itemListener = itemListener;
+        this.lift_id = lift_id;
         sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
@@ -117,6 +124,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         }
 
         if (requestData.getUserType().equalsIgnoreCase("Lifter")) {
+            holder.iv_menu.setVisibility(View.GONE);
             if (requestData.getVehicle_percentage() == null) {
                 holder.vehicle_percantage.setVisibility(View.INVISIBLE);
             } else {
@@ -142,6 +150,16 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
                 holder.textRateparkm.setVisibility(View.VISIBLE);
             }
         } else {
+            if (isLifter) {
+                holder.iv_menu.setVisibility(View.VISIBLE);
+            } else {
+                if (requestData.getId() != null && String.valueOf(requestData.getId()).equals(sharedPreferences.getString(Constants.USER_ID, ""))) {
+                    holder.iv_menu.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iv_menu.setVisibility(View.GONE);
+                }
+            }
+
             holder.textRateparkm.setVisibility(View.GONE);
             if (requestData.getRate_per_km() == null) {
                 holder.vehicle_percantage.setVisibility(View.INVISIBLE);
@@ -169,8 +187,30 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
                 context.startActivity(intent);
             }
         });
+        holder.iv_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(context, holder.view);
+                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                popup.setGravity(Gravity.END);
+                Menu menu = popup.getMenu();
+                menu.removeItem(R.id.edit);
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.toString().equalsIgnoreCase("delete")) {
+                        itemListener.onDeleteClick(requestData.getId(), lift_id);
+                    }
+                    return true;
+                });
+
+                popup.show();
+            }
+        });
+
     }
 
+    public interface ItemListener {
+        void onDeleteClick(Integer id, int lift_id);
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -210,6 +250,11 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
         AppCompatTextView total_km;
         @BindView(R.id.textRateparkm)
         AppCompatTextView textRateparkm;
+
+        @BindView(R.id.iv_menu)
+        AppCompatImageView iv_menu;
+        @BindView(R.id.view)
+        View view;
 
         ViewHolder(View itemView) {
             super(itemView);

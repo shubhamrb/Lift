@@ -509,6 +509,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Drop off location is too close");
                     } else {
                         presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString());
+                        lift = null;
                     }
                 } else {
                     //create lift
@@ -527,6 +528,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         } else {
                             onclickVehicle(data.get(0));
                         }
+                        lift = null;
                     }
                 }
                 break;
@@ -768,7 +770,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             liftTime = lift.getStart_point().getTime();
             textViewSelectDateTime.setText(lift.getStart_point().getDate() + " " + lift.getStart_point().getTime());
         }
-        if (lift.getLift().getPaidSeats() > 0) {
+        if (lift != null && lift.getLift() != null && lift.getLift().getPaidSeats() > 0) {
             seat = "" + lift.getLift().getPaidSeats();
             if (lift.getLift().getPaidSeats() < 2) {
                 textViewSelectSeat.setText(seat + " Seat");

@@ -12,7 +12,6 @@ import com.liftPlzz.fragments.ELearningFragment;
 import com.liftPlzz.fragments.FaqFragment;
 import com.liftPlzz.fragments.FeedbackFragment;
 import com.liftPlzz.fragments.FeedbackSuggestionFragment;
-import com.liftPlzz.fragments.HelpFragment;
 import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.fragments.LoginFragment;
 import com.liftPlzz.fragments.MyRidesFragment;
@@ -23,6 +22,7 @@ import com.liftPlzz.fragments.PointWalletFragment;
 import com.liftPlzz.fragments.ProfileFragment;
 import com.liftPlzz.fragments.ReviewsFragment;
 import com.liftPlzz.fragments.SettingFragment;
+import com.liftPlzz.fragments.SettingOptionFragment;
 import com.liftPlzz.fragments.UpdateProfileFragment;
 import com.liftPlzz.fragments.UsersFragment;
 import com.liftPlzz.fragments.VideosFragment;
@@ -164,12 +164,6 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     }
 
     @Override
-    public void openHelpFragment(PerformFragment performFragment) {
-        HelpFragment helpFragment = new HelpFragment();
-        openFragment(helpFragment, HelpFragment.class.getName(), performFragment, true);
-    }
-
-    @Override
     public void openFeedbackSuggestionFragment(PerformFragment performFragment, String type) {
         FeedbackSuggestionFragment feedbackSuggestionFragment = new FeedbackSuggestionFragment();
         Bundle bundle = new Bundle();
@@ -194,5 +188,15 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     public void openUsersFragment(PerformFragment performFragment) {
         UsersFragment blockFragment = new UsersFragment();
         openFragment(blockFragment, UsersFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openSettingOptionFragment(PerformFragment performFragment, String title, int id) {
+        SettingOptionFragment settingOptionFragment = new SettingOptionFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        bundle.putInt("id", id);
+        settingOptionFragment.setArguments(bundle);
+        openFragment(settingOptionFragment, SettingOptionFragment.class.getName(), performFragment, true);
     }
 }

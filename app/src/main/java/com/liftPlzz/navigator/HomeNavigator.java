@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.fragments.PointWalletFragment;
+import com.liftPlzz.model.getsetting.SettingModel;
 
 public interface HomeNavigator {
 
@@ -32,6 +33,8 @@ public interface HomeNavigator {
 
     void openUpdateProfileFragment(BaseActivity.PerformFragment performFragment);
 
+    void openSettingOptionFragment(BaseActivity.PerformFragment performFragment, String title, int id);
+
     void openBlockFragment(BaseActivity.PerformFragment performFragment);
 
     void openUsersFragment(BaseActivity.PerformFragment performFragment);
@@ -45,8 +48,6 @@ public interface HomeNavigator {
     void openPointWalletFragment(BaseActivity.PerformFragment performFragment);
 
     PointWalletFragment getPointWalletFragment();
-
-    void openHelpFragment(BaseActivity.PerformFragment performFragment);
 
     void openFeedbackSuggestionFragment(BaseActivity.PerformFragment performFragment, String type);
 

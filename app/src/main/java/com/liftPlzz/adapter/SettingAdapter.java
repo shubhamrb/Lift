@@ -1,22 +1,18 @@
 package com.liftPlzz.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.AppCompatToggleButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
-import com.liftPlzz.model.getsetting.Datum;
 
-import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,19 +21,19 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
 
 
     public ItemListener itemListener;
-    List<Datum> settingList;
+    Map<String, String> titlesMap;
     private final Context context;
 
 
-    public SettingAdapter(Context context, List<Datum> settingList, ItemListener itemListener) {
+    public SettingAdapter(Context context, Map<String, String> titlesMap, ItemListener itemListener) {
         this.context = context;
-        this.settingList = settingList;
+        this.titlesMap = titlesMap;
         this.itemListener = itemListener;
     }
 
     @Override
     public int getItemCount() {
-        return settingList.size();
+        return titlesMap.size();
 
     }
 
@@ -50,48 +46,17 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final SettingAdapter.ViewHolder holder, final int position) {
-        Datum datum = settingList.get(position);
-        holder.tvContent.setText(datum.getType());
-        if (datum.getOptionType().equalsIgnoreCase(context.getResources().getString(R.string.toggle))) {
-            holder.toggleButton.setVisibility(View.VISIBLE);
-            holder.imgnext.setVisibility(View.GONE);
-            if (datum.getSelectedValue().equalsIgnoreCase("1")) {
-                holder.toggleButton.setImageResource(R.drawable.on);
-            } else if (datum.getSelectedValue().equalsIgnoreCase("0")) {
-                holder.toggleButton.setImageResource(R.drawable.off);
-            }
-        } else {
-            holder.toggleButton.setVisibility(View.GONE);
-            holder.imgnext.setVisibility(View.VISIBLE);
-        }
-
-        holder.toggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (datum.getSelectedValue().equalsIgnoreCase("0")) {
-                    itemListener.onToggleClick(datum.getId(), 1);
-                } else {
-                    itemListener.onToggleClick(datum.getId(), 0);
-                }
-            }
-        });
-
-        holder.itemRow.setOnClickListener(v -> {
-            if(datum.getOptionType().equalsIgnoreCase(context.getResources().getString(R.string.select_option))){
-                itemListener.onSelectOption(position,datum);
-            }else if (datum.getOptionType().equalsIgnoreCase("action")){
-                itemListener.onSelectAction(position,datum);
-            }
+        String title = titlesMap.get("" + (position + 1));
+        holder.tvContent.setText(title);
+        holder.itemView.setOnClickListener(view -> {
+            itemListener.onSelectOption(title, (position + 1));
         });
     }
 
 
     public interface ItemListener {
-        void onToggleClick(int settingId, int inputValue);
-        void onSelectOption(int position ,Datum data);
-        void onSelectAction(int position ,Datum data);
+        void onSelectOption(String title, int id);
     }
-
 
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,14 +1,19 @@
 package com.liftPlzz.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RideRequestActivity extends AppCompatActivity implements RideRquestAdapter.ItemListener {
+public class RideRequestActivity extends AppCompatActivity implements RideRquestAdapter.ItemListener, PartnerAdapter.ItemListener {
 
     SharedPreferences sharedPreferences;
     @BindView(R.id.toolbar)
@@ -73,13 +78,17 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         recyclerRequest.setLayoutManager(new LinearLayoutManager(this));
+        loadData();
+    }
+
+    private void loadData() {
         if (isPartner) {
-            partnerAdapter = new PartnerAdapter(this, arrayListPartner,isLifter);
+            partnerAdapter = new PartnerAdapter(this, arrayListPartner, isLifter, liftId, this);
             recyclerRequest.setAdapter(partnerAdapter);
             getPartnerDetails();
             toolBarTitle.setText(getResources().getString(R.string.partnet_details));
         } else {
-            rideRquestAdapter = new RideRquestAdapter(this, arrayListRide, RideRequestActivity.this,isLifter);
+            rideRquestAdapter = new RideRquestAdapter(this, arrayListRide, RideRequestActivity.this, isLifter);
             recyclerRequest.setAdapter(rideRquestAdapter);
             getRideRequestApi();
             toolBarTitle.setText(getResources().getString(R.string.ride_request));
@@ -211,5 +220,71 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
                 onBackPressed();
                 break;
         }
+    }
+
+    @Override
+    public void onDeleteClick(Integer request_id, int lift_id) {
+        reasonDialog(request_id, lift_id);
+    }
+
+    public void reasonDialog(Integer request_id, int liftId) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.block_reason_dialog);
+        AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
+        EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
+        TextView titleTxt = dialog.findViewById(R.id.titleTxt);
+
+        titleTxt.setText("Reason");
+
+        buttonSubmit.setOnClickListener(v -> {
+            if (editTextPoints.getText().toString().trim().equals("")) {
+                Toast.makeText(this, "Please enter the reason", Toast.LENGTH_SHORT).show();
+            } else {
+                cancelRide(request_id, liftId, editTextPoints.getText().toString());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void cancelRide(Integer request_id, int liftId, String reason) {
+        Constants.showLoader(this);
+        ApiService api = RetroClient.getApiService();
+        Call<ResponseBody> call = api.cancelPartnerRide(Constants.API_KEY, getResources().getString(R.string.android), strToken,
+                request_id, liftId, reason);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Constants.hideLoader();
+                if (response.code() == 200) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        boolean status = jsonObject.optBoolean("status");
+                        String message = jsonObject.optString("message");
+                        Toast.makeText(RideRequestActivity.this, message, Toast.LENGTH_SHORT).show();
+                        if (status) {
+                            loadData();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        String message = jsonObject.optString("message");
+                        Toast.makeText(RideRequestActivity.this, message, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                Constants.hideLoader();
+                Constants.showMessage(RideRequestActivity.this, throwable.getMessage(), relative);
+            }
+        });
     }
 }

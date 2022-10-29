@@ -111,6 +111,4 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
     public void onDeleteClick(int id) {
         presenter.getDeleteLift(sharedPreferences.getString(Constants.TOKEN, ""), id);
     }
-
-
 }
