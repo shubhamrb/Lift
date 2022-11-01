@@ -138,7 +138,8 @@
                 android:id="@+id/twoTxt"
                 android:gravity="center"
                 android:layout_width="45sp"
-                android:layout_height="45sp"/>
+                android:layout_height="45sp"
+                />
 
             <TextView
                 android:textSize="18sp"

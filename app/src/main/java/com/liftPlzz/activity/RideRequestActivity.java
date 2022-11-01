@@ -18,6 +18,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.PartnerAdapter;
@@ -55,6 +56,8 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
     RecyclerView recyclerRequest;
     @BindView(R.id.relative_ride)
     RelativeLayout relative;
+    @BindView(R.id.refresh_layout)
+    SwipeRefreshLayout refresh_layout;
     RideRquestAdapter rideRquestAdapter;
     PartnerAdapter partnerAdapter;
     ArrayList<RideRequestData> arrayListRide = new ArrayList<>();
@@ -78,6 +81,13 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         recyclerRequest.setLayoutManager(new LinearLayoutManager(this));
+
+        refresh_layout.setOnRefreshListener(this::loadData);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadData();
     }
 
@@ -264,7 +274,7 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
                         String message = jsonObject.optString("message");
                         Toast.makeText(RideRequestActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (status) {
-                            loadData();
+                            finish();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

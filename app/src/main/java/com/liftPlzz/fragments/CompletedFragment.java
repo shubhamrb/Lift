@@ -2,6 +2,7 @@ package com.liftPlzz.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,6 +66,9 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
         if (lifts.size() > 0) {
             recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerViewUpcoming.setAdapter(new CompletedLiftAdapter(getContext(), lifts, listinerUpdate, this));
+            recyclerViewUpcoming.setVisibility(View.VISIBLE);
+        } else {
+            recyclerViewUpcoming.setVisibility(View.GONE);
         }
     }
 

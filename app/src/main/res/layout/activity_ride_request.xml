@@ -9,10 +9,16 @@
         layout="@layout/toolbar_back_title_layout" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_rquest"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbarNew" />
+        android:layout_below="@+id/toolbarNew">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_rquest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </RelativeLayout>

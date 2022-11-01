@@ -197,7 +197,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
                 menu.removeItem(R.id.edit);
                 popup.setOnMenuItemClickListener(item -> {
                     if (item.toString().equalsIgnoreCase("delete")) {
-                        itemListener.onDeleteClick(requestData.getId(), lift_id);
+                        itemListener.onDeleteClick(requestData.getRequest_id(), lift_id);
                     }
                     return true;
                 });

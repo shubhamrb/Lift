@@ -90,30 +90,32 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
 
             switch (driverData.getProfile_percentage().getColor()) {
                 case "red":
-                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.colorRed,null));
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
                     break;
                 case "green":
-                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen,null));
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
                     break;
                 case "orange":
-                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange,null));
+                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
                     break;
             }
             switch (driverData.getVehicle_percentage().getColor()) {
                 case "red":
-                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.colorRed,null));
+                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
                     break;
                 case "green":
-                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen,null));
+                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
                     break;
                 case "orange":
-                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange,null));
+                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
                     break;
             }
             holder.profile_percantage.setVisibility(View.VISIBLE);
             holder.vehicle_percantage.setVisibility(View.VISIBLE);
         } else {
-            holder.profile_percantage.setVisibility(View.GONE);
+            holder.profile_percantage.setText("" + driverData.getProfile_percentage().getPercantage() + "%");
+
+            holder.profile_percantage.setVisibility(View.VISIBLE);
             holder.vehicle_percantage.setVisibility(View.GONE);
             holder.price_per_seat.setVisibility(View.GONE);
             holder.tvRatePerKm.setVisibility(View.GONE);

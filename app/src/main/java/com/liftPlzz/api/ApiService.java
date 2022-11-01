@@ -423,7 +423,7 @@ public interface ApiService {
                                               @Field("status") int status);
 
     @FormUrlEncoded
-    @POST("api/partner-remove")
+    @POST("partner-remove")
     Call<ResponseBody> cancelPartnerRide(@Field("api_key") String api_key,
                                          @Field("client") String client,
                                          @Field("token") String token,

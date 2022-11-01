@@ -221,11 +221,11 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                         break;
                     case 2:
                         //on click of imgCurrent
-                        showCurrentLocationOnMap(false);
+//                        showCurrentLocationOnMap(false);
                         break;
                     case 3:
                         //on Click of Direction Tool
-                        showCurrentLocationOnMap(true);
+//                        showCurrentLocationOnMap(true);
                         break;
                 }
                 //Location fetched, update listener can be removed
@@ -296,6 +296,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         input_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LocationPickerActivity.this.showCurrentLocationOnMap(false);
                 ll_history.setVisibility(View.GONE);
                 txt_showmap.setVisibility(View.GONE);
                 mapFrame.setVisibility(View.VISIBLE);
@@ -763,7 +764,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         if (userAddress == null || userAddress.isEmpty()) {
             //if intent does not have address,
             //cell is blank
-            showCurrentLocationOnMap(false);
+//            showCurrentLocationOnMap(false);
         } else
             //check if address contains lat long, then extract
             //format will be lat,lng i.e 19.23234,72.65465
@@ -1033,7 +1034,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     protected void onResume() {
         super.onResume();
         //Do tasks for which permission was granted by user in onRequestPermission()
-        if (!isFinishing() && mLocationPermissionGranted) {
+        /*if (!isFinishing() && mLocationPermissionGranted) {
             // perform action required b4 asking permission
             mLocationPermissionGranted = false;
             switch (doAfterPermissionProvided) {
@@ -1048,7 +1049,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                     break;
             }
 
-        }
+        }*/
 
     }
 

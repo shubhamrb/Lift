@@ -1121,38 +1121,38 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
 
-                twoTxt.setVisibility(View.GONE);
+                /*twoTxt.setVisibility(View.GONE);
                 threeTxt.setVisibility(View.GONE);
                 fourTxt.setVisibility(View.GONE);
-                fiveTxt.setVisibility(View.GONE);
+                fiveTxt.setVisibility(View.GONE);*/
 
                 break;
             case "2":
-                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 break;
             case "3":
-                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 break;
             case "4":
-                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
                 break;
             case "5":
-                oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
                 break;
         }
@@ -1167,7 +1167,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         });
         twoTxt.setOnClickListener(v -> {
             seat = "2";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
             twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
             threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
@@ -1175,26 +1175,26 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         });
         threeTxt.setOnClickListener(v -> {
             seat = "3";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
             threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         });
         fourTxt.setOnClickListener(v -> {
             seat = "4";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
         });
         fiveTxt.setOnClickListener(v -> {
             seat = "5";
-            oneTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
             fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
         });
 

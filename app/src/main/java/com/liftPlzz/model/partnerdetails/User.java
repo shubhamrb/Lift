@@ -11,6 +11,11 @@ public class User {
     @SerializedName("id")
     @Expose
     private Integer id;
+
+    @SerializedName("request_id")
+    @Expose
+    private Integer request_id;
+
     @SerializedName("lift_id")
     @Expose
     private Integer lift_id;
@@ -94,6 +99,14 @@ public class User {
     @SerializedName("is_block")
     @Expose
     private boolean is_block;
+
+    public Integer getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(Integer request_id) {
+        this.request_id = request_id;
+    }
 
     public DriveLocation getLocation() {
         return driveLocation;

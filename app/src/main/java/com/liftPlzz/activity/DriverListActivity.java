@@ -22,6 +22,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.DriverListAdapter;
@@ -58,6 +59,8 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     AppCompatTextView toolBarTitle;
     @BindView(R.id.recyclerViewDriver)
     RecyclerView recyclerViewDriver;
+    @BindView(R.id.refresh_layout)
+    SwipeRefreshLayout refresh_layout;
     private String strToken = "", vehicleType;
     private int vehicleSubcategoryId = -1, liftId = -1;
     private ArrayList<DriverData> arrayList = new ArrayList<>();
@@ -82,9 +85,14 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
         recyclerViewDriver.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewDriver.setAdapter(driverListAdapter);
 
-        getDriverList();
+        refresh_layout.setOnRefreshListener(this::getDriverList);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDriverList();
+    }
 
     public void getDriverList() {
         Constants.showLoader(this);

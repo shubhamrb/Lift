@@ -85,6 +85,23 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
                     break;
             }
         }
+        if (requestData.getVehicle_percentage() == null)
+            holder.vehicle_percantage.setText("Vehicle: --");
+        else {
+            holder.vehicle_percantage.setText("Vehicle: " + requestData.getVehicle_percentage().getPercantage() + "%");
+            switch (requestData.getVehicle_percentage().getColor()) {
+                case "red":
+                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
+                    break;
+                case "green":
+                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
+                    break;
+                case "orange":
+                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
+                    break;
+            }
+        }
+
         if (requestData.getLocation().getStart_city() == null)
             holder.from.setText("From: --");
         else
@@ -193,6 +210,9 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
 
         @BindView(R.id.profile_percantage)
         AppCompatTextView profile_percantage;
+        @BindView(R.id.vehicle_percantage)
+        AppCompatTextView vehicle_percantage;
+
         @BindView(R.id.from)
         AppCompatTextView from;
         @BindView(R.id.to)

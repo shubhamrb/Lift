@@ -247,7 +247,20 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
         }
 
         tvDriverName.setText(userData.getName());
-        tv_profile_percentage.setText("Profile: " + userData.getProfile_percentage() + "%");
+        tv_profile_percentage.setText("Profile: " + userData.getProfile_percentage().getPercantage() + "%");
+
+        switch (userData.getProfile_percentage().getColor()) {
+            case "red":
+                tv_profile_percentage.setTextColor(getResources().getColor(R.color.colorRed, null));
+                break;
+            case "green":
+                tv_profile_percentage.setTextColor(getResources().getColor(R.color.quantum_googgreen, null));
+                break;
+            case "orange":
+                tv_profile_percentage.setTextColor(getResources().getColor(R.color.quantum_orange, null));
+                break;
+        }
+
         if (userData.getIs_dob_public() != null && userData.getIs_dob_public() != 0 && userData.getDob() != null) {
             int age = new AgeCalculator().getAge(userData.getDob());
             tv_age.setText("Age " + age + " Years old");
@@ -337,9 +350,9 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
                 break;
             case R.id.linear_rating:
 //                if (user != null && user.getReviews().size() > 0) {
-                    Intent reviewIntent = new Intent(DriverProfileActivity.this, DriverReviewsActivity.class);
-                    reviewIntent.putExtra(Constants.USER_ID, String.valueOf(userId));
-                    startActivity(reviewIntent);
+                Intent reviewIntent = new Intent(DriverProfileActivity.this, DriverReviewsActivity.class);
+                reviewIntent.putExtra(Constants.USER_ID, String.valueOf(userId));
+                startActivity(reviewIntent);
 //                }
                 break;
         }

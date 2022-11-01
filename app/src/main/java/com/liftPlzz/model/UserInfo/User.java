@@ -2,6 +2,7 @@ package com.liftPlzz.model.UserInfo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.liftPlzz.model.PercentageModel;
 
 import java.util.List;
 
@@ -134,14 +135,13 @@ public class User {
     @Expose
     private String age;
 
-    public String getProfile_percentage() {
+    public PercentageModel getProfile_percentage() {
         return profile_percentage;
     }
 
     @SerializedName("profile_percentage")
     @Expose
-    private String profile_percentage;
-
+    private PercentageModel profile_percentage;
 
 
     public Integer getId() {
