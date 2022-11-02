@@ -153,6 +153,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private Button txtSelectLocation;
     private ImageView moving_pointer;
     private ImageView imgCurrentloc;
+    private boolean locationPick;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -386,6 +387,9 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+
+                locationPick = true;
+
                 ll_history.setVisibility(View.GONE);
                 txt_showmap.setVisibility(View.GONE);
                 mapFrame.setVisibility(View.VISIBLE);
@@ -551,6 +555,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
             ex.printStackTrace();
         }
 
+        locationPick = false;
     }
 
 
@@ -663,13 +668,15 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                mLatitude = mMap.getCameraPosition().target.latitude;
-                mLongitude = mMap.getCameraPosition().target.longitude;
-                if (getAddressFromLatLang(new LatLng(mLatitude, mLongitude)) != null) ;
-                {
-                    userAddress = getAddressFromLatLang(new LatLng(mLatitude, mLongitude));
-                    addressline2.setText("" + userAddress);
-                    imgSearch.setText("" + userAddress);
+                if (!locationPick) {
+                    mLatitude = mMap.getCameraPosition().target.latitude;
+                    mLongitude = mMap.getCameraPosition().target.longitude;
+                    if (getAddressFromLatLang(new LatLng(mLatitude, mLongitude)) != null) ;
+                    {
+                        userAddress = getAddressFromLatLang(new LatLng(mLatitude, mLongitude));
+                        addressline2.setText("" + userAddress);
+                        imgSearch.setText("" + userAddress);
+                    }
                 }
             }
         });
