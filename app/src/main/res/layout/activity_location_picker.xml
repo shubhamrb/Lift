@@ -19,12 +19,43 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/rl_current_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgSearch"
+        android:gravity="center_vertical"
+        android:padding="@dimen/_10sdp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_my_location_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:padding="4dp"
+            android:text="Your location"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/rl_current_location"
+        android:background="@color/quantum_grey" />
+
+    <LinearLayout
         android:id="@+id/ll_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/imgSearch"
-        android:orientation="vertical"
-        android:layout_above="@id/input_layout">
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_above="@id/input_layout"
+        android:layout_below="@id/view"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/label"
@@ -51,8 +82,8 @@
         android:layout_height="@dimen/_30sdp"
         android:layout_below="@+id/imgSearch"
         android:layout_centerInParent="true"
-        app:srcCompat="@drawable/ic_pointer"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_pointer" />
 
     <TextView
         android:id="@+id/imgSearch"

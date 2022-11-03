@@ -21,7 +21,6 @@ public class RideHistoryAdapter extends RecyclerView.Adapter<RideHistoryAdapter.
     List<Data> arrayList;
     private ItemListener itemListener;
 
-
     public RideHistoryAdapter(Context context, List<Data> arrayList, ItemListener itemListener) {
         this.context = context;
         this.arrayList = arrayList;

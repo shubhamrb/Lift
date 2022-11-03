@@ -218,6 +218,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     int myday, myMonth, myYear, myHour, myMinute;
     private EditVehicleData lift;
     private Intent srcIntent, destIntent;
+    private String type;
 
 
     @Override
@@ -578,11 +579,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             case R.id.layoutPickupLocation:
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
+                i.putExtra("type", "from");
                 startActivityForResult(i, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutDropLocation:
                 locationSelect = 2;
                 Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+                i1.putExtra("type", "to");
                 i1.putExtra("startLocation", true);
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
@@ -708,7 +711,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         });
 
 
-        if (currentLocation != null) {
+        if (currentLocation != null && type == null) {
             destIntent = null;
             dropLocation = null;
             srcIntent = new Intent();
@@ -717,35 +720,39 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             srcIntent.putExtra(MapUtility.LONGITUDE, currentLocation.getLongitude());
         }
         if (lift != null) {
-            showListData();
+            showLiftData();
         }
     }
 
-    private void showListData() {
-        String startlatlng = lift.getStart_point().getLatLng();
-        String startlat = startlatlng.split(",")[0];
-        String startlong = startlatlng.split(",")[1];
+    private void showLiftData() {
+        if (lift.getStart_point() != null) {
+            String startlatlng = lift.getStart_point().getLatLng();
+            String startlat = startlatlng.split(",")[0];
+            String startlong = startlatlng.split(",")[1];
 
-        String endlatlng = lift.getEnd_point().getLatLng();
-        String endlat = endlatlng.split(",")[0];
-        String endlong = endlatlng.split(",")[1];
+            pickupLocation = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+            latLngOrigin = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+            originLat = latLngOrigin;
 
-        pickupLocation = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
-        latLngOrigin = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
-        originLat = latLngOrigin;
+            editTextPickupLocation.setText(lift.getStart_point().getLocation());
 
-        editTextPickupLocation.setText(lift.getStart_point().getLocation());
+            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong));
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+        }
 
-        startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong));
-        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+        if (lift.getEnd_point() != null) {
+            String endlatlng = lift.getEnd_point().getLatLng();
+            String endlat = endlatlng.split(",")[0];
+            String endlong = endlatlng.split(",")[1];
 
-        editTextDropLocation.setText(lift.getEnd_point().getLocation());
-        dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
-        destinationLat = dropLocation;
-        latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+            editTextDropLocation.setText(lift.getEnd_point().getLocation());
+            dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+            destinationLat = dropLocation;
+            latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
 
-        endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong));
-        destination = endlat + "," + endlong;
+            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong));
+            destination = endlat + "," + endlong;
+        }
 
         if (pickupLocation != null && dropLocation != null) {
             mGoogleMap.clear();
@@ -765,7 +772,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
 
 
-        if (lift.getStart_point().getDate() != null && lift.getStart_point().getTime() != null) {
+        if (lift.getStart_point() != null && lift.getStart_point().getDate() != null && lift.getStart_point().getTime() != null) {
             dateTime = lift.getStart_point().getDate();
             liftTime = lift.getStart_point().getTime();
             textViewSelectDateTime.setText(lift.getStart_point().getDate() + " " + lift.getStart_point().getTime());
@@ -930,25 +937,224 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (data.getSerializableExtra("lift_data") != null) {
 
                         Data data1 = (Data) data.getSerializableExtra("lift_data");
+                        type = data.getStringExtra("type");
                         lift = new EditVehicleData();
 
-                        LiftLocationModel strt = new LiftLocationModel();
-                        strt.setLatLng(data1.getStart_point());
-                        strt.setLocation(data1.getStart_location());
+                        if (type.equals("from")) {
+                            LiftLocationModel strt = new LiftLocationModel();
+                            strt.setLatLng(data1.getStart_point());
+                            strt.setLocation(data1.getStart_location());
+                            lift.setStart_point(strt);
 
-                        LiftLocationModel end = new LiftLocationModel();
-                        end.setLatLng(data1.getEnd_point());
-                        end.setLocation(data1.getEnd_location());
 
-                        lift.setStart_point(strt);
-                        lift.setEnd_point(end);
+                            String startlatlng = lift.getStart_point().getLatLng();
+                            String startlat = startlatlng.split(",")[0];
+                            String startlong = startlatlng.split(",")[1];
 
-                        showListData();
+                            pickupLocation = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+                            latLngOrigin = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+                            originLat = latLngOrigin;
+
+                            srcIntent = new Intent();
+                            srcIntent.putExtra(MapUtility.ADDRESS, lift.getStart_point().getLocation());
+                            srcIntent.putExtra(MapUtility.LATITUDE, pickupLocation.latitude);
+                            srcIntent.putExtra(MapUtility.LONGITUDE, pickupLocation.longitude);
+
+                            editTextPickupLocation.setText(lift.getStart_point().getLocation());
+                            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong));
+
+                            if (dropLocation != null) {
+                                mGoogleMap.clear();
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(pickupLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                        .title("pickup"));
+
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(dropLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                                        .title("dropoff"));
+                                origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+                                destination = dropLocation.latitude + "," + dropLocation.longitude;
+
+                                new GetDirection().execute(origin, destination);
+
+                            } else {
+                                mGoogleMap.clear();
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(pickupLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                        .title("pickup"));
+
+                                CameraUpdate cu = CameraUpdateFactory.newLatLng(pickupLocation);
+                                mGoogleMap.moveCamera(cu);
+                            }
+
+                        } else {
+                            LiftLocationModel end = new LiftLocationModel();
+                            end.setLatLng(data1.getEnd_point());
+                            end.setLocation(data1.getEnd_location());
+                            lift.setEnd_point(end);
+
+                            String endlatlng = lift.getEnd_point().getLatLng();
+                            String endlat = endlatlng.split(",")[0];
+                            String endlong = endlatlng.split(",")[1];
+
+                            editTextDropLocation.setText(lift.getEnd_point().getLocation());
+                            dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                            destinationLat = dropLocation;
+                            latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+
+                            destIntent = new Intent();
+                            destIntent.putExtra(MapUtility.ADDRESS, lift.getEnd_point().getLocation());
+                            destIntent.putExtra(MapUtility.LATITUDE, dropLocation.latitude);
+                            destIntent.putExtra(MapUtility.LONGITUDE, dropLocation.longitude);
+
+                            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                            destination = endlat + "," + endlong;
+
+                            mGoogleMap.clear();
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(dropLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                                    .title("dropoff"));
+
+                            if (pickupLocation != null) {
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(pickupLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                        .title("pickup"));
+                                origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+                                destination = dropLocation.latitude + "," + dropLocation.longitude;
+                                new GetDirection().execute(origin, destination);
+                                //create lift
+                                if (isMultiCheck) {
+                                    presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                                }
+                            }
+                        }
+                    } else if (data.getBooleanExtra("current_location", false)) {
+                        type = data.getStringExtra("type");
+                        if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+                        task.addOnSuccessListener(location -> {
+                            if (location != null) {
+                                currentLocation = location;
+                                mapFragment.getMapAsync(HomeFragment.this);
+                                if (type.equals("from")) {
+                                    setCurrentLocationInPickup();
+                                } else {
+                                    setCurrentLocationInDrop();
+                                }
+                            }
+                        });
+                        task.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    private void setCurrentLocationInDrop() {
+        latLngDestination = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        destination = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        dropLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        destinationLat = latLngDestination;
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(latLngDestination)
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                .title("Dropoff"));
+
+        // [START_EXCLUDE silent]
+        editTextDropLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
+        endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+        if (currentLocation != null) {
+            destIntent = new Intent();
+            destIntent.putExtra(MapUtility.ADDRESS, editTextDropLocation.getText().toString());
+            destIntent.putExtra(MapUtility.LATITUDE, currentLocation.getLatitude());
+            destIntent.putExtra(MapUtility.LONGITUDE, currentLocation.getLongitude());
+        }
+
+        if (pickupLocation != null) {
+            mGoogleMap.clear();
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(pickupLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                    .title("pickup"));
+
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(dropLocation)
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                    .title("Dropoff"));
+
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+            destination = dropLocation.latitude + "," + dropLocation.longitude;
+            new GetDirection().execute(origin, destination);
+            //create lift
+            if (isMultiCheck) {
+                presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+            }
+        } else {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngDestination, 15.0f));
+        }
+    }
+
+    private void setCurrentLocationInPickup() {
+        latLngOrigin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        originLat = latLngOrigin;
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(latLngOrigin)
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                .title("Pickup"));
+
+        // [START_EXCLUDE silent]
+        editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
+        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+        if (currentLocation != null) {
+            srcIntent = new Intent();
+            srcIntent.putExtra(MapUtility.ADDRESS, editTextPickupLocation.getText().toString());
+            srcIntent.putExtra(MapUtility.LATITUDE, currentLocation.getLatitude());
+            srcIntent.putExtra(MapUtility.LONGITUDE, currentLocation.getLongitude());
+        }
+
+        if (dropLocation != null) {
+            mGoogleMap.clear();
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(pickupLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                    .title("pickup"));
+
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .position(dropLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                    .title("dropoff"));
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+            destination = dropLocation.latitude + "," + dropLocation.longitude;
+
+            new GetDirection().execute(origin, destination);
+
+        } else {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         }
     }
 

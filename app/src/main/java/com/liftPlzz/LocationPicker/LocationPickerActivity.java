@@ -154,6 +154,8 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private ImageView moving_pointer;
     private ImageView imgCurrentloc;
     private boolean locationPick;
+    private String type;
+    private LinearLayout rl_current_location;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,10 +175,12 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
         try {
             startLocation = getIntent().getBooleanExtra("startLocation", false);
+            type = getIntent().getStringExtra("type");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        rl_current_location = findViewById(R.id.rl_current_location);
         mapFrame = findViewById(R.id.frame);
         ll_history = findViewById(R.id.ll_history);
         imgCurrentloc = findViewById(R.id.imgCurrentloc);
@@ -304,6 +308,18 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 imgCurrentloc.setVisibility(View.VISIBLE);
                 txtSelectLocation.setVisibility(View.VISIBLE);
                 moving_pointer.setVisibility(View.VISIBLE);
+                rl_current_location.setVisibility(View.GONE);
+            }
+        });
+
+        rl_current_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("current_location", true);
+                intent.putExtra("type", type);
+                LocationPickerActivity.this.setResult(Activity.RESULT_OK, intent);
+                LocationPickerActivity.this.finish();
             }
         });
 
@@ -391,6 +407,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 locationPick = true;
 
                 ll_history.setVisibility(View.GONE);
+                rl_current_location.setVisibility(View.GONE);
                 txt_showmap.setVisibility(View.GONE);
                 mapFrame.setVisibility(View.VISIBLE);
                 imgCurrentloc.setVisibility(View.VISIBLE);
@@ -881,6 +898,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         Intent intent = new Intent();
         // add data into intent and send back to Parent Activity
         intent.putExtra("lift_data", data);
+        intent.putExtra("type", type);
         LocationPickerActivity.this.setResult(Activity.RESULT_OK, intent);
         LocationPickerActivity.this.finish();
     }
