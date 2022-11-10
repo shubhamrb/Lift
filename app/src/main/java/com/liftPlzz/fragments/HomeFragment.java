@@ -1224,7 +1224,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         }
     }
-
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
