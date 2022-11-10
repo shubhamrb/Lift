@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -82,6 +84,11 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
     AppCompatImageView imageViewBackImage;
     @BindView(R.id.imageViewRcImage)
     AppCompatImageView imageViewRcImage;
+
+    @BindView(R.id.txt_valid)
+    AppCompatTextView txt_valid;
+
+
     public static Datum vehicleData;
     public static boolean isEdit = false;
 
@@ -193,6 +200,30 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                 }
             }
         }
+
+        editTextVehicleRegNo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!editTextVehicleRegNo.getText().toString().replace(" ", "").matches("^[A-Z|a-z]{2}?[0-9]{1,2}?[A-Z|a-z]{0,3}?[0-9]{4}$")) {
+                    txt_valid.setText("Not valid");
+                    txt_valid.setTextColor(getActivity().getColor(R.color.colorRed));
+                } else {
+                    txt_valid.setText("Valid");
+                    txt_valid.setTextColor(getActivity().getColor(R.color.quantum_googgreen));
+                }
+                txt_valid.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private File savebitmap(String filename, Bitmap bitmap) {
@@ -217,25 +248,18 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.layoutSave:
-                if (editTextVehicleModel.getText().toString().isEmpty()) {
+                /*if (editTextVehicleModel.getText().toString().isEmpty()) {
                     showMsg("Please enter vehicle model");
-                } else if (editTextVehicleRegNo.getText().toString().isEmpty()) {
+                } else*/
+                if (editTextVehicleRegNo.getText().toString().isEmpty()) {
                     showMsg("Please enter vehicle registration number");
                 } else if (!editTextVehicleRegNo.getText().toString().replace(" ", "").matches("^[A-Z|a-z]{2}?[0-9]{1,2}?[A-Z|a-z]{0,3}?[0-9]{4}$")) {
                     showMsg("Please enter the valid vehicle number ");
-                } else if (editTextVehicleInsuranceDate.getText().toString().isEmpty()) {
+                } /*else if (editTextVehicleInsuranceDate.getText().toString().isEmpty()) {
                     showMsg("Please select vehicle Insurance Date ");
                 } else if (edRatePerKm.getText().toString().isEmpty()) {
                     showMsg(getResources().getString(R.string.please_enter_rate_per_km));
-                }
-                /*else if (!isEdit && fileFront == null) {
-                    showMsg("Please select vehicle Front Image");
-                } else if (!isEdit && fileBack == null) {
-                    showMsg("Please select vehicle Back Image");
-                } else if (!isEdit && fileRC == null) {
-                    showMsg("Please select vehicle RC Image");
-                } */
-                else {
+                }*/ else {
                     MultipartBody.Part vehicle_image_frontBody = null;
                     MultipartBody.Part vehicle_image_backBody = null;
                     MultipartBody.Part rc_imageBody = null;
@@ -258,12 +282,12 @@ public class BikeFragment extends BaseFragment<BikePresenter, BikeView> implemen
                     RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, "android");
                     RequestBody types = RequestBody.create(okhttp3.MultipartBody.FORM, "two_wheeler");
                     RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
-                    RequestBody model = RequestBody.create(okhttp3.MultipartBody.FORM, editTextVehicleModel.getText().toString());
-                    RequestBody RegNo = RequestBody.create(okhttp3.MultipartBody.FORM, editTextVehicleRegNo.getText().toString());
+                    RequestBody model = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextVehicleModel.getText().toString());
+                    RequestBody RegNo = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextVehicleRegNo.getText().toString());
                     RequestBody vehicleSubCategory = RequestBody.create(okhttp3.MultipartBody.FORM, "");
-                    RequestBody insuranceDate = RequestBody.create(okhttp3.MultipartBody.FORM, editTextVehicleInsuranceDate.getText().toString());
+                    RequestBody insuranceDate = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextVehicleInsuranceDate.getText().toString());
                     RequestBody seats = RequestBody.create(okhttp3.MultipartBody.FORM, seat);
-                    RequestBody ratePerKm = RequestBody.create(okhttp3.MultipartBody.FORM, edRatePerKm.getText().toString());
+                    RequestBody ratePerKm = RequestBody.create(okhttp3.MultipartBody.FORM, "" + edRatePerKm.getText().toString());
                     RequestBody is_default = RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(checkBoxVehicleMakeDefault.isChecked() ? 1 : 0));
 
                     if (isEdit) {

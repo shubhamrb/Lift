@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:background="@color/colorPrimary"
@@ -45,15 +45,21 @@
 
         </LinearLayout>
 
-        <ImageView
+        <TextView
             android:id="@+id/btn_add"
-            android:layout_width="@dimen/dp_30"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="@dimen/dp_5"
+            android:background="@drawable/rounded_bg_green"
+            android:backgroundTint="@color/colorWhite"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_25"
+            android:paddingRight="@dimen/dp_25"
             android:src="@drawable/add_button_white"
-            app:tint="@color/colorWhite" />
+            android:text="Add to block list"
+            android:textColor="@color/colorBlack" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -68,6 +74,7 @@
         android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_no_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

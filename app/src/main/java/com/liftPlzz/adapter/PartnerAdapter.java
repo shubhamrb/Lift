@@ -194,9 +194,10 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.ViewHold
                 popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
                 popup.setGravity(Gravity.END);
                 Menu menu = popup.getMenu();
+                menu.getItem(1).setTitle("Cancel Lift Request");
                 menu.removeItem(R.id.edit);
                 popup.setOnMenuItemClickListener(item -> {
-                    if (item.toString().equalsIgnoreCase("delete")) {
+                    if (item.toString().equalsIgnoreCase("Cancel Lift Request")) {
                         itemListener.onDeleteClick(requestData.getRequest_id(), lift_id);
                     }
                     return true;

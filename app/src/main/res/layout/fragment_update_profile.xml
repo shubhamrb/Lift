@@ -386,7 +386,7 @@
                         android:padding="@dimen/dp_8">
 
 
-                        <androidx.appcompat.widget.AppCompatEditText
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/editTextMobile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

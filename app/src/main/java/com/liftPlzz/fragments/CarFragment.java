@@ -9,11 +9,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -69,19 +72,19 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
     @BindView(R.id.layoutSave)
     LinearLayout layoutSave;
     @BindView(R.id.textViewSeat1)
-    AppCompatTextView textViewSeat1;
+    ImageView textViewSeat1;
     @BindView(R.id.textViewSeat2)
-    AppCompatTextView textViewSeat2;
+    ImageView textViewSeat2;
     @BindView(R.id.textViewSeat3)
-    AppCompatTextView textViewSeat3;
+    ImageView textViewSeat3;
     @BindView(R.id.textViewSeat4)
-    AppCompatTextView textViewSeat4;
+    ImageView textViewSeat4;
     @BindView(R.id.textViewSeat5)
-    AppCompatTextView textViewSeat5;
+    ImageView textViewSeat5;
     @BindView(R.id.textViewSeat6)
-    AppCompatTextView textViewSeat6;
+    ImageView textViewSeat6;
     @BindView(R.id.textViewSeat7)
-    AppCompatTextView textViewSeat7;
+    ImageView textViewSeat7;
 
     @BindView(R.id.imageViewFrontImage)
     AppCompatImageView imageViewFrontImage;
@@ -91,6 +94,8 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
     AppCompatImageView imageViewRcImage;
     @BindView(R.id.spinner_category)
     AppCompatSpinner spinnerCategory;
+    @BindView(R.id.txt_valid)
+    AppCompatTextView txt_valid;
 
 
     SharedPreferences sharedPreferences;
@@ -140,13 +145,13 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         seat = "1";
-        textViewSeat1.setSelected(true);
-        textViewSeat2.setSelected(false);
-        textViewSeat3.setSelected(false);
-        textViewSeat4.setSelected(false);
-        textViewSeat5.setSelected(false);
-        textViewSeat6.setSelected(false);
-        textViewSeat7.setSelected(false);
+        textViewSeat1.setImageResource(R.drawable.seat_filled);
+        textViewSeat2.setImageResource(R.drawable.seat_outline);
+        textViewSeat3.setImageResource(R.drawable.seat_outline);
+        textViewSeat4.setImageResource(R.drawable.seat_outline);
+        textViewSeat5.setImageResource(R.drawable.seat_outline);
+        textViewSeat6.setImageResource(R.drawable.seat_outline);
+        textViewSeat7.setImageResource(R.drawable.seat_outline);
         presenter.getSubCategory(Constants.API_KEY, getResources().getString(R.string.android),
                 strToken, getResources().getString(R.string.four_wheeler));
         spinnerCategory.setOnItemSelectedListener(this);
@@ -157,70 +162,70 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
         editTextVehicleRegNo.setFilters(newFilters);
         if (isEdit) {
             seat = "" + vehicleData.getSeats();
-            textViewSeat1.setSelected(true);
-            textViewSeat2.setSelected(false);
-            textViewSeat3.setSelected(false);
-            textViewSeat4.setSelected(false);
-            textViewSeat5.setSelected(false);
-            textViewSeat6.setSelected(false);
-            textViewSeat7.setSelected(false);
+            textViewSeat1.setImageResource(R.drawable.seat_filled);
+            textViewSeat2.setImageResource(R.drawable.seat_outline);
+            textViewSeat3.setImageResource(R.drawable.seat_outline);
+            textViewSeat4.setImageResource(R.drawable.seat_outline);
+            textViewSeat5.setImageResource(R.drawable.seat_outline);
+            textViewSeat6.setImageResource(R.drawable.seat_outline);
+            textViewSeat7.setImageResource(R.drawable.seat_outline);
 
             if (seat.equals("1")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(false);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_outline);
+                textViewSeat3.setImageResource(R.drawable.seat_outline);
+                textViewSeat4.setImageResource(R.drawable.seat_outline);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
             } else if (seat.equals("2")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_outline);
+                textViewSeat4.setImageResource(R.drawable.seat_outline);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
             } else if (seat.equals("3")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_outline);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
             } else if (seat.equals("4")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
             } else if (seat.equals("5")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(true);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_filled);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
             } else if (seat.equals("6")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(true);
-                textViewSeat6.setSelected(true);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_filled);
+                textViewSeat6.setImageResource(R.drawable.seat_filled);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
             } else if (seat.equals("7")) {
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(true);
-                textViewSeat6.setSelected(true);
-                textViewSeat7.setSelected(true);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_filled);
+                textViewSeat6.setImageResource(R.drawable.seat_filled);
+                textViewSeat7.setImageResource(R.drawable.seat_filled);
             }
 
             editTextVehicleModel.setText(vehicleData.getModel());
@@ -296,23 +301,50 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 }
             }
         }
+
+
+        editTextVehicleRegNo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!editTextVehicleRegNo.getText().toString().replace(" ", "").matches("^[A-Z|a-z]{2}?[0-9]{1,2}?[A-Z|a-z]{0,3}?[0-9]{4}$")) {
+                    txt_valid.setText("Not valid");
+                    txt_valid.setTextColor(getActivity().getColor(R.color.colorRed));
+                } else {
+                    txt_valid.setText("Valid");
+                    txt_valid.setTextColor(getActivity().getColor(R.color.quantum_googgreen));
+                }
+                txt_valid.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @OnClick({R.id.imageViewBackImage, R.id.imageViewFrontImage, R.id.imageViewRcImage, R.id.layoutSave, R.id.editTextVehicleInsuranceDate, R.id.textViewSeat1, R.id.textViewSeat2, R.id.textViewSeat3, R.id.textViewSeat4, R.id.textViewSeat5, R.id.textViewSeat6, R.id.textViewSeat7})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.layoutSave:
-                if (editTextVehicleModel.getText().toString().isEmpty()) {
+                /*if (editTextVehicleModel.getText().toString().isEmpty()) {
                     showMsg("Please enter vehicle model");
-                } else if (editTextVehicleRegNo.getText().toString().isEmpty()) {
+                } else */
+                if (editTextVehicleRegNo.getText().toString().isEmpty()) {
                     showMsg("Please enter vehicle registration number");
                 } else if (!editTextVehicleRegNo.getText().toString().replace(" ", "").matches("^[A-Z|a-z]{2}?[0-9]{1,2}?[A-Z|a-z]{0,3}?[0-9]{4}$")) {
                     showMsg("Please enter the valid vehicle number ");
-                } else if (editTextVehicleInsuranceDate.getText().toString().isEmpty()) {
+                } /*else if (editTextVehicleInsuranceDate.getText().toString().isEmpty()) {
                     showMsg("Please select vehicle Insurance Date ");
                 } else if (edRatePerKm.getText().toString().isEmpty()) {
                     showMsg(getResources().getString(R.string.please_enter_rate_per_km));
-                }
+                }*/
+
                /* else if (!isEdit && fileFront == null) {
                     showMsg("Please select vehicle Front Image");
                 } else if (!isEdit && fileBack == null) {
@@ -343,11 +375,11 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                     RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, getResources().getString(R.string.android));
                     RequestBody types = RequestBody.create(okhttp3.MultipartBody.FORM, getResources().getString(R.string.four_wheeler));
                     RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, strToken);
-                    RequestBody model = RequestBody.create(okhttp3.MultipartBody.FORM, editTextVehicleModel.getText().toString());
-                    RequestBody RegNo = RequestBody.create(okhttp3.MultipartBody.FORM, editTextVehicleRegNo.getText().toString());
+                    RequestBody model = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextVehicleModel.getText().toString());
+                    RequestBody RegNo = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextVehicleRegNo.getText().toString());
                     RequestBody vehicleSubCategory = RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(vehicleSubCategoryId));
-                    RequestBody insuranceDate = RequestBody.create(okhttp3.MultipartBody.FORM, editTextVehicleInsuranceDate.getText().toString());
-                    RequestBody ratePerKm = RequestBody.create(okhttp3.MultipartBody.FORM, edRatePerKm.getText().toString());
+                    RequestBody insuranceDate = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextVehicleInsuranceDate.getText().toString());
+                    RequestBody ratePerKm = RequestBody.create(okhttp3.MultipartBody.FORM, "" + edRatePerKm.getText().toString());
                     RequestBody seats = RequestBody.create(okhttp3.MultipartBody.FORM, seat);
                     RequestBody is_default = RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(checkBoxVehicleMakeDefault.isChecked() ? 1 : 0));
                     if (isEdit) {
@@ -391,73 +423,73 @@ public class CarFragment extends BaseFragment<CarPresenter, CarView> implements 
                 break;
             case R.id.textViewSeat1:
                 seat = "1";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(false);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_outline);
+                textViewSeat3.setImageResource(R.drawable.seat_outline);
+                textViewSeat4.setImageResource(R.drawable.seat_outline);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
                 break;
             case R.id.textViewSeat2:
                 seat = "2";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(false);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_outline);
+                textViewSeat4.setImageResource(R.drawable.seat_outline);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
                 break;
             case R.id.textViewSeat3:
                 seat = "3";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(false);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_outline);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
                 break;
             case R.id.textViewSeat4:
                 seat = "4";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(false);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_outline);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
                 break;
             case R.id.textViewSeat5:
                 seat = "5";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(true);
-                textViewSeat6.setSelected(false);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_filled);
+                textViewSeat6.setImageResource(R.drawable.seat_outline);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
                 break;
             case R.id.textViewSeat6:
                 seat = "6";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(true);
-                textViewSeat6.setSelected(true);
-                textViewSeat7.setSelected(false);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_filled);
+                textViewSeat6.setImageResource(R.drawable.seat_filled);
+                textViewSeat7.setImageResource(R.drawable.seat_outline);
                 break;
             case R.id.textViewSeat7:
                 seat = "7";
-                textViewSeat1.setSelected(true);
-                textViewSeat2.setSelected(true);
-                textViewSeat3.setSelected(true);
-                textViewSeat4.setSelected(true);
-                textViewSeat5.setSelected(true);
-                textViewSeat6.setSelected(true);
-                textViewSeat7.setSelected(true);
+                textViewSeat1.setImageResource(R.drawable.seat_filled);
+                textViewSeat2.setImageResource(R.drawable.seat_filled);
+                textViewSeat3.setImageResource(R.drawable.seat_filled);
+                textViewSeat4.setImageResource(R.drawable.seat_filled);
+                textViewSeat5.setImageResource(R.drawable.seat_filled);
+                textViewSeat6.setImageResource(R.drawable.seat_filled);
+                textViewSeat7.setImageResource(R.drawable.seat_filled);
                 break;
         }
     }

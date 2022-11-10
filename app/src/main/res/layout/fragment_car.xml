@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -63,21 +64,40 @@
 
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
-                android:layout_marginBottom="5sp"
-                android:background="@null"
-                android:fontFamily="@font/gotham_light"
-                android:gravity="start"
-                android:singleLine="true"
-                android:text="Enter Registration Number:"
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/sp_16" />
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_marginBottom="5sp"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:singleLine="true"
+                    android:text="Enter Registration Number:"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txt_valid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginBottom="5sp"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:singleLine="true"
+                    android:text="Not valid"
+                    android:textColor="@color/colorRed"
+                    android:textSize="@dimen/sp_16"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -276,117 +296,68 @@
                 android:padding="@dimen/dp_10">
 
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="1"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="2"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="3"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="4"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="5"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="6"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <ImageView
                     android:id="@+id/textViewSeat7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_margin="@dimen/dp_5"
                     android:layout_weight="1"
-                    android:background="@drawable/seat_selector"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_8"
-                    android:singleLine="true"
-                    android:text="7"
-                    android:textColor="@color/seat_selector_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:src="@drawable/seat_outline"
+                    app:tint="@color/colorBlack" />
 
             </LinearLayout>
 

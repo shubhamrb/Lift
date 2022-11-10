@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -47,7 +47,7 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
     @BindView(R.id.rvTicketList)
     RecyclerView rvTicketList;
     @BindView(R.id.btn_add)
-    ImageView floatingButtonAdd;
+    TextView floatingButtonAdd;
     private String strToken = "", vehicleType;
     private ArrayList<TicketListData> arrayList = new ArrayList<>();
 

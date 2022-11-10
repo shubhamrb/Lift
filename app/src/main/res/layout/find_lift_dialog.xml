@@ -9,6 +9,7 @@
         android:id="@+id/titleTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text=""
         android:textColor="@color/colorBlack"
         android:textStyle="bold" />
 
@@ -54,7 +55,7 @@
         android:text="10% processing fees + 18% GST"
         android:textColor="@color/colorRed"
         android:textSize="@dimen/sp_12"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <RelativeLayout
         android:layout_width="match_parent"

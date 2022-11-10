@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="10dp"
-        android:src="@drawable/user_image" />
+        android:src="@drawable/person_24" />
 
     <TextView
         android:id="@+id/textView3"

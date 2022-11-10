@@ -172,7 +172,7 @@
                     android:hint="Your Current Locations"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/colorBlack"
                     android:textColorHint="@color/colorBlack"
                     android:textSize="@dimen/sp_16" />
 
@@ -226,7 +226,7 @@
                     android:hint="Your Dropoff Locations"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/colorBlack"
                     android:textColorHint="@color/colorBlack"
                     android:textSize="@dimen/sp_16" />
 
@@ -263,7 +263,7 @@
                     android:hint=""
                     android:paddingTop="@dimen/dp_3"
                     android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/colorBlack"
                     android:textColorHint="@color/colorBlack"
                     android:textSize="@dimen/sp_14" />
 
@@ -297,7 +297,7 @@
                         android:hint="Add Checkpoints"
                         android:paddingTop="@dimen/dp_3"
                         android:singleLine="true"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorBlack"
                         android:textColorHint="@color/colorBlack"
                         android:textSize="@dimen/sp_14"
                         app:drawableTint="@color/colorPrimary" />

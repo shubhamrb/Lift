@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
@@ -53,16 +55,24 @@ public class SettingOptionAdapter extends RecyclerView.Adapter<SettingOptionAdap
             holder.toggleButton.setVisibility(View.VISIBLE);
             holder.imgnext.setVisibility(View.GONE);
             if (datum.getSelectedValue().equalsIgnoreCase("1")) {
-                holder.toggleButton.setImageResource(R.drawable.on);
+                holder.toggleButton.setChecked(true);
             } else if (datum.getSelectedValue().equalsIgnoreCase("0")) {
-                holder.toggleButton.setImageResource(R.drawable.off);
+                holder.toggleButton.setChecked(false);
             }
         } else {
             holder.toggleButton.setVisibility(View.GONE);
             holder.imgnext.setVisibility(View.VISIBLE);
         }
 
-        holder.toggleButton.setOnClickListener(new View.OnClickListener() {
+        holder.toggleButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked){
+                itemListener.onToggleClick(datum.getId(), 1);
+            }else {
+                itemListener.onToggleClick(datum.getId(), 0);
+            }
+        });
+
+        /*holder.toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (datum.getSelectedValue().equalsIgnoreCase("") || datum.getSelectedValue().equalsIgnoreCase("0")) {
@@ -71,7 +81,7 @@ public class SettingOptionAdapter extends RecyclerView.Adapter<SettingOptionAdap
                     itemListener.onToggleClick(datum.getId(), 0);
                 }
             }
-        });
+        });*/
 
         holder.itemRow.setOnClickListener(v -> {
             if (datum.getOptionType().equalsIgnoreCase(context.getResources().getString(R.string.select_option))) {
@@ -101,7 +111,7 @@ public class SettingOptionAdapter extends RecyclerView.Adapter<SettingOptionAdap
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imgtoggle)
-        ImageView toggleButton;
+        SwitchCompat toggleButton;
         @BindView(R.id.imgnext)
         ImageView imgnext;
         @BindView(R.id.tv_setting_content)

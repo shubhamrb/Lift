@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -165,8 +166,10 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
                         Dialog dialog = new Dialog(getActivity());
                         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         dialog.setContentView(R.layout.find_lift_dialog);
+                        TextView txtTitle = dialog.findViewById(R.id.titleTxt);
                         AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
 
+                        txtTitle.setText("There are 1 more vehicles driving on same route, you can join them");
                         buttonSubmit.setOnClickListener(v -> {
                             dialog.dismiss();
                             HomeActivity activity = (HomeActivity) getActivity();

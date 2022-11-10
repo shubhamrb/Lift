@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.CallbackManager;
@@ -82,7 +83,7 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
     @BindView(R.id.editTextDesignation)
     AppCompatEditText editTextDesignation;
     @BindView(R.id.editTextMobile)
-    AppCompatEditText editTextMobile;
+    AppCompatTextView editTextMobile;
     @BindView(R.id.editTextEmail)
     AppCompatEditText editTextEmail;
     @BindView(R.id.editTextAboutUser)
@@ -264,15 +265,15 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
             case R.id.buttonUpdate:
                 if (editTextName.getText().toString().isEmpty()) {
                     showMessage("Please enter name");
-                } else if (editTextDesignation.getText().toString().isEmpty()) {
+                } /*else if (editTextDesignation.getText().toString().isEmpty()) {
                     showMessage("Please enter designation");
-                } else if (editTextEmail.getText().toString().isEmpty()) {
+                }*/ else if (editTextEmail.getText().toString().isEmpty()) {
                     showMessage("Please enter email");
                 } else if (editTextMobile.getText().toString().isEmpty()) {
                     showMessage("Please enter mobile number");
-                } else if (editTextAboutUser.getText().toString().isEmpty()) {
+                } /*else if (editTextAboutUser.getText().toString().isEmpty()) {
                     showMessage("Please enter About Yourself");
-                } else {
+                } */ else {
                     if (isImage) {
                         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                         MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
@@ -280,10 +281,10 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
                         RequestBody device = RequestBody.create(okhttp3.MultipartBody.FORM, "android");
                         RequestBody token = RequestBody.create(okhttp3.MultipartBody.FORM, sharedPreferences.getString(Constants.TOKEN, ""));
                         RequestBody name = RequestBody.create(okhttp3.MultipartBody.FORM, editTextName.getText().toString());
-                        RequestBody designation = RequestBody.create(okhttp3.MultipartBody.FORM, editTextDesignation.getText().toString());
+                        RequestBody designation = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextDesignation.getText().toString());
                         RequestBody email = RequestBody.create(okhttp3.MultipartBody.FORM, editTextEmail.getText().toString());
                         RequestBody mobile = RequestBody.create(okhttp3.MultipartBody.FORM, editTextMobile.getText().toString());
-                        RequestBody aboutUs = RequestBody.create(okhttp3.MultipartBody.FORM, editTextAboutUser.getText().toString());
+                        RequestBody aboutUs = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextAboutUser.getText().toString());
                         presenter.updateProfile(api_key, device, token, name, designation, email, mobile, aboutUs, body);
                     } else {
                         presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""), editTextName.getText().toString(), editTextDesignation.getText().toString(), editTextEmail.getText().toString(), editTextMobile.getText().toString(), editTextAboutUser.getText().toString());

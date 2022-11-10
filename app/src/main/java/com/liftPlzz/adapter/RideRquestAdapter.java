@@ -3,14 +3,18 @@ package com.liftPlzz.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -180,6 +184,27 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
                 context.startActivity(intent);
             }
         });
+
+        holder.iv_menu.setVisibility(View.GONE);
+        /*holder.iv_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(context, holder.view);
+                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+                popup.setGravity(Gravity.END);
+                Menu menu = popup.getMenu();
+                menu.getItem(1).setTitle("Cancel Lift Request");
+                menu.removeItem(R.id.edit);
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.toString().equalsIgnoreCase("Cancel Lift Request")) {
+//                        itemListener.onDeleteClick(requestData.getRequest_id(), lift_id);
+                    }
+                    return true;
+                });
+
+                popup.show();
+            }
+        });*/
     }
 
 
@@ -222,6 +247,10 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         @BindView(R.id.total_km)
         AppCompatTextView total_km;
 
+        @BindView(R.id.iv_menu)
+        AppCompatImageView iv_menu;
+        @BindView(R.id.view)
+        View view;
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -231,7 +260,7 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
 
     public interface ItemListener {
         void onAcceptClick(int position, RideRequestData rideRequestData);
-
+        void onDeleteClick(Integer id, int lift_id);
         void onRejectClick(int position, RideRequestData rideRequestData);
     }
 }

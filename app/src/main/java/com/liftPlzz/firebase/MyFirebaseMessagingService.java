@@ -107,6 +107,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
 //                String vehicleType = jObject.getString("VEHICLE_TYPE");
                     intent = new Intent(this, RideRequestActivity.class);
+                    intent.putExtra("from","notification");
+
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     if (!subCategoryId.equals(""))
@@ -116,6 +118,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } else if (type.equalsIgnoreCase("invitation-status-update")) {
                     String liftId = jObject.getString("LIFT_ID");
                     intent = new Intent(this, RideRequestActivity.class);
+                    intent.putExtra("from","notification");
+
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     intent.putExtra(Constants.PARTNER, false);
@@ -146,8 +150,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     if (jObject.has("LIFT_ID")) {
                         subCategoryId = jObject.getString("SUB_CATEGORY_ID");
                     }
-//                String vehicleType = jObject.getString("VEHICLE_TYPE");
                     intent = new Intent(this, RideRequestActivity.class);
+                    intent.putExtra("from","notification");
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     if (!subCategoryId.equals(""))
@@ -157,6 +161,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } else if (type.equalsIgnoreCase("invitation-status-update")) {
                     String liftId = jObject.getString("LIFT_ID");
                     intent = new Intent(this, RideRequestActivity.class);
+                    intent.putExtra("from","notification");
+
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     intent.putExtra(Constants.PARTNER, false);

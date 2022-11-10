@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -389,12 +390,14 @@ public class StartRideActivity extends AppCompatActivity implements
                 turnByTurnNavigation();
             } else {
                 tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
+                tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorAccent)));
             }
         } else if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             getUsers(2);
             if (lift.getIs_user_start() == 1) {
                 bywhomRidestarted = 1;
                 tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
+                tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
                 Log.e("Lift", "Found");
                 request_id = lift.getRequest_id();
                 buildLocationCallBack();
@@ -403,6 +406,8 @@ public class StartRideActivity extends AppCompatActivity implements
                 turnByTurnNavigation();
             } else {
                 tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
+                tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorAccent)));
+
             }
         } else {
             Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
@@ -919,6 +924,7 @@ public class StartRideActivity extends AppCompatActivity implements
                         rel_bottom.setVisibility(View.VISIBLE);
                         isAlreadyStarted = true;
                         tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
+                        tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
                         Toast.makeText(StartRideActivity.this, "Please wait we are getting live location", Toast.LENGTH_LONG).show();
                         Log.d("usersresponse liftstart", response);
                         ridestarted = false;
@@ -1242,7 +1248,8 @@ public class StartRideActivity extends AppCompatActivity implements
                         if (status) {
                             request_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("request_id"));
                             tvStartRide.setText(getResources().getString(R.string.end_ride));
-                            tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
+                            tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
+//                            tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
                             bywhomRidestarted = 1;
                             getUsers(2);
                             mService.requestLocationUpdates();

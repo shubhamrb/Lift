@@ -1,6 +1,8 @@
 package com.liftPlzz.fragments;
 
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -9,6 +11,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -52,10 +55,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -219,6 +228,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     private EditVehicleData lift;
     private Intent srcIntent, destIntent;
     private String type;
+    private GoogleApiClient.OnConnectionFailedListener connectionlistener;
+    private GoogleApiClient.ConnectionCallbacks callbacks;
+    private boolean currentLocationFound;
 
 
     @Override
@@ -279,7 +291,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
 
-    private String strToken = "";
+    private final String strToken = "";
 
     public void requestpermisson() {
         if (ContextCompat.checkSelfPermission(getActivity(),
@@ -296,7 +308,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_SEND_SMS: {
                 if (grantResults.length > 0
@@ -309,6 +321,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     Toast.makeText(getActivity(),
                             "SMS faild, please try again.", Toast.LENGTH_LONG).show();
                     return;
+                }
+            }
+            case 2: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 }
             }
         }
@@ -324,9 +342,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
         createLocationRequest();
+
+        connectionlistener = this;
+        callbacks = this;
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(callbacks)
+                .addOnConnectionFailedListener(connectionlistener)
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
@@ -497,6 +518,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 ((HomeActivity) getActivity()).openDrawer();
                 break;
             case R.id.buttonLift:
+
+                if (!currentLocationFound) {
+                    checkAndRequestPermissions();
+                    return;
+                }
+
                 if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                     if (editTextPickupLocation.getText().toString().isEmpty()) {
                         showMessage("Select pickup location");
@@ -534,6 +561,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutCheckPoints:
+                if (!currentLocationFound) {
+                    checkAndRequestPermissions();
+                    return;
+                }
                 if (isMultiCheck) {
                     if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("enter dropoff location first");
@@ -577,12 +608,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 presenter.openNotification();
                 break;
             case R.id.layoutPickupLocation:
+                if (!currentLocationFound) {
+                    checkAndRequestPermissions();
+                    return;
+                }
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
                 i.putExtra("type", "from");
                 startActivityForResult(i, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutDropLocation:
+                if (!currentLocationFound) {
+                    checkAndRequestPermissions();
+                    return;
+                }
                 locationSelect = 2;
                 Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
                 i1.putExtra("type", "to");
@@ -590,6 +629,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutGiveLift:
+                if (!currentLocationFound) {
+                    checkAndRequestPermissions();
+                    return;
+                }
                 if (!isOfferLift) {
                     presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                 }
@@ -605,6 +648,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutTakeLift:
+                if (!currentLocationFound) {
+                    checkAndRequestPermissions();
+                    return;
+                }
                 isOfferLift = false;
                 isMultiCheck = false;
                 layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
@@ -636,6 +683,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void fetchLocation() {
+        Toast.makeText(getActivity(), "fetching current location, please wait...", Toast.LENGTH_SHORT).show();
+        currentLocationFound = false;
         if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -646,6 +695,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             if (location != null) {
                 currentLocation = location;
                 mapFragment.getMapAsync(HomeFragment.this);
+                currentLocationFound = true;
+            } else {
+                fetchLocation();
             }
         });
         task.addOnFailureListener(new OnFailureListener() {
@@ -814,7 +866,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         String strAdd = "";
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("LatLng", String.valueOf(latitue) + "," + String.valueOf(longitute));
+            jsonObject.put("LatLng", latitue + "," + longitute);
             jsonObject.put("country", bundle.getString("country"));
             jsonObject.put("state", bundle.getString("state"));
             jsonObject.put("city", bundle.getString("city"));
@@ -861,7 +913,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     (completeAddress.getString("addressline2")).append
                                     (completeAddress.getString("city")).append(",").append
                                     (completeAddress.getString("state"));
-                            Log.e("result ", "" + strAdd.toString() + "  ");
+                            Log.e("result ", "" + strAdd + "  ");
                             editTextPickupLocation.setText(address);
                             startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
                             if (dropLocation != null) {
@@ -1045,11 +1097,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             if (location != null) {
                                 currentLocation = location;
                                 mapFragment.getMapAsync(HomeFragment.this);
-                                if (type.equals("from")) {
-                                    setCurrentLocationInPickup();
-                                } else {
-                                    setCurrentLocationInDrop();
-                                }
+                                if (type != null)
+                                    if (type.equals("from")) {
+                                        setCurrentLocationInPickup();
+                                    } else {
+                                        setCurrentLocationInDrop();
+                                    }
                             }
                         });
                         task.addOnFailureListener(new OnFailureListener() {
@@ -1062,6 +1115,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
+            }
+        } else if (requestCode == 1000) {
+            //after location switch on dialog shown
+            if (resultCode != RESULT_OK) {
+                //Location not switched ON
+                Toast.makeText(getActivity(), "Location Not Available..", Toast.LENGTH_SHORT).show();
+
+            } else {
+                // Start location request listener.
+                //Location will be received onLocationResult()
+                //Once loc recvd, updateListener will be turned OFF.
+                Toast.makeText(getActivity(), "Fetching Location...", Toast.LENGTH_LONG).show();
+                createLocationRequest();
+
             }
         }
     }
@@ -1165,7 +1232,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
+                StringBuilder strReturnedAddress = new StringBuilder();
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
@@ -1190,7 +1257,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 Address returnedAddress = addresses.get(0);
                 try {
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("LatLng", String.valueOf(returnedAddress.getLatitude()) + "," + String.valueOf(returnedAddress.getLongitude()));
+                    jsonObject.put("LatLng", returnedAddress.getLatitude() + "," + returnedAddress.getLongitude());
                     jsonObject.put("country", returnedAddress.getCountryName());
                     jsonObject.put("state", returnedAddress.getAdminArea());
                     jsonObject.put("city", returnedAddress.getLocality());
@@ -1302,94 +1369,94 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         llrate = d.findViewById(R.id.llrate);
         btnSubmit = d.findViewById(R.id.btnSubmit);
 
-        TextView oneTxt = d.findViewById(R.id.oneTxt);
-        TextView twoTxt = d.findViewById(R.id.twoTxt);
-        TextView threeTxt = d.findViewById(R.id.threeTxt);
-        TextView fourTxt = d.findViewById(R.id.fourTxt);
-        TextView fiveTxt = d.findViewById(R.id.fiveTxt);
+        ImageView oneTxt = d.findViewById(R.id.oneTxt);
+        ImageView twoTxt = d.findViewById(R.id.twoTxt);
+        ImageView threeTxt = d.findViewById(R.id.threeTxt);
+        ImageView fourTxt = d.findViewById(R.id.fourTxt);
+        ImageView fiveTxt = d.findViewById(R.id.fiveTxt);
 
         if (seat.equals("1")) {
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_outline);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         } else if (seat.equals("2")) {
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         } else if (seat.equals("3")) {
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         } else if (seat.equals("4")) {
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         } else if (seat.equals("5")) {
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
         }
 
         oneTxt.setOnClickListener(v -> {
             seat = "1";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_outline);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         twoTxt.setOnClickListener(v -> {
             seat = "2";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         threeTxt.setOnClickListener(v -> {
             seat = "3";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         fourTxt.setOnClickListener(v -> {
             seat = "4";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         fiveTxt.setOnClickListener(v -> {
             seat = "5";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
         });
 
 
         if (data != null) {
             if (data.size() > 0) {
                 if (data.get(PagerPosition).getType().equals("two_wheeler")) {
-                    oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                    twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                    threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                    fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                    fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    oneTxt.setImageResource(R.drawable.seat_filled);
+                    twoTxt.setImageResource(R.drawable.seat_outline);
+                    threeTxt.setImageResource(R.drawable.seat_outline);
+                    fourTxt.setImageResource(R.drawable.seat_outline);
+                    fiveTxt.setImageResource(R.drawable.seat_outline);
                     twoTxt.setVisibility(View.GONE);
                     threeTxt.setVisibility(View.GONE);
                     fourTxt.setVisibility(View.GONE);
@@ -1412,11 +1479,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 @Override
                 public void onPageSelected(final int i) {
                     if (data.get(i).getType().equals("two_wheeler")) {
-                        oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                        twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                        threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                        fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                        fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                        oneTxt.setImageResource(R.drawable.seat_filled);
+                        twoTxt.setImageResource(R.drawable.seat_outline);
+                        threeTxt.setImageResource(R.drawable.seat_outline);
+                        fourTxt.setImageResource(R.drawable.seat_outline);
+                        fiveTxt.setImageResource(R.drawable.seat_outline);
                         twoTxt.setVisibility(View.GONE);
                         threeTxt.setVisibility(View.GONE);
                         fourTxt.setVisibility(View.GONE);
@@ -1749,9 +1816,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     new LatLng(dest.latitude, dest.longitude))
                             .width(7).color(Color.GREEN).geodesic(true));
                 } catch (NullPointerException e) {
-                    Log.e("Error", "NullPointerException onPostExecute: " + e.toString());
+                    Log.e("Error", "NullPointerException onPostExecute: " + e);
                 } catch (Exception e2) {
-                    Log.e("Error", "Exception onPostExecute: " + e2.toString());
+                    Log.e("Error", "Exception onPostExecute: " + e2);
                 }
             }
             try {
@@ -1901,5 +1968,80 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 //        presenter.getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
         rr_toolbar.setVisibility(View.VISIBLE);
         layoutRide.setVisibility(View.VISIBLE);
+        checkAndRequestPermissions();
     }
+
+    private boolean checkAndRequestPermissions() {
+        int locationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+        int coarsePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (coarsePermision != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[0]), 2);
+            return false;
+        }
+
+        getSettingsLocation();
+        return true;
+
+    }
+
+    private void getSettingsLocation() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(getActivity()).checkLocationSettings(builder.build());
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+                    //...
+                    if (response != null) {
+                        LocationSettingsStates locationSettingsStates = response.getLocationSettingsStates();
+                        Log.d("TAG", "getSettingsLocation: " + locationSettingsStates);
+                        fetchLocation();
+                    }
+                } catch (ApiException exception) {
+                    Log.d("TAG", "getSettingsLocation: " + exception);
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the
+                            // user a dialog.
+                            try {
+                                // Cast to a resolvable exception.
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                resolvable.startResolutionForResult(
+                                        getActivity(),
+                                        1000);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            //...
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
 }

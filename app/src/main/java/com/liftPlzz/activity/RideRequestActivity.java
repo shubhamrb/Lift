@@ -2,6 +2,7 @@ package com.liftPlzz.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -66,6 +67,7 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
     private int liftId, seats;
     private boolean isPartner;
     private boolean isLifter;
+    private String from;
 
 
     @Override
@@ -77,6 +79,7 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
             liftId = getIntent().getIntExtra(Constants.LIFT_ID, -1);
             isPartner = getIntent().getBooleanExtra(Constants.PARTNER, false);
             isLifter = getIntent().getBooleanExtra("lifter", false);
+            from = getIntent().getStringExtra("from");
         }
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
@@ -194,10 +197,13 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
                         String message = jsonObject.optString("message");
                         Toast.makeText(RideRequestActivity.this, message, Toast.LENGTH_SHORT).show();
                         if (status) {
-//                            Intent intent = new Intent(DriverListActivity.this, HomeActivity.class);
-//                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(intent);
-                            finish();
+                            if (from == null) {
+                                finish();
+                            } else {
+                                Intent intent = new Intent(RideRequestActivity.this, HomeActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

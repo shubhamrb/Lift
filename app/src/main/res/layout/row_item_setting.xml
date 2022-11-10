@@ -17,15 +17,15 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/dp_5"
             android:text="@string/app_name"
+            android:textSize="15sp"
             android:textColor="@color/colorBlack" />
 
-        <ImageView
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/imgtoggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/off"
             android:visibility="gone" />
 
         <ImageView

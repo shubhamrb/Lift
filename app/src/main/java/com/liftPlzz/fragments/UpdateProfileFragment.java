@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -98,7 +97,7 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     @BindView(R.id.txtCMName)
     AppCompatEditText txtCMName;
     @BindView(R.id.editTextMobile)
-    AppCompatEditText editTextMobile;
+    AppCompatTextView editTextMobile;
     @BindView(R.id.editTextEmail)
     AppCompatEditText editTextEmail;
 
@@ -233,11 +232,11 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     showMessage("Please enter email");
                 } else if (editTextMobile.getText().toString().isEmpty()) {
                     showMessage("Please enter mobile number");
-                } else if (editsosnumber.getText().toString().isEmpty()) {
+                } /*else if (editsosnumber.getText().toString().isEmpty()) {
                     showMessage("Please enter Emergency number");
                 } else if (editTextAboutUser.getText().toString().isEmpty()) {
                     showMessage("Please enter About Yourself");
-                } else if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
+                } */ else if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
                         genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
                         genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
 

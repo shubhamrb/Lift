@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:background="@color/colorPrimary"
@@ -47,15 +47,21 @@
 
         </LinearLayout>
 
-        <ImageView
+        <TextView
             android:id="@+id/btn_add"
-            android:layout_width="@dimen/dp_30"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="@dimen/dp_5"
+            android:background="@drawable/rounded_bg_green"
+            android:backgroundTint="@color/colorWhite"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_25"
+            android:paddingRight="@dimen/dp_25"
             android:src="@drawable/add_button_white"
-            app:tint="@color/colorWhite" />
+            android:text="Report new problem"
+            android:textColor="@color/colorBlack" />
     </RelativeLayout>
 
 
@@ -63,4 +69,23 @@
         android:id="@+id/rvTicketList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/rl_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center_vertical"
+            android:text="There are no issues reported"
+            android:textAllCaps="false"
+            android:textColor="@color/colorGrey"
+            android:textSize="@dimen/sp_25" />
+    </RelativeLayout>
 </LinearLayout>

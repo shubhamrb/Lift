@@ -85,37 +85,49 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
             holder.tv_na.setVisibility(View.GONE);
             holder.textVacantSeats.setText(" " + driverData.getVacant_seats());
 
-            holder.profile_percantage.setText("" + driverData.getProfile_percentage().getPercantage() + "%");
-            holder.vehicle_percantage.setText("" + driverData.getVehicle_percentage().getPercantage() + "%");
+            if (driverData.getProfile_percentage()!=null){
+                holder.profile_percantage.setText("" + driverData.getProfile_percentage().getPercantage() + "%");
+                switch (driverData.getProfile_percentage().getColor()) {
+                    case "red":
+                        holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
+                        break;
+                    case "green":
+                        holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
+                        break;
+                    case "orange":
+                        holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
+                        break;
+                }
+                holder.profile_percantage.setVisibility(View.VISIBLE);
+            }else {
+                holder.profile_percantage.setVisibility(View.GONE);
+            }
 
-            switch (driverData.getProfile_percentage().getColor()) {
-                case "red":
-                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
-                    break;
-                case "green":
-                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
-                    break;
-                case "orange":
-                    holder.profile_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
-                    break;
+            if (driverData.getVehicle_percentage()!=null){
+                holder.vehicle_percantage.setText("" + driverData.getVehicle_percentage().getPercantage() + "%");
+                switch (driverData.getVehicle_percentage().getColor()) {
+                    case "red":
+                        holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
+                        break;
+                    case "green":
+                        holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
+                        break;
+                    case "orange":
+                        holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
+                        break;
+                }
+                holder.vehicle_percantage.setVisibility(View.VISIBLE);
+            }else {
+                holder.vehicle_percantage.setVisibility(View.GONE);
             }
-            switch (driverData.getVehicle_percentage().getColor()) {
-                case "red":
-                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.colorRed, null));
-                    break;
-                case "green":
-                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_googgreen, null));
-                    break;
-                case "orange":
-                    holder.vehicle_percantage.setTextColor(context.getResources().getColor(R.color.quantum_orange, null));
-                    break;
-            }
-            holder.profile_percantage.setVisibility(View.VISIBLE);
-            holder.vehicle_percantage.setVisibility(View.VISIBLE);
+
         } else {
-            holder.profile_percantage.setText("" + driverData.getProfile_percentage().getPercantage() + "%");
-
-            holder.profile_percantage.setVisibility(View.VISIBLE);
+            if (driverData.getProfile_percentage() != null) {
+                holder.profile_percantage.setText("" + driverData.getProfile_percentage().getPercantage() + "%");
+                holder.profile_percantage.setVisibility(View.VISIBLE);
+            } else {
+                holder.profile_percantage.setVisibility(View.GONE);
+            }
             holder.vehicle_percantage.setVisibility(View.GONE);
             holder.price_per_seat.setVisibility(View.GONE);
             holder.tvRatePerKm.setVisibility(View.GONE);

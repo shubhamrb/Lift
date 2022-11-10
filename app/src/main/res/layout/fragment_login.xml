@@ -41,7 +41,7 @@
                         android:fontFamily="@font/gotham_bold"
                         android:gravity="center"
                         android:padding="@dimen/dp_5"
-                        android:text="Lift PlZz"
+                        android:text="Char Pair"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/sp_30"
                         android:visibility="visible" />

@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_350"
             android:scaleType="fitXY"
-            android:src="@drawable/user_image" />
+            android:src="@drawable/person_24" />
 
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -185,7 +185,7 @@
                     android:padding="@dimen/dp_8">
 
 
-                    <androidx.appcompat.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/editTextMobile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -261,13 +261,14 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp" />
+
                 <com.google.android.gms.common.SignInButton
                     android:id="@+id/sign_in_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_marginBottom="10dp" />
             </LinearLayout>
 
         </ScrollView>

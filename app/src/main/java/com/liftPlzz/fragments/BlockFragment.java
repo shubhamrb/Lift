@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -47,11 +48,13 @@ public class BlockFragment extends BaseFragment<BlockPresenter, BlockView> imple
     @BindView(R.id.imageViewBack)
     ImageView imageViewBack;
     @BindView(R.id.btn_add)
-    ImageView btn_add;
+    TextView btn_add;
     @BindView(R.id.recyclerViewNotification)
     RecyclerView recyclerViewNotification;
     @BindView(R.id.rl_no_data)
     RelativeLayout rl_no_data;
+    @BindView(R.id.txt_no_data)
+    TextView txt_no_data;
     private String token = "";
 
     @Override

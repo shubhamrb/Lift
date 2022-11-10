@@ -1102,11 +1102,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         btnSubmit = d.findViewById(R.id.btnSubmit);
 
         etkm = d.findViewById(R.id.etkm);
-        TextView oneTxt = d.findViewById(R.id.oneTxt);
-        TextView twoTxt = d.findViewById(R.id.twoTxt);
-        TextView threeTxt = d.findViewById(R.id.threeTxt);
-        TextView fourTxt = d.findViewById(R.id.fourTxt);
-        TextView fiveTxt = d.findViewById(R.id.fiveTxt);
+        ImageView oneTxt = d.findViewById(R.id.oneTxt);
+        ImageView twoTxt = d.findViewById(R.id.twoTxt);
+        ImageView threeTxt = d.findViewById(R.id.threeTxt);
+        ImageView fourTxt = d.findViewById(R.id.fourTxt);
+        ImageView fiveTxt = d.findViewById(R.id.fiveTxt);
 
         twoTxt.setVisibility(View.VISIBLE);
         threeTxt.setVisibility(View.VISIBLE);
@@ -1115,11 +1115,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
         switch (seat) {
             case "1":
-                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setImageResource(R.drawable.seat_filled);
+                twoTxt.setImageResource(R.drawable.seat_outline);
+                threeTxt.setImageResource(R.drawable.seat_outline);
+                fourTxt.setImageResource(R.drawable.seat_outline);
+                fiveTxt.setImageResource(R.drawable.seat_outline);
 
                 /*twoTxt.setVisibility(View.GONE);
                 threeTxt.setVisibility(View.GONE);
@@ -1128,74 +1128,74 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
                 break;
             case "2":
-                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setImageResource(R.drawable.seat_filled);
+                twoTxt.setImageResource(R.drawable.seat_filled);
+                threeTxt.setImageResource(R.drawable.seat_outline);
+                fourTxt.setImageResource(R.drawable.seat_outline);
+                fiveTxt.setImageResource(R.drawable.seat_outline);
                 break;
             case "3":
-                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setImageResource(R.drawable.seat_filled);
+                twoTxt.setImageResource(R.drawable.seat_filled);
+                threeTxt.setImageResource(R.drawable.seat_filled);
+                fourTxt.setImageResource(R.drawable.seat_outline);
+                fiveTxt.setImageResource(R.drawable.seat_outline);
                 break;
             case "4":
-                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                oneTxt.setImageResource(R.drawable.seat_filled);
+                twoTxt.setImageResource(R.drawable.seat_filled);
+                threeTxt.setImageResource(R.drawable.seat_filled);
+                fourTxt.setImageResource(R.drawable.seat_filled);
+                fiveTxt.setImageResource(R.drawable.seat_outline);
                 break;
             case "5":
-                oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+                oneTxt.setImageResource(R.drawable.seat_filled);
+                twoTxt.setImageResource(R.drawable.seat_filled);
+                threeTxt.setImageResource(R.drawable.seat_filled);
+                fourTxt.setImageResource(R.drawable.seat_filled);
+                fiveTxt.setImageResource(R.drawable.seat_filled);
                 break;
         }
 
         oneTxt.setOnClickListener(v -> {
             seat = "1";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_outline);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         twoTxt.setOnClickListener(v -> {
             seat = "2";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         threeTxt.setOnClickListener(v -> {
             seat = "3";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         fourTxt.setOnClickListener(v -> {
             seat = "4";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
         });
         fiveTxt.setOnClickListener(v -> {
             seat = "5";
-            oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            twoTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            threeTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fourTxt.setBackgroundResource(R.drawable.number_selected_bg);
-            fiveTxt.setBackgroundResource(R.drawable.number_selected_bg);
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
         });
 
         int selectedPos = -1;
@@ -1233,11 +1233,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             @Override
             public void onPageSelected(final int i) {
                 if (vehicleList.get(i).getType().equals("two_wheeler")) {
-                    oneTxt.setBackgroundResource(R.drawable.number_selected_bg);
-                    twoTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                    threeTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                    fourTxt.setBackgroundResource(R.drawable.number_unselected_bg);
-                    fiveTxt.setBackgroundResource(R.drawable.number_unselected_bg);
+                    oneTxt.setImageResource(R.drawable.seat_filled);
+                    twoTxt.setImageResource(R.drawable.seat_outline);
+                    threeTxt.setImageResource(R.drawable.seat_outline);
+                    fourTxt.setImageResource(R.drawable.seat_outline);
+                    fiveTxt.setImageResource(R.drawable.seat_outline);
                     twoTxt.setVisibility(View.GONE);
                     threeTxt.setVisibility(View.GONE);
                     fourTxt.setVisibility(View.GONE);

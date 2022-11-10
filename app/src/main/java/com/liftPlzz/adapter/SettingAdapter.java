@@ -61,10 +61,6 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.imgtoggle)
-        ImageView toggleButton;
-        @BindView(R.id.imgnext)
-        ImageView imgnext;
         @BindView(R.id.tv_setting_content)
         AppCompatTextView tvContent;
         @BindView(R.id.itemRow)
