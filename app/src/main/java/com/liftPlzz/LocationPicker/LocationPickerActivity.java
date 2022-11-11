@@ -148,7 +148,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private String strToken = "";
     private SharedPreferences sharedPreferences;
     private LinearLayout ll_history;
-    private TextView txt_showmap;
+    private LinearLayout txt_showmap;
     private FrameLayout mapFrame;
     private Button txtSelectLocation;
     private ImageView moving_pointer;
@@ -184,7 +184,6 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         mapFrame = findViewById(R.id.frame);
         ll_history = findViewById(R.id.ll_history);
         imgCurrentloc = findViewById(R.id.imgCurrentloc);
-        LinearLayout input_layout = findViewById(R.id.input_layout);
         txtSelectLocation = findViewById(R.id.fab_select_location);
         ImageView directionTool = findViewById(R.id.direction_tool);
         ImageView googleMapTool = findViewById(R.id.google_maps_tool);
@@ -269,6 +268,15 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                locationPick = true;
+                ll_history.setVisibility(View.VISIBLE);
+                rl_current_location.setVisibility(View.VISIBLE);
+                txt_showmap.setVisibility(View.VISIBLE);
+                mapFrame.setVisibility(View.GONE);
+                imgCurrentloc.setVisibility(View.GONE);
+                txtSelectLocation.setVisibility(View.VISIBLE);
+                moving_pointer.setVisibility(View.GONE);
+
                 if (!Places.isInitialized()) {
                     Places.initialize(LocationPickerActivity.this, MapUtility.apiKey);
                 }
@@ -298,9 +306,10 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 LocationPickerActivity.this.finish();
             }
         });
-        input_layout.setOnClickListener(new View.OnClickListener() {
+        txt_showmap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                locationPick = false;
                 LocationPickerActivity.this.showCurrentLocationOnMap(false);
                 ll_history.setVisibility(View.GONE);
                 txt_showmap.setVisibility(View.GONE);
@@ -406,17 +415,9 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
 
                 locationPick = true;
 
-                ll_history.setVisibility(View.GONE);
-                rl_current_location.setVisibility(View.GONE);
-                txt_showmap.setVisibility(View.GONE);
-                mapFrame.setVisibility(View.VISIBLE);
-                imgCurrentloc.setVisibility(View.VISIBLE);
-                txtSelectLocation.setVisibility(View.VISIBLE);
-                moving_pointer.setVisibility(View.VISIBLE);
-
-
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                userAddress = place.getName() + ", " + place.getAddress();
+//                userAddress = place.getName() + ", " + place.getAddress();
+                userAddress = place.getAddress();
                 //  addressdetails=place.getAddressComponents();
                 Log.e("cell l", "Location 1");
                 imgSearch.setText("" + userAddress);
@@ -426,7 +427,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 place_url = String.valueOf(place.getWebsiteUri());
                 addressline2.setText("" + userAddress);
 //                addMarker();
-                getAddressByGeoCodingLatLng();
+//                getAddressByGeoCodingLatLng();
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
@@ -571,8 +572,6 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        locationPick = false;
     }
 
 
@@ -688,9 +687,9 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 if (!locationPick) {
                     mLatitude = mMap.getCameraPosition().target.latitude;
                     mLongitude = mMap.getCameraPosition().target.longitude;
-                    if (getAddressFromLatLang(new LatLng(mLatitude, mLongitude)) != null) ;
-                    {
-                        userAddress = getAddressFromLatLang(new LatLng(mLatitude, mLongitude));
+                    String address = getAddressFromLatLang(new LatLng(mLatitude, mLongitude));
+                    if (address != null) {
+                        userAddress = address;
                         addressline2.setText("" + userAddress);
                         imgSearch.setText("" + userAddress);
                     }
@@ -707,11 +706,6 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 mLongitude = latLng.longitude;
                 Log.e("latlng", latLng + "");
                 isZooming = true;
-               /* if(getAddressFromLatLang(new LatLng(mLatitude,mLongitude))!=null);{
-                    userAddress = getAddressFromLatLang(new LatLng(mLatitude,mLongitude));
-                    addressline2.setText("" + userAddress);
-                    imgSearch.setText("" + userAddress);
-                }*/
                 LocationPickerActivity.this.addMarker();
                 if (!MapUtility.isNetworkAvailable(LocationPickerActivity.this)) {
                     MapUtility.showToast(LocationPickerActivity.this, "Please Connect to Internet");
@@ -926,7 +920,8 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
                 if (addresses != null && addresses.size() > 0) {
-                    String address = addresses.get(0).getAddressLine(0);
+//                    String address = addresses.get(0).getAddressLine(0);
+                    String address = userAddress;
                     if (address != null)
                         addressBundle.putString("addressline2", address);
                     sb.append(address).append(" ");
@@ -973,7 +968,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         // setting address into different components
         protected void onPostExecute(Bundle userAddress) {
             super.onPostExecute(userAddress);
-            LocationPickerActivity.this.userAddress = userAddress.getString("fulladdress");
+            LocationPickerActivity.this.userAddress = userAddress.getString("addressline2");
             LocationPickerActivity.this.userCity = userAddress.getString("city");
             LocationPickerActivity.this.userState = userAddress.getString("state");
             LocationPickerActivity.this.userPostalCode = userAddress.getString("postalcode");

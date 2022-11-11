@@ -343,6 +343,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
         createLocationRequest();
 
+        checkAndRequestPermissions();
+
         connectionlistener = this;
         callbacks = this;
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
@@ -414,7 +416,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
                     editTextPickupLocation.setText(address);
 
-                    startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude);
+                    startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude,address);
                     if (dropLocation != null) {
                         mGoogleMap.clear();
                         mGoogleMap.addMarker(new MarkerOptions()
@@ -458,7 +460,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     dropLocation = new LatLng(currentLatitude, currentLongitude);
                     destinationLat = dropLocation;
                     latLngDestination = new LatLng(currentLatitude, currentLongitude);
-                    endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude);
+                    endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude,address);
                     destination = currentLatitude + "," + currentLongitude;
                     mGoogleMap.clear();
                     mGoogleMap.addMarker(new MarkerOptions()
@@ -737,7 +739,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
-        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),editTextPickupLocation.getText().toString());
         // Zoom in the Google Map
 //        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 //        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
@@ -752,7 +754,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             public void onMarkerDragEnd(Marker arg0) {
                 Log.d("System out", "onMarkerDragEnd...");
                 editTextPickupLocation.setText(getCompleteAddressString(arg0.getPosition().latitude, arg0.getPosition().longitude));
-                startPoint = getJsonObjectFromLocation(arg0.getPosition().latitude, arg0.getPosition().longitude);
+                startPoint = getJsonObjectFromLocation(arg0.getPosition().latitude, arg0.getPosition().longitude,editTextPickupLocation.getText().toString());
                 latLngOrigin = new LatLng(arg0.getPosition().latitude, arg0.getPosition().longitude);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(arg0.getPosition(), 15.0f));
             }
@@ -788,7 +790,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
             editTextPickupLocation.setText(lift.getStart_point().getLocation());
 
-            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong));
+            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong),lift.getStart_point().getLocation());
             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
         }
 
@@ -802,7 +804,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             destinationLat = dropLocation;
             latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
 
-            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong));
+            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong),lift.getEnd_point().getLocation());
             destination = endlat + "," + endlong;
         }
 
@@ -891,7 +893,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         String address = data.getStringExtra(MapUtility.ADDRESS);
                         double currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                         double currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0);
-                        Bundle completeAddress = data.getBundleExtra("fullAddress");
+//                        Bundle completeAddress = data.getBundleExtra("fullAddress");
                         /**
                          * data in completeAddress bundle
                          "fulladdress"
@@ -909,13 +911,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             pickupLocation = new LatLng(currentLatitude, currentLongitude);
                             latLngOrigin = new LatLng(currentLatitude, currentLongitude);
                             originLat = latLngOrigin;
-                            StringBuilder strAdd = new StringBuilder().append
-                                    (completeAddress.getString("addressline2")).append
-                                    (completeAddress.getString("city")).append(",").append
-                                    (completeAddress.getString("state"));
-                            Log.e("result ", "" + strAdd + "  ");
                             editTextPickupLocation.setText(address);
-                            startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
+                            startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
                             if (dropLocation != null) {
                                 mGoogleMap.clear();
                                 mGoogleMap.addMarker(new MarkerOptions()
@@ -940,15 +937,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             }
                         } else if (locationSelect == 2) {
                             destIntent = data;
-                            StringBuilder stringBuilder = new StringBuilder().append
-                                    (completeAddress.getString("addressline2")).append
-                                    (completeAddress.getString("city")).append(",").append
-                                    (completeAddress.getString("state"));
                             editTextDropLocation.setText(address);
                             dropLocation = new LatLng(currentLatitude, currentLongitude);
                             destinationLat = dropLocation;
                             latLngDestination = new LatLng(currentLatitude, currentLongitude);
-                            endPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, stringBuilder.toString());
+                            endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
                             destination = currentLatitude + "," + currentLongitude;
                             mGoogleMap.clear();
                             mGoogleMap.addMarker(new MarkerOptions()
@@ -971,16 +964,16 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             }
 
                         } else {
-                            checkPointsList.get(listPos).setAddress(new StringBuilder().append
-                                    (completeAddress.getString("addressline2")).append
-                                    (completeAddress.getString("city")).append(",").append
-                                    (completeAddress.getString("state")).toString());
+                            String ad = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
+                            JSONObject jsonObject = new JSONObject(ad);
+
+                            checkPointsList.get(listPos).setAddress(address);
                             dropLocation = new LatLng(currentLatitude, currentLongitude);
                             latLngDestination = new LatLng(currentLatitude, currentLongitude);
                             checkPointsList.get(listPos).setLat(currentLatitude);
-                            checkPointsList.get(listPos).setCity(completeAddress.getString("city"));
-                            checkPointsList.get(listPos).setState(completeAddress.getString("state"));
-                            checkPointsList.get(listPos).setCountry(completeAddress.getString("country"));
+                            checkPointsList.get(listPos).setCity(jsonObject.getString("city"));
+                            checkPointsList.get(listPos).setState(jsonObject.getString("state"));
+                            checkPointsList.get(listPos).setCountry(jsonObject.getString("country"));
                             checkPointsList.get(listPos).setLongi(currentLongitude);
                             bottomSheetCheckPointsDialog.nofityAdapter();
                             Log.e("Check List Size : ", "" + checkPointsList.size());
@@ -1013,7 +1006,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             srcIntent.putExtra(MapUtility.LONGITUDE, pickupLocation.longitude);
 
                             editTextPickupLocation.setText(lift.getStart_point().getLocation());
-                            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong));
+                            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong), lift.getStart_point().getLocation());
 
                             if (dropLocation != null) {
                                 mGoogleMap.clear();
@@ -1062,7 +1055,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             destIntent.putExtra(MapUtility.LATITUDE, dropLocation.latitude);
                             destIntent.putExtra(MapUtility.LONGITUDE, dropLocation.longitude);
 
-                            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong), lift.getEnd_point().getLocation());
                             destination = endlat + "," + endlong;
 
                             mGoogleMap.clear();
@@ -1147,7 +1140,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         // [START_EXCLUDE silent]
         editTextDropLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+        endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),editTextDropLocation.getText().toString());
 
         if (currentLocation != null) {
             destIntent = new Intent();
@@ -1195,7 +1188,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),editTextPickupLocation.getText().toString());
 
         if (currentLocation != null) {
             srcIntent = new Intent();
@@ -1224,6 +1217,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
         }
     }
+
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
@@ -1247,7 +1241,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         return strAdd;
     }
 
-    private String getJsonObjectFromLocation(double LATITUDE, double LONGITUDE) {
+    private String getJsonObjectFromLocation(double LATITUDE, double LONGITUDE, String address) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         try {
@@ -1256,11 +1250,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 Address returnedAddress = addresses.get(0);
                 try {
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("LatLng", returnedAddress.getLatitude() + "," + returnedAddress.getLongitude());
+                    jsonObject.put("LatLng", LATITUDE + "," + LONGITUDE);
                     jsonObject.put("country", returnedAddress.getCountryName());
                     jsonObject.put("state", returnedAddress.getAdminArea());
                     jsonObject.put("city", returnedAddress.getLocality());
-                    jsonObject.put("location", returnedAddress.getAddressLine(0));
+                    jsonObject.put("location", address);
                     jsonObject.put("date", "");
                     jsonObject.put("time", "");
                     strAdd = jsonObject.toString();
@@ -1967,7 +1961,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 //        presenter.getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""));
         rr_toolbar.setVisibility(View.VISIBLE);
         layoutRide.setVisibility(View.VISIBLE);
-        checkAndRequestPermissions();
     }
 
     private boolean checkAndRequestPermissions() {
