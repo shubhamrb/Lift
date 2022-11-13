@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
     <!--
  Required only when requesting background location access on
          Android 10 (API level 29) and higher.
@@ -86,6 +88,9 @@
             android:name=".activity.StartRideActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=".StartRideActivity"
             android:screenOrientation="portrait"
             android:supportsPictureInPicture="true" /> <!-- <activity android:name=".activity.UserProfileActivity" /> -->
 
@@ -116,7 +121,8 @@
 
         <activity
             android:name=".activity.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

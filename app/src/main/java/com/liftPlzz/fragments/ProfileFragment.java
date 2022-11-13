@@ -3,6 +3,7 @@ package com.liftPlzz.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -66,6 +67,7 @@ import okhttp3.RequestBody;
  */
 public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView> implements ProfileView, ViewPagerAdapter.ItemListener {
 
+    private static final int GALLERY_PICTURE = 1000;
     SharedPreferences sharedPreferences;
     @BindView(R.id.imageViewBackContact)
     ImageView imageViewBackContact;
@@ -233,7 +235,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                         .crop()                    //Crop image(Optional), Check Customization for more option
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080)
-                        .cameraOnly()//Final image resolution will be less than 1080 x 1080(Optional)
                         .start();
                 IMAGE_TYPE = 1;
                 break;
@@ -242,7 +243,6 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                         .crop()                    //Crop image(Optional), Check Customization for more option
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080)
-                        .cameraOnly()//Final image resolution will be less than 1080 x 1080(Optional)
                         .start();
                 IMAGE_TYPE = 2;
                 break;

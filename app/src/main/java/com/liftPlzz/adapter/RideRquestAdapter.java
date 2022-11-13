@@ -185,26 +185,25 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
             }
         });
 
-        holder.iv_menu.setVisibility(View.GONE);
-        /*holder.iv_menu.setOnClickListener(new View.OnClickListener() {
+        holder.iv_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(context, holder.view);
                 popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
                 popup.setGravity(Gravity.END);
                 Menu menu = popup.getMenu();
-                menu.getItem(1).setTitle("Cancel Lift Request");
+                menu.getItem(1).setTitle("Block");
                 menu.removeItem(R.id.edit);
                 popup.setOnMenuItemClickListener(item -> {
-                    if (item.toString().equalsIgnoreCase("Cancel Lift Request")) {
-//                        itemListener.onDeleteClick(requestData.getRequest_id(), lift_id);
+                    if (item.toString().equalsIgnoreCase("Block")) {
+                        itemListener.onBlockClick(position,requestData.getUserId());
                     }
                     return true;
                 });
 
                 popup.show();
             }
-        });*/
+        });
     }
 
 
@@ -262,5 +261,6 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         void onAcceptClick(int position, RideRequestData rideRequestData);
         void onDeleteClick(Integer id, int lift_id);
         void onRejectClick(int position, RideRequestData rideRequestData);
+        void onBlockClick(int position,Integer user_id);
     }
 }

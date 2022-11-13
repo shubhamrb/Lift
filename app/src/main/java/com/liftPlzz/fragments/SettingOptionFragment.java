@@ -188,7 +188,7 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
     public void onSelectAction(int position, Datum data) {
         if (data.getType().trim().equals("Account Setting")) {
             presenter.getProfile(strToken);
-        }else if (data.getType().trim().equals("Reset to default")) {
+        } else if (data.getType().trim().equals("Reset to default")) {
             //reset setting
             new AlertDialog.Builder(getActivity())
                     .setTitle("Reset to default")
@@ -208,21 +208,21 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
     public void onOtherScreen(int position, Datum data) {
         if (data.getShortCode().equals("rating_preference")) {
             showRatingDialog(data);
-        }else if (data.getShortCode().equals("block_user")) {
+        } else if (data.getShortCode().equals("block_user")) {
             presenter.openBlock();
-        }else if (data.getShortCode().equals("edit_profile")) {
+        } else if (data.getShortCode().equals("edit_profile")) {
             presenter.getProfile(strToken);
-        }else if (data.getShortCode().equals("suspend_account")) {
+        } else if (data.getShortCode().equals("suspend_account")) {
             //
-        }else if (data.getShortCode().equals("faq")) {
+        } else if (data.getShortCode().equals("faq")) {
             presenter.openFaq();
-        }else if (data.getShortCode().equals("how_to_use_charpair")) {
+        } else if (data.getShortCode().equals("how_to_use_charpair")) {
             presenter.openHowToUse();
-        }else if (data.getShortCode().equals("report_problem_issue")) {
+        } else if (data.getShortCode().equals("report_problem_issue")) {
             startActivity(new Intent(getActivity(), TicketListActivity.class));
-        }else if (data.getShortCode().equals("contact_with_us")) {
+        } else if (data.getShortCode().equals("contact_with_us")) {
             showCCDialog();
-        }else if (data.getShortCode().equals("customer_support")) {
+        } else if (data.getShortCode().equals("customer_support")) {
             ChatUser user = new ChatUser();
             user.setId(0);
             user.setName("CharPair Support");
@@ -461,9 +461,9 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
         TextView okayBtn = dialog.findViewById(R.id.okayBtn);
         TextView titleTxt = dialog.findViewById(R.id.titleTxt);
         RatingBar ratingBr = dialog.findViewById(R.id.ratingBr);
-        titleTxt.setText(data.getType());
 
-        if (data.getSelectedValue() != null) {
+        if (data != null && data.getSelectedValue() != null) {
+            titleTxt.setText(data.getType());
             if (!data.getSelectedValue().equals("") && !data.getSelectedValue().equals("0")) {
                 ratingBr.setRating(Float.parseFloat(data.getSelectedValue()));
             }
@@ -475,7 +475,8 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
 
         okayBtn.setOnClickListener(v -> {
             dialog.dismiss();
-            updateSetting(strToken, data.getId(), "" + ratingBr.getRating());
+            if (data != null)
+                updateSetting(strToken, data.getId(), "" + ratingBr.getRating());
         });
         dialog.show();
     }

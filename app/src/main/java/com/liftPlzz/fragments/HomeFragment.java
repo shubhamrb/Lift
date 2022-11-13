@@ -77,8 +77,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.liftPlzz.LocationPicker.LocationPickerActivity;
@@ -325,8 +327,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             }
             case 2: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fetchLocation();
                 }
             }
         }
@@ -692,14 +694,22 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(location -> {
+        Task<Location> task = fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+            @NonNull
+            @Override
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                return null;
+            }
+
+            @Override
+            public boolean isCancellationRequested() {
+                return false;
+            }
+        }).addOnSuccessListener(location -> {
             if (location != null) {
                 currentLocation = location;
                 mapFragment.getMapAsync(HomeFragment.this);
                 currentLocationFound = true;
-            } else {
-                fetchLocation();
             }
         });
         task.addOnFailureListener(new OnFailureListener() {
@@ -886,6 +896,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == ADDRESS_PICKER_REQUEST) {
             try {
                 if (data != null) {
@@ -1109,7 +1120,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        } else if (requestCode == 1000) {
+        }
+        else if (requestCode == 2) {
             //after location switch on dialog shown
             if (resultCode != RESULT_OK) {
                 //Location not switched ON
@@ -1120,7 +1132,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 //Location will be received onLocationResult()
                 //Once loc recvd, updateListener will be turned OFF.
                 Toast.makeText(getActivity(), "Fetching Location...", Toast.LENGTH_LONG).show();
-                createLocationRequest();
+                fetchLocation();
 
             }
         }
@@ -2016,9 +2028,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 ResolvableApiException resolvable = (ResolvableApiException) exception;
                                 // Show the dialog by calling startResolutionForResult(),
                                 // and check the result in onActivityResult().
-                                resolvable.startResolutionForResult(
-                                        getActivity(),
-                                        1000);
+                                startIntentSenderForResult(resolvable.getResolution().getIntentSender(),2,null,0,0,0,null);
                             } catch (IntentSender.SendIntentException e) {
                                 // Ignore the error.
                             } catch (ClassCastException e) {

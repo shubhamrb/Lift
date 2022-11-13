@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -46,7 +47,7 @@ public class UsersFragment extends BaseFragment<BlockPresenter, BlockView> imple
     @BindView(R.id.imageViewBack)
     ImageView imageViewBack;
     @BindView(R.id.btn_add)
-    ImageView btn_add;
+    TextView btn_add;
     @BindView(R.id.recyclerViewNotification)
     RecyclerView recyclerViewNotification;
     private String token = "";

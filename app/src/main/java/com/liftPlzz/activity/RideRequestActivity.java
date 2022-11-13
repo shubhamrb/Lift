@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.gson.JsonObject;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.PartnerAdapter;
 import com.liftPlzz.adapter.RideRquestAdapter;
@@ -179,6 +180,38 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
     @Override
     public void onRejectClick(int position, RideRequestData rideRequestData) {
         updateRequestApi(rideRequestData.getId(), 2);
+    }
+
+    @Override
+    public void onBlockClick(int position, Integer user_id) {
+        Constants.showLoader(this);
+        ApiService api = RetroClient.getApiService();
+        Call<JsonObject> call = api.blockUser(Constants.API_KEY, Constants.ANDROID, strToken, user_id, "");
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Constants.hideLoader();
+                if (response.body() != null) {
+                    if (response.code() == 200) {
+                        if (response.body().get("status").getAsBoolean()) {
+                            loadData();
+                        } else {
+                            Constants.showMessage(getApplicationContext(), response.body().get("message").getAsString(), recyclerRequest);
+                        }
+
+                    } else {
+                        Constants.showMessage(getApplicationContext(), "Something went wrong", recyclerRequest);
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                Constants.hideLoader();
+                Constants.showMessage(getApplicationContext(), "Check your internet connection", recyclerRequest);
+            }
+        });
     }
 
     public void updateRequestApi(int inviteId, int status) {

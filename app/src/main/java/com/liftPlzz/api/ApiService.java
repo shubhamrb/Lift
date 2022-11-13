@@ -600,8 +600,10 @@ public interface ApiService {
                              @Field("client") String client,
                              @Field("token") String token,
                              @Field("request_id") int requestId,
-                             @Field("lat") double lat,
-                             @Field("long") double logitute);
+                             @Field("lat_long") String lat_long,
+                             @Field("city") String city,
+                             @Field("address") String address
+    );
 
     @FormUrlEncoded
     @POST("ride-end-accept-by-driver")
@@ -627,8 +629,10 @@ public interface ApiService {
                                         @Field("token") String token,
                                         @Field("lift_id") int requestId,
                                         @Field("code") int code,
-                                        @Field("lat") double lat,
-                                        @Field("long") double logitute);
+                                        @Field("lat_long") String lat_long,
+                                        @Field("city") String city,
+                                        @Field("address") String address
+    );
 
     @FormUrlEncoded
     @POST("card-recharge")

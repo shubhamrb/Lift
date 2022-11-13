@@ -15,6 +15,8 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -77,8 +79,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -121,6 +126,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -181,6 +187,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private boolean oneTimeZoomed = false;
     private Dialog dialog;
     private DirectionsRoute currentRoute;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
 
     /**
@@ -352,6 +359,7 @@ public class StartRideActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_start_ride);
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         callButton = findViewById(R.id.callButton);
         smsButton = findViewById(R.id.smsButton);
@@ -1152,7 +1160,7 @@ public class StartRideActivity extends AppCompatActivity implements
                             .title("Driver"));
                     LatLngBounds bounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                     try {
-                        if (!oneTimeZoomed || !bounds.contains(src1)) {
+                        if (!oneTimeZoomed || !bounds.contains(Objects.requireNonNull(src1))) {
                             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(src1, 35.0f));
                             oneTimeZoomed = true;
                         }
@@ -1229,107 +1237,206 @@ public class StartRideActivity extends AppCompatActivity implements
         });
     }
 
-
     public void getLiftStartCodeMatch(String token, String code) {
         Constants.showLoader(StartRideActivity.this);
-        ApiService api = RetroClient.getApiService();
-        Call<JsonObject> call = api.liftStartCodeMatch(Constants.API_KEY, Constants.ANDROID, token, lift.getId(), Integer.parseInt(code), 0.0, 0.0);
-        call.enqueue(new Callback<JsonObject>() {
+        if (ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+            @NonNull
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Constants.hideLoader();
-                if (response.code() == 200) {
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                return null;
+            }
+
+            @Override
+            public boolean isCancellationRequested() {
+                return false;
+            }
+        }).addOnSuccessListener(location -> {
+            if (location != null) {
+                JSONObject jsonObject = getJsonObjectFromLocation(location.getLatitude(), location.getLongitude());
+                if (jsonObject != null) {
                     try {
-                        JSONObject jsonObject = new JSONObject(response.body().toString());
-                        boolean status = jsonObject.optBoolean("status");
-                        String msg = jsonObject.optString("message");
-                        Log.d("StartRideActivity", "msg" + msg);
-                        Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
-                        if (status) {
-                            request_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("request_id"));
-                            tvStartRide.setText(getResources().getString(R.string.end_ride));
-                            tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
+                        ApiService api = RetroClient.getApiService();
+                        Call<JsonObject> call = api.liftStartCodeMatch(Constants.API_KEY,
+                                Constants.ANDROID, token,
+                                lift.getId(),
+                                Integer.parseInt(code),
+                                jsonObject.getString("lat_long"),
+                                jsonObject.getString("city"),
+                                jsonObject.getString("address"));
+                        call.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                Constants.hideLoader();
+                                if (response.code() == 200) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.body().toString());
+                                        boolean status = jsonObject.optBoolean("status");
+                                        String msg = jsonObject.optString("message");
+                                        Log.d("StartRideActivity", "msg" + msg);
+                                        Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                        if (status) {
+                                            request_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("request_id"));
+                                            tvStartRide.setText(getResources().getString(R.string.end_ride));
+                                            tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
 //                            tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
-                            bywhomRidestarted = 1;
-                            getUsers(2);
-                            mService.requestLocationUpdates();
-                            turnByTurnNavigation();
-                        } else {
-                            Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        String message = jsonObject.optString("message");
-                        Toast.makeText(StartRideActivity.this, message, Toast.LENGTH_SHORT).show();
+                                            bywhomRidestarted = 1;
+                                            getUsers(2);
+                                            mService.requestLocationUpdates();
+                                            turnByTurnNavigation();
+                                        } else {
+                                            Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                                        String message = jsonObject.optString("message");
+                                        Toast.makeText(StartRideActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                                Constants.hideLoader();
+                                Toast.makeText(StartRideActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-
+        });
+        task.addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                Constants.hideLoader();
-                Toast.makeText(StartRideActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
             }
         });
+
     }
 
     public void getRideEnd(String token, boolean isDriverEnd) {
-        try {
-            if (location == null) {
-                Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
-                return;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(StartRideActivity.this, "Location is not valid", Toast.LENGTH_LONG).show();
+        Constants.showLoader(StartRideActivity.this);
+        if (ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Log.e("Request", "id" + request_id);
-        Constants.showLoader(StartRideActivity.this);
-        ApiService api = RetroClient.getApiService();
-        Call<JsonObject> call = api.rideEnd(Constants.API_KEY, Constants.ANDROID, token, request_id, location.getLatitude(), location.getLongitude());
-        call.enqueue(new Callback<JsonObject>() {
+        Task<Location> task = fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+            @NonNull
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Constants.hideLoader();
-                Log.d("endrideresponse", new Gson().toJson(response.body()));
-                Log.d("requestidd", lift.getId().toString());
-                if (response.code() == 200) {
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                return null;
+            }
+
+            @Override
+            public boolean isCancellationRequested() {
+                return false;
+            }
+        }).addOnSuccessListener(location -> {
+            if (location != null) {
+                Log.e("Request", "id" + request_id);
+                Constants.showLoader(StartRideActivity.this);
+
+                JSONObject jsonObject = getJsonObjectFromLocation(location.getLatitude(), location.getLongitude());
+
+                if (jsonObject != null) {
                     try {
-                        Toast.makeText(StartRideActivity.this, "Ride ended successfully", Toast.LENGTH_SHORT).show();
-                        if (isDriverEnd) {
-                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), false);
-                        } else {
-                            getInvoice();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        String message = jsonObject.optString("message");
-                        Toast.makeText(StartRideActivity.this, message, Toast.LENGTH_SHORT).show();
+                        ApiService api = RetroClient.getApiService();
+                        Call<JsonObject> call = api.rideEnd(Constants.API_KEY,
+                                Constants.ANDROID,
+                                token, request_id,
+                                jsonObject.getString("lat_long"),
+                                jsonObject.getString("city"),
+                                jsonObject.getString("address"));
+                        call.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                Constants.hideLoader();
+                                Log.d("endrideresponse", new Gson().toJson(response.body()));
+                                Log.d("requestidd", lift.getId().toString());
+                                if (response.code() == 200) {
+                                    try {
+                                        Toast.makeText(StartRideActivity.this, "Ride ended successfully", Toast.LENGTH_SHORT).show();
+                                        if (isDriverEnd) {
+                                            getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), false);
+                                        } else {
+                                            getInvoice();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                                        String message = jsonObject.optString("message");
+                                        Toast.makeText(StartRideActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                                Constants.hideLoader();
+                                Toast.makeText(StartRideActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-
-
+        });
+        task.addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable throwable) {
-                Constants.hideLoader();
-                Toast.makeText(StartRideActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
             }
         });
     }
+
+
+    private JSONObject getJsonObjectFromLocation(double LATITUDE, double LONGITUDE) {
+        JSONObject jsonObject = null;
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                try {
+                    jsonObject = new JSONObject();
+                    jsonObject.put("lat_long", LATITUDE + "," + LONGITUDE);
+                    jsonObject.put("city", returnedAddress.getLocality());
+                    jsonObject.put("address", returnedAddress.getAddressLine(0));
+
+                    return jsonObject;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
+            } else {
+                Log.e("My Current", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("My Current", "Can't get Address!");
+        }
+        return jsonObject;
+    }
+
 
     //+++++++++++++++++++++++++++++++++++++++++++Driver only rate user+++++++++++++++++++++++
     private void Rateusers(String user_id, int type, String username) {

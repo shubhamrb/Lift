@@ -1,10 +1,15 @@
 package com.liftPlzz.fragments;
 
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -14,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
 
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
@@ -75,6 +81,43 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
         if (bundle != null) {
             referral_id = bundle.getString("referral_id");
         }
+
+        editTextMobileNumber.setOnFocusChangeListener((view, isFocused) -> {
+            if (isFocused) {
+                TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                if (ActivityCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                String mPhoneNumber1 = tMgr.getLine1Number();
+
+                if (mPhoneNumber1 != null && !mPhoneNumber1.isEmpty()) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Continue with")
+                            .setMessage(mPhoneNumber1)
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    String number = mPhoneNumber1;
+                                    if (mPhoneNumber1.length() > 10) {
+                                        number = mPhoneNumber1.substring(mPhoneNumber1.length() - 10);
+                                    }
+                                    editTextMobileNumber.setText(number);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null).show();
+                }
+            }
+        });
     }
 
 
