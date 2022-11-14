@@ -2,6 +2,7 @@ package com.liftPlzz.fragments;
 
 
 import static android.app.Activity.RESULT_OK;
+import static com.liftPlzz.utils.Validation.isEmailValid;
 
 import android.content.Context;
 import android.content.Intent;
@@ -269,6 +270,8 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
                     showMessage("Please enter designation");
                 }*/ else if (editTextEmail.getText().toString().isEmpty()) {
                     showMessage("Please enter email");
+                } else if (!isEmailValid(editTextEmail.getText().toString())) {
+                    showMessage("Please enter valid email");
                 } else if (editTextMobile.getText().toString().isEmpty()) {
                     showMessage("Please enter mobile number");
                 } /*else if (editTextAboutUser.getText().toString().isEmpty()) {
@@ -354,6 +357,7 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
         sharedPreferences.edit().putString(Constants.EMAIL, response.getUser().getEmail()).apply();
         sharedPreferences.edit().putString(Constants.MOBILE, response.getUser().getMobile()).apply();
         sharedPreferences.edit().putString(Constants.USER_ID, String.valueOf(response.getUser().getId())).apply();
+        sharedPreferences.edit().putString(Constants.IMAGE, String.valueOf(response.getUser().getImage())).apply();
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         intent.putExtra("referral_id", referral_id);
         startActivity(intent);

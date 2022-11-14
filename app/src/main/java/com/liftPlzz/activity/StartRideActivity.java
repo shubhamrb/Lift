@@ -264,6 +264,9 @@ public class StartRideActivity extends AppCompatActivity implements
         if (myReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         }
+        if (mService!=null){
+            mService.removeLocationUpdates();
+        }
         super.onDestroy();
     }
 
@@ -371,8 +374,12 @@ public class StartRideActivity extends AppCompatActivity implements
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_matching);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
+
+        lift = null;
         if (getIntent() != null) {
             lift = (Lift) getIntent().getSerializableExtra(Constants.LIFT_OBJ);
+        } else {
+            lift = null;
         }
 
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {

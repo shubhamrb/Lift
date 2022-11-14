@@ -389,6 +389,28 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         btn_swap.setOnClickListener(view -> {
             swapLocation();
         });
+
+
+        if (isOfferLift) {
+            isMultiCheck = true;
+            layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg_white));
+            layoutGiveLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
+            buttonLift.setText(textViewGiveLift.getText().toString());
+            textViewTakeLift.setTextColor(getResources().getColor(R.color.colorBlack));
+            textViewGiveLift.setTextColor(getResources().getColor(R.color.colorWhite));
+            llchkpoint.setVisibility(View.VISIBLE);
+        } else {
+            isMultiCheck = false;
+            layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
+            layoutGiveLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg_white));
+            buttonLift.setText(textViewTakeLift.getText().toString());
+            textViewGiveLift.setTextColor(getResources().getColor(R.color.colorBlack));
+            textViewTakeLift.setTextColor(getResources().getColor(R.color.colorWhite));
+            llchkpoint.setVisibility(View.INVISIBLE);
+        }
+        if (editTextDropLocation.getText().toString().length() > 0) {
+            textViewSelectSeat.setText(seat + " Seats");
+        }
     }
 
     private void swapLocation() {
@@ -418,7 +440,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
                     editTextPickupLocation.setText(address);
 
-                    startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude,address);
+                    startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
                     if (dropLocation != null) {
                         mGoogleMap.clear();
                         mGoogleMap.addMarker(new MarkerOptions()
@@ -462,7 +484,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     dropLocation = new LatLng(currentLatitude, currentLongitude);
                     destinationLat = dropLocation;
                     latLngDestination = new LatLng(currentLatitude, currentLongitude);
-                    endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude,address);
+                    endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
                     destination = currentLatitude + "," + currentLongitude;
                     mGoogleMap.clear();
                     mGoogleMap.addMarker(new MarkerOptions()
@@ -579,7 +601,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         checkPoints.setId(checkPointsList.size() + 1);
                         checkPoints.setAddress("Select Checkpoints " + (checkPointsList.size() + 1));
                         checkPointsList.add(checkPoints);
-                        isMultiCheck = false;
+//                        isMultiCheck = false;
                         bottomSheetCheckPointsDialog.setGroupList(checkPointsList);
                         bottomSheetCheckPointsDialog.show(
                                 getActivity().getSupportFragmentManager(), "check");
@@ -597,6 +619,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 }
                 break;
             case R.id.layoutSelectSeat:
+                if (isOfferLift && data == null) {
+                    showMessage("No Vehicle find.Please Add Your Vehicle");
+                    presenter.openMyVehicle();
+                    return;
+                }
                 if (editTextDropLocation.getText().toString().length() > 0) {
                     show();
                 } else {
@@ -637,9 +664,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     checkAndRequestPermissions();
                     return;
                 }
-                if (!isOfferLift) {
-                    presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
-                }
+                presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
+                isOfferLift = true;
+
                 isMultiCheck = true;
                 layoutGiveLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg));
                 layoutTakeLift.setBackground(getResources().getDrawable(R.drawable.rounded_bg_white));
@@ -749,7 +776,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
-        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),editTextPickupLocation.getText().toString());
+        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextPickupLocation.getText().toString());
         // Zoom in the Google Map
 //        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 //        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
@@ -764,7 +791,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             public void onMarkerDragEnd(Marker arg0) {
                 Log.d("System out", "onMarkerDragEnd...");
                 editTextPickupLocation.setText(getCompleteAddressString(arg0.getPosition().latitude, arg0.getPosition().longitude));
-                startPoint = getJsonObjectFromLocation(arg0.getPosition().latitude, arg0.getPosition().longitude,editTextPickupLocation.getText().toString());
+                startPoint = getJsonObjectFromLocation(arg0.getPosition().latitude, arg0.getPosition().longitude, editTextPickupLocation.getText().toString());
                 latLngOrigin = new LatLng(arg0.getPosition().latitude, arg0.getPosition().longitude);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(arg0.getPosition(), 15.0f));
             }
@@ -800,7 +827,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
             editTextPickupLocation.setText(lift.getStart_point().getLocation());
 
-            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong),lift.getStart_point().getLocation());
+            startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong), lift.getStart_point().getLocation());
             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
         }
 
@@ -814,7 +841,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             destinationLat = dropLocation;
             latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
 
-            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong),lift.getEnd_point().getLocation());
+            endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong), lift.getEnd_point().getLocation());
             destination = endlat + "," + endlong;
         }
 
@@ -896,7 +923,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADDRESS_PICKER_REQUEST) {
             try {
                 if (data != null) {
@@ -1120,8 +1147,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }
-        else if (requestCode == 2) {
+        } else if (requestCode == 2) {
             //after location switch on dialog shown
             if (resultCode != RESULT_OK) {
                 //Location not switched ON
@@ -1152,7 +1178,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         // [START_EXCLUDE silent]
         editTextDropLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),editTextDropLocation.getText().toString());
+        endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextDropLocation.getText().toString());
 
         if (currentLocation != null) {
             destIntent = new Intent();
@@ -1200,7 +1226,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),editTextPickupLocation.getText().toString());
+        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextPickupLocation.getText().toString());
 
         if (currentLocation != null) {
             srcIntent = new Intent();
@@ -1560,7 +1586,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (checkPointsList.size() == 0) {
             layoutDropLocation.setVisibility(View.VISIBLE);
             recyclerViewCheckpoints.setVisibility(View.GONE);
-            isMultiCheck = true;
+//            isMultiCheck = true;
         }
     }
 
@@ -1580,7 +1606,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setVehicle(List<Datum> data) {
         if (data.size() > 0) {
             this.data = data;
-            isOfferLift = true;
+//            isOfferLift = true;
             vehicle_name = data.get(0).getModel();
             rate_per_km = data.get(0).getRatePerKm();
             if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
@@ -1589,7 +1615,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 textViewSelectSeat.setText("" + vehicle_name + " | " + rate_per_km + "/km" + " | " + seat + " Seats");
             }
         } else {
-            showMessage("No Vehicle find.Please Add Your Vehicle");
+            showMessage("No Vehicle fond.Please Add Your Vehicle");
             presenter.openMyVehicle();
         }
     }
@@ -2028,7 +2054,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 ResolvableApiException resolvable = (ResolvableApiException) exception;
                                 // Show the dialog by calling startResolutionForResult(),
                                 // and check the result in onActivityResult().
-                                startIntentSenderForResult(resolvable.getResolution().getIntentSender(),2,null,0,0,0,null);
+                                startIntentSenderForResult(resolvable.getResolution().getIntentSender(), 2, null, 0, 0, 0, null);
                             } catch (IntentSender.SendIntentException e) {
                                 // Ignore the error.
                             } catch (ClassCastException e) {

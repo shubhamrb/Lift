@@ -13,7 +13,7 @@
     <string name="maps_api_key">AIzaSyA7SV33I2sYhbd9SiUo9b75qpGOS9ZNT5I</string>
     <!--  <string name="facebook_app_id">2727968734109669</string>-->
     <!--    <string name="fb_login_protocol_scheme">fb2727968734109669</string>-->
-    <string name="facebook_application_id">107209941848607</string>
+<!--    <string name="facebook_application_id">107209941848607</string>-->
 
     <string name="msg_token_fmt" translatable="false">FCM registration Token: %s</string>
 
@@ -47,7 +47,7 @@
     <string name="update_vehicle">Update Vehicle</string>
     <string name="four_wheeler">four_wheeler</string>
     <!--    <string name="facebook_app_id">357209435575553</string>-->
-    <string name="facebook_app_id">602082917080957</string>
+    <string name="facebook_app_id">5076583682445095</string>
     <string name="fb_login_protocol_scheme">fb602082917080957</string>
     <string name="help_us_to_server">Help us to server better! Let us know your feedback</string>
     <string name="submit">Submit</string>

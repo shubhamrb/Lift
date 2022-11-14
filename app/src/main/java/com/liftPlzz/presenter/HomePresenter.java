@@ -57,8 +57,6 @@ public class HomePresenter extends BasePresenter<HomeView> {
                     } else {
                         view.showMessage(response.body().getResponse().getMessage());
                     }
-
-
                 }
             }
 

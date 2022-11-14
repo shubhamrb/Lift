@@ -65,7 +65,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Lift lift = verifiedLists.get(position);
+        Lift lift = verifiedLists.get(position);
         holder.matchFoundBtn.setText("" + lift.getFindMatch() + " " + context.getResources().getString(R.string.match_found));
         holder.requestBtn.setText("" + lift.getTotalRequest() + " " + context.getResources().getString(R.string.request));
         if (lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift))) {
@@ -206,7 +206,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, StartRideActivity.class);
-                intent.putExtra(Constants.LIFT_OBJ, lift);
+                intent.putExtra(Constants.LIFT_OBJ, verifiedLists.get(position));
                 context.startActivity(intent);
             }
         });

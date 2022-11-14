@@ -404,6 +404,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     public void setLoginData(SendOtpResponse response) {
         if (response.getNewUser() == 1) {
             sharedPreferences.edit().putString(Constants.TOKEN, response.getToken()).apply();
+            sharedPreferences.edit().putString(Constants.MOBILE, response.getData().getMobile()).apply();
             presenter.openCreateProfile(referral_id);
         } else {
             sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, true).apply();

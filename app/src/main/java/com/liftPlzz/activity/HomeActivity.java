@@ -187,7 +187,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             openMyChatFragment(PerformFragment.REPLACE);
         } else if (s == 5) {
             buildDynamicLink("https://charpair.page.link/" + sharedPreferences.getString(Constants.USER_ID, ""));
-        }else if (s == 6) {
+        } else if (s == 6) {
             /*feedback*/
             openFeedbackSuggestionFragment(PerformFragment.REPLACE, "Feedback");
         } else if (s == 7) {

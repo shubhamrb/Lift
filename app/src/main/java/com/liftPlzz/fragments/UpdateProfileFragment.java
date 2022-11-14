@@ -236,9 +236,9 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     showMessage("Please enter Emergency number");
                 } else if (editTextAboutUser.getText().toString().isEmpty()) {
                     showMessage("Please enter About Yourself");
-                } */ else if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
+                } */ /*else if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio ||
                         genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
-                        genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+                        genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {*/
 
                     String gender = "";
                     if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio) {
@@ -249,10 +249,10 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                         gender = "Not to Share";
                     }
 
-                    if (spinner_category.getSelectedItemPosition() != 0) {
-                        if (professionSelection.equals("Others") && otherTextView.getText().toString().trim().equals("")) {
+//                    if (spinner_category.getSelectedItemPosition() != 0) {
+                        /*if (professionSelection.equals("Others") && otherTextView.getText().toString().trim().equals("")) {
                             Toast.makeText(getContext(), "Please fill above details", Toast.LENGTH_SHORT).show();
-                        } else {
+                        } else {*/
                             presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
                                     editTextName.getText().toString(),
                                     professionSelection,
@@ -263,14 +263,15 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                                     gender, editTextMobile.getText().toString(),
                                     editTextAboutUser.getText().toString(),
                                     editsosnumber.getText().toString(), isEmailPrivate, isDOBPrivate, isMobilePrivate);
-                        }
-                    } else {
+//                        }
+                    /*} else {
                         Toast.makeText(getContext(), "Please select one of them", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
 
-                } else {
+               /* }
+                else {
                     showMessage("Please Select Gender");
-                }
+                }*/
                 break;
 
             case R.id.toggle_email:
@@ -552,6 +553,9 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
 
     @Override
     public void setProfileData(Response response) {
+        sharedPreferences.edit().putString(Constants.NAME, String.valueOf(response.getUser().getName())).apply();
+        sharedPreferences.edit().putString(Constants.EMAIL, String.valueOf(response.getUser().getEmail())).apply();
+        sharedPreferences.edit().putString(Constants.IMAGE, String.valueOf(response.getUser().getImage())).apply();
         Objects.requireNonNull(getActivity()).onBackPressed();
     }
 

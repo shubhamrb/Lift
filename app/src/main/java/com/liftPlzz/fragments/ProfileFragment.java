@@ -3,7 +3,6 @@ package com.liftPlzz.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -305,6 +304,10 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @Override
     public void selfieUploaded(Response response) {
+        if (response.getStatus()) {
+            Constants.showMessage(getActivity(), response.getMessage(), layoutAbout);
+            sharedPreferences.edit().putString(Constants.IMAGE, String.valueOf(response.getImage_url())).apply();
+        }
         verified_face.setVisibility(View.VISIBLE);
     }
 
