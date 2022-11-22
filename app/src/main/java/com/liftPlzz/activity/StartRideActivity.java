@@ -264,7 +264,7 @@ public class StartRideActivity extends AppCompatActivity implements
         if (myReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         }
-        if (mService!=null){
+        if (mService != null) {
             mService.removeLocationUpdates();
         }
         super.onDestroy();
@@ -699,12 +699,7 @@ public class StartRideActivity extends AppCompatActivity implements
 
                 double finalDist = distance / 1000;
 
-//                if (H != 0.0) {
                 txt_arrival_time.setText(Math.round(H) + " hr " + Math.round(M) + " min");
-//                } else {
-//                    txt_arrival_time.setText(Math.round(M) + " min");
-//                }
-
                 txt_distance.setText(Math.round(finalDist) + " km");
                 rl_arrival.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
@@ -1128,10 +1123,11 @@ public class StartRideActivity extends AppCompatActivity implements
                 dest = pontos.get(i + 1);
                 try {
                     if (!isTrackingPath) {
-                        mGoogleMap.addPolyline(new PolylineOptions()
+                        polyline = mGoogleMap.addPolyline(new PolylineOptions()
                                 .add(new LatLng(src.latitude, src.longitude),
                                         new LatLng(dest.latitude, dest.longitude))
                                 .width(7).color(Color.BLUE).geodesic(true));
+                        polylineList.add(polyline);
                     } else {
                         polyline = mGoogleMap.addPolyline(new PolylineOptions()
                                 .add(new LatLng(src.latitude, src.longitude),
