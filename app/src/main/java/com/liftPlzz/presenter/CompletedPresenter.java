@@ -2,8 +2,11 @@ package com.liftPlzz.presenter;
 
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
+import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.model.completedLift.ResponseCompletedLift;
+import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.CompletedView;
 
@@ -93,5 +96,10 @@ public class CompletedPresenter extends BasePresenter<CompletedView> {
                 view.showMessage("Check your internet connection");
             }
         });
+    }
+
+    public void openAddLift(Lift completeLiftData, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
+        navigator.openEditLift(BaseActivity.PerformFragment.REPLACE, completeLiftData, listinerUpdate, edit);
+
     }
 }

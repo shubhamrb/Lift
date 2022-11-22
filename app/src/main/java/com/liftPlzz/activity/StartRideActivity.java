@@ -188,6 +188,7 @@ public class StartRideActivity extends AppCompatActivity implements
     private Dialog dialog;
     private DirectionsRoute currentRoute;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private AsyncTask<String, String, String> locationTask;
 
 
     /**
@@ -203,7 +204,8 @@ public class StartRideActivity extends AppCompatActivity implements
                     Log.e(TAG, "Location Same location" + startedcount);
                     if (startedcount == 0) {
                         startedcount = 3;
-                        startDriverLift(location, strToken);
+                        if (!isAlreadyStarted)
+                            startDriverLift(location, strToken);
                         return;
                     } else {
                         if (location != null) {
@@ -556,12 +558,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     return;
                 }
                 startpoint = Objects.requireNonNull(dataSnapshot.getValue()).toString().split(",");
-                /*if (driverlocationcount == 0) {
-                    placeDriver(startpoint, 0);
-                    driverlocationcount = 1;
-                } else {
-                    placeDriver(startpoint, 1);
-                }*/
+
                 placeDriver(startpoint);
                 driverstarted = true;
             }
@@ -578,75 +575,6 @@ public class StartRideActivity extends AppCompatActivity implements
         lastKnownLocation.addValueEventListener(postListener);
     }
 
-    /*private void placeDriver(String[] startpoint, int driverlocationcountx) {
-        Log.d("usersresponse1", String.valueOf(startpoint));
-        double latitude = Double.parseDouble(startpoint[0]);
-        double longitude = Double.parseDouble(startpoint[1]);
-        LatLng latLng = new LatLng(latitude, longitude);
-        if (driverlocationcountx == 0) {
-            prelatLng = new LatLng(latitude, longitude);
-            Log.d("usersresponse1", "" + driverlocationcount);
-
-            if (startMarker != null) {
-                startMarker.remove();
-            }
-            startMarker = mGoogleMap.addMarker(new MarkerOptions()
-                    .position(prelatLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.defaultMarker())
-                    .title("Driver Start here"));
-
-            linelocationList.add(prelatLng);
-        } else {
-            driverlocationcount = 1;
-            linelocationList.add(latLng);
-            PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(Color.RED);
-            polyOptions.width(5);
-            polyOptions.addAll(linelocationList);
-
-            if (startMarker != null) {
-                startMarker.remove();
-            }
-            if (mDriverMarker!=null){
-                mDriverMarker.remove();
-            }
-            mGoogleMap.addPolyline(polyOptions);
-
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-            startMarker = mGoogleMap.addMarker(new MarkerOptions()
-                    .position(prelatLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.defaultMarker())
-                    .title("Start"));
-
-
-            mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.defaultMarker())
-                    .title("Driver"));
-        }
-
-        */
-    /*   mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));*//*
-
-        try {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            builder.include(prelatLng);
-            builder.include(latLng);
-            LatLngBounds bounds = builder.build();
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
-            mGoogleMap.moveCamera(cu);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }*/
-
-
     private void placeDriver(String[] startpoint) {
         Log.d("usersresponse1", Arrays.toString(startpoint));
 
@@ -660,16 +588,22 @@ public class StartRideActivity extends AppCompatActivity implements
 
         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             //join all checkpoints
-            new GetDirection().execute(current, lift.getEndLatlong());
+            if (locationTask != null) {
+                locationTask.cancel(true);
+            }
+            locationTask = new GetDirection().execute(current, lift.getEndLatlong());
         } else {
             if (bywhomRidestarted == 1) {
                 txt_arrival_status.setText("Reaching in : ");
-                new GetDirection().execute(current, lift.getEndLatlong());
+                if (locationTask != null) {
+                    locationTask.cancel(true);
+                }
+                locationTask = new GetDirection().execute(current, lift.getEndLatlong());
                 /*reaching time*/
                 showArrivalTimeCard(latitude, longitude, lift.getEndLatlong());
             } else {
                 txt_arrival_status.setText("Arriving in : ");
-                new GetDirection().execute(current, lift.getStartLatlong());
+                locationTask = new GetDirection().execute(current, lift.getStartLatlong());
                 /*arrival time*/
                 showArrivalTimeCard(latitude, longitude, lift.getStartLatlong());
             }
@@ -1046,7 +980,10 @@ public class StartRideActivity extends AppCompatActivity implements
                 String origin = lift.getStartLatlong();
                 String destination = lift.getEndLatlong();
 
-                new GetDirection().execute(origin, destination);
+                if (locationTask != null) {
+                    locationTask.cancel(true);
+                }
+                locationTask = new GetDirection().execute(origin, destination);
             }
         }
     }
@@ -1902,11 +1839,11 @@ public class StartRideActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (lift != null && lift.getIs_driver_start() == 1) {
+       /* if (lift != null && lift.getIs_driver_start() == 1) {
             enterPipMode();
-        } else {
+        } else {*/
             super.onBackPressed();
-        }
+//        }
     }
 
     @Override

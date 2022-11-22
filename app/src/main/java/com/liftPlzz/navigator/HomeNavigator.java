@@ -4,8 +4,10 @@ package com.liftPlzz.navigator;
 import android.os.Bundle;
 
 import com.liftPlzz.base.BaseActivity;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.PointWalletFragment;
-import com.liftPlzz.model.getsetting.SettingModel;
+import com.liftPlzz.model.completedLift.CompleteLiftData;
+import com.liftPlzz.model.upcomingLift.Lift;
 
 public interface HomeNavigator {
 
@@ -52,5 +54,7 @@ public interface HomeNavigator {
     void openFeedbackSuggestionFragment(BaseActivity.PerformFragment performFragment, String type);
 
     void openVideosFragment(BaseActivity.PerformFragment performFragment);
+
+    void openEditLift(BaseActivity.PerformFragment performFragment, Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
 
 }

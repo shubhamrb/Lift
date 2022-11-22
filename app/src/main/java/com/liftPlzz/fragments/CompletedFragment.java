@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -108,6 +110,12 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
 //        sheet.setLift(lif,listinerUpdate );
 //        sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
 //        sheet.show(((FragmentActivity)getActivity()).getSupportFragmentManager().beginTransaction(),"dialog");
+
+    }
+
+    @Override
+    public void onAddClick(Lift completeLiftData, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
+        presenter.openAddLift(completeLiftData,listinerUpdate,edit);
 
     }
 

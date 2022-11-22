@@ -325,10 +325,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                                 itemListener.onCancelClick(verifiedLists.get(getAdapterPosition()).getId());
 
                             } else {
-                                EditLiftDaiFragment sheet = new EditLiftDaiFragment("edit");
-                                sheet.setLift(verifiedLists.get(getAdapterPosition()), listinerUpdate, "edit");
-                                sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
-                                sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "dialog");
+                                itemListener.onEditClick(verifiedLists.get(getAdapterPosition()), listinerUpdate, "edit");
                             }
                             return true;
                         }
@@ -359,5 +356,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         void onCancelClick(int Id);
 
         void showDialog(int Id);
+
+        void onEditClick(Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
     }
 }

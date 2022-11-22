@@ -97,7 +97,6 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
             textRepet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditLiftDaiFragment sheet = new EditLiftDaiFragment("add");
                     Lift lif = new Lift();
                     lif.setId(verifiedLists.get(getAdapterPosition()).getId());
                     lif.setTitle(verifiedLists.get(getAdapterPosition()).getTitle());
@@ -123,12 +122,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
 //        lif.setSameroutevehicle(model.get());
 //        lif.setFindMatch(model.ge());
 
-
-                    sheet.setLift(lif, listinerUpdate, "add");
-                    sheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.MyTheme);
-                    sheet.show(((FragmentActivity) context).getSupportFragmentManager().beginTransaction(), "dialog");
-
-//                    itemListener.onMatchClick(verifiedLists.get(getAdapterPosition()));
+                    itemListener.onAddClick(lif, listinerUpdate, "add");
                 }
             });
 
@@ -159,6 +153,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
 
     public interface ItemListener {
         void onMatchClick(CompleteLiftData lift);
+        void onAddClick(Lift completeLiftData, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
 
         void onDeleteClick(int Id);
     }

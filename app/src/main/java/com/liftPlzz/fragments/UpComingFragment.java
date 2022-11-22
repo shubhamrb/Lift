@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -193,6 +195,11 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
             }
         });
 
+    }
+
+    @Override
+    public void onEditClick(Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
+        presenter.openEditLift(lift,listinerUpdate,edit);
     }
 
     @Override

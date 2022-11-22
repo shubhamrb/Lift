@@ -2,7 +2,10 @@ package com.liftPlzz.presenter;
 
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
+import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.base.BasePresenter;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
+import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.model.upcomingLift.UpcomingLiftResponse;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.UpComingView;
@@ -32,6 +35,9 @@ public class UpComingPresenter extends BasePresenter<UpComingView> {
 
     }
 
+    public void openEditLift(Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
+        navigator.openEditLift(BaseActivity.PerformFragment.REPLACE, lift,listinerUpdate,edit);
+    }
     public void getUpcomingLift(String token) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();

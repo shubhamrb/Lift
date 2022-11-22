@@ -3,6 +3,7 @@ package com.liftPlzz.provider;
 import android.os.Bundle;
 
 import com.liftPlzz.base.BaseActivity;
+import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.AddVehicleFragment;
 import com.liftPlzz.fragments.BlockFragment;
 import com.liftPlzz.fragments.ChatUserFragment;
@@ -26,6 +27,7 @@ import com.liftPlzz.fragments.SettingOptionFragment;
 import com.liftPlzz.fragments.UpdateProfileFragment;
 import com.liftPlzz.fragments.UsersFragment;
 import com.liftPlzz.fragments.VideosFragment;
+import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.navigator.AppNavigator;
 
 public abstract class AppNavigationProvider extends BaseActivity implements AppNavigator {
@@ -198,5 +200,12 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
         bundle.putInt("id", id);
         settingOptionFragment.setArguments(bundle);
         openFragment(settingOptionFragment, SettingOptionFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openEditLift(PerformFragment performFragment, Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
+        EditLiftDaiFragment editLiftDaiFragment = new EditLiftDaiFragment(edit);
+        editLiftDaiFragment.setLift(lift, listinerUpdate, edit);
+        openFragment(editLiftDaiFragment, EditLiftDaiFragment.class.getName(), performFragment, true);
     }
 }

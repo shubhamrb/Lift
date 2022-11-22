@@ -73,6 +73,7 @@ import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
 import com.liftPlzz.adapter.VehiclePagerAdapter;
 import com.liftPlzz.base.BaseDailogFragment;
+import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.CheckPoints;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.createLift.CreateLiftResponse;
@@ -105,7 +106,7 @@ import me.relex.circleindicator.CircleIndicator;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, EditLiftView> implements EditLiftView,
+public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLiftView> implements EditLiftView,
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, NumberPicker.OnValueChangeListener, CheckPointsListAdapter.ItemListener, MyVehicleListRideAdapter.ItemListener, BottomSheetCheckPointsDialog.CallBackSelectionCheckPoints {
 
@@ -393,10 +394,11 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
             new GetDirection().execute(origin, destination);
 
         } else {
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .position(pickupLocation)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-                    .title("pickup"));
+            if (mGoogleMap != null)
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(pickupLocation)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                        .title("pickup"));
         }
 
         textViewLiftName.setText("" + (data.getLift().getLiftType().equals("offer") ? "Offer Lift" : "Find Lift"));
@@ -469,41 +471,24 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     }
 
     @Override
-    protected View createLayout(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-       /* if (view != null) {
-            ViewGroup parent = (ViewGroup) view.getParent();
-            if (parent != null)
-                parent.removeView(view);
-        }
-        try {
-            view = inflater.inflate(R.layout.fragment_edit_lift, container, false);
-        } catch (InflateException e) {
-            *//* map is already there, just return view as it is *//*
-        }*/
-//      imageViewBack=(ImageView) view.findViewById(R.id.imageViewBack);
-//        imageViewBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dismiss();
-//            }
-//        });
-        return inflater.inflate(R.layout.fragment_edit_lift, container, false);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         try {
             SupportMapFragment f = (SupportMapFragment) getFragmentManager()
-                    .findFragmentById(R.id.map);
+                    .findFragmentById(R.id.google_map);
             if (f != null)
-                getFragmentManager().beginTransaction().remove(f).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(f).commit();
         } catch (Exception e) {
 
         }
 
     }
 
+
+    @Override
+    protected int createLayout() {
+        return R.layout.fragment_edit_lift;
+    }
 
     @Override
     protected void setPresenter() {
@@ -520,6 +505,10 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
+
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.google_map);
+
+
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
@@ -531,8 +520,6 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        mapFragment = (SupportMapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
 
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
         bottomSheetCheckPointsDialog.setSelectionListner(EditLiftDaiFragment.this);
@@ -632,7 +619,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                 show();
                 break;
             case R.id.imageViewBack:
-                dismiss();
+                getActivity().onBackPressed();
                 break;
             case R.id.layoutSelectDateTime:
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, EditLiftDaiFragment.this, myYear, myMonth - 1, myday);
@@ -687,10 +674,13 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
         task.addOnSuccessListener(location -> {
             if (location != null) {
                 currentLocation = location;
-                mapFragment.getMapAsync(EditLiftDaiFragment.this);
-                //   Toast.makeText(getActivity(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-
-
+                if (mapFragment != null) {
+                    try {
+                        mapFragment.getMapAsync(this);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
         task.addOnFailureListener(new OnFailureListener() {
@@ -1596,7 +1586,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                             // jagnarayan
                             if (action.equalsIgnoreCase("add")) {
                                 ((HomeActivity) getActivity()).openride();
-                                dismiss();
+//                                getActivity().onBackPressed();
                             } else {
                                 dismissDailog();
                             }
@@ -1618,7 +1608,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                                 // jagnarayan
                                 if (action.equalsIgnoreCase("add")) {
                                     ((HomeActivity) getActivity()).openride();
-                                    dismiss();
+//                                    dismiss();
 //                                    ((HomeActivity)getActivity()).onclick(2);
 
                                 } else {
@@ -1640,7 +1630,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
 
     public void dismissDailog() {
         updateRecordListiner.done();
-        dismiss();
+        getActivity().onBackPressed();
     }
 
     private void showDialogCreateLift(String msg, String subMessage, String action) {
@@ -1654,7 +1644,7 @@ public class EditLiftDaiFragment extends BaseDailogFragment<EditLiftPresenter, E
                         try {
                             if (action.equalsIgnoreCase("add")) {
                                 ((HomeActivity) getActivity()).openride();
-                                dismiss();
+//                                dismiss();
 
                             } else {
                                 dismissDailog();

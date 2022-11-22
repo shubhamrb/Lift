@@ -84,14 +84,21 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity
+       <!-- <activity
             android:name=".activity.StartRideActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:excludeFromRecents="true"
             android:taskAffinity=".StartRideActivity"
             android:screenOrientation="portrait"
-            android:supportsPictureInPicture="true" /> <!-- <activity android:name=".activity.UserProfileActivity" /> -->
+            android:supportsPictureInPicture="true" />-->
+
+        <activity
+            android:name=".activity.StartRideActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=".StartRideActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".LocationPicker.LocationPickerActivity"
