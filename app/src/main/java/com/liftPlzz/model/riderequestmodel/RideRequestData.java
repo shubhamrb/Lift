@@ -3,7 +3,6 @@ package com.liftPlzz.model.riderequestmodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.liftPlzz.model.PercentageModel;
-import com.liftPlzz.model.partnerdetails.User;
 
 public class RideRequestData {
 
@@ -66,6 +65,18 @@ public class RideRequestData {
     @SerializedName("is_contact_public")
     @Expose
     private int is_contact_public;
+
+    @SerializedName("is_user_blocked")
+    @Expose
+    private int is_user_blocked;
+
+    public int getIs_user_blocked() {
+        return is_user_blocked;
+    }
+
+    public void setIs_user_blocked(int is_user_blocked) {
+        this.is_user_blocked = is_user_blocked;
+    }
 
     public int getIs_contact_public() {
         return is_contact_public;
@@ -219,7 +230,7 @@ public class RideRequestData {
         this.id = id;
     }
 
-    public class DriveLocation{
+    public class DriveLocation {
         public String getEnd_city() {
             return end_city;
         }

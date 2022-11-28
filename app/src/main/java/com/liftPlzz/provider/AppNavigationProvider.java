@@ -2,7 +2,7 @@ package com.liftPlzz.provider;
 
 import android.os.Bundle;
 
-import com.liftPlzz.activity.RideRequestFragment;
+import com.liftPlzz.fragments.RideRequestFragment;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.AddVehicleFragment;

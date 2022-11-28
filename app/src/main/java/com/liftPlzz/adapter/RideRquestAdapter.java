@@ -55,8 +55,7 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
 
     @Override
     public RideRquestAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_ride_request, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ride_request, parent, false);
         return new RideRquestAdapter.ViewHolder(v);
     }
 
@@ -106,20 +105,14 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
             }
         }
 
-        if (requestData.getLocation().getStart_city() == null)
-            holder.from.setText("From: --");
-        else
-            holder.from.setText("From: " + requestData.getLocation().getStart_city());
-        if (requestData.getLocation().getEnd_city() == null)
-            holder.to.setText("To: --");
-        else
-            holder.to.setText("To: " + requestData.getLocation().getEnd_city());
+        if (requestData.getLocation().getStart_city() == null) holder.from.setText("From: --");
+        else holder.from.setText("From: " + requestData.getLocation().getStart_city());
+        if (requestData.getLocation().getEnd_city() == null) holder.to.setText("To: --");
+        else holder.to.setText("To: " + requestData.getLocation().getEnd_city());
 
 
-        if (requestData.getTotal_km() == null)
-            holder.total_km.setText("Total km: --");
-        else
-            holder.total_km.setText("Total km: " + requestData.getTotal_km());
+        if (requestData.getTotal_km() == null) holder.total_km.setText("Total km: --");
+        else holder.total_km.setText("Total km: " + requestData.getTotal_km());
 
         if (requestData.getStatus() == 0) {
             holder.linearBtn.setVisibility(View.VISIBLE);
@@ -134,10 +127,8 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
             holder.lblStatus.setText(context.getResources().getString(R.string.rejected));
         }
 
-        if (requestData.getTotal_point() == null)
-            holder.total_point.setText("Total Points: --");
-        else
-            holder.total_point.setText("Total Points: " + requestData.getTotal_point());
+        if (requestData.getTotal_point() == null) holder.total_point.setText("Total Points: --");
+        else holder.total_point.setText("Total Points: " + requestData.getTotal_point());
         if (isLifter) {
             holder.textRateparkm.setVisibility(View.GONE);
             holder.total_point.setVisibility(View.VISIBLE);
@@ -192,11 +183,18 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
                 popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
                 popup.setGravity(Gravity.END);
                 Menu menu = popup.getMenu();
-                menu.getItem(1).setTitle("Block");
-                menu.removeItem(R.id.edit);
+                if (requestData.getIs_user_blocked() == 0) {
+                    menu.getItem(0).setTitle("Block");
+                    menu.getItem(1).setTitle("Block & Report");
+                } else {
+                    menu.getItem(0).setTitle("Unblock");
+                    menu.removeItem(R.id.delete);
+                }
                 popup.setOnMenuItemClickListener(item -> {
-                    if (item.toString().equalsIgnoreCase("Block")) {
-                        itemListener.onBlockClick(position,requestData.getUserId());
+                    if (item.toString().equalsIgnoreCase("Block") || item.toString().equalsIgnoreCase("Unblock")) {
+                        itemListener.onBlockClick(position, requestData.getUserId());
+                    } else {
+                        itemListener.onBlockReportClick(position, requestData.getUserId());
                     }
                     return true;
                 });
@@ -250,6 +248,7 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         AppCompatImageView iv_menu;
         @BindView(R.id.view)
         View view;
+
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -259,8 +258,13 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
 
     public interface ItemListener {
         void onAcceptClick(int position, RideRequestData rideRequestData);
+
         void onDeleteClick(Integer id, int lift_id);
+
         void onRejectClick(int position, RideRequestData rideRequestData);
-        void onBlockClick(int position,Integer user_id);
+
+        void onBlockClick(int position, Integer user_id);
+
+        void onBlockReportClick(int position, Integer user_id);
     }
 }

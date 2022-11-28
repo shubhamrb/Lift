@@ -1,26 +1,28 @@
 package com.liftPlzz.fragments;
 
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.auth.api.identity.GetPhoneNumberHintIntentRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.common.api.ApiException;
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.sendotp.SendOtpResponse;
@@ -55,6 +57,7 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
     @BindView(R.id.layoutEditText)
     LinearLayout layoutEditText;
     private String referral_id = null;
+    private ActivityResultLauncher<IntentSenderRequest> someActivityResultLauncher;
 
     @Override
     protected int createLayout() {
@@ -82,9 +85,21 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
             referral_id = bundle.getString("referral_id");
         }
 
+        someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
+            try {
+                String phoneNumber = Identity.getSignInClient(getActivity()).getPhoneNumberFromIntent(result.getData());
+                if (!phoneNumber.isEmpty()) {
+                    editTextMobileNumber.setText(phoneNumber.substring(3));
+                }
+            } catch (ApiException e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(), "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         editTextMobileNumber.setOnFocusChangeListener((view, isFocused) -> {
             if (isFocused) {
-                TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                /*TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                 if (ActivityCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
@@ -115,11 +130,24 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
                                 }
                             })
                             .setNegativeButton(android.R.string.no, null).show();
-                }
+                }*/
+
+                phoneSelection();
             }
         });
     }
 
+    private void phoneSelection() {
+        GetPhoneNumberHintIntentRequest request = GetPhoneNumberHintIntentRequest.builder().build();
+        Identity.getSignInClient(getActivity())
+                .getPhoneNumberHintIntent(request)
+                .addOnFailureListener(e -> {
+                    Log.e("Error : ", e.getMessage());
+                }).addOnSuccessListener(pendingIntent -> {
+                    IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(pendingIntent.getIntentSender()).build();
+                    someActivityResultLauncher.launch(intentSenderRequest);
+                });
+    }
 
     @OnClick({R.id.imageViewNext})
     public void onViewClicked(View view) {

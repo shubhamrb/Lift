@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -52,12 +51,11 @@ public class CreateTicketActivity extends AppCompatActivity {
     AppCompatSpinner spinnerCategory;
     @BindView(R.id.btn_create)
     AppCompatButton btnCreateTicket;
-    private String strEmail = "", strSubject = "", strDescription = "", strCategory = "", strToken = "";
     SharedPreferences sharedPreferences;
-    //    private List<TicketCategoryData> categoryDataList = new ArrayList<>();
-    private ArrayList<String> arrayListCategory = new ArrayList<>();
     ArrayAdapter<String> adapterCategory;
-
+    private String strEmail = "", strSubject = "", strDescription = "", strCategory = "", strToken = "";
+    //    private List<TicketCategoryData> categoryDataList = new ArrayList<>();
+    private final ArrayList<String> arrayListCategory = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +65,12 @@ public class CreateTicketActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
+        strEmail = sharedPreferences.getString(Constants.EMAIL, "");
+        if (strEmail != null && !strEmail.isEmpty()) {
+            editEmail.setText(strEmail);
+        } else {
+            strEmail = "";
+        }
         toolBarTitle.setText(getResources().getString(R.string.create_ticket));
         getTicketCategory();
     }
