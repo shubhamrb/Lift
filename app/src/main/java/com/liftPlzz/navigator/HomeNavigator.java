@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.PointWalletFragment;
-import com.liftPlzz.model.completedLift.CompleteLiftData;
 import com.liftPlzz.model.upcomingLift.Lift;
 
 public interface HomeNavigator {
@@ -56,5 +55,7 @@ public interface HomeNavigator {
     void openVideosFragment(BaseActivity.PerformFragment performFragment);
 
     void openEditLift(BaseActivity.PerformFragment performFragment, Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
+
+    void openRideRequests(BaseActivity.PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner);
 
 }

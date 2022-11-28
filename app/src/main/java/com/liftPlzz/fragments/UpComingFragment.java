@@ -11,9 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +20,6 @@ import com.liftPlzz.activity.DriverListActivity;
 import com.liftPlzz.activity.DriverProfileActivity;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.activity.MatchingRideActivity;
-import com.liftPlzz.activity.RideRequestActivity;
 import com.liftPlzz.adapter.MyUpcomingLiftAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
@@ -122,20 +119,15 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
 
     @Override
     public void onRequestClick(Lift lift, boolean isFind) {
-        Intent intent = new Intent(getActivity(), RideRequestActivity.class);
-        intent.putExtra("lifter", lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, "")));
-        intent.putExtra(Constants.LIFT_ID, lift.getId());
-        intent.putExtra(Constants.PARTNER, false);
-        startActivity(intent);
+        boolean isLifter = lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, ""));
+        presenter.openRideRequests(isLifter, lift.getId(), false);
     }
 
     @Override
     public void onPartnetDetails(Lift lift) {
-        Intent intent = new Intent(getActivity(), RideRequestActivity.class);
-        intent.putExtra(Constants.LIFT_ID, lift.getId());
-        intent.putExtra("lifter", lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, "")));
-        intent.putExtra(Constants.PARTNER, true);
-        startActivity(intent);
+        boolean isLifter = lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, ""));
+
+        presenter.openRideRequests(isLifter, lift.getId(), true);
     }
 
     @Override
@@ -199,7 +191,7 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
 
     @Override
     public void onEditClick(Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
-        presenter.openEditLift(lift,listinerUpdate,edit);
+        presenter.openEditLift(lift, listinerUpdate, edit);
     }
 
     @Override

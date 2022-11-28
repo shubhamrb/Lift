@@ -141,6 +141,10 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
 
     @BindView(R.id.editTextComapny)
     AppCompatTextView editTextComapny;
+
+    @BindView(R.id.textVerified)
+    AppCompatTextView textVerified;
+
     private int IMAGE_TYPE = 1;
     private File fileFace = null;
     private File fileId = null;
@@ -255,6 +259,14 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             userData = response.getUser();
             User user = response.getUser();
             editTextName.setText(user.getName());
+            if (user.isIs_user_verified()) {
+                textVerified.setText("Verified");
+                textVerified.setBackgroundTintList(ColorStateList.valueOf(getContext().getColor(R.color.quantum_googgreen)));
+            } else {
+                textVerified.setText("Not Verified");
+                textVerified.setBackgroundTintList(ColorStateList.valueOf(getContext().getColor(R.color.colorRed)));
+
+            }
             editTextdesignation.setText(user.getDesignation());
             editTextDepartment.setText(user.getDepartment());
             editTextComapny.setText(user.getCompany());

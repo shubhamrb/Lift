@@ -152,7 +152,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         leftDrawer.setLayoutManager(new LinearLayoutManager(this));
         MenuListAdapter menuListAdapter = new MenuListAdapter(this, menuList, this);
         leftDrawer.setAdapter(menuListAdapter);
-        openHomeFragment(PerformFragment.REPLACE);
+
         //  printHashKey(this);
         imfacebook.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Char-pair-112112291298820/"));
@@ -170,6 +170,30 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/in/saurabh-sahu/"));
             startActivity(intent);
         });
+        openHomeFragment(PerformFragment.REPLACE);
+
+        getNotifications();
+    }
+
+    private void getNotifications() {
+        if (getIntent().hasExtra("type")) {
+            String type = getIntent().getStringExtra("type");
+            int lift_id = -1, sub_cat_id = -1;
+            boolean isPartner = false;
+            if (getIntent().hasExtra("from")) {
+                String from = getIntent().getStringExtra("from");
+            }
+            if (getIntent().hasExtra(Constants.LIFT_ID)) {
+                lift_id = getIntent().getIntExtra(Constants.LIFT_ID, -1);
+            }
+            if (getIntent().hasExtra(Constants.SUB_CATEGORY_ID)) {
+                sub_cat_id = getIntent().getIntExtra(Constants.SUB_CATEGORY_ID, -1);
+            }
+            if (getIntent().hasExtra(Constants.PARTNER)) {
+                isPartner = getIntent().getBooleanExtra(Constants.PARTNER, false);
+            }
+            openRideRequests(PerformFragment.REPLACE, false, lift_id, isPartner);
+        }
     }
 
     @Override
@@ -259,15 +283,12 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 }
             }
 
@@ -278,8 +299,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     protected void onResume() {
         super.onResume();
         isOpen = false;
-        if (NOTIFICATION_TYPE.equals("send-invitation") ||
-                NOTIFICATION_TYPE.equals("invitation-status-update")) {
+        if (NOTIFICATION_TYPE.equals("send-invitation") || NOTIFICATION_TYPE.equals("invitation-status-update")) {
             if (!isOpen) {
                 openMyRidesFragment(PerformFragment.REPLACE);
                 NOTIFICATION_TYPE = "";
@@ -336,22 +356,17 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 
     private void showGPSDisabledAlertToUser() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
-                            }
-                        });
-        alertDialogBuilder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?").setCancelable(false).setPositiveButton("Goto Settings Page To Enable GPS", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(callGPSSettingIntent);
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
@@ -374,20 +389,16 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     }
 
     private void buildDynamicLink(String link) {
-        FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse(link))
-                .setDomainUriPrefix("https://charpair.page.link")
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder("com.liftPlzz").build())
-                .buildShortDynamicLink().addOnSuccessListener(shortDynamicLink -> {
-                    String inviteLink = shortDynamicLink.getShortLink().toString();
+        FirebaseDynamicLinks.getInstance().createDynamicLink().setLink(Uri.parse(link)).setDomainUriPrefix("https://charpair.page.link").setAndroidParameters(new DynamicLink.AndroidParameters.Builder("com.liftPlzz").build()).buildShortDynamicLink().addOnSuccessListener(shortDynamicLink -> {
+            String inviteLink = shortDynamicLink.getShortLink().toString();
 
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Invite link : " + inviteLink);
-                    sendIntent.setType("text/*");
-                    Intent shareIntent = Intent.createChooser(sendIntent, null);
-                    startActivity(shareIntent);
-                }).addOnFailureListener(Throwable::printStackTrace);
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Invite link : " + inviteLink);
+            sendIntent.setType("text/*");
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+        }).addOnFailureListener(Throwable::printStackTrace);
 
 
     }

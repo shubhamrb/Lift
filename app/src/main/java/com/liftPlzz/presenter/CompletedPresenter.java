@@ -46,7 +46,7 @@ public class CompletedPresenter extends BasePresenter<CompletedView> {
 
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
-                        if (response.body().getLifts() != null && response.body().getLifts().size() > 0) {
+                        if (response.body().getLifts() != null) {
                             view.setLiftData(response.body().getLifts());
                         } else {
                             view.showMessage(response.body().getMessage());

@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!--
  Required only when requesting background location access on
@@ -36,7 +36,7 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:supportsPictureInPicture="true"/>
+            android:supportsPictureInPicture="true" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -84,21 +84,21 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-       <!-- <activity
-            android:name=".activity.StartRideActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:exported="false"
-            android:excludeFromRecents="true"
-            android:taskAffinity=".StartRideActivity"
-            android:screenOrientation="portrait"
-            android:supportsPictureInPicture="true" />-->
+        <!-- <activity
+             android:name=".activity.StartRideActivity"
+             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+             android:exported="false"
+             android:excludeFromRecents="true"
+             android:taskAffinity=".StartRideActivity"
+             android:screenOrientation="portrait"
+             android:supportsPictureInPicture="true" />-->
 
         <activity
             android:name=".activity.StartRideActivity"
-            android:exported="false"
             android:excludeFromRecents="true"
-            android:taskAffinity=".StartRideActivity"
-            android:screenOrientation="portrait" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:taskAffinity=".StartRideActivity" />
 
         <activity
             android:name=".LocationPicker.LocationPickerActivity"
@@ -127,8 +127,7 @@
 
         <activity
             android:name=".activity.SplashActivity"
-            android:exported="true"
-            >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -152,11 +151,9 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.HomeActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:supportsPictureInPicture="true" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AuthActivity"
             android:exported="false"

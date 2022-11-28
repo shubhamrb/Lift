@@ -2,6 +2,7 @@ package com.liftPlzz.provider;
 
 import android.os.Bundle;
 
+import com.liftPlzz.activity.RideRequestFragment;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.AddVehicleFragment;
@@ -29,6 +30,7 @@ import com.liftPlzz.fragments.UsersFragment;
 import com.liftPlzz.fragments.VideosFragment;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.navigator.AppNavigator;
+import com.liftPlzz.utils.Constants;
 
 public abstract class AppNavigationProvider extends BaseActivity implements AppNavigator {
 
@@ -207,5 +209,16 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
         EditLiftDaiFragment editLiftDaiFragment = new EditLiftDaiFragment(edit);
         editLiftDaiFragment.setLift(lift, listinerUpdate, edit);
         openFragment(editLiftDaiFragment, EditLiftDaiFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openRideRequests(PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner) {
+        RideRequestFragment rideRequestFragment = new RideRequestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("lifter", isLifter);
+        bundle.putInt(Constants.LIFT_ID, lift_id);
+        bundle.putBoolean(Constants.PARTNER, partner);
+        rideRequestFragment.setArguments(bundle);
+        openFragment(rideRequestFragment, RideRequestFragment.class.getName(), performFragment, true);
     }
 }

@@ -206,14 +206,14 @@
 
                         <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/professionalTextView"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:background="@null"
                             android:fontFamily="@font/gotham_medium"
                             android:gravity="start"
-                            android:hint="Department"
+                            android:hint="Designation"
                             android:padding="@dimen/dp_5"
                             android:singleLine="true"
                             android:textColor="@color/colorText"
@@ -282,7 +282,7 @@
                             android:textColor="@color/colorText"
                             android:textSize="@dimen/sp_16" />
 
-                        <ImageView
+                        <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/toggle_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -322,12 +322,11 @@
                             android:textSize="@dimen/sp_16" />
 
 
-                        <ImageView
+                        <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/toggle_dob"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/off" />
+                            android:layout_gravity="center_vertical" />
 
 
                     </LinearLayout>
@@ -403,12 +402,11 @@
                             android:textColor="@color/colorText"
                             android:textSize="@dimen/sp_16" />
 
-                        <ImageView
+                        <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/toggle_mobile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/off" />
+                            android:layout_gravity="center_vertical" />
 
                     </LinearLayout>
 

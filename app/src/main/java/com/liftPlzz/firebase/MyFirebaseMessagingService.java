@@ -19,8 +19,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.liftPlzz.R;
-import com.liftPlzz.activity.RideRequestActivity;
-import com.liftPlzz.activity.SplashActivity;
+import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.utils.Constants;
 
 import org.json.JSONObject;
@@ -106,8 +105,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         subCategoryId = jObject.getString("SUB_CATEGORY_ID");
                     }
 //                String vehicleType = jObject.getString("VEHICLE_TYPE");
-                    intent = new Intent(this, RideRequestActivity.class);
-                    intent.putExtra("from","notification");
+                    intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("from", "notification");
 
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
@@ -117,16 +116,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 } else if (type.equalsIgnoreCase("invitation-status-update")) {
                     String liftId = jObject.getString("LIFT_ID");
-                    intent = new Intent(this, RideRequestActivity.class);
-                    intent.putExtra("from","notification");
+                    intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("from", "notification");
 
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     intent.putExtra(Constants.PARTNER, false);
 
                 } else if (type.equalsIgnoreCase("ride-end")) {
-                    intent = new Intent(this, SplashActivity.class);
+                    intent = new Intent(this, HomeActivity.class);
                 }
+                intent.putExtra("type", type);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                         PendingIntent.FLAG_ONE_SHOT);
@@ -150,8 +150,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     if (jObject.has("LIFT_ID")) {
                         subCategoryId = jObject.getString("SUB_CATEGORY_ID");
                     }
-                    intent = new Intent(this, RideRequestActivity.class);
-                    intent.putExtra("from","notification");
+                    intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("from", "notification");
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     if (!subCategoryId.equals(""))
@@ -160,16 +160,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 } else if (type.equalsIgnoreCase("invitation-status-update")) {
                     String liftId = jObject.getString("LIFT_ID");
-                    intent = new Intent(this, RideRequestActivity.class);
-                    intent.putExtra("from","notification");
+                    intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("from", "notification");
 
                     if (!liftId.equals(""))
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     intent.putExtra(Constants.PARTNER, false);
 
                 } else if (type.equalsIgnoreCase("ride-end")) {
-                    intent = new Intent(this, SplashActivity.class);
+                    intent = new Intent(this, HomeActivity.class);
                 }
+
+                intent.putExtra("type", type);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                         PendingIntent.FLAG_ONE_SHOT);

@@ -231,7 +231,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
             if (reason.trim().equals("")) {
                 Toast.makeText(this, "Please select the reason", Toast.LENGTH_SHORT).show();
             } else {
-                sendCancelInvitation(liftId, fromLiftId, requestAlreadySend, editTextPoints.getText().toString());
+                sendCancelInvitation(liftId, fromLiftId, requestAlreadySend, reason);
                 dialog.dismiss();
             }
         });

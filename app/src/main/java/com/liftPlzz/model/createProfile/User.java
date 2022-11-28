@@ -82,10 +82,22 @@ public class User {
     @Expose
     private String driverDetails;
 
+    @SerializedName("is_user_verified")
+    @Expose
+    private boolean is_user_verified;
+
     @SerializedName("profile_percentage")
     @Expose
     private PercentageModel profile_percentage;
 
+
+    public boolean isIs_user_verified() {
+        return is_user_verified;
+    }
+
+    public void setIs_user_verified(boolean is_user_verified) {
+        this.is_user_verified = is_user_verified;
+    }
 
     public boolean isIs_image() {
         return is_image;

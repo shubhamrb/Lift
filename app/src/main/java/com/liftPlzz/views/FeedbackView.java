@@ -6,5 +6,4 @@ import com.liftPlzz.base.RootView;
 public interface FeedbackView extends RootView {
 
 
-
 }

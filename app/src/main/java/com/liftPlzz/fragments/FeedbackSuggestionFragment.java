@@ -32,12 +32,6 @@ public class FeedbackSuggestionFragment extends BaseFragment<FeedbackSuggestionP
     @BindView(R.id.toolBarTitle)
     AppCompatTextView toolBarTitle;
 
-    @BindView(R.id.et_name)
-    AppCompatEditText et_name;
-    @BindView(R.id.et_email)
-    AppCompatEditText et_email;
-    @BindView(R.id.et_number)
-    AppCompatEditText et_number;
     @BindView(R.id.et_feedback)
     AppCompatEditText et_feedback;
 
@@ -79,23 +73,7 @@ public class FeedbackSuggestionFragment extends BaseFragment<FeedbackSuggestionP
     }
 
     private void submitForm() {
-        String name = et_name.getText().toString();
-        String email = et_email.getText().toString();
-        String number = et_number.getText().toString();
         String feedback = et_feedback.getText().toString();
-
-        if (name.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter your name.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (email.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter your email.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (number.isEmpty()) {
-            Toast.makeText(getActivity(), "Please enter your number.", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (feedback.isEmpty()) {
             Toast.makeText(getActivity(), "Please enter your " + type.toLowerCase() + ".", Toast.LENGTH_SHORT).show();
             return;
@@ -119,10 +97,8 @@ public class FeedbackSuggestionFragment extends BaseFragment<FeedbackSuggestionP
 
     @Override
     public void setSubmitData() {
-        et_name.setText("");
-        et_email.setText("");
-        et_number.setText("");
         et_feedback.setText("");
         Toast.makeText(getActivity(), type + " submitted.", Toast.LENGTH_SHORT).show();
+        getActivity().onBackPressed();
     }
 }

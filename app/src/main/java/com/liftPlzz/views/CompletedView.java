@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface CompletedView extends RootView {
     void setLiftData(List<CompleteLiftData> lifts);
+
     void deleteLiftData(String msg);
 }

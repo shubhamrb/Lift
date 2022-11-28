@@ -35,9 +35,14 @@ public class UpComingPresenter extends BasePresenter<UpComingView> {
 
     }
 
-    public void openEditLift(Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
-        navigator.openEditLift(BaseActivity.PerformFragment.REPLACE, lift,listinerUpdate,edit);
+    public void openRideRequests(boolean isLifter, Integer lift_id, boolean partner) {
+        navigator.openRideRequests(BaseActivity.PerformFragment.REPLACE, isLifter, lift_id, partner);
     }
+
+    public void openEditLift(Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit) {
+        navigator.openEditLift(BaseActivity.PerformFragment.REPLACE, lift, listinerUpdate, edit);
+    }
+
     public void getUpcomingLift(String token) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();

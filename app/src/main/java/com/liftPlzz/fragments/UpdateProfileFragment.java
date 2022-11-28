@@ -28,12 +28,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -125,11 +125,11 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     RadioGroup genderGroup;
 
     @BindView(R.id.toggle_email)
-    AppCompatImageView toggle_email;
+    SwitchCompat toggle_email;
     @BindView(R.id.toggle_dob)
-    AppCompatImageView toggle_dob;
+    SwitchCompat toggle_dob;
     @BindView(R.id.toggle_mobile)
-    AppCompatImageView toggle_mobile;
+    SwitchCompat toggle_mobile;
 
     ViewPagerAdapter mViewPagerAdapter;
     final Calendar myCalendar = Calendar.getInstance();
@@ -191,13 +191,45 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
             viewPagerMain.setAdapter(mViewPagerAdapter);
 
             populateProfessionalDialog(professional);
+
+
+            toggle_email.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (getActivity() != null) {
+                    if (isEmailPrivate == 0) {
+                        isEmailPrivate = 1;
+                    } else {
+                        isEmailPrivate = 0;
+                    }
+                }
+            });
+
+            toggle_dob.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (getActivity() != null) {
+                    if (isDOBPrivate == 0) {
+                        isDOBPrivate = 1;
+                    } else {
+                        isDOBPrivate = 0;
+                    }
+                }
+            });
+
+            toggle_mobile.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (getActivity() != null) {
+                    if (isMobilePrivate == 0) {
+                        isMobilePrivate = 1;
+                    } else {
+                        isMobilePrivate = 0;
+                    }
+                }
+            });
+
+
         }
     }
 
     private int mYear, mMonth, mDay, mHour, mMinute;
 
-    @OnClick({R.id.imageViewBackContact, R.id.buttonUpdate, R.id.imageViewAddImage, R.id.txtDOB
-            , R.id.toggle_email, R.id.toggle_dob, R.id.toggle_mobile})
+    @OnClick({R.id.imageViewBackContact, R.id.buttonUpdate, R.id.imageViewAddImage, R.id.txtDOB})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewAddImage:
@@ -240,29 +272,29 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                         genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio ||
                         genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {*/
 
-                    String gender = "";
-                    if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio) {
-                        gender = "Male";
-                    } else if (genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio) {
-                        gender = "Female";
-                    } else if (genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
-                        gender = "Not to Share";
-                    }
+                String gender = "";
+                if (genderGroup.getCheckedRadioButtonId() == R.id.maleRadio) {
+                    gender = "Male";
+                } else if (genderGroup.getCheckedRadioButtonId() == R.id.femaleRadio) {
+                    gender = "Female";
+                } else if (genderGroup.getCheckedRadioButtonId() == R.id.otherRadio) {
+                    gender = "Not to Share";
+                }
 
 //                    if (spinner_category.getSelectedItemPosition() != 0) {
                         /*if (professionSelection.equals("Others") && otherTextView.getText().toString().trim().equals("")) {
                             Toast.makeText(getContext(), "Please fill above details", Toast.LENGTH_SHORT).show();
                         } else {*/
-                            presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
-                                    editTextName.getText().toString(),
-                                    professionSelection,
-                                    professionalTextView.getText().toString(),
-                                    txtCMName.getText().toString(),
-                                    txtDOB.getText().toString(),
-                                    editTextEmail.getText().toString(),
-                                    gender, editTextMobile.getText().toString(),
-                                    editTextAboutUser.getText().toString(),
-                                    editsosnumber.getText().toString(), isEmailPrivate, isDOBPrivate, isMobilePrivate);
+                presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
+                        editTextName.getText().toString(),
+                        professionSelection,
+                        professionalTextView.getText().toString(),
+                        txtCMName.getText().toString(),
+                        txtDOB.getText().toString(),
+                        editTextEmail.getText().toString(),
+                        gender, editTextMobile.getText().toString(),
+                        editTextAboutUser.getText().toString(),
+                        editsosnumber.getText().toString(), isEmailPrivate, isDOBPrivate, isMobilePrivate);
 //                        }
                     /*} else {
                         Toast.makeText(getContext(), "Please select one of them", Toast.LENGTH_SHORT).show();
@@ -272,42 +304,6 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                 else {
                     showMessage("Please Select Gender");
                 }*/
-                break;
-
-            case R.id.toggle_email:
-                if (getActivity() != null) {
-                    if (isEmailPrivate == 0) {
-                        isEmailPrivate = 1;
-                        toggle_email.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.on));
-                    } else {
-                        isEmailPrivate = 0;
-                        toggle_email.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.off));
-                    }
-                }
-                break;
-
-            case R.id.toggle_dob:
-                if (getActivity() != null) {
-                    if (isDOBPrivate == 0) {
-                        isDOBPrivate = 1;
-                        toggle_dob.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.on));
-                    } else {
-                        isDOBPrivate = 0;
-                        toggle_dob.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.off));
-                    }
-                }
-                break;
-
-            case R.id.toggle_mobile:
-                if (getActivity() != null) {
-                    if (isMobilePrivate == 0) {
-                        isMobilePrivate = 1;
-                        toggle_mobile.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.on));
-                    } else {
-                        isMobilePrivate = 0;
-                        toggle_mobile.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.off));
-                    }
-                }
                 break;
         }
     }
@@ -326,7 +322,7 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
         EditText otherEdit = dialog.findViewById(R.id.otherEdit);
         AppCompatSpinner professionalSpinner = dialog.findViewById(R.id.professionalSpinner);
         ArrayList<String> list = new ArrayList<>();
-        list.add("Select One");
+        list.add("Select Department");
         list.add("Sales");
         list.add("Marketing");
         list.add("HR");
@@ -509,20 +505,9 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                     Log.d("sos", so1s);
 
                     if (getActivity() != null) {
-                        if (isEmailPrivate == 1)
-                            toggle_email.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.on));
-                        else
-                            toggle_email.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.off));
-
-                        if (isDOBPrivate == 1)
-                            toggle_dob.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.on));
-                        else
-                            toggle_dob.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.off));
-
-                        if (isMobilePrivate == 1)
-                            toggle_mobile.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.on));
-                        else
-                            toggle_mobile.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.off));
+                        toggle_email.setChecked(isEmailPrivate == 1);
+                        toggle_dob.setChecked(isDOBPrivate == 1);
+                        toggle_mobile.setChecked(isMobilePrivate == 1);
                     }
 
                     editsosnumber.setText(so1s);
@@ -556,7 +541,7 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
         sharedPreferences.edit().putString(Constants.NAME, String.valueOf(response.getUser().getName())).apply();
         sharedPreferences.edit().putString(Constants.EMAIL, String.valueOf(response.getUser().getEmail())).apply();
         sharedPreferences.edit().putString(Constants.IMAGE, String.valueOf(response.getUser().getImage())).apply();
-        Objects.requireNonNull(getActivity()).onBackPressed();
+        getActivity().onBackPressed();
     }
 
     @Override

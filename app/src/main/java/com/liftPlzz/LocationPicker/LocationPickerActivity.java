@@ -105,14 +105,18 @@ import retrofit2.Response;
 
 public class LocationPickerActivity extends AppCompatActivity implements OnMapReadyCallback, RideHistoryAdapter.ItemListener {
     private static final int REQUEST_CHECK_SETTINGS = 2;
+    private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2;
     private final String TAG = LocationPickerActivity.class.getSimpleName();
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    String regex = "^(-?\\d+(\\.\\d+)?),\\s*(-?\\d+(\\.\\d+)?)$";
+    Pattern latLongPattern = Pattern.compile(regex);
     private String userAddress = "";
     private String userState = "";
     private String userCity = "";
     private String userPostalCode = "";
     private String userCountry = "";
     private String userAddressline2 = "";
-    private String userAddressline1 = "";
+    private final String userAddressline1 = "";
     private Bundle addressBundle;
     private List addressdetails;
     private double mLatitude;
@@ -120,23 +124,17 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     private String place_id = "";
     private String place_url = " ";
     private GoogleMap mMap;
-    private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2;
     private boolean mLocationPermissionGranted;
     private TextView imgSearch;
     private TextView citydetail;
     private EditText addressline1;
     private EditText addressline2;
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-
     //inital zoom
-    private float previousZoomLevel = -1.0f;
+    private final float previousZoomLevel = -1.0f;
     private boolean isZooming = false;
-
     //Declaration of FusedLocationProviderClient
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private List<AsyncTask> filterTaskList = new ArrayList<>();
-    String regex = "^(-?\\d+(\\.\\d+)?),\\s*(-?\\d+(\\.\\d+)?)$";
-    Pattern latLongPattern = Pattern.compile(regex);
+    private final List<AsyncTask> filterTaskList = new ArrayList<>();
     private int doAfterPermissionProvided, doAfterLocationSwitchedOn = 1;
     private double currentLatitude;
     private double currentLongitude;
@@ -368,7 +366,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         }
 
         arrayList = new ArrayList<>();
-        rideHistoryAdapter = new RideHistoryAdapter(this, arrayList, this);
+        rideHistoryAdapter = new RideHistoryAdapter(this, arrayList, this, type);
         recycler_history.setLayoutManager(new LinearLayoutManager(this));
         recycler_history.setAdapter(rideHistoryAdapter);
         getHistory();
@@ -897,6 +895,95 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
         LocationPickerActivity.this.finish();
     }
 
+    double roundAvoid(double value) {
+        double scale = Math.pow(10, 6);
+        return Math.round(value * scale) / scale;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (AsyncTask task : filterTaskList) {
+            task.cancel(true);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        mLocationPermissionGranted = false;
+        switch (requestCode) {
+            case REQUEST_ID_MULTIPLE_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                }
+            }
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Do tasks for which permission was granted by user in onRequestPermission()
+        /*if (!isFinishing() && mLocationPermissionGranted) {
+            // perform action required b4 asking permission
+            mLocationPermissionGranted = false;
+            switch (doAfterPermissionProvided) {
+                case 1:
+                    startParsingAddressToShow();
+                    break;
+                case 2:
+                    showCurrentLocationOnMap(false);
+                    break;
+                case 3:
+                    showCurrentLocationOnMap(true);
+                    break;
+            }
+
+        }*/
+
+    }
+
+    private void startLocationUpdates() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(LocationPickerActivity.this, "Location not Available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                        locationCallback,
+                        null /* Looper */)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "startLocationUpdates: onSuccess: ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof ApiException) {
+                            Log.d(TAG, "startLocationUpdates: " + ((ApiException) e).getMessage());
+                        } else {
+                            Log.d(TAG, "startLocationUpdates: " + e.getMessage());
+                        }
+                    }
+                });
+
+    }
+
+    private void getLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class GetAddressFromLatLng extends AsyncTask<Double, Void, Bundle> {
         Double latitude, longitude;
@@ -1017,96 +1104,6 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
             MapUtility.hideProgress();
             addMarker();
         }
-    }
-
-
-    double roundAvoid(double value) {
-        double scale = Math.pow(10, 6);
-        return Math.round(value * scale) / scale;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        for (AsyncTask task : filterTaskList) {
-            task.cancel(true);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case REQUEST_ID_MULTIPLE_PERMISSIONS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
-
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //Do tasks for which permission was granted by user in onRequestPermission()
-        /*if (!isFinishing() && mLocationPermissionGranted) {
-            // perform action required b4 asking permission
-            mLocationPermissionGranted = false;
-            switch (doAfterPermissionProvided) {
-                case 1:
-                    startParsingAddressToShow();
-                    break;
-                case 2:
-                    showCurrentLocationOnMap(false);
-                    break;
-                case 3:
-                    showCurrentLocationOnMap(true);
-                    break;
-            }
-
-        }*/
-
-    }
-
-    private void startLocationUpdates() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(LocationPickerActivity.this, "Location not Available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                        locationCallback,
-                        null /* Looper */)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "startLocationUpdates: onSuccess: ");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof ApiException) {
-                            Log.d(TAG, "startLocationUpdates: " + ((ApiException) e).getMessage());
-                        } else {
-                            Log.d(TAG, "startLocationUpdates: " + e.getMessage());
-                        }
-                    }
-                });
-
-    }
-
-    private void getLocationRequest() {
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(3000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
 }

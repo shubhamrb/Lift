@@ -7,5 +7,6 @@ import com.liftPlzz.model.vehiclesubcategory.SubCategoryResponse;
 
 public interface CarView extends RootView {
     void createVehicle(Response response);
+
     void getSubCategory(SubCategoryResponse response);
 }

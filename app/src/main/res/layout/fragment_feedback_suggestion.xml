@@ -17,57 +17,6 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/login_et_bg"
-            android:fontFamily="@font/poppins_regular"
-            android:gravity="start"
-            android:hint="Your Name"
-            android:inputType="textPersonName"
-            android:padding="@dimen/dp_10"
-            android:text=""
-            android:textColor="@color/colorBlack"
-            android:textColorHint="@color/colorText"
-            android:textSize="@dimen/sp_14" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/login_et_bg"
-            android:fontFamily="@font/poppins_regular"
-            android:gravity="start"
-            android:hint="Your Email"
-            android:inputType="textEmailAddress"
-            android:padding="@dimen/dp_10"
-            android:text=""
-            android:textColor="@color/colorBlack"
-            android:textColorHint="@color/colorText"
-            android:textSize="@dimen/sp_14" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/login_et_bg"
-            android:fontFamily="@font/poppins_regular"
-            android:gravity="start"
-            android:hint="Contact Number"
-            android:inputType="phone"
-            android:padding="@dimen/dp_10"
-            android:text=""
-            android:textColor="@color/colorBlack"
-            android:textColorHint="@color/colorText"
-            android:textSize="@dimen/sp_14" />
-
-        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_feedback"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_150"
