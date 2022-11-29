@@ -85,7 +85,7 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
             holder.tv_na.setVisibility(View.GONE);
             holder.textVacantSeats.setText(" " + driverData.getVacant_seats());
 
-            if (driverData.getProfile_percentage()!=null){
+            if (driverData.getProfile_percentage() != null) {
                 holder.profile_percantage.setText("" + driverData.getProfile_percentage().getPercantage() + "%");
                 switch (driverData.getProfile_percentage().getColor()) {
                     case "red":
@@ -99,11 +99,11 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
                         break;
                 }
                 holder.profile_percantage.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.profile_percantage.setVisibility(View.GONE);
             }
 
-            if (driverData.getVehicle_percentage()!=null){
+            if (driverData.getVehicle_percentage() != null) {
                 holder.vehicle_percantage.setText("" + driverData.getVehicle_percentage().getPercantage() + "%");
                 switch (driverData.getVehicle_percentage().getColor()) {
                     case "red":
@@ -117,7 +117,7 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
                         break;
                 }
                 holder.vehicle_percantage.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.vehicle_percantage.setVisibility(View.GONE);
             }
 

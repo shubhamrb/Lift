@@ -3,6 +3,7 @@ package com.liftPlzz.api;
 
 import com.google.gson.JsonObject;
 import com.liftPlzz.model.BlockUserResponse;
+import com.liftPlzz.model.FeedbackModelResponse;
 import com.liftPlzz.model.FindLiftResponse;
 import com.liftPlzz.model.ResponseChatSuggestion;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
@@ -406,6 +407,14 @@ public interface ApiService {
                                       @Field("lift_id") int liftId,
                                       @Field("from_lift_id") int fromLiftId);
 
+    @FormUrlEncoded
+    @POST("update-lift-seat")
+    Call<ResponseBody> updateSeat(@Field("api_key") String api_key,
+                                  @Field("client") String client,
+                                  @Field("token") String token,
+                                  @Field("lift_id") int liftId,
+                                  @Field("seats") int seats);
+
 
     @FormUrlEncoded
     @POST("Lift-Invite-List")
@@ -685,6 +694,18 @@ public interface ApiService {
                                              @Field("client") String client,
                                              @Field("token") String token,
                                              @Field("message") String message);
+
+    @FormUrlEncoded
+    @POST("feedback_list")
+    Call<FeedbackModelResponse> getFeedbackList(@Field("api_key") String api_key,
+                                                @Field("client") String client,
+                                                @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("suggestion_list")
+    Call<FeedbackModelResponse> getSuggestionList(@Field("api_key") String api_key,
+                                                  @Field("client") String client,
+                                                  @Field("token") String token);
 
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android

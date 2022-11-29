@@ -122,6 +122,7 @@
                 android:layout_height="45sp"
                 android:gravity="center"
                 android:src="@drawable/seat_outline"
+                android:visibility="gone"
                 app:tint="@color/colorBlack" />
 
             <ImageView
@@ -131,6 +132,7 @@
                 android:layout_marginStart="10sp"
                 android:gravity="center"
                 android:src="@drawable/seat_outline"
+                android:visibility="gone"
                 app:tint="@color/colorBlack" />
 
             <ImageView
@@ -140,6 +142,7 @@
                 android:layout_marginStart="10sp"
                 android:gravity="center"
                 android:src="@drawable/seat_outline"
+                android:visibility="gone"
                 app:tint="@color/colorBlack" />
 
             <ImageView
@@ -149,6 +152,7 @@
                 android:layout_marginStart="10sp"
                 android:gravity="center"
                 android:src="@drawable/seat_outline"
+                android:visibility="gone"
                 app:tint="@color/colorBlack" />
 
             <ImageView
@@ -158,6 +162,27 @@
                 android:layout_marginStart="10sp"
                 android:gravity="center"
                 android:src="@drawable/seat_outline"
+                android:visibility="gone"
+                app:tint="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/sixTxt"
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:layout_marginStart="10sp"
+                android:gravity="center"
+                android:src="@drawable/seat_outline"
+                android:visibility="gone"
+                app:tint="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/sevenTxt"
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:layout_marginStart="10sp"
+                android:gravity="center"
+                android:src="@drawable/seat_outline"
+                android:visibility="gone"
                 app:tint="@color/colorBlack" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

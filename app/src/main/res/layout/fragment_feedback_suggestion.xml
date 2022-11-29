@@ -32,25 +32,31 @@
             android:textColor="@color/colorBlack"
             android:textColorHint="@color/colorText"
             android:textSize="@dimen/sp_14" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/sp_25"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginRight="@dimen/sp_25"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_40"
+            android:paddingRight="@dimen/dp_40"
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/sp_25"
-        android:layout_marginRight="@dimen/sp_25"
-        android:layout_marginBottom="@dimen/dp_15"
-        android:background="@drawable/rounded_button"
-        android:fontFamily="@font/gotham_medium"
-        android:gravity="center"
-        android:paddingLeft="@dimen/dp_40"
-        android:paddingRight="@dimen/dp_40"
-        android:text="Submit"
-        android:textAllCaps="false"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/sp_16" />
 
 </RelativeLayout>

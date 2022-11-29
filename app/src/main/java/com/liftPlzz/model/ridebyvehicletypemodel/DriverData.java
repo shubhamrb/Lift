@@ -32,6 +32,9 @@ public class DriverData {
     @SerializedName("vacant_seats")
     @Expose
     private Integer vacant_seats;
+    @SerializedName("applied_seats")
+    @Expose
+    private Integer applied_seats;
     @SerializedName("rate_per_km")
     @Expose
     private Integer ratePerKm;
@@ -86,6 +89,14 @@ public class DriverData {
     @SerializedName("vehicle_percentage")
     @Expose
     private PercentageModel vehicle_percentage;
+
+    public Integer getApplied_seats() {
+        return applied_seats;
+    }
+
+    public void setApplied_seats(Integer applied_seats) {
+        this.applied_seats = applied_seats;
+    }
 
     public PercentageModel getProfile_percentage() {
         return profile_percentage;

@@ -65,6 +65,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     private int vehicleSubcategoryId = -1, liftId = -1;
     private ArrayList<DriverData> arrayList = new ArrayList<>();
     private boolean isFind = true;
+    private String seat = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +100,9 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
         ApiService api = RetroClient.getApiService();
         Call<DriverByTypeReponse> call;
         if (isFind) {
-            call = api.getRideByVehicleType(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-                    vehicleSubcategoryId, liftId, vehicleType);
+            call = api.getRideByVehicleType(Constants.API_KEY, getResources().getString(R.string.android), strToken, vehicleSubcategoryId, liftId, vehicleType);
         } else {
-            call = api.getRideByDriver(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-                    vehicleSubcategoryId, liftId);
+            call = api.getRideByDriver(Constants.API_KEY, getResources().getString(R.string.android), strToken, vehicleSubcategoryId, liftId);
         }
         call.enqueue(new Callback<DriverByTypeReponse>() {
             @Override
@@ -133,7 +132,11 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     @Override
     public void onSendButtonClick(DriverData driverData) {
         if (driverData.getRequestAlreadySend() == 0) {
-            sendCancelInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend(), null);
+            if (driverData.getApplied_seats() > driverData.getVacant_seats()) {
+                updateSeatDialog(driverData.getVacant_seats(), driverData.getLiftId());
+            } else {
+                sendCancelInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend(), null);
+            }
         } else {
             reasonDialog(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend());
         }
@@ -144,11 +147,9 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
         ApiService api = RetroClient.getApiService();
         Call<ResponseBody> call;
         if (requestAlreadySend == 0) {
-            call = api.sendInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-                    liftId, fromLiftId);
+            call = api.sendInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken, liftId, fromLiftId);
         } else {
-            call = api.cancelInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken,
-                    liftId, reason);
+            call = api.cancelInvitation(Constants.API_KEY, getResources().getString(R.string.android), strToken, liftId, reason);
         }
 
 
@@ -187,6 +188,192 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
             }
         });
 
+    }
+
+    public void updateSeatDialog(Integer vacant_seats, Integer liftId) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.update_seat_dialog);
+        dialog.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
+        ImageView seat1 = dialog.findViewById(R.id.seat1);
+        ImageView seat2 = dialog.findViewById(R.id.seat2);
+        ImageView seat3 = dialog.findViewById(R.id.seat3);
+        ImageView seat4 = dialog.findViewById(R.id.seat4);
+        ImageView seat5 = dialog.findViewById(R.id.seat5);
+        ImageView seat6 = dialog.findViewById(R.id.seat6);
+        ImageView seat7 = dialog.findViewById(R.id.seat7);
+
+
+        switch (vacant_seats) {
+            case 1:
+                seat1.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                seat1.setVisibility(View.VISIBLE);
+                seat2.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                seat1.setVisibility(View.VISIBLE);
+                seat2.setVisibility(View.VISIBLE);
+                seat3.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                seat1.setVisibility(View.VISIBLE);
+                seat2.setVisibility(View.VISIBLE);
+                seat3.setVisibility(View.VISIBLE);
+                seat4.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                seat1.setVisibility(View.VISIBLE);
+                seat2.setVisibility(View.VISIBLE);
+                seat3.setVisibility(View.VISIBLE);
+                seat4.setVisibility(View.VISIBLE);
+                seat5.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                seat1.setVisibility(View.VISIBLE);
+                seat2.setVisibility(View.VISIBLE);
+                seat3.setVisibility(View.VISIBLE);
+                seat4.setVisibility(View.VISIBLE);
+                seat5.setVisibility(View.VISIBLE);
+                seat6.setVisibility(View.VISIBLE);
+                break;
+            case 7:
+                seat1.setVisibility(View.VISIBLE);
+                seat2.setVisibility(View.VISIBLE);
+                seat3.setVisibility(View.VISIBLE);
+                seat4.setVisibility(View.VISIBLE);
+                seat5.setVisibility(View.VISIBLE);
+                seat6.setVisibility(View.VISIBLE);
+                seat7.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        seat1.setOnClickListener(v -> {
+            seat = "1";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_outline);
+            seat3.setImageResource(R.drawable.seat_outline);
+            seat4.setImageResource(R.drawable.seat_outline);
+            seat5.setImageResource(R.drawable.seat_outline);
+            seat6.setImageResource(R.drawable.seat_outline);
+            seat7.setImageResource(R.drawable.seat_outline);
+        });
+        seat2.setOnClickListener(v -> {
+            seat = "2";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_filled);
+            seat3.setImageResource(R.drawable.seat_outline);
+            seat4.setImageResource(R.drawable.seat_outline);
+            seat5.setImageResource(R.drawable.seat_outline);
+            seat6.setImageResource(R.drawable.seat_outline);
+            seat7.setImageResource(R.drawable.seat_outline);
+        });
+        seat3.setOnClickListener(v -> {
+            seat = "3";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_filled);
+            seat3.setImageResource(R.drawable.seat_filled);
+            seat4.setImageResource(R.drawable.seat_outline);
+            seat5.setImageResource(R.drawable.seat_outline);
+            seat6.setImageResource(R.drawable.seat_outline);
+            seat7.setImageResource(R.drawable.seat_outline);
+        });
+        seat4.setOnClickListener(v -> {
+            seat = "4";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_filled);
+            seat3.setImageResource(R.drawable.seat_filled);
+            seat4.setImageResource(R.drawable.seat_filled);
+            seat5.setImageResource(R.drawable.seat_outline);
+            seat6.setImageResource(R.drawable.seat_outline);
+            seat7.setImageResource(R.drawable.seat_outline);
+        });
+        seat5.setOnClickListener(v -> {
+            seat = "5";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_filled);
+            seat3.setImageResource(R.drawable.seat_filled);
+            seat4.setImageResource(R.drawable.seat_filled);
+            seat5.setImageResource(R.drawable.seat_filled);
+            seat6.setImageResource(R.drawable.seat_outline);
+            seat7.setImageResource(R.drawable.seat_outline);
+        });
+        seat6.setOnClickListener(v -> {
+            seat = "6";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_filled);
+            seat3.setImageResource(R.drawable.seat_filled);
+            seat4.setImageResource(R.drawable.seat_filled);
+            seat5.setImageResource(R.drawable.seat_filled);
+            seat6.setImageResource(R.drawable.seat_filled);
+            seat7.setImageResource(R.drawable.seat_outline);
+        });
+        seat7.setOnClickListener(v -> {
+            seat = "7";
+            seat1.setImageResource(R.drawable.seat_filled);
+            seat2.setImageResource(R.drawable.seat_filled);
+            seat3.setImageResource(R.drawable.seat_filled);
+            seat4.setImageResource(R.drawable.seat_filled);
+            seat5.setImageResource(R.drawable.seat_filled);
+            seat6.setImageResource(R.drawable.seat_filled);
+            seat7.setImageResource(R.drawable.seat_filled);
+        });
+
+        buttonSubmit.setOnClickListener(v -> {
+
+            if (seat.equals("0")) {
+                Toast.makeText(this, "Please select the seat", Toast.LENGTH_SHORT).show();
+            } else {
+                updateSeats(liftId, seat);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void updateSeats(Integer liftId, String seat) {
+        Constants.showLoader(this);
+        ApiService api = RetroClient.getApiService();
+        Call<ResponseBody> call = api.updateSeat(Constants.API_KEY, getResources().getString(R.string.android), strToken, liftId, Integer.parseInt(seat));
+
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Constants.hideLoader();
+                if (response.code() == 200) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        boolean status = jsonObject.optBoolean("status");
+                        String message = jsonObject.optString("message");
+                        Toast.makeText(DriverListActivity.this, message, Toast.LENGTH_SHORT).show();
+                        if (status) {
+                            getDriverList();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        String message = jsonObject.optString("message");
+                        Toast.makeText(DriverListActivity.this, message, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                Constants.hideLoader();
+                Constants.showMessage(DriverListActivity.this, throwable.getMessage(), relativeLayout);
+            }
+        });
     }
 
     public void reasonDialog(int liftId, int fromLiftId, int requestAlreadySend) {

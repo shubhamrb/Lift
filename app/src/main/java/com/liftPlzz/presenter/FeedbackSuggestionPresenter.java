@@ -57,7 +57,7 @@ public class FeedbackSuggestionPresenter extends BasePresenter<FeedbackSuggestio
     public void getSubmitSuggestion(String token, String message) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<BlockUserResponse> call = api.submitFeedback(Constants.API_KEY, Constants.ANDROID, token, message);
+        Call<BlockUserResponse> call = api.submitSuggestion(Constants.API_KEY, Constants.ANDROID, token, message);
         call.enqueue(new Callback<BlockUserResponse>() {
             @Override
             public void onResponse(Call<BlockUserResponse> call, Response<BlockUserResponse> response) {
