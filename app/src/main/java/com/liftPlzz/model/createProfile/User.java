@@ -5,9 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import com.liftPlzz.model.PercentageModel;
 import com.liftPlzz.model.SocialImage;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -84,18 +85,18 @@ public class User {
 
     @SerializedName("is_user_verified")
     @Expose
-    private boolean is_user_verified;
+    private int is_user_verified;
 
     @SerializedName("profile_percentage")
     @Expose
     private PercentageModel profile_percentage;
 
 
-    public boolean isIs_user_verified() {
+    public int isIs_user_verified() {
         return is_user_verified;
     }
 
-    public void setIs_user_verified(boolean is_user_verified) {
+    public void setIs_user_verified(int is_user_verified) {
         this.is_user_verified = is_user_verified;
     }
 

@@ -19,7 +19,7 @@ public class FeedbackSuggestionsAdapter extends RecyclerView.Adapter<FeedbackSug
 
 
     private Context context;
-    List<FeedbackModelResponse> arrayList;
+    List<FeedbackModelResponse.FeedbackModel> arrayList;
 
     public FeedbackSuggestionsAdapter(Context context) {
         this.context = context;
@@ -33,14 +33,19 @@ public class FeedbackSuggestionsAdapter extends RecyclerView.Adapter<FeedbackSug
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ride_history, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feedback_suggestion, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        FeedbackModelResponse matchingRideResponse = arrayList.get(position);
+        FeedbackModelResponse.FeedbackModel matchingRideResponse = arrayList.get(position);
         holder.tv_message.setText(matchingRideResponse.getMessage());
+    }
+
+    public void setList(List<FeedbackModelResponse.FeedbackModel> arrayList) {
+        this.arrayList = arrayList;
+        notifyDataSetChanged();
     }
 
 

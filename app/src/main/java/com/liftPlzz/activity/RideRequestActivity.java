@@ -222,6 +222,11 @@ public class RideRequestActivity extends AppCompatActivity implements RideRquest
         });
     }
 
+    @Override
+    public void onBlockReportClick(int position, Integer user_id) {
+
+    }
+
     public void updateRequestApi(int inviteId, int status) {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();

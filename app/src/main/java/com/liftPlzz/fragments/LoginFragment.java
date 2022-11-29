@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -75,6 +76,22 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
         return this;
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
+            try {
+                String phoneNumber = Identity.getSignInClient(getActivity()).getPhoneNumberFromIntent(result.getData());
+                if (!phoneNumber.isEmpty()) {
+                    editTextMobileNumber.setText(phoneNumber.substring(phoneNumber.length() - 10));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Toast.makeText(getActivity(), "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void bindData() {
@@ -84,18 +101,6 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
         if (bundle != null) {
             referral_id = bundle.getString("referral_id");
         }
-
-        someActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
-            try {
-                String phoneNumber = Identity.getSignInClient(getActivity()).getPhoneNumberFromIntent(result.getData());
-                if (!phoneNumber.isEmpty()) {
-                    editTextMobileNumber.setText(phoneNumber.substring(3));
-                }
-            } catch (ApiException e) {
-                e.printStackTrace();
-                Toast.makeText(getActivity(), "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         editTextMobileNumber.setOnFocusChangeListener((view, isFocused) -> {
             if (isFocused) {

@@ -1411,7 +1411,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         });
 
         sixTxt.setOnClickListener(v -> {
-            seat = "5";
+            seat = "6";
             oneTxt.setImageResource(R.drawable.seat_filled);
             twoTxt.setImageResource(R.drawable.seat_filled);
             threeTxt.setImageResource(R.drawable.seat_filled);
@@ -1421,7 +1421,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             sevenTxt.setImageResource(R.drawable.seat_outline);
         });
         sevenTxt.setOnClickListener(v -> {
-            seat = "5";
+            seat = "7";
             oneTxt.setImageResource(R.drawable.seat_filled);
             twoTxt.setImageResource(R.drawable.seat_filled);
             threeTxt.setImageResource(R.drawable.seat_filled);
@@ -1619,6 +1619,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (buttonLift.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
             vehicleLayout.setVisibility(View.GONE);
             llrate.setVisibility(View.GONE);
+            oneTxt.setVisibility(View.VISIBLE);
             twoTxt.setVisibility(View.VISIBLE);
             threeTxt.setVisibility(View.VISIBLE);
             fourTxt.setVisibility(View.VISIBLE);

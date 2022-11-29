@@ -308,86 +308,10 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
         }
     }
 
-    /**
-     * Show Professional Status dialog
-     */
-    public void showProfessionalDialog(String professional) {
-        professionSelection = "";
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.select_professional_dialog);
-        TextView cancelBtn = dialog.findViewById(R.id.cancelBtn);
-        TextView okayBtn = dialog.findViewById(R.id.okayBtn);
-        TextView titleTxt = dialog.findViewById(R.id.titleTxt);
-        EditText otherEdit = dialog.findViewById(R.id.otherEdit);
-        AppCompatSpinner professionalSpinner = dialog.findViewById(R.id.professionalSpinner);
-        ArrayList<String> list = new ArrayList<>();
-        list.add("Select Department");
-        list.add("Sales");
-        list.add("Marketing");
-        list.add("HR");
-        list.add("Account");
-        list.add("Back Office");
-        list.add("Govt. Employee");
-        list.add("Self Employed");
-        list.add("Production");
-        list.add("Warehouse");
-        list.add("Others");
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, list);
-        professionalSpinner.setAdapter(adapter);
-        if (professional != null) {
-            for (int i = 0; i < list.size(); i++) {
-                if (professional.equals(list.get(i))) {
-                    professionalSpinner.setSelection(i);
-                    break;
-                } else {
-                    if (professional.equals("")) {
-                        professionalSpinner.setSelection(0);
-                    } else {
-                        professionalSpinner.setSelection(i);
-                    }
-                }
-            }
-        }
-        professionalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    if (list.get(position).equals("Others")) {
-                        otherEdit.setVisibility(View.VISIBLE);
-                        otherEdit.setText(professional);
-                    } else {
-                        otherEdit.setVisibility(View.GONE);
-                    }
-                    professionSelection = list.get(position);
-                } else {
-                    otherEdit.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        cancelBtn.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
-
-        okayBtn.setOnClickListener(v -> {
-
-
-        });
-        dialog.show();
-    }
-
     public void populateProfessionalDialog(String professional) {
         professionSelection = "";
         ArrayList<String> list = new ArrayList<>();
-        list.add("Select One");
+        list.add("Select Department");
         list.add("Sales");
         list.add("Marketing");
         list.add("HR");

@@ -83,7 +83,7 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
 
     @Override
     public void setLiftData(List<Lift> lifts) {
-        if (lifts.size() > 0) {
+        if (lifts != null) {
             recyclerViewUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerViewUpcoming.setAdapter(new MyUpcomingLiftAdapter(getContext(), lifts, UpComingFragment.this, listinerUpdate));
 

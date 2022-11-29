@@ -99,7 +99,7 @@ public class FeedbackSuggestionFragment extends BaseFragment<FeedbackSuggestionP
     private void getFeedbackSuggestionList() {
         ApiService api = RetroClient.getApiService();
         Call<FeedbackModelResponse> call;
-        if (type.equals("feedback")) {
+        if (type.equalsIgnoreCase("feedback")) {
             call = api.getFeedbackList(Constants.API_KEY, getResources().getString(R.string.android), strToken);
         } else {
             call = api.getSuggestionList(Constants.API_KEY, getResources().getString(R.string.android), strToken);
@@ -112,7 +112,7 @@ public class FeedbackSuggestionFragment extends BaseFragment<FeedbackSuggestionP
                     if (response.body().getStatus()) {
                         arrayList.clear();
                         arrayList.addAll(response.body().getData());
-                        feedbackSuggestionsAdapter.notifyDataSetChanged();
+                        feedbackSuggestionsAdapter.setList(arrayList);
                     }
                 }
             }
@@ -153,6 +153,7 @@ public class FeedbackSuggestionFragment extends BaseFragment<FeedbackSuggestionP
         et_feedback.setText("");
         Toast.makeText(getActivity(), type + " submitted.", Toast.LENGTH_SHORT).show();
         arrayList.clear();
+        hideKeyBoard();
         getFeedbackSuggestionList();
     }
 }

@@ -259,7 +259,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
             userData = response.getUser();
             User user = response.getUser();
             editTextName.setText(user.getName());
-            if (user.isIs_user_verified()) {
+            if (user.isIs_user_verified() == 1) {
                 textVerified.setText("Verified");
                 textVerified.setBackgroundTintList(ColorStateList.valueOf(getContext().getColor(R.color.quantum_googgreen)));
             } else {
