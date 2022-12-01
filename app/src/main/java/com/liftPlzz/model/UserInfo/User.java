@@ -66,6 +66,18 @@ public class User {
     @Expose
     private Settings settings;
 
+    @SerializedName("is_user_verified")
+    @Expose
+    private int is_user_verified;
+
+    public int getIs_user_verified() {
+        return is_user_verified;
+    }
+
+    public void setIs_user_verified(int is_user_verified) {
+        this.is_user_verified = is_user_verified;
+    }
+
     public Integer getIs_contact_public() {
         return is_contact_public;
     }

@@ -3,6 +3,7 @@ package com.liftPlzz.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -110,6 +111,8 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
     LinearLayout linear_rating;
     List<com.liftPlzz.model.SocialImage> imageslist;
 
+    @BindView(R.id.textVerified)
+    AppCompatTextView textVerified;
 
     private int userId;
     private int liftId;
@@ -259,6 +262,15 @@ public class DriverProfileActivity extends AppCompatActivity implements ReviewLi
             case "orange":
                 tv_profile_percentage.setTextColor(getResources().getColor(R.color.quantum_orange, null));
                 break;
+        }
+
+        if (userData.getIs_user_verified() == 1) {
+            textVerified.setText("Verified");
+            textVerified.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.quantum_googgreen)));
+        } else {
+            textVerified.setText("Not Verified");
+            textVerified.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.colorRed)));
+
         }
 
         if (userData.getIs_dob_public() != null && userData.getIs_dob_public() != 0 && userData.getDob() != null) {

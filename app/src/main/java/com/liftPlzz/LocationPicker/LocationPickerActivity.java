@@ -382,7 +382,12 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
                         arrayList.clear();
-                        arrayList.addAll(response.body().getData());
+                        if (type.equalsIgnoreCase("from")) {
+                            arrayList.addAll(response.body().getStart_data());
+                        } else {
+                            arrayList.addAll(response.body().getEnd_data());
+
+                        }
                         rideHistoryAdapter.notifyDataSetChanged();
                     } else {
 //                        Constants.showMessage(this, response.body().getMessage(), linearLayout);
@@ -912,6 +917,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mLocationPermissionGranted = false;
         switch (requestCode) {
             case REQUEST_ID_MULTIPLE_PERMISSIONS: {

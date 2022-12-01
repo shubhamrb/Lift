@@ -412,7 +412,7 @@ public interface ApiService {
     Call<ResponseBody> updateSeat(@Field("api_key") String api_key,
                                   @Field("client") String client,
                                   @Field("token") String token,
-                                  @Field("lift_id") int liftId,
+                                  @Field("lift_id") String liftId,
                                   @Field("seats") int seats);
 
 

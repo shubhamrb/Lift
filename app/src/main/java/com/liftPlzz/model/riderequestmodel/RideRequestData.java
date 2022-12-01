@@ -70,6 +70,18 @@ public class RideRequestData {
     @Expose
     private int is_user_blocked;
 
+    @SerializedName("is_user_verified")
+    @Expose
+    private int is_user_verified;
+
+    public int getIs_user_verified() {
+        return is_user_verified;
+    }
+
+    public void setIs_user_verified(int is_user_verified) {
+        this.is_user_verified = is_user_verified;
+    }
+
     public int getIs_user_blocked() {
         return is_user_blocked;
     }

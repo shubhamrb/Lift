@@ -3,7 +3,6 @@ package com.liftPlzz.fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,15 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -89,8 +85,8 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
     AppCompatEditText editTextName;
     @BindView(R.id.spinner_category)
     AppCompatSpinner spinner_category;
-    @BindView(R.id.professionalTextView)
-    AppCompatEditText professionalTextView;
+    @BindView(R.id.designationTextView)
+    AppCompatEditText designationTextView;
 
     @BindView(R.id.otherTextView)
     AppCompatEditText otherTextView;
@@ -168,14 +164,13 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if (user != null) {
             editTextName.setText(user.getName());
-            professionalTextView.setText(user.getDepartment());
+            designationTextView.setText(user.getDesignation());
+            professional = user.getDepartment();
             txtCMName.setText(user.getCompany());
             editTextEmail.setText(user.getEmail());
             txtDOB.setText(user.getDob());
             editTextMobile.setText(user.getMobile());
-            professionalTextView.setText(user.getDepartment());
             editTextAboutUser.setText(user.getAboutMe());
-            professional = user.getDesignation();
             if (!user.getGender().isEmpty()) {
                 if (user.getGender().equals("Male")) {
                     genderGroup.check(R.id.maleRadio);
@@ -288,7 +283,7 @@ public class UpdateProfileFragment extends BaseFragment<UpdateProfilePresenter, 
                 presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""),
                         editTextName.getText().toString(),
                         professionSelection,
-                        professionalTextView.getText().toString(),
+                        designationTextView.getText().toString(),
                         txtCMName.getText().toString(),
                         txtDOB.getText().toString(),
                         editTextEmail.getText().toString(),

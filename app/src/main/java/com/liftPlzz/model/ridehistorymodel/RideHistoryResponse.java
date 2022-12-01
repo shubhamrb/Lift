@@ -13,9 +13,13 @@ public class RideHistoryResponse {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("data")
+
+    @SerializedName("start_data")
     @Expose
-    private List<Data> data;
+    private List<Data> start_data;
+    @SerializedName("end_data")
+    @Expose
+    private List<Data> end_data;
 
     public Boolean getStatus() {
         return status;
@@ -33,12 +37,20 @@ public class RideHistoryResponse {
         this.message = message;
     }
 
-    public List<Data> getData() {
-        return data;
+    public List<Data> getStart_data() {
+        return start_data;
     }
 
-    public void setData(List<Data> data) {
-        this.data = data;
+    public void setStart_data(List<Data> start_data) {
+        this.start_data = start_data;
+    }
+
+    public List<Data> getEnd_data() {
+        return end_data;
+    }
+
+    public void setEnd_data(List<Data> end_data) {
+        this.end_data = end_data;
     }
 }
 

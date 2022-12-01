@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +49,8 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
     RecyclerView rvTicketList;
     @BindView(R.id.btn_add)
     TextView floatingButtonAdd;
+    @BindView(R.id.rl_no_data)
+    RelativeLayout rl_no_data;
     private String strToken = "", vehicleType;
     private ArrayList<TicketListData> arrayList = new ArrayList<>();
 
@@ -83,8 +86,18 @@ public class TicketListActivity extends AppCompatActivity implements TicketListA
                     if (response.body().getStatus() && response.body().getData() != null) {
                         arrayList.clear();
                         arrayList.addAll(response.body().getData());
-                        ticketListAdapter.notifyDataSetChanged();
+                        if (arrayList.size() > 0) {
+                            ticketListAdapter.notifyDataSetChanged();
+                            rl_no_data.setVisibility(View.GONE);
+                            rvTicketList.setVisibility(View.VISIBLE);
+                        } else {
+                            rl_no_data.setVisibility(View.VISIBLE);
+                            rvTicketList.setVisibility(View.GONE);
+                        }
+
                     } else {
+                        rl_no_data.setVisibility(View.VISIBLE);
+                        rvTicketList.setVisibility(View.GONE);
                         Constants.showMessage(TicketListActivity.this, response.body().getMessage(), relativeLayout);
                     }
                 } else {

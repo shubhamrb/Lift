@@ -64,12 +64,7 @@ public class FeedbackSuggestionPresenter extends BasePresenter<FeedbackSuggestio
                 view.hideLoader();
                 if (response.body() != null) {
                     if (response.code() == 200) {
-                        if (response.body().getData() != null) {
-                            view.setSubmitData();
-                        } else {
-                            view.showMessage(response.body().getMessage());
-                        }
-
+                        view.setSubmitData();
                     } else {
                         view.showMessage(response.body().getMessage());
                     }

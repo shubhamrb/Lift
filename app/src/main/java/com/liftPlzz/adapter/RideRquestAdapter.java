@@ -3,6 +3,7 @@ package com.liftPlzz.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -71,6 +73,12 @@ public class RideRquestAdapter extends RecyclerView.Adapter<RideRquestAdapter.Vi
         }
         holder.tvName.setText(requestData.getName());
         holder.tvSeats.setText(context.getResources().getString(R.string.seats) + " :" + requestData.getSeats());
+
+        if (requestData.getIs_user_verified() == 1) {
+            TextViewCompat.setCompoundDrawableTintList(holder.tvName, ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
+        } else {
+            TextViewCompat.setCompoundDrawableTintList(holder.tvName, ColorStateList.valueOf(context.getResources().getColor(R.color.quantum_orange)));
+        }
 
         if (requestData.getProfile_percentage() == null)
             holder.profile_percantage.setText("Profile: --");

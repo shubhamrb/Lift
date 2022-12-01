@@ -205,7 +205,7 @@
                         android:padding="@dimen/dp_8">
 
                         <androidx.appcompat.widget.AppCompatEditText
-                            android:id="@+id/professionalTextView"
+                            android:id="@+id/designationTextView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

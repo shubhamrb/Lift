@@ -133,7 +133,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
     public void onSendButtonClick(DriverData driverData) {
         if (driverData.getRequestAlreadySend() == 0) {
             if (driverData.getApplied_seats() > driverData.getVacant_seats()) {
-                updateSeatDialog(driverData.getVacant_seats(), driverData.getLiftId());
+                updateSeatDialog(driverData.getVacant_seats(), driverData.getFromLiftId());
             } else {
                 sendCancelInvitation(driverData.getLiftId(), Integer.parseInt(driverData.getFromLiftId()), driverData.getRequestAlreadySend(), null);
             }
@@ -190,7 +190,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
 
     }
 
-    public void updateSeatDialog(Integer vacant_seats, Integer liftId) {
+    public void updateSeatDialog(Integer vacant_seats, String liftId) {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.update_seat_dialog);
@@ -334,7 +334,7 @@ public class DriverListActivity extends AppCompatActivity implements DriverListA
         dialog.show();
     }
 
-    private void updateSeats(Integer liftId, String seat) {
+    private void updateSeats(String liftId, String seat) {
         Constants.showLoader(this);
         ApiService api = RetroClient.getApiService();
         Call<ResponseBody> call = api.updateSeat(Constants.API_KEY, getResources().getString(R.string.android), strToken, liftId, Integer.parseInt(seat));

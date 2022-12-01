@@ -393,6 +393,22 @@
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/editTextDepartment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="start"
+                    android:hint="Department"
+                    android:padding="@dimen/dp_5"
+                    android:singleLine="true"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
+
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/editTextdesignation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -403,22 +419,6 @@
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="start"
                     android:hint="Designation"
-                    android:padding="@dimen/dp_5"
-                    android:singleLine="true"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/sp_16" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/editTextDepartment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp_10"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:background="@null"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="start"
-                    android:hint="Department"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
                     android:textColor="@color/colorText"
