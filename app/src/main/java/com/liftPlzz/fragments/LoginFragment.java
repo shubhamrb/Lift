@@ -1,35 +1,42 @@
 package com.liftPlzz.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.auth.api.identity.GetPhoneNumberHintIntentRequest;
 import com.google.android.gms.auth.api.identity.Identity;
-import com.google.android.gms.common.api.ApiException;
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.sendotp.SendOtpResponse;
 import com.liftPlzz.presenter.LoginPresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.LoginView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -104,11 +111,8 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
 
         editTextMobileNumber.setOnFocusChangeListener((view, isFocused) -> {
             if (isFocused) {
-                /*TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                if (ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                SubscriptionManager subManager = (SubscriptionManager) getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
@@ -118,40 +122,41 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
-                String mPhoneNumber1 = tMgr.getLine1Number();
+                try {
+                    List<SubscriptionInfo> subInfoList = subManager.getActiveSubscriptionInfoList();
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.item_phone_number);
 
-                if (mPhoneNumber1 != null && !mPhoneNumber1.isEmpty()) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle("Continue with")
-                            .setMessage(mPhoneNumber1)
-                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
+                    for (int i = 0; i < subInfoList.size(); i++) {
+                        arrayAdapter.add(subInfoList.get(i).getNumber());
+                    }
+                    if (!subInfoList.isEmpty()) {
+                        new AlertDialog.Builder(getActivity()).setTitle("Continue with").setAdapter(arrayAdapter, (dialogInterface, i) -> {
+                            String number = subInfoList.get(i).getNumber();
 
-                                    String number = mPhoneNumber1;
-                                    if (mPhoneNumber1.length() > 10) {
-                                        number = mPhoneNumber1.substring(mPhoneNumber1.length() - 10);
-                                    }
-                                    editTextMobileNumber.setText(number);
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null).show();
-                }*/
+                            if (number.length() > 10) {
+                                number = number.substring(number.length() - 10);
+                            }
+                            editTextMobileNumber.setText(number);
+                        }).setPositiveButton("NONE OF THE ABOVE", null).setNegativeButton("", null).show();
+                    }
 
-                phoneSelection();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+//                phoneSelection();
             }
         });
     }
 
     private void phoneSelection() {
         GetPhoneNumberHintIntentRequest request = GetPhoneNumberHintIntentRequest.builder().build();
-        Identity.getSignInClient(getActivity())
-                .getPhoneNumberHintIntent(request)
-                .addOnFailureListener(e -> {
-                    Log.e("Error : ", e.getMessage());
-                }).addOnSuccessListener(pendingIntent -> {
-                    IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(pendingIntent.getIntentSender()).build();
-                    someActivityResultLauncher.launch(intentSenderRequest);
-                });
+        Identity.getSignInClient(getActivity()).getPhoneNumberHintIntent(request).addOnFailureListener(e -> {
+            Log.e("Error : ", e.getMessage());
+        }).addOnSuccessListener(pendingIntent -> {
+            IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(pendingIntent.getIntentSender()).build();
+            someActivityResultLauncher.launch(intentSenderRequest);
+        });
     }
 
     @OnClick({R.id.imageViewNext})
