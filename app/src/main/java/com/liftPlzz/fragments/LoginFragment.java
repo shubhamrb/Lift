@@ -112,14 +112,9 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
         editTextMobileNumber.setOnFocusChangeListener((view, isFocused) -> {
             if (isFocused) {
                 SubscriptionManager subManager = (SubscriptionManager) getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_SMS, Manifest.permission.READ_PHONE_STATE}, 1001);
                     return;
                 }
                 try {
@@ -127,7 +122,10 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.item_phone_number);
 
                     for (int i = 0; i < subInfoList.size(); i++) {
-                        arrayAdapter.add(subInfoList.get(i).getNumber());
+                        String num = subInfoList.get(i).getNumber();
+                        if (num != null && !num.isEmpty()) {
+                            arrayAdapter.add(subInfoList.get(i).getNumber());
+                        }
                     }
                     if (!subInfoList.isEmpty()) {
                         new AlertDialog.Builder(getActivity()).setTitle("Continue with").setAdapter(arrayAdapter, (dialogInterface, i) -> {

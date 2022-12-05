@@ -40,7 +40,8 @@ public class AuthActivity extends AppNavigationProvider {
                             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.READ_SMS,
-                            Manifest.permission.RECEIVE_SMS
+                            Manifest.permission.RECEIVE_SMS,
+                            Manifest.permission.READ_PHONE_STATE
                     },
                     PERMISSION_REQUEST_CODE_LOCATION);
         } else {
@@ -50,7 +51,8 @@ public class AuthActivity extends AppNavigationProvider {
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.READ_SMS,
-                            Manifest.permission.RECEIVE_SMS
+                            Manifest.permission.RECEIVE_SMS,
+                            Manifest.permission.READ_PHONE_STATE
                     },
                     PERMISSION_REQUEST_CODE_LOCATION);
         }
@@ -78,9 +80,15 @@ public class AuthActivity extends AppNavigationProvider {
                         .checkPermission(
                                 Manifest.permission.READ_SMS, getPackageName());
 
+        int readPhoneState =
+                getPackageManager()
+                        .checkPermission(
+                                Manifest.permission.READ_PHONE_STATE, getPackageName());
+
         return readStorage == PackageManager.PERMISSION_GRANTED
                 && backgroundLocation == PackageManager.PERMISSION_GRANTED
                 && writeStorage == PackageManager.PERMISSION_GRANTED
-                && readSms == PackageManager.PERMISSION_GRANTED;
+                && readSms == PackageManager.PERMISSION_GRANTED
+                && readPhoneState == PackageManager.PERMISSION_GRANTED;
     }
 }
