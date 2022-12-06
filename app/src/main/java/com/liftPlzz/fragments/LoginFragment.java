@@ -1,11 +1,9 @@
 package com.liftPlzz.fragments;
 
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -22,7 +20,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -124,15 +121,9 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
 
         editTextMobileNumber.setOnFocusChangeListener((view, isFocused) -> {
             if (isFocused) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_SMS, Manifest.permission.READ_PHONE_STATE}, 1001);
-                    return;
-                }
                 phoneSelection();
             }
         });
-
-        editTextMobileNumber.clearFocus();
     }
 
     private void phoneSelection() {

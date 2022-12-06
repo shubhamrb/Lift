@@ -2,10 +2,13 @@ package com.liftPlzz.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.View;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +36,10 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
     AppCompatTextView toolBarTitle;
     @BindView(R.id.recyclerViewSetting)
     RecyclerView recyclerViewSetting;
+
+    @BindView(R.id.imageViewHome)
+    ImageView imageViewHome;
+
     String strToken = "";
     String professionSelection = "";
     private User userData;
@@ -57,6 +64,7 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         toolBarTitle.setText(getResources().getString(R.string.setting));
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
+        imageViewHome.setVisibility(View.VISIBLE);
         loadSettings();
     }
 
@@ -64,9 +72,16 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
         presenter.getSettingList(strToken);
     }
 
-    @OnClick(R.id.imageViewBack)
-    public void onClick() {
-        getActivity().onBackPressed();
+    @OnClick({R.id.imageViewBack, R.id.imageViewHome})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.imageViewBack:
+                getActivity().onBackPressed();
+                break;
+            case R.id.imageViewHome:
+                ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                break;
+        }
     }
 
     @Override

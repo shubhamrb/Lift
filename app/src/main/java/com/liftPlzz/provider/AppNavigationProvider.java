@@ -2,7 +2,7 @@ package com.liftPlzz.provider;
 
 import android.os.Bundle;
 
-import com.liftPlzz.fragments.RideRequestFragment;
+import com.liftPlzz.fragments.MatchingRideFragment;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.AddVehicleFragment;
@@ -10,6 +10,7 @@ import com.liftPlzz.fragments.BlockFragment;
 import com.liftPlzz.fragments.ChatUserFragment;
 import com.liftPlzz.fragments.ContactsFragment;
 import com.liftPlzz.fragments.CreateProfileFragment;
+import com.liftPlzz.fragments.DriverListFragment;
 import com.liftPlzz.fragments.ELearningFragment;
 import com.liftPlzz.fragments.FaqFragment;
 import com.liftPlzz.fragments.FeedbackFragment;
@@ -23,6 +24,7 @@ import com.liftPlzz.fragments.OTpFragment;
 import com.liftPlzz.fragments.PointWalletFragment;
 import com.liftPlzz.fragments.ProfileFragment;
 import com.liftPlzz.fragments.ReviewsFragment;
+import com.liftPlzz.fragments.RideRequestFragment;
 import com.liftPlzz.fragments.SettingFragment;
 import com.liftPlzz.fragments.SettingOptionFragment;
 import com.liftPlzz.fragments.UpdateProfileFragment;
@@ -209,6 +211,40 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
         EditLiftDaiFragment editLiftDaiFragment = new EditLiftDaiFragment(edit);
         editLiftDaiFragment.setLift(lift, listinerUpdate, edit);
         openFragment(editLiftDaiFragment, EditLiftDaiFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openDriverList(PerformFragment performFragment, boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory) {
+        DriverListFragment driverListFragment = new DriverListFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.IS_FIND_LIFT, isFind);
+        bundle.putInt(Constants.LIFT_ID, lift_id);
+        bundle.putString(Constants.VEHICLE_TYPE, vehicle_type);
+        bundle.putInt(Constants.SUB_CATEGORY_ID, vehicle_subcategory);
+        driverListFragment.setArguments(bundle);
+        openFragment(driverListFragment, DriverListFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openMatchingRide(PerformFragment performFragment, boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory) {
+        MatchingRideFragment matchingRideFragment = new MatchingRideFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.IS_FIND_LIFT, isFind);
+        bundle.putInt(Constants.LIFT_ID, lift_id);
+        bundle.putString(Constants.VEHICLE_TYPE, vehicle_type);
+        bundle.putInt(Constants.SUB_CATEGORY_ID, vehicle_subcategory);
+        matchingRideFragment.setArguments(bundle);
+        openFragment(matchingRideFragment, MatchingRideFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openMatchingRide(PerformFragment performFragment, Integer lift_id) {
+        MatchingRideFragment matchingRideFragment = new MatchingRideFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.LIFT_ID, lift_id);
+        matchingRideFragment.setArguments(bundle);
+        openFragment(matchingRideFragment, MatchingRideFragment.class.getName(), performFragment, true);
     }
 
     @Override

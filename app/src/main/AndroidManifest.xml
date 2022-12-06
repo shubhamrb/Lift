@@ -106,9 +106,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".activity.RideRequestActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.DriverReviewsActivity"
             android:exported="false" />
         <activity
@@ -175,14 +172,6 @@
             <!-- Any inner elements would go here. -->
         </service>
 
-        <activity
-            android:name=".activity.MatchingRideActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.DriverListActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ChatActivity"
             android:exported="false"

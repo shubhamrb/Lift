@@ -56,6 +56,12 @@ public interface HomeNavigator {
 
     void openEditLift(BaseActivity.PerformFragment performFragment, Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
 
+    void openDriverList(BaseActivity.PerformFragment performFragment, boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory);
+
+    void openMatchingRide(BaseActivity.PerformFragment performFragment, boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory);
+
+    void openMatchingRide(BaseActivity.PerformFragment performFragment, Integer lift_id);
+
     void openRideRequests(BaseActivity.PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner);
 
 }

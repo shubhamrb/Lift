@@ -20,9 +20,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,6 +68,8 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
     AppCompatTextView toolBarTitle;
     @BindView(R.id.recyclerViewSetting)
     RecyclerView recyclerViewSetting;
+    @BindView(R.id.imageViewHome)
+    ImageView imageViewHome;
     String strToken = "";
     String professionSelection = "";
     String vehicleSelection = "";
@@ -92,6 +96,7 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
     @Override
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        imageViewHome.setVisibility(View.VISIBLE);
         Bundle bundle = getArguments();
 
         if (bundle != null) {
@@ -132,9 +137,16 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
 
     }
 
-    @OnClick(R.id.imageViewBack)
-    public void onClick() {
-        getActivity().onBackPressed();
+    @OnClick({R.id.imageViewBack, R.id.imageViewHome})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.imageViewBack:
+                getActivity().onBackPressed();
+                break;
+            case R.id.imageViewHome:
+                ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                break;
+        }
     }
 
     @Override

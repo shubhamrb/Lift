@@ -87,7 +87,6 @@ import com.liftPlzz.LocationPicker.LocationPickerActivity;
 import com.liftPlzz.LocationPicker.MapUtility;
 import com.liftPlzz.R;
 import com.liftPlzz.activity.HomeActivity;
-import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
 import com.liftPlzz.adapter.VehiclePagerAdapter;
@@ -1976,10 +1975,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (findRideData.getMatchesCount() != null && findRideData.getMatchesCount() > 0) {
             alertDialogBuilder.setPositiveButton("Check", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Intent intent = new Intent(getActivity(), MatchingRideActivity.class);
-                    intent.putExtra(Constants.LIFT_ID, findRideData.getLiftId());
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
+                    presenter.openMatchingRide(findRideData.getLiftId());
+//                    getActivity().finish();
                     if (mGoogleMap != null) {
                         mGoogleMap.clear();
                     }

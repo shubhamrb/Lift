@@ -204,9 +204,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
         navigator.openNotificationFragment(BaseActivity.PerformFragment.REPLACE);
     }
 
-//    public void openDriverList() {
-//        navigator.openDriverListFragment(BaseActivity.PerformFragment.REPLACE);
-//    }
-
-
+    public void openMatchingRide(Integer lift_id) {
+        navigator.openMatchingRide(BaseActivity.PerformFragment.REPLACE, lift_id);
+    }
 }

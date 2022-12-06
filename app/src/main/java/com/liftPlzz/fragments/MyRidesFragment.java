@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.liftPlzz.R;
@@ -130,8 +132,10 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
-            case R.id.imageViewHome:
                 getActivity().onBackPressed();
+                break;
+            case R.id.imageViewHome:
+                ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
             case R.id.layoutupcoming:
                 layoutupcoming.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));

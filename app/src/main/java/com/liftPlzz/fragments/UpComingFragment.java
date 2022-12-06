@@ -16,10 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liftPlzz.R;
-import com.liftPlzz.activity.DriverListActivity;
 import com.liftPlzz.activity.DriverProfileActivity;
 import com.liftPlzz.activity.HomeActivity;
-import com.liftPlzz.activity.MatchingRideActivity;
 import com.liftPlzz.adapter.MyUpcomingLiftAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
@@ -103,17 +101,12 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
 
     @Override
     public void onMatchClick(Lift lift, boolean isFind) {
-        Intent intent;
         if (isFind) {
-            intent = new Intent(getActivity(), MatchingRideActivity.class);
+            presenter.openMatchingRide(isFind, lift.getId(), lift.getVehicle_type(), lift.getVehicle_subcategory());
         } else {
-            intent = new Intent(getActivity(), DriverListActivity.class);
+            presenter.openDriverList(isFind, lift.getId(), lift.getVehicle_type(), lift.getVehicle_subcategory());
         }
-        intent.putExtra(Constants.IS_FIND_LIFT, isFind);
-        intent.putExtra(Constants.LIFT_ID, lift.getId());
-        intent.putExtra(Constants.VEHICLE_TYPE, lift.getVehicle_type());
-        intent.putExtra(Constants.SUB_CATEGORY_ID, lift.getVehicle_subcategory());
-        startActivity(intent);
+
 
     }
 

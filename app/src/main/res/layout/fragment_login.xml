@@ -94,6 +94,8 @@
                     android:layout_marginRight="@dimen/dp_20"
                     android:layout_marginBottom="@dimen/dp_20"
                     android:background="@drawable/login_et_bg"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:orientation="horizontal"
                     android:padding="@dimen/dp_10">
 
@@ -109,11 +111,10 @@
                         android:imeOptions="actionDone"
                         android:includeFontPadding="false"
                         android:inputType="number"
+                        android:letterSpacing="0.4"
                         android:maxLength="10"
                         android:padding="@dimen/dp_5"
                         android:singleLine="true"
-                        android:text=""
-                        android:letterSpacing="0.4"
                         android:textColor="@color/colorBlack"
                         android:textColorHint="@color/colorGrey"
                         android:textSize="28sp" />

@@ -15,9 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -63,6 +65,9 @@ public class RideRequestFragment extends BaseFragment<RideRequestPresenter, Ride
     RelativeLayout relative;
     @BindView(R.id.refresh_layout)
     SwipeRefreshLayout refresh_layout;
+
+    @BindView(R.id.imageViewHome)
+    ImageView imageViewHome;
     RideRquestAdapter rideRquestAdapter;
     PartnerAdapter partnerAdapter;
     ArrayList<RideRequestData> arrayListRide = new ArrayList<>();
@@ -103,11 +108,14 @@ public class RideRequestFragment extends BaseFragment<RideRequestPresenter, Ride
             isLifter = bundle.getBoolean("lifter", false);
             from = bundle.getString("from");
         }
+        imageViewHome.setVisibility(View.VISIBLE);
+
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
         recyclerRequest.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         refresh_layout.setOnRefreshListener(this::loadData);
+
     }
 
     private void loadData() {
@@ -310,9 +318,6 @@ public class RideRequestFragment extends BaseFragment<RideRequestPresenter, Ride
                             if (from == null) {
                                 getActivity().onBackPressed();
                             } else {
-                               /* Intent intent = new Intent(getActivity(), HomeActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);*/
                                 presenter.openMyRidesFragment();
                             }
                         }
@@ -340,11 +345,14 @@ public class RideRequestFragment extends BaseFragment<RideRequestPresenter, Ride
     }
 
 
-    @OnClick({R.id.imageViewBack})
+    @OnClick({R.id.imageViewBack, R.id.imageViewHome})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
                 getActivity().onBackPressed();
+                break;
+            case R.id.imageViewHome:
+                ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
         }
     }

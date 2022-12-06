@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +55,9 @@ public class MyVehicleFragment extends BaseFragment<MyVehiclePresenter, MyVehicl
     @BindView(R.id.recyclerViewMyVehicle)
     RecyclerView recyclerViewMyVehicle;
 
+    @BindView(R.id.imageViewHome)
+    ImageView imageViewHome;
+
     @Override
     protected int createLayout() {
         return R.layout.fragment_my_vehicle;
@@ -74,14 +79,18 @@ public class MyVehicleFragment extends BaseFragment<MyVehiclePresenter, MyVehicl
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         toolBarTitle.setText("My Vehicles");
         presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "");
+        imageViewHome.setVisibility(View.VISIBLE);
     }
 
 
-    @OnClick({R.id.imageViewBack, R.id.textViewAddVehicle, R.id.imageViewNoVehicle})
+    @OnClick({R.id.imageViewBack, R.id.textViewAddVehicle, R.id.imageViewNoVehicle, R.id.imageViewHome})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
                 getActivity().onBackPressed();
+                break;
+            case R.id.imageViewHome:
+                ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
             case R.id.textViewAddVehicle:
             case R.id.imageViewNoVehicle:

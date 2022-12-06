@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.liftPlzz.R;
@@ -49,6 +51,9 @@ public class AddVehicleFragment extends BaseFragment<AddVehiclePresenter, AddVeh
     @BindView(R.id.viewpagerAddVehicle)
     ViewPager viewpagerAddVehicle;
 
+    @BindView(R.id.imageViewHome)
+    ImageView imageViewHome;
+
     public static boolean isEdit = false;
     public static Datum vehicleData;
 
@@ -79,6 +84,7 @@ public class AddVehicleFragment extends BaseFragment<AddVehiclePresenter, AddVeh
     @Override
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        imageViewHome.setVisibility(View.VISIBLE);
         if (!isEdit) {
             CarFragment.setIsEdit(false);
             CarFragment.setVehicleData(null);
@@ -148,11 +154,14 @@ public class AddVehicleFragment extends BaseFragment<AddVehiclePresenter, AddVeh
         }
     }
 
-    @OnClick({R.id.imageViewBack, R.id.layoutCar, R.id.layoutBike})
+    @OnClick({R.id.imageViewBack, R.id.layoutCar, R.id.layoutBike, R.id.imageViewHome})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
                 getActivity().onBackPressed();
+                break;
+            case R.id.imageViewHome:
+                ((AppCompatActivity) getActivity()).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
             case R.id.layoutCar:
                 if (!isEdit) {
