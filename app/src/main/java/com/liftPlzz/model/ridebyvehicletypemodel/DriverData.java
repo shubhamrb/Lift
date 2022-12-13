@@ -31,10 +31,10 @@ public class DriverData {
     private Integer paidSeats;
     @SerializedName("vacant_seats")
     @Expose
-    private Integer vacant_seats;
+    private int vacant_seats;
     @SerializedName("applied_seats")
     @Expose
-    private Integer applied_seats;
+    private int applied_seats;
     @SerializedName("rate_per_km")
     @Expose
     private Integer ratePerKm;
@@ -90,11 +90,11 @@ public class DriverData {
     @Expose
     private PercentageModel vehicle_percentage;
 
-    public Integer getApplied_seats() {
+    public int getApplied_seats() {
         return applied_seats;
     }
 
-    public void setApplied_seats(Integer applied_seats) {
+    public void setApplied_seats(int applied_seats) {
         this.applied_seats = applied_seats;
     }
 
@@ -126,7 +126,7 @@ public class DriverData {
         return vacant_seats;
     }
 
-    public void setVacant_seats(Integer vacant_seats) {
+    public void setVacant_seats(int vacant_seats) {
         this.vacant_seats = vacant_seats;
     }
 

@@ -47,7 +47,7 @@
         android:layout_above="@id/rl_arrival"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/_10sdp"
-        android:background="@drawable/ic_circle"
+        android:background="@drawable/rzp_loader_circle"
         android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
         android:visibility="gone">

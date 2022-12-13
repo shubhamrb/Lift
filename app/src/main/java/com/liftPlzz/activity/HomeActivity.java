@@ -180,9 +180,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             String type = getIntent().getStringExtra("type");
             int lift_id = -1, sub_cat_id = -1;
             boolean isPartner = false;
-            if (getIntent().hasExtra("from")) {
-                String from = getIntent().getStringExtra("from");
-            }
+
             if (getIntent().hasExtra(Constants.LIFT_ID)) {
                 lift_id = getIntent().getIntExtra(Constants.LIFT_ID, -1);
             }
@@ -192,7 +190,12 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
             if (getIntent().hasExtra(Constants.PARTNER)) {
                 isPartner = getIntent().getBooleanExtra(Constants.PARTNER, false);
             }
-            openRideRequests(PerformFragment.REPLACE, false, lift_id, isPartner);
+            if (getIntent().hasExtra("from")) {
+                String from = getIntent().getStringExtra("from");
+                openRideRequests(PerformFragment.REPLACE, false, lift_id, isPartner, from);
+            } else {
+                openRideRequests(PerformFragment.REPLACE, false, lift_id, isPartner, null);
+            }
         }
     }
 

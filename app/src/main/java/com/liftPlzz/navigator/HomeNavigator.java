@@ -62,6 +62,6 @@ public interface HomeNavigator {
 
     void openMatchingRide(BaseActivity.PerformFragment performFragment, Integer lift_id);
 
-    void openRideRequests(BaseActivity.PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner);
+    void openRideRequests(BaseActivity.PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner,String from);
 
 }

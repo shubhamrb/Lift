@@ -93,7 +93,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.liftPlzz.R;
-import com.liftPlzz.activity.Navigation.NavigationLauncher;
 import com.liftPlzz.adapter.LiftPartnerAdapter;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
@@ -104,12 +103,6 @@ import com.liftPlzz.model.on_going.LiftUsers;
 import com.liftPlzz.model.on_going.MainOnGoingResponse;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.utils.Constants;
-import com.mapbox.api.directions.v5.DirectionsCriteria;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
-import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -186,7 +179,9 @@ public class StartRideActivity extends AppCompatActivity implements
     private boolean isTrackingPath = false;
     private boolean oneTimeZoomed = false;
     private Dialog dialog;
-    private DirectionsRoute currentRoute;
+    /*
+        private DirectionsRoute currentRoute;
+    */
     private FusedLocationProviderClient fusedLocationProviderClient;
     private AsyncTask<String, String, String> locationTask;
 
@@ -473,7 +468,7 @@ public class StartRideActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
 
         btn_navigate.setOnClickListener(view -> {
-            if (currentRoute != null) {
+            /*if (currentRoute != null) {
                 boolean simulateRoute = false;
                 NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                         .directionsRoute(currentRoute)
@@ -484,15 +479,39 @@ public class StartRideActivity extends AppCompatActivity implements
                 } else {
                     NavigationLauncher.startNavigation(this, options, null);
                 }
+            }*/
+
+            /*com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
+        com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getStartLatlong().split(",")[1]), Double.parseDouble(lift.getStartLatlong().split(",")[0]));
+        getRoute(originPoint, destinationPoint);*/
+
+            String stringUrl = "";
+            /*if (!wayPoints.equals("")) {
+                stringUrl = "google.navigation:q=" + lift.getEndLatlong() + "+" + "Raipur";//wayPoints.replace("|", ",")
+            } else {
+                stringUrl = "google.navigation:q=" + lift.getEndLatlong();
+            }*/
+//            Uri gmmIntentUri = Uri.parse("https://www.google.com/maps/dir/?api=1&origin=18.519513,73.868315&destination=18.518496,73.879259&waypoints=18.520561,73.872435|18.519254,73.876614|18.52152,73.877327|18.52019,73.879935&travelmode=driving");
+
+            if (!wayPoints.equals("")) {
+                stringUrl = "https://www.google.com/maps/dir/?api=1&destination=" + lift.getEndLatlong() + "&waypoints=" + wayPoints + "&travelmode=driving";
+            } else {
+                stringUrl = "https://www.google.com/maps/dir/?api=1&destination=" + lift.getEndLatlong()+"&travelmode=driving";
             }
+
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse(stringUrl));
+            intent.setPackage("com.google.android.apps.maps");
+            startActivity(intent);
         });
 
     }
 
     private void turnByTurnNavigation() {
-        com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
+        btn_navigate.setVisibility(View.VISIBLE);
+        /*com.mapbox.geojson.Point destinationPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getEndLatlong().split(",")[1]), Double.parseDouble(lift.getEndLatlong().split(",")[0]));
         com.mapbox.geojson.Point originPoint = com.mapbox.geojson.Point.fromLngLat(Double.parseDouble(lift.getStartLatlong().split(",")[1]), Double.parseDouble(lift.getStartLatlong().split(",")[0]));
-        getRoute(originPoint, destinationPoint);
+        getRoute(originPoint, destinationPoint);*/
     }
 
     private void showUsersListDialog() {
@@ -593,6 +612,8 @@ public class StartRideActivity extends AppCompatActivity implements
             }
             locationTask = new GetDirection().execute(current, lift.getEndLatlong());
         } else {
+            /*temp*/
+//            rl_arrival.setVisibility(View.GONE);
             if (bywhomRidestarted == 1) {
                 txt_arrival_status.setText("Reaching in : ");
                 if (locationTask != null) {
@@ -612,7 +633,7 @@ public class StartRideActivity extends AppCompatActivity implements
 
     private void showArrivalTimeCard(double curLat, double curLong, String lastLatlong) {
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        /*RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = "https://api.mapbox.com/directions/v5/mapbox/driving-traffic/" + curLong + "," + curLat + ";" + Double.parseDouble(lastLatlong.split(",")[1]) + "," + Double.parseDouble(lastLatlong.split(",")[0]) + "?geometries=geojson&access_token=" + Mapbox.getAccessToken();
         StringRequest sr = new StringRequest(Request.Method.GET, url, response -> {
@@ -638,16 +659,15 @@ public class StartRideActivity extends AppCompatActivity implements
                 rl_arrival.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 rl_arrival.setVisibility(View.GONE);
-//                Toast.makeText(StartRideActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }, error -> {
             rl_arrival.setVisibility(View.GONE);
-//            Toast.makeText(StartRideActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
         });
-        queue.add(sr);
+        queue.add(sr);*/
     }
 
+/*
     private void getRoute(com.mapbox.geojson.Point originPoint, com.mapbox.geojson.Point destinationPoint) {
         NavigationRoute.Builder builder = NavigationRoute.builder(this)
                 .accessToken(Mapbox.getAccessToken())
@@ -677,6 +697,7 @@ public class StartRideActivity extends AppCompatActivity implements
             }
         });
     }
+*/
 
     /**
      * Returns the current state of the permissions needed.
@@ -997,7 +1018,7 @@ public class StartRideActivity extends AppCompatActivity implements
         protected String doInBackground(String... args) {
             String stringUrl;
             if (!wayPoints.equals("")) {
-                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&waypoints" + wayPoints + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
+                stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&waypoints=" + wayPoints + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
             } else {
                 stringUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + args[0] + "&destination=" + args[1] + "&key=" + getResources().getString(R.string.maps_api_key) + "&sensor=false";
             }
@@ -1842,7 +1863,7 @@ public class StartRideActivity extends AppCompatActivity implements
        /* if (lift != null && lift.getIs_driver_start() == 1) {
             enterPipMode();
         } else {*/
-            super.onBackPressed();
+        super.onBackPressed();
 //        }
     }
 

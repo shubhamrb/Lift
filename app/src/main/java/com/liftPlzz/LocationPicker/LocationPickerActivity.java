@@ -382,7 +382,7 @@ public class LocationPickerActivity extends AppCompatActivity implements OnMapRe
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
                         arrayList.clear();
-                        if (type.equalsIgnoreCase("from")) {
+                        if (type != null && type.equalsIgnoreCase("from")) {
                             arrayList.addAll(response.body().getStart_data());
                         } else {
                             arrayList.addAll(response.body().getEnd_data());

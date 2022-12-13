@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.FacebookSdk;
 import com.facebook.stetho.Stetho;
-import com.mapbox.mapboxsdk.Mapbox;
 
 public class LiftPlzz extends Application {
     @Override
@@ -13,6 +12,8 @@ public class LiftPlzz extends Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         FacebookSdk.setAutoLogAppEventsEnabled(true);
         Stetho.initializeWithDefaults(this);
+/*
         Mapbox.getInstance(this, "sk.eyJ1Ijoia29tYWxyYWdoYXZ6aWdseSIsImEiOiJjbDdlaml1cW0wMTEyM25scXc0ZWd0d3RuIn0.sy_5U7Uzfy_BmfAMD8cOAw");
+*/
     }
 }

@@ -113,14 +113,14 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     @Override
     public void onRequestClick(Lift lift, boolean isFind) {
         boolean isLifter = lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, ""));
-        presenter.openRideRequests(isLifter, lift.getId(), false);
+        presenter.openRideRequests(isLifter, lift.getId(), false,null);
     }
 
     @Override
     public void onPartnetDetails(Lift lift) {
         boolean isLifter = lift.getLiftType().equalsIgnoreCase("Offer Lift") && String.valueOf(lift.getUserId()).equals(sharedPreferences.getString(Constants.USER_ID, ""));
 
-        presenter.openRideRequests(isLifter, lift.getId(), true);
+        presenter.openRideRequests(isLifter, lift.getId(), true,null);
     }
 
     @Override

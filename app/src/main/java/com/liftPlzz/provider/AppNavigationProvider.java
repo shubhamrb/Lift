@@ -2,7 +2,6 @@ package com.liftPlzz.provider;
 
 import android.os.Bundle;
 
-import com.liftPlzz.fragments.MatchingRideFragment;
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
 import com.liftPlzz.fragments.AddVehicleFragment;
@@ -17,6 +16,7 @@ import com.liftPlzz.fragments.FeedbackFragment;
 import com.liftPlzz.fragments.FeedbackSuggestionFragment;
 import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.fragments.LoginFragment;
+import com.liftPlzz.fragments.MatchingRideFragment;
 import com.liftPlzz.fragments.MyRidesFragment;
 import com.liftPlzz.fragments.MyVehicleFragment;
 import com.liftPlzz.fragments.NotificationFragment;
@@ -233,7 +233,8 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
         bundle.putBoolean(Constants.IS_FIND_LIFT, isFind);
         bundle.putInt(Constants.LIFT_ID, lift_id);
         bundle.putString(Constants.VEHICLE_TYPE, vehicle_type);
-        bundle.putInt(Constants.SUB_CATEGORY_ID, vehicle_subcategory);
+        if (vehicle_subcategory != null)
+            bundle.putInt(Constants.SUB_CATEGORY_ID, vehicle_subcategory);
         matchingRideFragment.setArguments(bundle);
         openFragment(matchingRideFragment, MatchingRideFragment.class.getName(), performFragment, true);
     }
@@ -248,12 +249,13 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     }
 
     @Override
-    public void openRideRequests(PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner) {
+    public void openRideRequests(PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner, String from) {
         RideRequestFragment rideRequestFragment = new RideRequestFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("lifter", isLifter);
         bundle.putInt(Constants.LIFT_ID, lift_id);
         bundle.putBoolean(Constants.PARTNER, partner);
+        bundle.putString("from", from);
         rideRequestFragment.setArguments(bundle);
         openFragment(rideRequestFragment, RideRequestFragment.class.getName(), performFragment, true);
     }

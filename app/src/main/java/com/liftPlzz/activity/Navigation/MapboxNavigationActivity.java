@@ -1,22 +1,17 @@
 package com.liftPlzz.activity.Navigation;
 
 import android.app.PictureInPictureParams;
-import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.util.Rational;
 import android.view.Display;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.liftPlzz.R;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
+/*import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.services.android.navigation.ui.v5.MapOfflineOptions;
 import com.mapbox.services.android.navigation.ui.v5.NavigationView;
@@ -24,17 +19,13 @@ import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
 import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
-import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationConstants;*/
 
-/**
- * Serves as a launching point for the custom drop-in UI, {@link NavigationView}.
- * <p>
- * Demonstrates the proper setup and usage of the view, including all lifecycle methods.
- */
-public class MapboxNavigationActivity extends AppCompatActivity implements OnNavigationReadyCallback,
-        NavigationListener {
 
-    private NavigationView navigationView;
+public class MapboxNavigationActivity extends AppCompatActivity /*implements OnNavigationReadyCallback,
+        NavigationListener*/ {
+
+    //    private NavigationView navigationView;
     private AppCompatTextView txtShareCode;
 
     @Override
@@ -44,7 +35,7 @@ public class MapboxNavigationActivity extends AppCompatActivity implements OnNav
         setContentView(R.layout.activity_navigation);
         String share_code = getIntent().getStringExtra("share_code");
 
-        navigationView = findViewById(R.id.navigationView);
+        /*navigationView = findViewById(R.id.navigationView);
         txtShareCode = findViewById(R.id.txtShareCode);
         if (share_code != null) {
             txtShareCode.setText(share_code);
@@ -52,43 +43,40 @@ public class MapboxNavigationActivity extends AppCompatActivity implements OnNav
         }
 
         navigationView.onCreate(savedInstanceState);
-        initialize();
+        initialize();*/
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        navigationView.onStart();
+//        navigationView.onStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        navigationView.onResume();
+//        navigationView.onResume();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        navigationView.onLowMemory();
+//        navigationView.onLowMemory();
     }
 
     @Override
     public void onBackPressed() {
-        // If the navigation view didn't need to do anything, call super
-        if (!navigationView.onBackPressed()) {
-//            super.onBackPressed();
+        /*if (!navigationView.onBackPressed()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 enterPipMode();
             } else {
                 super.onBackPressed();
             }
-        }
+        }*/
     }
 
     private void enterPipMode() {
         try {
-//            navigationView.setSummaryBehaviorHideable(true);
             Display d = getWindowManager()
                     .getDefaultDisplay();
             Point p = new Point();
@@ -108,35 +96,35 @@ public class MapboxNavigationActivity extends AppCompatActivity implements OnNav
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        navigationView.onSaveInstanceState(outState);
+//        navigationView.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        navigationView.onRestoreInstanceState(savedInstanceState);
+//        navigationView.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        navigationView.onPause();
+//        navigationView.onPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        navigationView.onStop();
+//        navigationView.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        navigationView.onDestroy();
+//        navigationView.onDestroy();
     }
 
-    @Override
+    /*@Override
     public void onNavigationReady(boolean isRunning) {
         NavigationViewOptions.Builder options = NavigationViewOptions.builder();
         options.navigationListener(this);
@@ -197,5 +185,5 @@ public class MapboxNavigationActivity extends AppCompatActivity implements OnNav
     private void finishNavigation() {
         NavigationLauncher.cleanUpPreferences(this);
         finish();
-    }
+    }*/
 }

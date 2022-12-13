@@ -35,8 +35,8 @@ public class UpComingPresenter extends BasePresenter<UpComingView> {
 
     }
 
-    public void openRideRequests(boolean isLifter, Integer lift_id, boolean partner) {
-        navigator.openRideRequests(BaseActivity.PerformFragment.REPLACE, isLifter, lift_id, partner);
+    public void openRideRequests(boolean isLifter, Integer lift_id, boolean partner,String from) {
+        navigator.openRideRequests(BaseActivity.PerformFragment.REPLACE, isLifter, lift_id, partner,from);
     }
 
     public void openMatchingRide(boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory) {
