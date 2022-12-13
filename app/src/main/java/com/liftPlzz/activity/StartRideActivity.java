@@ -415,7 +415,6 @@ public class StartRideActivity extends AppCompatActivity implements
                 buildLocationCallBack();
                 buildLocationRequest();
                 getLocationAPI();
-                turnByTurnNavigation();
             } else {
                 tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
                 tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorAccent)));
@@ -496,7 +495,7 @@ public class StartRideActivity extends AppCompatActivity implements
             if (!wayPoints.equals("")) {
                 stringUrl = "https://www.google.com/maps/dir/?api=1&destination=" + lift.getEndLatlong() + "&waypoints=" + wayPoints + "&travelmode=driving";
             } else {
-                stringUrl = "https://www.google.com/maps/dir/?api=1&destination=" + lift.getEndLatlong()+"&travelmode=driving";
+                stringUrl = "https://www.google.com/maps/dir/?api=1&destination=" + lift.getEndLatlong() + "&travelmode=driving";
             }
 
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
@@ -752,6 +751,8 @@ public class StartRideActivity extends AppCompatActivity implements
                 try {
                     String txt = tvStartRide.getText().toString();
                     if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
+                        Constants.showLoader(StartRideActivity.this);
+
                         //todo start ride will call from here
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                             Log.d("btn_start_ride", txt);
@@ -883,6 +884,7 @@ public class StartRideActivity extends AppCompatActivity implements
             @Override
             public void onResponse(String response) {
                 try {
+                    Constants.hideLoader();
                     JSONObject base = new JSONObject(response);
                     Log.e("base", "is" + base);
                     if (base.getBoolean("status")) {
@@ -895,7 +897,9 @@ public class StartRideActivity extends AppCompatActivity implements
                         ridestarted = false;
                         bywhomRidestarted = 0;
                         mService.requestLocationUpdates();
-                        turnByTurnNavigation();
+                        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                            turnByTurnNavigation();
+                        }
                         getUsers(1);
                     } else {
                         Toast.makeText(StartRideActivity.this, "Drive already started", Toast.LENGTH_SHORT).show();
@@ -907,6 +911,7 @@ public class StartRideActivity extends AppCompatActivity implements
                 }
             }
         }, error -> {
+            Constants.hideLoader();
             mService.removeLocationUpdates();
             Toast.makeText(StartRideActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
         }) {
@@ -1087,12 +1092,14 @@ public class StartRideActivity extends AppCompatActivity implements
                                 .width(7).color(Color.BLUE).geodesic(true));
                         polylineList.add(polyline);
                     } else {
-                        polyline = mGoogleMap.addPolyline(new PolylineOptions()
-                                .add(new LatLng(src.latitude, src.longitude),
-                                        new LatLng(dest.latitude, dest.longitude))
-                                .width(7).color(Color.GREEN).geodesic(true));
+                        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                            polyline = mGoogleMap.addPolyline(new PolylineOptions()
+                                    .add(new LatLng(src.latitude, src.longitude),
+                                            new LatLng(dest.latitude, dest.longitude))
+                                    .width(7).color(Color.GREEN).geodesic(true));
 
-                        polylineList.add(polyline);
+                            polylineList.add(polyline);
+                        }
                     }
 
                 } catch (NullPointerException e) {
@@ -1117,7 +1124,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     mDriverMarker = mGoogleMap.addMarker(new MarkerOptions()
                             .position(pontos.get(0))
                             .draggable(true)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.car_marker))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.gps_navigation))
                             .title("Driver"));
                     LatLngBounds bounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                     try {
@@ -1247,7 +1254,9 @@ public class StartRideActivity extends AppCompatActivity implements
                                             bywhomRidestarted = 1;
                                             getUsers(2);
                                             mService.requestLocationUpdates();
-                                            turnByTurnNavigation();
+                                            if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                                                turnByTurnNavigation();
+                                            }
                                         } else {
                                             Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                                         }
