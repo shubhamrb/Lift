@@ -751,10 +751,9 @@ public class StartRideActivity extends AppCompatActivity implements
                 try {
                     String txt = tvStartRide.getText().toString();
                     if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
-                        Constants.showLoader(StartRideActivity.this);
-
                         //todo start ride will call from here
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                            Constants.showLoader(StartRideActivity.this);
                             Log.d("btn_start_ride", txt);
                             ridestarted = true;
                             bywhomRidestarted = 0;

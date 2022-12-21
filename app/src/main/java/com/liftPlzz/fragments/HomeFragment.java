@@ -999,7 +999,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                 mGoogleMap.moveCamera(cu);
                             }
 
-                        } else {
+                        } else if (type.equals("to")) {
                             LiftLocationModel end = new LiftLocationModel();
                             end.setLatLng(data1.getEnd_point());
                             end.setLocation(data1.getEnd_location());
@@ -1035,6 +1035,25 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                                     presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), textkm.getText().toString());
                                 }
                             }
+                        } else {
+                            String endlatlng = data1.getStart_point();
+                            String endlat = endlatlng.split(",")[0];
+                            String endlong = endlatlng.split(",")[1];
+
+                            String ad = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong), data1.getStart_location());
+                            JSONObject jsonObject = new JSONObject(ad);
+
+                            checkPointsList.get(listPos).setAddress(data1.getStart_location());
+                            dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                            latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                            checkPointsList.get(listPos).setLat(Double.parseDouble(endlat));
+                            checkPointsList.get(listPos).setCity(jsonObject.getString("city"));
+                            checkPointsList.get(listPos).setState(jsonObject.getString("state"));
+                            checkPointsList.get(listPos).setCountry(jsonObject.getString("country"));
+                            checkPointsList.get(listPos).setLongi(Double.parseDouble(endlong));
+                            bottomSheetCheckPointsDialog.nofityAdapter();
+                            Log.e("Check List Size : ", "" + checkPointsList.size());
+                            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
                         }
                     } else if (data.getBooleanExtra("current_location", false)) {
                         type = data.getStringExtra("type");
@@ -1046,10 +1065,14 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                             if (location != null) {
                                 currentLocation = location;
                                 mapFragment.getMapAsync(HomeFragment.this);
-                                if (type != null) if (type.equals("from")) {
-                                    setCurrentLocationInPickup();
-                                } else {
-                                    setCurrentLocationInDrop();
+                                if (type != null) {
+                                    if (type.equals("from")) {
+                                        setCurrentLocationInPickup();
+                                    } else if (type.equals("to")) {
+                                        setCurrentLocationInDrop();
+                                    } else {
+                                        setCurrentLocationInCheckPoint();
+                                    }
                                 }
                             }
                         });
@@ -1149,6 +1172,29 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         } else {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
+        }
+    }
+
+    private void setCurrentLocationInCheckPoint() {
+        try {
+            latLngDestination = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            dropLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            String address = getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+            checkPointsList.get(listPos).setAddress(address);
+            String ad = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), address);
+            JSONObject jsonObject = new JSONObject(ad);
+
+            checkPointsList.get(listPos).setLat(currentLocation.getLatitude());
+            checkPointsList.get(listPos).setCity(jsonObject.getString("city"));
+            checkPointsList.get(listPos).setState(jsonObject.getString("state"));
+            checkPointsList.get(listPos).setCountry(jsonObject.getString("country"));
+            checkPointsList.get(listPos).setLongi(currentLocation.getLongitude());
+            bottomSheetCheckPointsDialog.nofityAdapter();
+            Log.e("Check List Size : ", "" + checkPointsList.size());
+            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1755,6 +1801,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         locationSelect = 3;
         listPos = preferredCallingMode;
         Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+        i1.putExtra("type", "checkpoint");
         startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
     }
 

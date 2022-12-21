@@ -19,9 +19,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -72,7 +70,6 @@ import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.adapter.CheckPointsListAdapter;
 import com.liftPlzz.adapter.MyVehicleListRideAdapter;
 import com.liftPlzz.adapter.VehiclePagerAdapter;
-import com.liftPlzz.base.BaseDailogFragment;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.CheckPoints;
 import com.liftPlzz.model.FindLiftResponse;
@@ -80,6 +77,7 @@ import com.liftPlzz.model.createLift.CreateLiftResponse;
 import com.liftPlzz.model.editlift.EditVehicleData;
 import com.liftPlzz.model.editlift.LiftLocationModel;
 import com.liftPlzz.model.getVehicle.Datum;
+import com.liftPlzz.model.ridehistorymodel.Data;
 import com.liftPlzz.model.upcomingLift.Lift;
 import com.liftPlzz.presenter.EditLiftPresenter;
 import com.liftPlzz.utils.Constants;
@@ -270,12 +268,12 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                 checkPoints.setId(checkPointsList.size() + 1);
                 checkPoints.setAddress("Select Checkpoints " + (checkPointsList.size() + 1));
                 checkPointsList.add(checkPoints);
-                checkPointsList.get(listPos).setAddress(new StringBuilder().append
-                        (list.get(i).getCountry()).append
-                        (list.get(i).getCity()).append(",").append
-                        (list.get(i).getState()).toString());
+
                 double currentLatitude = Double.parseDouble(list.get(i).getLatLng().split(",")[0]);//data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                 double currentLongitude = Double.parseDouble(list.get(i).getLatLng().split(",")[1]);
+
+                String address = getCompleteAddressString(currentLatitude, currentLongitude);
+                checkPointsList.get(listPos).setAddress(address);
                 checkPointsList.get(listPos).setLat(currentLatitude);
                 checkPointsList.get(listPos).setCity(list.get(i).getCity());
                 checkPointsList.get(listPos).setState(list.get(i).getState());
@@ -551,13 +549,12 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                         showMessage("Select Data Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
-                    }
-                    else {
-                        if (selectedVehicleData==null){
+                    } else {
+                        if (selectedVehicleData == null) {
                             for (int i = 0; i < vehicleList.size(); i++) {
                                 if (vehicleId == vehicleList.get(i).getId()) {
                                     selectedVehicleData = vehicleList.get(i);
-                                    Log.e("DIDN'T FIND : ","IT");
+                                    Log.e("DIDN'T FIND : ", "IT");
                                     break;
                                 }
                             }
@@ -597,7 +594,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                         checkPoints.setId(checkPointsList.size() + 1);
                         checkPoints.setAddress("Select Checkpoints " + (checkPointsList.size() + 1));
                         checkPointsList.add(checkPoints);
-                        isMultiCheck = false;
+//                        isMultiCheck = false;
                         bottomSheetCheckPointsDialog.setGroupList(checkPointsList);
                         bottomSheetCheckPointsDialog.show(
                                 getActivity().getSupportFragmentManager(), "check");
@@ -635,11 +632,13 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             case R.id.layoutPickupLocation:
                 locationSelect = 1;
                 Intent i = new Intent(getActivity(), LocationPickerActivity.class);
+                i.putExtra("type", "from");
                 startActivityForResult(i, ADDRESS_PICKER_REQUEST);
                 break;
             case R.id.layoutDropLocation:
                 locationSelect = 2;
                 Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+                i1.putExtra("type", "to");
                 i1.putExtra("startLocation", true);
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
                 break;
@@ -753,7 +752,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             public void onMarkerDragEnd(Marker arg0) {
                 Log.d("System out", "onMarkerDragEnd...");
                 editTextPickupLocation.setText(getCompleteAddressString(arg0.getPosition().latitude, arg0.getPosition().longitude));
-                startPoint = getJsonObjectFromLocation(arg0.getPosition().latitude, arg0.getPosition().longitude);
+                startPoint = getJsonObjectFromLocation(arg0.getPosition().latitude, arg0.getPosition().longitude, editTextPickupLocation.getText().toString());
                 latLngOrigin = new LatLng(arg0.getPosition().latitude, arg0.getPosition().longitude);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(arg0.getPosition(), 15.0f));
             }
@@ -819,31 +818,16 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         if (requestCode == ADDRESS_PICKER_REQUEST) {
             try {
                 if (data != null && data.getStringExtra(MapUtility.ADDRESS) != null) {
-                    // String address = data.getStringExtra(MapUtility.ADDRESS);
+                    String address = data.getStringExtra(MapUtility.ADDRESS);
                     double currentLatitude = data.getDoubleExtra(MapUtility.LATITUDE, 0.0);
                     double currentLongitude = data.getDoubleExtra(MapUtility.LONGITUDE, 0.0);
-                    Bundle completeAddress = data.getBundleExtra("fullAddress");
-                    /* data in completeAddress bundle
-                    "fulladdress"
-                    "city"
-                    "state"
-                    "postalcode"
-                    "country"
-                    "addressline1"
-                    "addressline2"
-                     */
 
                     if (locationSelect == 1) {
                         pickupLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngOrigin = new LatLng(currentLatitude, currentLongitude);
 
-                        StringBuilder strAdd = new StringBuilder().append
-                                (completeAddress.getString("addressline2")).append
-                                (completeAddress.getString("city")).append(",").append
-                                (completeAddress.getString("state"));
-                        Log.e("result ", "" + strAdd.toString() + "  ");
-                        editTextPickupLocation.setText(strAdd.toString());
-                        startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
+                        editTextPickupLocation.setText(address);
+                        startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
                         if (dropLocation != null) {
                             mGoogleMap.clear();
                             mGoogleMap.addMarker(new MarkerOptions()
@@ -866,15 +850,10 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                                     .title("pickup"));
                         }
                     } else if (locationSelect == 2) {
-                        StringBuilder stringBuilder = new StringBuilder().append
-                                (completeAddress.getString("addressline2")).append
-                                (completeAddress.getString("city")).append(",").append
-                                (completeAddress.getString("state"));
-                        Log.e("result 2 ", "" + stringBuilder.toString() + "  ");
-                        editTextDropLocation.setText(stringBuilder.toString());
+                        editTextDropLocation.setText(address);
                         dropLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngDestination = new LatLng(currentLatitude, currentLongitude);
-                        endPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, stringBuilder.toString());
+                        endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
                         destination = currentLatitude + "," + currentLongitude;
 
                         mGoogleMap.clear();
@@ -897,48 +876,223 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
 
                     } else {
                         Log.e("call else ", "both else");
+                        String ad = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
+                        JSONObject jsonObject = new JSONObject(ad);
 
-                        checkPointsList.get(listPos).setAddress(new StringBuilder().append
-                                (completeAddress.getString("addressline2")).append
-                                (completeAddress.getString("city")).append(",").append
-                                (completeAddress.getString("state")).toString());
+                        checkPointsList.get(listPos).setAddress(address);
                         dropLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngDestination = new LatLng(currentLatitude, currentLongitude);
                         checkPointsList.get(listPos).setLat(currentLatitude);
-                        checkPointsList.get(listPos).setCity(completeAddress.getString("city"));
-                        checkPointsList.get(listPos).setState(completeAddress.getString("state"));
-                        checkPointsList.get(listPos).setCountry(completeAddress.getString("country"));
+                        checkPointsList.get(listPos).setCity(jsonObject.getString("city"));
+                        checkPointsList.get(listPos).setState(jsonObject.getString("state"));
+                        checkPointsList.get(listPos).setCountry(jsonObject.getString("country"));
                         checkPointsList.get(listPos).setLongi(currentLongitude);
                         bottomSheetCheckPointsDialog.nofityAdapter();
                         refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
-
-                        /*if (listPos > 0) {
-                            origin = checkPointsList.get(listPos - 1).getLat() + "," + checkPointsList.get(listPos - 1).getLongi();
-                        } else {
-                            origin = destination;
-                        }
-                        destination = currentLatitude + "," + currentLongitude;
-                        mGoogleMap.addMarker(new MarkerOptions()
-                                .position(dropLocation)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
-                                .title("Marker in Sydney"));
-//                        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
-//                        destination = dropLocation.latitude + "," + dropLocation.longitude;
-//                        new GetDirection().execute();
-
-                        textViewCheckpoints.setText("Checkpoints :" + checkPointsList.size());
-                        if(bottomSheetCheckPointsDialog!=null) {
-                            bottomSheetCheckPointsDialog.dismiss();
-                        }*/
                     }
 
 
+                } else if (data.getSerializableExtra("lift_data") != null) {
+
+                    Data data1 = (Data) data.getSerializableExtra("lift_data");
+                    String type = data.getStringExtra("type");
+
+                    if (type.equals("from")) {
+                        String startlatlng = data1.getStart_point();
+                        String startlat = startlatlng.split(",")[0];
+                        String startlong = startlatlng.split(",")[1];
+
+                        pickupLocation = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+                        latLngOrigin = new LatLng(Double.parseDouble(startlat), Double.parseDouble(startlong));
+                        originLat = latLngOrigin;
+
+
+                        editTextPickupLocation.setText(data1.getStart_location());
+                        startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong), data1.getStart_location());
+
+                        if (dropLocation != null) {
+                            mGoogleMap.clear();
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(pickupLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                    .title("pickup"));
+
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(dropLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                                    .title("dropoff"));
+                            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+                            destination = dropLocation.latitude + "," + dropLocation.longitude;
+                            new GetDirection().execute(origin, destination);
+
+                        } else {
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(pickupLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                    .title("pickup"));
+                        }
+
+                    } else if (type.equals("to")) {
+
+                        String endlatlng = data1.getEnd_point();
+                        String endlat = endlatlng.split(",")[0];
+                        String endlong = endlatlng.split(",")[1];
+
+                        editTextDropLocation.setText(data1.getEnd_location());
+                        dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                        destinationLat = dropLocation;
+                        latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+
+                        endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong), data1.getEnd_location());
+                        destination = endlat + "," + endlong;
+
+                        mGoogleMap.clear();
+                        mGoogleMap.addMarker(new MarkerOptions()
+                                .position(dropLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
+                                .title("dropoff"));
+                        if (pickupLocation != null) {
+                            mGoogleMap.addMarker(new MarkerOptions()
+                                    .position(pickupLocation)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
+                                    .title("pickup"));
+                            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+                            destination = dropLocation.latitude + "," + dropLocation.longitude;
+
+                            new GetDirection().execute(origin, destination);
+
+                        }
+                    } else {
+                        String endlatlng = data1.getStart_point();
+                        String endlat = endlatlng.split(",")[0];
+                        String endlong = endlatlng.split(",")[1];
+
+                        String ad = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong), data1.getStart_location());
+                        JSONObject jsonObject = new JSONObject(ad);
+
+                        checkPointsList.get(listPos).setAddress(data1.getStart_location());
+                        dropLocation = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                        latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
+                        checkPointsList.get(listPos).setLat(Double.parseDouble(endlat));
+                        checkPointsList.get(listPos).setCity(jsonObject.getString("city"));
+                        checkPointsList.get(listPos).setState(jsonObject.getString("state"));
+                        checkPointsList.get(listPos).setCountry(jsonObject.getString("country"));
+                        checkPointsList.get(listPos).setLongi(Double.parseDouble(endlong));
+                        bottomSheetCheckPointsDialog.nofityAdapter();
+                        Log.e("Check List Size : ", "" + checkPointsList.size());
+                        refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
+                    }
+                } else if (data.getBooleanExtra("current_location", false)) {
+                    String type = data.getStringExtra("type");
+                    if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    Task<Location> task = fusedLocationProviderClient.getLastLocation();
+                    task.addOnSuccessListener(location -> {
+                        if (location != null) {
+                            currentLocation = location;
+                            mapFragment.getMapAsync(this);
+                            if (type != null) {
+                                if (type.equals("from")) {
+                                    setCurrentLocationInPickup();
+                                } else if (type.equals("to")) {
+                                    setCurrentLocationInDrop();
+                                } else {
+                                    setCurrentLocationInCheckPoint();
+                                }
+                            }
+                        }
+                    });
+                    task.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
+
+
+    private void setCurrentLocationInDrop() {
+        latLngDestination = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        destination = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        dropLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        destinationLat = latLngDestination;
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(new MarkerOptions().position(latLngDestination).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location)).title("Dropoff"));
+
+        // [START_EXCLUDE silent]
+        editTextDropLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
+        endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextDropLocation.getText().toString());
+
+        if (pickupLocation != null) {
+            mGoogleMap.clear();
+            mGoogleMap.addMarker(new MarkerOptions().position(pickupLocation).icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location)).title("pickup"));
+
+            mGoogleMap.addMarker(new MarkerOptions().position(dropLocation).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location)).title("Dropoff"));
+
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+            destination = dropLocation.latitude + "," + dropLocation.longitude;
+            new GetDirection().execute(origin, destination);
+        } else {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngDestination, 15.0f));
+        }
+    }
+
+    private void setCurrentLocationInPickup() {
+        latLngOrigin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        originLat = latLngOrigin;
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(new MarkerOptions().position(latLngOrigin).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location)).title("Pickup"));
+
+        // [START_EXCLUDE silent]
+        editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
+        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextPickupLocation.getText().toString());
+
+        if (dropLocation != null) {
+            mGoogleMap.clear();
+            mGoogleMap.addMarker(new MarkerOptions().position(pickupLocation).icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location)).title("pickup"));
+
+            mGoogleMap.addMarker(new MarkerOptions().position(dropLocation).icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location)).title("dropoff"));
+            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+            destination = dropLocation.latitude + "," + dropLocation.longitude;
+
+            new GetDirection().execute(origin, destination);
+
+        } else {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
+        }
+    }
+
+    private void setCurrentLocationInCheckPoint() {
+        try {
+            latLngDestination = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            dropLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            String address = getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+            checkPointsList.get(listPos).setAddress(address);
+            String ad = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), address);
+            JSONObject jsonObject = new JSONObject(ad);
+
+            checkPointsList.get(listPos).setLat(currentLocation.getLatitude());
+            checkPointsList.get(listPos).setCity(jsonObject.getString("city"));
+            checkPointsList.get(listPos).setState(jsonObject.getString("state"));
+            checkPointsList.get(listPos).setCountry(jsonObject.getString("country"));
+            checkPointsList.get(listPos).setLongi(currentLocation.getLongitude());
+            bottomSheetCheckPointsDialog.nofityAdapter();
+            Log.e("Check List Size : ", "" + checkPointsList.size());
+            refreshGoogleMap((ArrayList<CheckPoints>) checkPointsList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void setPickupLocation() {
 
@@ -973,7 +1127,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
     }
 
 
-    private String getJsonObjectFromLocation(double LATITUDE, double LONGITUDE) {
+    private String getJsonObjectFromLocation(double LATITUDE, double LONGITUDE, String address) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         try {
@@ -986,7 +1140,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     jsonObject.put("country", returnedAddress.getCountryName());
                     jsonObject.put("state", returnedAddress.getAdminArea());
                     jsonObject.put("city", returnedAddress.getLocality());
-                    jsonObject.put("location", returnedAddress.getAddressLine(0));
+                    jsonObject.put("location", address);
                     jsonObject.put("date", "");
                     jsonObject.put("time", "");
                     strAdd = jsonObject.toString();
@@ -1249,7 +1403,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         });
 
         b1.setOnClickListener(v -> {
-            if (etkm.getText().toString().isEmpty()){
+            if (etkm.getText().toString().isEmpty()) {
                 Toast.makeText(getActivity(), "Rate/km is mandatory.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -1396,6 +1550,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         locationSelect = 3;
         listPos = preferredCallingMode;
         Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+        i1.putExtra("type", "checkpoint");
         startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
     }
 

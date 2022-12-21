@@ -44,7 +44,7 @@ public class RideHistoryAdapter extends RecyclerView.Adapter<RideHistoryAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Data matchingRideResponse = arrayList.get(position);
-        if (type != null && type.equals("from")) {
+        if (type != null && (type.equals("from") || type.equals("checkpoint"))) {
             holder.tv_start_point.setText(matchingRideResponse.getStart_location());
             holder.img_marker.setImageResource(R.drawable.pic_location);
         } else {
