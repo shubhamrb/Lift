@@ -17,5 +17,6 @@
     <color name="colorBlue">#00AEEF</color>
     <color name="colorText">#767676</color>
     <color name="border_radius">#DDDDDD</color>
+    <color name="divider">#AAA5A5</color>
 
 </resources>

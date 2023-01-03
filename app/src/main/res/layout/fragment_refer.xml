@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_driver"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbarNew"
+        layout="@layout/toolbar_back_title_layout" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarNew"
+        android:padding="@dimen/_20sdp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:padding="@dimen/dp_5"
+            android:text="Invite your friends to try CharPair"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewLabel"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:alpha="0.5"
+            android:background="@drawable/dashed_border"
+            android:drawableRight="@drawable/ic_copy_24"
+            android:ellipsize="end"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:padding="@dimen/dp_7"
+            android:text=""
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/sp_16" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewPointLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewCode"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:padding="@dimen/dp_5"
+            android:text="Pair Points"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/sp_14" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textViewPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewPointLabel"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center_vertical"
+            android:text="₹00"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/sp_18" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewPoint"
+            android:layout_marginTop="@dimen/_8sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/_10sdp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center_vertical"
+                    android:text="Go Green Partner"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_16" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:background="@color/divider" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:text="click here to become a go green partner"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:text="keep your aadhar, pan and bank account details with you to process the go green partnership."
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_12" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonGoGreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="@drawable/rounded_button"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center"
+                    android:text="Apply"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/sp_16" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonLift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/sp_25"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginRight="@dimen/sp_25"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:background="@drawable/rounded_button"
+            android:fontFamily="@font/gotham_medium"
+            android:gravity="center"
+            android:text="Refer Now"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/sp_16" />
+    </RelativeLayout>
+</RelativeLayout>

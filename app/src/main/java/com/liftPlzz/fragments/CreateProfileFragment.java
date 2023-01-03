@@ -89,6 +89,8 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
     AppCompatEditText editTextEmail;
     @BindView(R.id.editTextAboutUser)
     AppCompatEditText editTextAboutUser;
+    @BindView(R.id.editTextReferralCode)
+    AppCompatEditText editTextReferralCode;
 
     @BindView(R.id.buttonUpdate)
     AppCompatButton buttonUpdate;
@@ -288,9 +290,10 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
                         RequestBody email = RequestBody.create(okhttp3.MultipartBody.FORM, editTextEmail.getText().toString());
                         RequestBody mobile = RequestBody.create(okhttp3.MultipartBody.FORM, editTextMobile.getText().toString());
                         RequestBody aboutUs = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextAboutUser.getText().toString());
-                        presenter.updateProfile(api_key, device, token, name, designation, email, mobile, aboutUs, body);
+                        RequestBody refferal_id = RequestBody.create(okhttp3.MultipartBody.FORM, "" + editTextReferralCode.getText().toString());
+                        presenter.updateProfile(api_key, device, token, name, designation, email, mobile, aboutUs, body, refferal_id);
                     } else {
-                        presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""), editTextName.getText().toString(), editTextDesignation.getText().toString(), editTextEmail.getText().toString(), editTextMobile.getText().toString(), editTextAboutUser.getText().toString());
+                        presenter.updateProfile(sharedPreferences.getString(Constants.TOKEN, ""), editTextName.getText().toString(), editTextDesignation.getText().toString(), editTextEmail.getText().toString(), editTextMobile.getText().toString(), editTextAboutUser.getText().toString(), editTextReferralCode.getText().toString());
                     }
                 }
                 break;

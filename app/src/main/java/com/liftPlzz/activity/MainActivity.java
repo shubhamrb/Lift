@@ -8,10 +8,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -47,7 +45,7 @@ public class MainActivity extends AppNavigationProvider {
 
     @BindView(R.id.viewpager)
     ViewPager viewpager;
-
+    String referral_id = null;
 
     @Override
     public int getPlaceHolder() {
@@ -57,7 +55,6 @@ public class MainActivity extends AppNavigationProvider {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         sharedPreferencesIntro =
@@ -66,30 +63,30 @@ public class MainActivity extends AppNavigationProvider {
 
         NOTIFICATION_TYPE = "";
         Intent intent = getIntent();
-        if(intent.getStringExtra("id")!=null){
-            String id = intent.getStringExtra("id");
-            String type = intent.getStringExtra("type");
-            Log.e("ID", ""+id);
-            Log.e("TYPE", ""+type);
+        if (intent.getStringExtra("referral_id") != null) {
+            referral_id = intent.getStringExtra("referral_id");
         }
 
         if (sharedPreferencesIntro.getBoolean(Constants.IS_INTRO, false)) {
             if (sharedPreferences.getBoolean(Constants.IS_LOGIN, false)) {
-                if(intent.getStringExtra("id")!=null){
+                if (intent.getStringExtra("id") != null) {
                     String id = intent.getStringExtra("id");
                     String type = intent.getStringExtra("type");
-                    Log.e("ID", ""+id);
-                    Log.e("TYPE", ""+type);
+                    Log.e("ID", "" + id);
+                    Log.e("TYPE", "" + type);
                     NOTIFICATION_TYPE = type;
                     startActivity(new Intent(MainActivity.this, HomeActivity.class)
-                            .putExtra("id",id)
-                            .putExtra("type",type));
-                }else {
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                            .putExtra("id", id)
+                            .putExtra("type", type)
+                            .putExtra("referral_id", referral_id));
+                } else {
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class)
+                            .putExtra("referral_id", referral_id));
                 }
                 finish();
             } else {
-                startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                startActivity(new Intent(MainActivity.this, AuthActivity.class)
+                        .putExtra("referral_id", referral_id));
                 finish();
             }
 
@@ -101,7 +98,8 @@ public class MainActivity extends AppNavigationProvider {
             viewpager.addOnPageChangeListener(
                     new ViewPager.OnPageChangeListener() {
                         @Override
-                        public void onPageScrolled(int i, float v, int i1) {}
+                        public void onPageScrolled(int i, float v, int i1) {
+                        }
 
                         @Override
                         public void onPageSelected(int i) {
@@ -139,13 +137,15 @@ public class MainActivity extends AppNavigationProvider {
                                         .edit()
                                         .putBoolean(Constants.IS_INTRO, true)
                                         .apply();
-                                startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                                startActivity(new Intent(MainActivity.this, AuthActivity.class)
+                                        .putExtra("referral_id", referral_id));
                                 finish();
                             }
                         }
 
                         @Override
-                        public void onPageScrollStateChanged(int i) {}
+                        public void onPageScrollStateChanged(int i) {
+                        }
                     });
         }
     }
@@ -175,7 +175,8 @@ public class MainActivity extends AppNavigationProvider {
                     layoutLine4.setImageResource(R.drawable.line_new);
                 } else {
                     sharedPreferencesIntro.edit().putBoolean(Constants.IS_INTRO, true).apply();
-                    startActivity(new Intent(MainActivity.this, AuthActivity.class));
+                    startActivity(new Intent(MainActivity.this, AuthActivity.class)
+                            .putExtra("referral_id", referral_id));
                     finish();
                 }
                 break;

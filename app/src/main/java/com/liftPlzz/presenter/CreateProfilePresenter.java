@@ -32,10 +32,10 @@ public class CreateProfilePresenter extends BasePresenter<CreateProfileView> {
 
     }
 
-    public void updateProfile(String token, String name, String deg, String email, String mobile, String aboutme) {
+    public void updateProfile(String token, String name, String deg, String email, String mobile, String aboutme, String refferal_id) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateProfileMainResponse> call = api.create_profile(Constants.API_KEY, "android", token, name, email, mobile, deg, aboutme);
+        Call<CreateProfileMainResponse> call = api.create_profile(Constants.API_KEY, "android", token, name, email, mobile, deg, aboutme, refferal_id);
         call.enqueue(new Callback<CreateProfileMainResponse>() {
             @Override
             public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {
@@ -62,10 +62,11 @@ public class CreateProfilePresenter extends BasePresenter<CreateProfileView> {
         });
     }
 
-    public void updateProfile(RequestBody key, RequestBody client, RequestBody token, RequestBody name, RequestBody deg, RequestBody email, RequestBody mobile, RequestBody aboutme, MultipartBody.Part image) {
+    public void updateProfile(RequestBody key, RequestBody client, RequestBody token, RequestBody name, RequestBody deg,
+                              RequestBody email, RequestBody mobile, RequestBody aboutme, MultipartBody.Part image, RequestBody refferal_id) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateProfileMainResponse> call = api.create_profile_image(key, client, token, name, email, mobile, deg, aboutme, image);
+        Call<CreateProfileMainResponse> call = api.create_profile_image(key, client, token, name, email, mobile, deg, aboutme, image,refferal_id);
         call.enqueue(new Callback<CreateProfileMainResponse>() {
             @Override
             public void onResponse(Call<CreateProfileMainResponse> call, Response<CreateProfileMainResponse> response) {

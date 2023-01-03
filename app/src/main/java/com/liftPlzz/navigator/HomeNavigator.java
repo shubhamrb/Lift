@@ -30,6 +30,10 @@ public interface HomeNavigator {
 
     void openMyChatFragment(BaseActivity.PerformFragment performFragment);
 
+    void openReferFragment(BaseActivity.PerformFragment performFragment);
+
+    void openGoGreenFragment(BaseActivity.PerformFragment performFragment);
+
     void openNotificationFragment(BaseActivity.PerformFragment performFragment);
 
     void openUpdateProfileFragment(BaseActivity.PerformFragment performFragment);
@@ -62,6 +66,6 @@ public interface HomeNavigator {
 
     void openMatchingRide(BaseActivity.PerformFragment performFragment, Integer lift_id);
 
-    void openRideRequests(BaseActivity.PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner,String from);
+    void openRideRequests(BaseActivity.PerformFragment performFragment, boolean isLifter, Integer lift_id, boolean partner, String from);
 
 }

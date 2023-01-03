@@ -38,8 +38,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.dynamiclinks.DynamicLink;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.MenuListAdapter;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
@@ -213,7 +211,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         } else if (s == 4) {
             openMyChatFragment(PerformFragment.REPLACE);
         } else if (s == 5) {
-            buildDynamicLink("https://charpair.page.link/" + sharedPreferences.getString(Constants.USER_ID, ""));
+            openReferFragment(PerformFragment.REPLACE);
         } else if (s == 6) {
             /*feedback*/
             openFeedbackSuggestionFragment(PerformFragment.REPLACE, "Feedback");
@@ -259,6 +257,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
                 params.put("api_key", Constants.API_KEY);
                 params.put("client", Constants.ANDROID);
                 params.put("token", sharedPreferences.getString(Constants.TOKEN, ""));
+                params.put("refferal_id", referral_id);
                 return params;
             }
         };
@@ -390,20 +389,4 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
     public void onPaymentError(int i, String s) {
         getPointWalletFragment().onPaymentErrorResponse(i, s);
     }
-
-    private void buildDynamicLink(String link) {
-        FirebaseDynamicLinks.getInstance().createDynamicLink().setLink(Uri.parse(link)).setDomainUriPrefix("https://charpair.page.link").setAndroidParameters(new DynamicLink.AndroidParameters.Builder("com.liftPlzz").build()).buildShortDynamicLink().addOnSuccessListener(shortDynamicLink -> {
-            String inviteLink = shortDynamicLink.getShortLink().toString();
-
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Invite link : " + inviteLink);
-            sendIntent.setType("text/*");
-            Intent shareIntent = Intent.createChooser(sendIntent, null);
-            startActivity(shareIntent);
-        }).addOnFailureListener(Throwable::printStackTrace);
-
-
-    }
-
 }

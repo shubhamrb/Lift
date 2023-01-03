@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.liftPlzz.model.BlockUserResponse;
 import com.liftPlzz.model.FeedbackModelResponse;
 import com.liftPlzz.model.FindLiftResponse;
+import com.liftPlzz.model.ReferralDataResponse;
 import com.liftPlzz.model.ResponseChatSuggestion;
 import com.liftPlzz.model.UserInfo.UserInfoModel;
 import com.liftPlzz.model.chatuser.ResponseChatUser;
@@ -144,7 +145,8 @@ public interface ApiService {
                                                          @Part("mobile") RequestBody mobile,
                                                          @Part("designation") RequestBody designation,
                                                          @Part("about_me") RequestBody about_me,
-                                                         @Part MultipartBody.Part imageFile);
+                                                         @Part MultipartBody.Part imageFile,
+                                                         @Part("refferal_id") RequestBody refferal_id);
 
     @FormUrlEncoded
     @POST("edit-profile")
@@ -155,7 +157,9 @@ public interface ApiService {
                                                    @Field("email") String email,
                                                    @Field("mobile") String mobile,
                                                    @Field("designation") String designation,
-                                                   @Field("about_me") String about_me);
+                                                   @Field("about_me") String about_me,
+                                                   @Field("refferal_id") String refferal_id
+    );
 
     @FormUrlEncoded
     @POST("get-user-review")
@@ -297,6 +301,12 @@ public interface ApiService {
     Call<CreateProfileMainResponse> get_profile(@Field("api_key") String api_key,
                                                 @Field("client") String client,
                                                 @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("refer_and_earn")
+    Call<ReferralDataResponse> get_referral_data(@Field("api_key") String api_key,
+                                                 @Field("client") String client,
+                                                 @Field("token") String token);
 
     @FormUrlEncoded
     @POST("setting-reset")
@@ -706,6 +716,23 @@ public interface ApiService {
     Call<FeedbackModelResponse> getSuggestionList(@Field("api_key") String api_key,
                                                   @Field("client") String client,
                                                   @Field("token") String token);
+
+    @Multipart
+    @POST("go_green_partner_apply")
+    Call<JsonObject> applyGoGreen(@Part("api_key") RequestBody api_key,
+                                  @Part("client") RequestBody client,
+                                  @Part("token") RequestBody token,
+                                  @Part MultipartBody.Part aadhar,
+                                  @Part MultipartBody.Part pan,
+                                  @Part("account") RequestBody account,
+                                  @Part("ifsc") RequestBody ifsc,
+                                  @Part("name") RequestBody name);
+
+    @FormUrlEncoded
+    @POST("go_green_partner_detail")
+    Call<JsonObject> get_go_green_data(@Field("api_key") String api_key,
+                                       @Field("client") String client,
+                                       @Field("token") String token);
 
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android

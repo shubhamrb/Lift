@@ -14,6 +14,7 @@ import com.liftPlzz.fragments.ELearningFragment;
 import com.liftPlzz.fragments.FaqFragment;
 import com.liftPlzz.fragments.FeedbackFragment;
 import com.liftPlzz.fragments.FeedbackSuggestionFragment;
+import com.liftPlzz.fragments.GoGreenFragment;
 import com.liftPlzz.fragments.HomeFragment;
 import com.liftPlzz.fragments.LoginFragment;
 import com.liftPlzz.fragments.MatchingRideFragment;
@@ -23,6 +24,7 @@ import com.liftPlzz.fragments.NotificationFragment;
 import com.liftPlzz.fragments.OTpFragment;
 import com.liftPlzz.fragments.PointWalletFragment;
 import com.liftPlzz.fragments.ProfileFragment;
+import com.liftPlzz.fragments.ReferFragment;
 import com.liftPlzz.fragments.ReviewsFragment;
 import com.liftPlzz.fragments.RideRequestFragment;
 import com.liftPlzz.fragments.SettingFragment;
@@ -61,6 +63,12 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     public void openMyChatFragment(PerformFragment performFragment) {
         ChatUserFragment chatUserFragment = new ChatUserFragment();
         openFragment(chatUserFragment, ChatUserFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openReferFragment(PerformFragment performFragment) {
+        ReferFragment referFragment = new ReferFragment();
+        openFragment(referFragment, ReferFragment.class.getName(), performFragment, true);
     }
 
     @Override
@@ -258,5 +266,11 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
         bundle.putString("from", from);
         rideRequestFragment.setArguments(bundle);
         openFragment(rideRequestFragment, RideRequestFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openGoGreenFragment(PerformFragment performFragment) {
+        GoGreenFragment goGreenFragment = new GoGreenFragment();
+        openFragment(goGreenFragment, GoGreenFragment.class.getName(), performFragment, true);
     }
 }
