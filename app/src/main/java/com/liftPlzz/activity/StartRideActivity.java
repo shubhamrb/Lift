@@ -1642,7 +1642,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     Log.d("stloc", stlocation);
                     JSONObject end = data.getJSONObject("end_point");
                     Log.d("end", end.toString());
-                    String etlocation = st.getString("location");
+                    String etlocation = end.getString("location");
                     Log.d("etlocatio", etlocation);
                     String date = data.getString("date");
                     Log.d("date", date);

@@ -61,6 +61,10 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         holder.textViewSeats.setText(context.getString(R.string.seat) + lift.getPaidSeats());
         holder.textViewDateTime.setText(lift.getLiftDate());
         holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
+
+        holder.itemView.setOnClickListener(view -> {
+            itemListener.showBill(lift.getId());
+        });
     }
 
 
@@ -151,8 +155,11 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
 
     public interface ItemListener {
         void onMatchClick(CompleteLiftData lift);
+
         void onAddClick(Lift completeLiftData, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
 
         void onDeleteClick(int Id);
+
+        void showBill(int Id);
     }
 }

@@ -246,7 +246,7 @@
                     android:padding="@dimen/dp_8">
 
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/editTextReferralCode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -256,7 +256,7 @@
                         android:fontFamily="@font/gotham_medium"
                         android:gravity="start"
                         android:hint="Referral code (Optional)"
-                        android:inputType="number"
+                        android:inputType="text"
                         android:padding="@dimen/dp_5"
                         android:singleLine="true"
                         android:textColor="@color/colorText"

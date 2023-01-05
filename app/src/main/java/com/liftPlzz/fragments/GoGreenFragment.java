@@ -190,10 +190,10 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
             editTextName.setText(name);
         }
 
-        if (aadhar != null) {
+        if (aadhar != null && !aadhar.isEmpty()) {
             verified_aadhar.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
-        if (pan != null) {
+        if (pan != null && !pan.isEmpty()) {
             verified_pan.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
     }
