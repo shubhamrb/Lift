@@ -92,44 +92,51 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
         StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-invoice", response -> {
             try {
                 JSONObject jObject = new JSONObject(response);
-                JSONObject data = jObject.getJSONObject("data");
-                JSONObject st = data.getJSONObject("start_point");
-                String stlocation = st.getString("location");
-                JSONObject end = data.getJSONObject("end_point");
-                String etlocation = end.getString("location");
-                String date = data.getString("date");
-                String distance = data.getString("distance");
-                Integer perkm = data.getInt("per_km_point");
-                String totalpoint = data.getString("total_point");
+                boolean status = jObject.getBoolean("status");
+                if (status) {
+                    JSONObject data = jObject.getJSONObject("data");
+                    JSONObject st = data.getJSONObject("start_point");
+                    String stlocation = st.getString("location");
+                    JSONObject end = data.getJSONObject("end_point");
+                    String etlocation = end.getString("location");
+                    String date = data.getString("date");
+                    String distance = data.getString("distance");
+                    Integer perkm = data.getInt("per_km_point");
+                    String totalpoint = data.getString("total_point");
 
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-                LayoutInflater inflater = getLayoutInflater();
-                dialogBuilder.setTitle("Invoice");
-                dialogBuilder.setCancelable(true);
-                View dialogView = inflater.inflate(R.layout.invoicelayout, null);
-                dialogBuilder.setView(dialogView);
-                TextView pickuplocation = dialogView.findViewById(R.id.pickuplocationn);
-                TextView droplocation = dialogView.findViewById(R.id.droplocationn);
-                TextView datee = dialogView.findViewById(R.id.datee);
-                TextView distancee = dialogView.findViewById(R.id.distance);
-                TextView kmpoint = dialogView.findViewById(R.id.kmpoint);
-                TextView totalpointt = dialogView.findViewById(R.id.totalpoint);
-                Button paybtn = dialogView.findViewById(R.id.pay);
-                Button okayBtn = dialogView.findViewById(R.id.okayBtn);
-                paybtn.setVisibility(View.GONE);
-                okayBtn.setVisibility(View.VISIBLE);
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getLayoutInflater();
+                    dialogBuilder.setTitle("Invoice");
+                    dialogBuilder.setCancelable(true);
+                    View dialogView = inflater.inflate(R.layout.invoicelayout, null);
+                    dialogBuilder.setView(dialogView);
+                    TextView pickuplocation = dialogView.findViewById(R.id.pickuplocationn);
+                    TextView droplocation = dialogView.findViewById(R.id.droplocationn);
+                    TextView datee = dialogView.findViewById(R.id.datee);
+                    TextView distancee = dialogView.findViewById(R.id.distance);
+                    TextView kmpoint = dialogView.findViewById(R.id.kmpoint);
+                    TextView totalpointt = dialogView.findViewById(R.id.totalpoint);
+                    Button paybtn = dialogView.findViewById(R.id.pay);
+                    Button okayBtn = dialogView.findViewById(R.id.okayBtn);
+                    paybtn.setVisibility(View.GONE);
+                    okayBtn.setVisibility(View.VISIBLE);
 
-                pickuplocation.setText("Pickup Location : " + stlocation);
-                droplocation.setText("Drop Location : " + etlocation);
-                datee.setText("Date : " + date);
-                distancee.setText("Distance : " + distance);
-                kmpoint.setText("Per KM Point : " + perkm);
-                totalpointt.setText("Total Point : " + totalpoint);
-                AlertDialog alertDialog = dialogBuilder.create();
+                    pickuplocation.setText("Pickup Location : " + stlocation);
+                    droplocation.setText("Drop Location : " + etlocation);
+                    datee.setText("Date : " + date);
+                    distancee.setText("Distance : " + distance);
+                    kmpoint.setText("Per KM Point : " + perkm);
+                    totalpointt.setText("Total Point : " + totalpoint);
+                    AlertDialog alertDialog = dialogBuilder.create();
 
-                okayBtn.setOnClickListener(view -> alertDialog.dismiss());
+                    okayBtn.setOnClickListener(view -> alertDialog.dismiss());
 
-                alertDialog.show();
+                    alertDialog.show();
+                } else {
+                    String message=jObject.getString("message");
+                    Constants.showMessage(getActivity(),message,recyclerViewUpcoming);
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

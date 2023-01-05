@@ -167,7 +167,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-//                            doVerifyCode();
+                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -199,7 +199,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-//                            doVerifyCode();
+                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -231,7 +231,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-//                            doVerifyCode();
+                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -264,7 +264,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-//                            doVerifyCode();
+                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -297,7 +297,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-//                            doVerifyCode();
+                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
@@ -323,14 +323,14 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (s.length() > 0) {
-                    editTextFirstDigits.requestFocus();
+//                    editTextFirstDigits.requestFocus();
                     otp = editTextFirstDigits.getText().toString() + editTextSecondsDigits.getText().toString()
                             + editTextThirdDigits.getText().toString() + editTextFourthDigits.getText().toString()
                             + editTextFive.getText().toString() + editTextSix.getText().toString();
                     if (otp.length() == 6) {
                         imageViewNext.setEnabled(true);
                         if (!isManual) {
-//                            doVerifyCode();
+                            doVerifyCode();
                         }
                     } else {
                         imageViewNext.setEnabled(false);
