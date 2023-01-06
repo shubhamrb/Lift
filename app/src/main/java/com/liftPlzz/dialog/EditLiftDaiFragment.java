@@ -164,6 +164,9 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    @BindView(R.id.btn_swap)
+    ImageView btn_swap;
+
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
 
@@ -232,7 +235,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
     String vehicleName = "";
     int vehicleId = -1;
 
-
+    private String srcIntent, destIntent;
     ///////
     private Lift lift;
 
@@ -356,7 +359,6 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
     }
 
     public void setStarLift(EditVehicleData data) {
-        liftdata = data;
         vehicle_id = data.getLift().getVehicleId();
         vehicleId = data.getLift().getVehicleId();
 
@@ -376,6 +378,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         completeAddress.putString("city", "" + data.getStart_point().getCity());
 
         startPoint = getJsonObject(currentLatitude, currentLongitude, completeAddress, strAdd.toString());
+        origin = pickupLocation.latitude + "," + pickupLocation.longitude;
+
         if (dropLocation != null) {
             mGoogleMap.clear();
             mGoogleMap.addMarker(new MarkerOptions()
@@ -387,7 +391,6 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     .position(dropLocation)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.drop_location))
                     .title("dropoff"));
-            origin = pickupLocation.latitude + "," + pickupLocation.longitude;
             destination = dropLocation.latitude + "," + dropLocation.longitude;
             new GetDirection().execute(origin, destination);
 
@@ -397,6 +400,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                         .position(pickupLocation)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
                         .title("pickup"));
+
+            setEndLiftLoc(data);
         }
 
         textViewLiftName.setText("" + (data.getLift().getLiftType().equals("offer") ? "Offer Lift" : "Find Lift"));
@@ -438,10 +443,11 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             origin = pickupLocation.latitude + "," + pickupLocation.longitude;
             destination = dropLocation.latitude + "," + dropLocation.longitude;
 
-//            new GetDirection().execute(origin, destination);
             if (data.getCheck_point().size() == 0) {
                 ArrayList<CheckPoints> list = new ArrayList<>();
                 refreshGoogleMap(list);
+            }else {
+                new GetDirection().execute(origin, destination);
             }
         }
 
@@ -524,7 +530,32 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         progressBar.setVisibility(View.VISIBLE);
         presenter.getEditVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "" + lift.getId());
         presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "");
+
+        btn_swap.setOnClickListener(view -> {
+            swapLocation();
+        });
     }
+
+    private void swapLocation() {
+        String time = liftdata.getStart_point().getTime();
+        String date = liftdata.getStart_point().getDate();
+
+        EditVehicleData newData = new EditVehicleData();
+        newData.setLift(liftdata.getLift());
+        newData.setStart_point(liftdata.getEnd_point());
+        newData.setEnd_point(liftdata.getStart_point());
+        newData.setCheck_point(liftdata.getCheck_point());
+
+        newData.getStart_point().setTime(time);
+        newData.getStart_point().setDate(date);
+        liftdata = newData;
+
+        dropLocation=null;
+        setStarLift(liftdata);
+//        setEndLiftLoc(liftdata);
+        draw_check_point_from_api(liftdata);
+    }
+
 
     @Override
     public void onStart() {
@@ -828,6 +859,13 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
 
                         editTextPickupLocation.setText(address);
                         startPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
+
+                        String date = liftdata.getStart_point().getDate();
+                        String time = liftdata.getStart_point().getTime();
+
+                        liftdata.setStart_point(new Gson().fromJson(startPoint, LiftLocationModel.class));
+                        liftdata.getStart_point().setDate(date);
+                        liftdata.getStart_point().setTime(time);
                         if (dropLocation != null) {
                             mGoogleMap.clear();
                             mGoogleMap.addMarker(new MarkerOptions()
@@ -854,6 +892,9 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                         dropLocation = new LatLng(currentLatitude, currentLongitude);
                         latLngDestination = new LatLng(currentLatitude, currentLongitude);
                         endPoint = getJsonObjectFromLocation(currentLatitude, currentLongitude, address);
+
+                        liftdata.setEnd_point(new Gson().fromJson(endPoint, LiftLocationModel.class));
+
                         destination = currentLatitude + "," + currentLongitude;
 
                         mGoogleMap.clear();
@@ -910,6 +951,13 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                         editTextPickupLocation.setText(data1.getStart_location());
                         startPoint = getJsonObjectFromLocation(Double.parseDouble(startlat), Double.parseDouble(startlong), data1.getStart_location());
 
+                        String date = liftdata.getStart_point().getDate();
+                        String time = liftdata.getStart_point().getTime();
+
+                        liftdata.setStart_point(new Gson().fromJson(startPoint, LiftLocationModel.class));
+                        liftdata.getStart_point().setDate(date);
+                        liftdata.getStart_point().setTime(time);
+
                         if (dropLocation != null) {
                             mGoogleMap.clear();
                             mGoogleMap.addMarker(new MarkerOptions()
@@ -944,6 +992,9 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                         latLngDestination = new LatLng(Double.parseDouble(endlat), Double.parseDouble(endlong));
 
                         endPoint = getJsonObjectFromLocation(Double.parseDouble(endlat), Double.parseDouble(endlong), data1.getEnd_location());
+
+                        liftdata.setEnd_point(new Gson().fromJson(endPoint, LiftLocationModel.class));
+
                         destination = endlat + "," + endlong;
 
                         mGoogleMap.clear();
@@ -1029,6 +1080,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         editTextDropLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
         endPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextDropLocation.getText().toString());
 
+        liftdata.setEnd_point(new Gson().fromJson(endPoint, LiftLocationModel.class));
+
         if (pickupLocation != null) {
             mGoogleMap.clear();
             mGoogleMap.addMarker(new MarkerOptions().position(pickupLocation).icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location)).title("pickup"));
@@ -1054,6 +1107,13 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         // [START_EXCLUDE silent]
         editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
         startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), editTextPickupLocation.getText().toString());
+
+        String date = liftdata.getStart_point().getDate();
+        String time = liftdata.getStart_point().getTime();
+
+        liftdata.setStart_point(new Gson().fromJson(startPoint, LiftLocationModel.class));
+        liftdata.getStart_point().setDate(date);
+        liftdata.getStart_point().setTime(time);
 
         if (dropLocation != null) {
             mGoogleMap.clear();
@@ -1251,54 +1311,65 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         ImageView threeTxt = d.findViewById(R.id.threeTxt);
         ImageView fourTxt = d.findViewById(R.id.fourTxt);
         ImageView fiveTxt = d.findViewById(R.id.fiveTxt);
+        ImageView sixTxt = d.findViewById(R.id.sixTxt);
+        ImageView sevenTxt = d.findViewById(R.id.sevenTxt);
 
-        twoTxt.setVisibility(View.VISIBLE);
-        threeTxt.setVisibility(View.VISIBLE);
-        fourTxt.setVisibility(View.VISIBLE);
-        fiveTxt.setVisibility(View.VISIBLE);
-
-        switch (seat) {
-            case "1":
-                oneTxt.setImageResource(R.drawable.seat_filled);
-                twoTxt.setImageResource(R.drawable.seat_outline);
-                threeTxt.setImageResource(R.drawable.seat_outline);
-                fourTxt.setImageResource(R.drawable.seat_outline);
-                fiveTxt.setImageResource(R.drawable.seat_outline);
-
-                /*twoTxt.setVisibility(View.GONE);
-                threeTxt.setVisibility(View.GONE);
-                fourTxt.setVisibility(View.GONE);
-                fiveTxt.setVisibility(View.GONE);*/
-
-                break;
-            case "2":
-                oneTxt.setImageResource(R.drawable.seat_filled);
-                twoTxt.setImageResource(R.drawable.seat_filled);
-                threeTxt.setImageResource(R.drawable.seat_outline);
-                fourTxt.setImageResource(R.drawable.seat_outline);
-                fiveTxt.setImageResource(R.drawable.seat_outline);
-                break;
-            case "3":
-                oneTxt.setImageResource(R.drawable.seat_filled);
-                twoTxt.setImageResource(R.drawable.seat_filled);
-                threeTxt.setImageResource(R.drawable.seat_filled);
-                fourTxt.setImageResource(R.drawable.seat_outline);
-                fiveTxt.setImageResource(R.drawable.seat_outline);
-                break;
-            case "4":
-                oneTxt.setImageResource(R.drawable.seat_filled);
-                twoTxt.setImageResource(R.drawable.seat_filled);
-                threeTxt.setImageResource(R.drawable.seat_filled);
-                fourTxt.setImageResource(R.drawable.seat_filled);
-                fiveTxt.setImageResource(R.drawable.seat_outline);
-                break;
-            case "5":
-                oneTxt.setImageResource(R.drawable.seat_filled);
-                twoTxt.setImageResource(R.drawable.seat_filled);
-                threeTxt.setImageResource(R.drawable.seat_filled);
-                fourTxt.setImageResource(R.drawable.seat_filled);
-                fiveTxt.setImageResource(R.drawable.seat_filled);
-                break;
+        if (seat.equals("1")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_outline);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        } else if (seat.equals("2")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_outline);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        } else if (seat.equals("3")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_outline);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        } else if (seat.equals("4")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        } else if (seat.equals("5")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        } else if (seat.equals("6")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
+            sixTxt.setImageResource(R.drawable.seat_filled);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        } else if (seat.equals("7")) {
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
+            sixTxt.setImageResource(R.drawable.seat_filled);
+            sevenTxt.setImageResource(R.drawable.seat_filled);
         }
 
         oneTxt.setOnClickListener(v -> {
@@ -1308,6 +1379,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             threeTxt.setImageResource(R.drawable.seat_outline);
             fourTxt.setImageResource(R.drawable.seat_outline);
             fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
         });
         twoTxt.setOnClickListener(v -> {
             seat = "2";
@@ -1316,6 +1389,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             threeTxt.setImageResource(R.drawable.seat_outline);
             fourTxt.setImageResource(R.drawable.seat_outline);
             fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
         });
         threeTxt.setOnClickListener(v -> {
             seat = "3";
@@ -1324,6 +1399,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             threeTxt.setImageResource(R.drawable.seat_filled);
             fourTxt.setImageResource(R.drawable.seat_outline);
             fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
         });
         fourTxt.setOnClickListener(v -> {
             seat = "4";
@@ -1332,6 +1409,8 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             threeTxt.setImageResource(R.drawable.seat_filled);
             fourTxt.setImageResource(R.drawable.seat_filled);
             fiveTxt.setImageResource(R.drawable.seat_outline);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
         });
         fiveTxt.setOnClickListener(v -> {
             seat = "5";
@@ -1340,6 +1419,29 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             threeTxt.setImageResource(R.drawable.seat_filled);
             fourTxt.setImageResource(R.drawable.seat_filled);
             fiveTxt.setImageResource(R.drawable.seat_filled);
+            sixTxt.setImageResource(R.drawable.seat_outline);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        });
+
+        sixTxt.setOnClickListener(v -> {
+            seat = "6";
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
+            sixTxt.setImageResource(R.drawable.seat_filled);
+            sevenTxt.setImageResource(R.drawable.seat_outline);
+        });
+        sevenTxt.setOnClickListener(v -> {
+            seat = "7";
+            oneTxt.setImageResource(R.drawable.seat_filled);
+            twoTxt.setImageResource(R.drawable.seat_filled);
+            threeTxt.setImageResource(R.drawable.seat_filled);
+            fourTxt.setImageResource(R.drawable.seat_filled);
+            fiveTxt.setImageResource(R.drawable.seat_filled);
+            sixTxt.setImageResource(R.drawable.seat_filled);
+            sevenTxt.setImageResource(R.drawable.seat_filled);
         });
 
         int selectedPos = -1;
@@ -1353,6 +1455,72 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                 if (vehicleId == vehicleList.get(i).getId()) {
                     vehicleList.get(i).setRatePerKm(Integer.parseInt(rate_per_km));
                     selectedPos = i;
+
+                    switch (vehicleList.get(i).getSeats()) {
+                        case 1:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.GONE);
+                            threeTxt.setVisibility(View.GONE);
+                            fourTxt.setVisibility(View.GONE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 2:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.GONE);
+                            fourTxt.setVisibility(View.GONE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 3:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.GONE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 4:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 5:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.VISIBLE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 6:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.VISIBLE);
+                            sixTxt.setVisibility(View.VISIBLE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 7:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.VISIBLE);
+                            sixTxt.setVisibility(View.VISIBLE);
+                            sevenTxt.setVisibility(View.VISIBLE);
+                            break;
+                    }
                 }
             }
         }
@@ -1361,11 +1529,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         vehiclePager.setAdapter(pagerAdapter);
         indicator.setViewPager(vehiclePager);
 
-        /*if (vehicleList.size() > 0) {
-            if (selectedPos != -1) {
-                selectedVehicleData = vehicleList.get(selectedPos);
-            }
-        }*/
+
         etkm.setText("" + rate_per_km);
         vehiclePager.setCurrentItem(selectedPos);
         vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -1387,10 +1551,71 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     fourTxt.setVisibility(View.GONE);
                     fiveTxt.setVisibility(View.GONE);
                 } else {
-                    twoTxt.setVisibility(View.VISIBLE);
-                    threeTxt.setVisibility(View.VISIBLE);
-                    fourTxt.setVisibility(View.VISIBLE);
-                    fiveTxt.setVisibility(View.VISIBLE);
+                    switch (vehicleList.get(i).getSeats()) {
+                        case 1:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.GONE);
+                            threeTxt.setVisibility(View.GONE);
+                            fourTxt.setVisibility(View.GONE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 2:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.GONE);
+                            fourTxt.setVisibility(View.GONE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 3:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.GONE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 4:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.GONE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 5:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.VISIBLE);
+                            sixTxt.setVisibility(View.GONE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 6:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.VISIBLE);
+                            sixTxt.setVisibility(View.VISIBLE);
+                            sevenTxt.setVisibility(View.GONE);
+                            break;
+                        case 7:
+                            oneTxt.setVisibility(View.VISIBLE);
+                            twoTxt.setVisibility(View.VISIBLE);
+                            threeTxt.setVisibility(View.VISIBLE);
+                            fourTxt.setVisibility(View.VISIBLE);
+                            fiveTxt.setVisibility(View.VISIBLE);
+                            sixTxt.setVisibility(View.VISIBLE);
+                            sevenTxt.setVisibility(View.VISIBLE);
+                            break;
+                    }
                 }
                 PagerPosition = i;
                 etkm.setText("" + vehicleList.get(i).getRatePerKm());
@@ -1492,6 +1717,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
 
     @Override
     public void getLiftDetail(EditVehicleData data) {
+        liftdata = data;
         Log.e("getLiftDetail", "" + new Gson().toJson(data));
         mainLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
@@ -1506,7 +1732,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         }
 
         setStarLift(data);
-        setEndLiftLoc(data);
+//        setEndLiftLoc(data);
         draw_check_point_from_api(data);
     }
 
@@ -1630,7 +1856,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     steps = legs.getJSONObject(i);
                     distance = steps.getJSONObject("distance");
                     String[] total = distance.getString("text").split(" ");
-                    totalDistance += Float.parseFloat(total[0]);
+                    totalDistance += Float.parseFloat(total[0].replace(",",""));
                 }
 
                 /*JSONObject steps = legs.getJSONObject(0);
