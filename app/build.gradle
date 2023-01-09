@@ -13,6 +13,20 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+    signingConfigs {
+        release {
+            storeFile file('keystore.jks')
+            storePassword "Charpair@246810"
+            keyAlias "charpair"
+            keyPassword "Charpair@246810"
+        }
+        debug {
+            storeFile file('keystore.jks')
+            storePassword "Charpair@246810"
+            keyAlias "charpair"
+            keyPassword "Charpair@246810"
+        }
+    }
     android {
         compileOptions {
             targetCompatibility = "8"
@@ -23,6 +37,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
