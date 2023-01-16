@@ -670,7 +670,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 if (sos.isEmpty()) {
                     Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
                 } else {
-                    requestpermisson();
+//                    requestpermisson();
                 }
         }
     }
