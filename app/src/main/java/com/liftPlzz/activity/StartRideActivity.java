@@ -1,7 +1,9 @@
 package com.liftPlzz.activity;
 
+
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
@@ -834,6 +836,10 @@ public class StartRideActivity extends AppCompatActivity implements
 
                             if (mainjson.getJSONArray("user_details").length() == 0) {
                                 Toast.makeText(StartRideActivity.this, "Ride ended successfully,but no user found", Toast.LENGTH_SHORT).show();
+                                sharedPreferences
+                                        .edit()
+                                        .putBoolean(Constants.IS_RIDE_ENDED, true)
+                                        .apply();
                                 finish();
                             } else {
                                 for (int i = 0; i < mainjson.getJSONArray("user_details").length(); i++) {

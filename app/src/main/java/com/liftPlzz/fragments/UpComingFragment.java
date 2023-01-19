@@ -191,4 +191,5 @@ public class UpComingFragment extends BaseFragment<UpComingPresenter, UpComingVi
     public void setCancelLiftData(String response) {
         presenter.getUpcomingLift(strToken);
     }
+
 }

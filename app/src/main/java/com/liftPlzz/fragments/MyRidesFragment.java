@@ -2,7 +2,9 @@ package com.liftPlzz.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,7 +53,7 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
     @BindView(R.id.layoutcompleted)
     LinearLayout layoutcompleted;
     @BindView(R.id.viewpagermyride)
-    ViewPager viewpagermyride;
+    public ViewPager viewpagermyride;
 
     @Override
     protected int createLayout() {
@@ -112,6 +114,15 @@ public class MyRidesFragment extends BaseFragment<AddVehiclePresenter, AddVehicl
     @Override
     public void onResume() {
         super.onResume();
+
+        boolean isRideEnded = sharedPreferences.getBoolean(Constants.IS_RIDE_ENDED, false);
+        if (isRideEnded) {
+            viewpagermyride.setCurrentItem(1);
+        } else {
+            viewpagermyride.setCurrentItem(0);
+        }
+
+        sharedPreferences.edit().putBoolean(Constants.IS_RIDE_ENDED, false).apply();
 
         if (viewpagermyride.getCurrentItem() == 0) {
             layoutupcoming.setBackground(getResources().getDrawable(R.drawable.rounded_bg_blue));

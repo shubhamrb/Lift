@@ -25,6 +25,7 @@ public class Constants {
     public static final String IMAGE_PATH = "path";
     public static final String IS_ADMIN = "admin";
     public static final String IS_INTRO = "isIntroCompleted";
+    public static final String IS_RIDE_ENDED = "isRideEnded";
     public static final String API_KEY = "070b92d28adc166b3a6c63c2d44535d2f62a3e24";
     public static final String ANDROID = "android";
 

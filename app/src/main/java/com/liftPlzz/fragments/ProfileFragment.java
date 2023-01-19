@@ -238,6 +238,7 @@ public class ProfileFragment extends BaseFragment<ProfilePresenter, ProfileView>
                         .crop()                    //Crop image(Optional), Check Customization for more option
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080)
+                        .cameraOnly()
                         .start();
                 IMAGE_TYPE = 1;
                 break;

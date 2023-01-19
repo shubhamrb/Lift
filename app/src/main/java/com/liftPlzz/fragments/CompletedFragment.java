@@ -65,7 +65,6 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
     protected void bindData() {
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
-        presenter.getCompletedLift(strToken);
     }
 
     public EditLiftDaiFragment.UpdateRecordListiner listinerUpdate = new EditLiftDaiFragment.UpdateRecordListiner() {
@@ -133,8 +132,8 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
 
                     alertDialog.show();
                 } else {
-                    String message=jObject.getString("message");
-                    Constants.showMessage(getActivity(),message,recyclerViewUpcoming);
+                    String message = jObject.getString("message");
+                    Constants.showMessage(getActivity(), message, recyclerViewUpcoming);
                 }
 
             } catch (JSONException e) {
@@ -205,5 +204,11 @@ public class CompletedFragment extends BaseFragment<CompletedPresenter, Complete
     @Override
     public void onDeleteClick(int id) {
         presenter.getDeleteLift(sharedPreferences.getString(Constants.TOKEN, ""), id);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.getCompletedLift(strToken);
     }
 }

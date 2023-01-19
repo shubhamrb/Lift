@@ -45,8 +45,8 @@ public class SplashActivity extends AppCompatActivity {
                     if (pendingDynamicLinkData != null && pendingDynamicLinkData.getLink() != null) {
                         deepLink = pendingDynamicLinkData.getLink();
                         List<String> pathSeg = deepLink.getPathSegments();
-                        if (pathSeg.size() > 1) {
-                            referral_id = pathSeg.get(1);
+                        if (pathSeg.size() >= 1) {
+                            referral_id = pathSeg.get(0);
                             Log.e("Referral_id", referral_id);
                         }
                     }

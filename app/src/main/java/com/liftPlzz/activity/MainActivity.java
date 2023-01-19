@@ -57,8 +57,7 @@ public class MainActivity extends AppNavigationProvider {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        sharedPreferencesIntro =
-                getSharedPreferences(Constants.SHARED_PREF_INTRO, Context.MODE_PRIVATE);
+        sharedPreferencesIntro = getSharedPreferences(Constants.SHARED_PREF_INTRO, Context.MODE_PRIVATE);
         sharedPreferences = getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
         NOTIFICATION_TYPE = "";
@@ -75,78 +74,67 @@ public class MainActivity extends AppNavigationProvider {
                     Log.e("ID", "" + id);
                     Log.e("TYPE", "" + type);
                     NOTIFICATION_TYPE = type;
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class)
-                            .putExtra("id", id)
-                            .putExtra("type", type)
-                            .putExtra("referral_id", referral_id));
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class).putExtra("id", id).putExtra("type", type).putExtra("referral_id", referral_id));
                 } else {
-                    startActivity(new Intent(MainActivity.this, HomeActivity.class)
-                            .putExtra("referral_id", referral_id));
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class).putExtra("referral_id", referral_id));
                 }
                 finish();
             } else {
-                startActivity(new Intent(MainActivity.this, AuthActivity.class)
-                        .putExtra("referral_id", referral_id));
+                startActivity(new Intent(MainActivity.this, AuthActivity.class).putExtra("referral_id", referral_id));
                 finish();
             }
 
         } else {
-            SectionPagerWalkTroughAdapter sectionPagerWalkTroughAdapter =
-                    new SectionPagerWalkTroughAdapter(this.getSupportFragmentManager(), 4);
+            SectionPagerWalkTroughAdapter sectionPagerWalkTroughAdapter = new SectionPagerWalkTroughAdapter(this.getSupportFragmentManager(), 4);
             viewpager.setAdapter(sectionPagerWalkTroughAdapter);
             // viewpager.setCurrentItem(0);
-            viewpager.addOnPageChangeListener(
-                    new ViewPager.OnPageChangeListener() {
-                        @Override
-                        public void onPageScrolled(int i, float v, int i1) {
-                        }
+            viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
+                }
 
-                        @Override
-                        public void onPageSelected(int i) {
+                @Override
+                public void onPageSelected(int i) {
 
-                            if (viewpager.getCurrentItem() == 0) {
-                                layoutLine1.setImageResource(R.drawable.line_new);
-                                layoutLine2.setImageResource(R.drawable.line_sel);
-                                layoutLine3.setImageResource(R.drawable.line_sel);
-                                layoutLine4.setImageResource(R.drawable.line_sel);
-                                viewpager.setCurrentItem(0);
-                            } else if (viewpager.getCurrentItem() == 1) {
-                                layoutLine1.setImageResource(R.drawable.line_sel);
-                                layoutLine2.setImageResource(R.drawable.line_new);
-                                layoutLine3.setImageResource(R.drawable.line_sel);
-                                layoutLine4.setImageResource(R.drawable.line_sel);
-                                viewpager.setCurrentItem(1);
-                            } else if (viewpager.getCurrentItem() == 2) {
+                    if (viewpager.getCurrentItem() == 0) {
+                        layoutLine1.setImageResource(R.drawable.line_new);
+                        layoutLine2.setImageResource(R.drawable.line_sel);
+                        layoutLine3.setImageResource(R.drawable.line_sel);
+                        layoutLine4.setImageResource(R.drawable.line_sel);
+                        viewpager.setCurrentItem(0);
+                    } else if (viewpager.getCurrentItem() == 1) {
+                        layoutLine1.setImageResource(R.drawable.line_sel);
+                        layoutLine2.setImageResource(R.drawable.line_new);
+                        layoutLine3.setImageResource(R.drawable.line_sel);
+                        layoutLine4.setImageResource(R.drawable.line_sel);
+                        viewpager.setCurrentItem(1);
+                    } else if (viewpager.getCurrentItem() == 2) {
 
-                                layoutLine1.setImageResource(R.drawable.line_sel);
-                                layoutLine2.setImageResource(R.drawable.line_sel);
-                                layoutLine3.setImageResource(R.drawable.line_new);
-                                layoutLine4.setImageResource(R.drawable.line_sel);
+                        layoutLine1.setImageResource(R.drawable.line_sel);
+                        layoutLine2.setImageResource(R.drawable.line_sel);
+                        layoutLine3.setImageResource(R.drawable.line_new);
+                        layoutLine4.setImageResource(R.drawable.line_sel);
 
-                                viewpager.setCurrentItem(2);
-                            } else if (viewpager.getCurrentItem() == 3) {
+                        viewpager.setCurrentItem(2);
+                    } else if (viewpager.getCurrentItem() == 3) {
 
-                                layoutLine1.setImageResource(R.drawable.line_sel);
-                                layoutLine2.setImageResource(R.drawable.line_sel);
-                                layoutLine3.setImageResource(R.drawable.line_sel);
-                                layoutLine4.setImageResource(R.drawable.line_new);
+                        layoutLine1.setImageResource(R.drawable.line_sel);
+                        layoutLine2.setImageResource(R.drawable.line_sel);
+                        layoutLine3.setImageResource(R.drawable.line_sel);
+                        layoutLine4.setImageResource(R.drawable.line_new);
 
-                                viewpager.setCurrentItem(3);
-                            } else {
-                                sharedPreferencesIntro
-                                        .edit()
-                                        .putBoolean(Constants.IS_INTRO, true)
-                                        .apply();
-                                startActivity(new Intent(MainActivity.this, AuthActivity.class)
-                                        .putExtra("referral_id", referral_id));
-                                finish();
-                            }
-                        }
+                        viewpager.setCurrentItem(3);
+                    } else {
+                        sharedPreferencesIntro.edit().putBoolean(Constants.IS_RIDE_ENDED, true).apply();
+                        startActivity(new Intent(MainActivity.this, AuthActivity.class).putExtra("referral_id", referral_id));
+                        finish();
+                    }
+                }
 
-                        @Override
-                        public void onPageScrollStateChanged(int i) {
-                        }
-                    });
+                @Override
+                public void onPageScrollStateChanged(int i) {
+                }
+            });
         }
     }
 
@@ -175,8 +163,7 @@ public class MainActivity extends AppNavigationProvider {
                     layoutLine4.setImageResource(R.drawable.line_new);
                 } else {
                     sharedPreferencesIntro.edit().putBoolean(Constants.IS_INTRO, true).apply();
-                    startActivity(new Intent(MainActivity.this, AuthActivity.class)
-                            .putExtra("referral_id", referral_id));
+                    startActivity(new Intent(MainActivity.this, AuthActivity.class).putExtra("referral_id", referral_id));
                     finish();
                 }
                 break;

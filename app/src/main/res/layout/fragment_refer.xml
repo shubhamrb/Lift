@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbarNew"
+        android:layout_centerInParent="true"
         android:padding="@dimen/_20sdp">
 
         <LinearLayout
@@ -51,49 +51,39 @@
                 android:text=""
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/sp_16" />
-        </LinearLayout>
 
-
-        <LinearLayout
-            android:id="@+id/ll_points"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_code"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewPointLabel"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll_points"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                android:padding="@dimen/dp_5"
-                android:text="Pair Points"
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/sp_14" />
+                android:layout_below="@+id/ll_code"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewPoint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/poppins_bold"
-                android:text="₹00"
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/sp_18" />
-        </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewPointLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:padding="@dimen/dp_5"
+                    android:text="Total Pair Points"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_14" />
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewPoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="₹00"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/sp_18" />
 
-        <LinearLayout
-            android:id="@+id/ll_invite"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_points"
-            android:layout_centerVertical="true"
-            android:orientation="vertical">
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -124,13 +114,15 @@
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_16" />
+
+
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/_8sdp">
+            android:layout_below="@+id/ll_code"
+            android:layout_marginTop="@dimen/_40sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,21 +166,41 @@
                     android:gravity="center_vertical"
                     android:text="keep your aadhar, pan and bank account details with you to process the go green partnership."
                     android:textColor="@color/colorText"
-                    android:textSize="@dimen/sp_12" />
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="italic" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/buttonGoGreen"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:background="@drawable/rounded_button"
-                    android:fontFamily="@font/gotham_medium"
-                    android:gravity="center"
-                    android:text="Apply"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/sp_16" />
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_toStartOf="@+id/buttonGoGreen"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:text="Go Green Partner is a promotion campaign by char pair where any individual can earn redeemable pair points in to account payment as 1 pair point = 1 INR.  Click here to know more &amp; become promotion partner."
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/sp_12" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/buttonGoGreen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:background="@drawable/rounded_button"
+                        android:fontFamily="@font/gotham_medium"
+                        android:gravity="center"
+                        android:text="Apply"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/sp_16" />
+                </RelativeLayout>
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
