@@ -35,15 +35,15 @@ public class SectionPagerWalkTroughAdapter extends FragmentStatePagerAdapter {
             case 0:
                 WalkTrough1Fragment tab1 = new WalkTrough1Fragment();
                 return tab1;
-            case 1:
+            /*case 1:
                 WalkTrough2Fragment tab2 = new WalkTrough2Fragment();
-                return tab2;
-            case 2:
+                return tab2;*/
+            case 1:
                 WalkTrough3Fragment tab3 = new WalkTrough3Fragment();
                 return tab3;
-            case 3:
+            /*case 3:
                 WalkTrough4Fragment tab4 = new WalkTrough4Fragment();
-                return tab4;
+                return tab4;*/
             default:
                 return null;
         }

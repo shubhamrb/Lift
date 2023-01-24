@@ -85,7 +85,7 @@ public class MainActivity extends AppNavigationProvider {
             }
 
         } else {
-            SectionPagerWalkTroughAdapter sectionPagerWalkTroughAdapter = new SectionPagerWalkTroughAdapter(this.getSupportFragmentManager(), 4);
+            SectionPagerWalkTroughAdapter sectionPagerWalkTroughAdapter = new SectionPagerWalkTroughAdapter(this.getSupportFragmentManager(), 2);
             viewpager.setAdapter(sectionPagerWalkTroughAdapter);
             // viewpager.setCurrentItem(0);
             viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -99,16 +99,16 @@ public class MainActivity extends AppNavigationProvider {
                     if (viewpager.getCurrentItem() == 0) {
                         layoutLine1.setImageResource(R.drawable.line_new);
                         layoutLine2.setImageResource(R.drawable.line_sel);
-                        layoutLine3.setImageResource(R.drawable.line_sel);
-                        layoutLine4.setImageResource(R.drawable.line_sel);
+//                        layoutLine3.setImageResource(R.drawable.line_sel);
+//                        layoutLine4.setImageResource(R.drawable.line_sel);
                         viewpager.setCurrentItem(0);
                     } else if (viewpager.getCurrentItem() == 1) {
                         layoutLine1.setImageResource(R.drawable.line_sel);
                         layoutLine2.setImageResource(R.drawable.line_new);
-                        layoutLine3.setImageResource(R.drawable.line_sel);
-                        layoutLine4.setImageResource(R.drawable.line_sel);
+//                        layoutLine3.setImageResource(R.drawable.line_sel);
+//                        layoutLine4.setImageResource(R.drawable.line_sel);
                         viewpager.setCurrentItem(1);
-                    } else if (viewpager.getCurrentItem() == 2) {
+                    } /*else if (viewpager.getCurrentItem() == 2) {
 
                         layoutLine1.setImageResource(R.drawable.line_sel);
                         layoutLine2.setImageResource(R.drawable.line_sel);
@@ -124,7 +124,7 @@ public class MainActivity extends AppNavigationProvider {
                         layoutLine4.setImageResource(R.drawable.line_new);
 
                         viewpager.setCurrentItem(3);
-                    } else {
+                    } */else {
                         sharedPreferencesIntro.edit().putBoolean(Constants.IS_RIDE_ENDED, true).apply();
                         startActivity(new Intent(MainActivity.this, AuthActivity.class).putExtra("referral_id", referral_id));
                         finish();
@@ -146,10 +146,10 @@ public class MainActivity extends AppNavigationProvider {
                     viewpager.setCurrentItem(1);
                     layoutLine1.setImageResource(R.drawable.line_sel);
                     layoutLine2.setImageResource(R.drawable.line_new);
-                    layoutLine3.setImageResource(R.drawable.line_sel);
-                    layoutLine4.setImageResource(R.drawable.line_sel);
+//                    layoutLine3.setImageResource(R.drawable.line_sel);
+//                    layoutLine4.setImageResource(R.drawable.line_sel);
 
-                } else if (viewpager.getCurrentItem() == 1) {
+                } /*else if (viewpager.getCurrentItem() == 1) {
                     viewpager.setCurrentItem(2);
                     layoutLine1.setImageResource(R.drawable.line_sel);
                     layoutLine2.setImageResource(R.drawable.line_sel);
@@ -161,7 +161,7 @@ public class MainActivity extends AppNavigationProvider {
                     layoutLine2.setImageResource(R.drawable.line_sel);
                     layoutLine3.setImageResource(R.drawable.line_sel);
                     layoutLine4.setImageResource(R.drawable.line_new);
-                } else {
+                }*/ else {
                     sharedPreferencesIntro.edit().putBoolean(Constants.IS_INTRO, true).apply();
                     startActivity(new Intent(MainActivity.this, AuthActivity.class).putExtra("referral_id", referral_id));
                     finish();

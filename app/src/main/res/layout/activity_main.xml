@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/line_sel"
-            android:visibility="visible" />
+            android:visibility="gone" />
         <ImageView
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/line_sel"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 

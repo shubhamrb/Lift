@@ -123,6 +123,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
                     intent.putExtra(Constants.PARTNER, false);
 
+                } else if (type.equalsIgnoreCase("invitation-status-accepted")) {
+                    String liftId = jObject.getString("LIFT_ID");
+                    intent = new Intent(this, HomeActivity.class);
+                    intent.putExtra("from", "notification");
+
+                    if (!liftId.equals(""))
+                        intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
+                    intent.putExtra(Constants.PARTNER, true);
+
                 } else if (type.equalsIgnoreCase("ride-end")) {
                     intent = new Intent(this, HomeActivity.class);
                 }

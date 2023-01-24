@@ -175,15 +175,11 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
 
     private void getNotifications() {
         if (getIntent().hasExtra("type")) {
-            String type = getIntent().getStringExtra("type");
-            int lift_id = -1, sub_cat_id = -1;
+            int lift_id = -1;
             boolean isPartner = false;
 
             if (getIntent().hasExtra(Constants.LIFT_ID)) {
                 lift_id = getIntent().getIntExtra(Constants.LIFT_ID, -1);
-            }
-            if (getIntent().hasExtra(Constants.SUB_CATEGORY_ID)) {
-                sub_cat_id = getIntent().getIntExtra(Constants.SUB_CATEGORY_ID, -1);
             }
             if (getIntent().hasExtra(Constants.PARTNER)) {
                 isPartner = getIntent().getBooleanExtra(Constants.PARTNER, false);
