@@ -135,6 +135,8 @@ public class CreateProfileFragment extends BaseFragment<CreateProfilePresenter, 
         Bundle bundle = getArguments();
         if (bundle != null) {
             referral_id = bundle.getString("referral_id");
+            editTextReferralCode.setText(referral_id);
+//            Toast.makeText(getActivity(), referral_id, Toast.LENGTH_LONG).show();
         }
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         mCallbackManager = CallbackManager.Factory.create();

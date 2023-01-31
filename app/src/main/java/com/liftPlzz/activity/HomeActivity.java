@@ -120,7 +120,7 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         referral_id = getIntent().getStringExtra("referral_id");
 
         if (referral_id != null) {
-            sendReferral();
+//            sendReferral();
         }
 
         fragmentManager = getSupportFragmentManager();

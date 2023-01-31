@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -128,27 +126,19 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
             final ChatUser chatUser = new Gson().fromJson(chatuserstring, ChatUser.class);
 
             tv_name.setText(chatUser.getName());
-            if (chatUser.getIs_contact_public()==0){
+            if (chatUser.getIs_contact_public() == 0) {
                 img_call.setVisibility(View.GONE);
-            }else {
+            } else {
                 img_call.setVisibility(View.VISIBLE);
             }
             img_call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + chatUser.getMobile()));
 
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-                        startActivity(intent);
+                        sendDummyMsgBeforeCall(chatUser.getMobile());
                     } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(new String[]{CALL_PHONE}, 1);
-                        } else {
-                            final String[] PERMISSIONS_STORAGE = {CALL_PHONE};
-                            ActivityCompat.requestPermissions(ChatActivity.this, PERMISSIONS_STORAGE, 9);
-                            startActivity(intent);
-                        }
+                        requestPermissions(new String[]{CALL_PHONE}, 1);
                     }
                 }
             });
@@ -278,48 +268,8 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
             @Override
             public void onClick(View view) {
                 String message = mMessageView.getText().toString();
-                if (!TextUtils.isEmpty(message)) {
 
-                    String current_user_ref = "messages/" + mCurrentUserId + "/" + mChatUser;
-                    String chat_user_ref = "messages/" + mChatUser + "/" + mCurrentUserId;
-                    DatabaseReference user_message_push = mRootReference.child("messages")
-                            .child(mCurrentUserId).child(mChatUser).push();
-
-//                    String current_user_ref = "messages/" + "paRzluS1A5UnpPb54xQbcjPVHk63" + "/" + "KrsbMc5iOJWVkgpPaWyce9nJ6qw1";
-//                    String chat_user_ref = "messages/" + "KrsbMc5iOJWVkgpPaWyce9nJ6qw1" + "/" + "paRzluS1A5UnpPb54xQbcjPVHk63";
-//                    DatabaseReference user_message_push = mRootReference.child("messages")
-//                            .child("paRzluS1A5UnpPb54xQbcjPVHk63").child("KrsbMc5iOJWVkgpPaWyce9nJ6qw1").push();
-
-                    String push_id = user_message_push.getKey();
-
-                    Map messageMap = new HashMap();
-                    messageMap.put("message", message);
-                    messageMap.put("seen", false);
-                    messageMap.put("type", "text");
-                    messageMap.put("time", ServerValue.TIMESTAMP);
-                    messageMap.put("from", mCurrentUserId);
-
-                    Map messageUserMap = new HashMap();
-                    messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
-                    messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
-
-                    mRootReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            if (databaseError != null) {
-                                Log.e("CHAT_ACTIVITY", "Cannot add message to database");
-                            } else {
-//                                Toast.makeText(ChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
-                                Log.e("CHAT_ACTIVITY_sent", "Message sent");
-                                mMessageView.setText("");
-                            }
-
-                        }
-                    });
-
-
-                }
+                sendMessage(message);
 
             }
         });
@@ -345,11 +295,61 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
                 itemPos = 0;
                 mCurrentPage++;
                 loadMoreMessages();
-                ;
 
             }
         });
 
+    }
+
+    private void sendMessage(String message) {
+        if (!TextUtils.isEmpty(message)) {
+            String current_user_ref = "messages/" + mCurrentUserId + "/" + mChatUser;
+            String chat_user_ref = "messages/" + mChatUser + "/" + mCurrentUserId;
+            DatabaseReference user_message_push = mRootReference.child("messages")
+                    .child(mCurrentUserId).child(mChatUser).push();
+            String push_id = user_message_push.getKey();
+            Map messageMap = new HashMap();
+            messageMap.put("message", message);
+            messageMap.put("seen", false);
+            messageMap.put("type", "text");
+            messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("from", mCurrentUserId);
+
+            Map messageUserMap = new HashMap();
+            messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
+            messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
+
+            mRootReference.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        Log.e("CHAT_ACTIVITY", "Cannot add message to database");
+                    } else {
+                        Log.e("CHAT_ACTIVITY_sent", "Message sent");
+                        mMessageView.setText("");
+                    }
+
+                }
+            });
+
+
+        }
+    }
+
+    private void sendDummyMsgBeforeCall(String mobile) {
+        String number = sharedPreferences.getString(Constants.MOBILE, "");
+        String name = sharedPreferences.getString(Constants.NAME, "");
+
+        String message = "Hello. I am interested to join you as travel partner,\n" +
+                "Lift Please find my details below:\n" +
+                "Name: " + name + "\n" +
+                "Mobile No.: " + number;
+        sendMessage(message);
+
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + mobile));
+        startActivity(intent);
     }
 
     //---FIRST 10 MESSAGES WILL LOAD ON START----
