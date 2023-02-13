@@ -146,6 +146,6 @@ public class ReferFragment extends BaseFragment<ReferPresenter, ReferView> imple
     public void setData(ReferralDataResponse.ReferralModel referralData) {
         this.referralData = referralData;
         textViewCode.setText(referralData.getReffer_id().toUpperCase());
-        textViewPoint.setText("₹" + referralData.getWallet_point());
+        textViewPoint.setText(referralData.getWallet_point() + " ( 1 point = 1 ₹ )");
     }
 }

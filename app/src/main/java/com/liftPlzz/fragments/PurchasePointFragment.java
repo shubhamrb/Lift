@@ -1,21 +1,27 @@
 package com.liftPlzz.fragments;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.util.Log;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +32,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.liftPlzz.R;
 import com.liftPlzz.adapter.PaymentPackageAdapter;
 import com.liftPlzz.api.ApiService;
@@ -43,12 +50,19 @@ import com.razorpay.Checkout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,6 +90,10 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
     String description;
     String adaptoramount;
 
+    private int IMAGE_TYPE = 0;
+    private File fileTrans = null;
+    private MultipartBody.Part transBody = null;
+    private ImageView verified_img;
 
     @Override
     protected int createLayout() {
@@ -152,16 +170,64 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
         dialog.setContentView(R.layout.recharge_dialog);
         AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
         EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
+        EditText editTextDescription = dialog.findViewById(R.id.editTextDescription);
+        AppCompatTextView upload_img = dialog.findViewById(R.id.upload_img);
+        verified_img = dialog.findViewById(R.id.verified_img);
+
+
+        upload_img.setOnClickListener(view -> {
+            ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
+                    .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                    .maxResultSize(1080, 1080).start();
+            IMAGE_TYPE = 0;
+        });
 
         buttonSubmit.setOnClickListener(v -> {
-            if (editTextPoints.getText().toString().trim().equals("")) {
+            String amount = editTextPoints.getText().toString();
+            String description = editTextDescription.getText().toString();
+
+            if (amount.trim().equals("")) {
                 Toast.makeText(getActivity(), "Please enter amount", Toast.LENGTH_SHORT).show();
-            } else {
-                rechargeFuelCard(editTextPoints.getText().toString().trim());
-                dialog.dismiss();
+                return;
             }
+            if (description.trim().equals("")) {
+                Toast.makeText(getActivity(), "Please enter description", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (transBody == null) {
+                Toast.makeText(getActivity(), "Please upload the transaction image.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            RequestBody api_key = RequestBody.create(MultipartBody.FORM, Constants.API_KEY);
+            RequestBody device = RequestBody.create(MultipartBody.FORM, "android");
+            RequestBody token = RequestBody.create(MultipartBody.FORM, strToken);
+            RequestBody amountBody = RequestBody.create(MultipartBody.FORM, amount);
+            RequestBody descriptionBody = RequestBody.create(MultipartBody.FORM, description);
+
+//              rechargeFuelCard(editTextPoints.getText().toString().trim());
+            presenter.rechargeRequest(api_key, device, token, transBody, amountBody, descriptionBody);
+
+            dialog.dismiss();
         });
         dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (IMAGE_TYPE == 0) {
+                try {
+                    fileTrans = new File(new URL(data.getDataString()).toURI());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileTrans);
+                    transBody = MultipartBody.Part.createFormData("transaction_image", fileTrans.getName(), requestFile);
+                    verified_img.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+                } catch (URISyntaxException | MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void rechargeFuelCard(String points) {
@@ -311,5 +377,19 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
             }
         };
         queue.add(sr);
+    }
+
+    @Override
+    public void rechargeRequestSubmit(String message) {
+        new AlertDialog.Builder(getActivity()).setTitle("Recharge Request.").setMessage(message).setPositiveButton("OK", (dialog, whichButton) -> {
+
+            try {
+                rechargeHistories.clear();
+                getPointsDetail();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            dialog.dismiss();
+        }).show();
     }
 }

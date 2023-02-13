@@ -57,10 +57,10 @@ public class GoGreenPresenter extends BasePresenter<GoGreenView> {
         });
     }
 
-    public void applyGoGreen(RequestBody api_key, RequestBody device, RequestBody token, MultipartBody.Part aadhar, MultipartBody.Part pan, RequestBody account, RequestBody ifsc, RequestBody name) {
+    public void applyGoGreen(RequestBody api_key, RequestBody device, RequestBody token, MultipartBody.Part aadhar, MultipartBody.Part aadharBack, MultipartBody.Part cancelCheque, MultipartBody.Part pan, RequestBody account, RequestBody ifsc, RequestBody name) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<JsonObject> call = api.applyGoGreen(api_key, device, token, aadhar, pan, account, ifsc, name);
+        Call<JsonObject> call = api.applyGoGreen(api_key, device, token, aadhar, aadharBack, cancelCheque, pan, account, ifsc, name);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -68,7 +68,7 @@ public class GoGreenPresenter extends BasePresenter<GoGreenView> {
 
                 if (response.body() != null) {
                     if (response.body().get("status").getAsBoolean()) {
-                        view.showMessage(response.body().get("message").getAsString());
+                        view.onSubmit(response.body().get("message").getAsString());
                     } else {
                         view.showMessage(response.body().get("message").getAsString());
                     }

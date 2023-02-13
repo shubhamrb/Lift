@@ -71,6 +71,7 @@
         android:background="@drawable/home_bg"
 
         >
+
         <LinearLayout
             android:id="@+id/layoutRide"
             android:layout_width="match_parent"
@@ -82,7 +83,6 @@
                 android:id="@+id/l1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/rounded_bg_white_border"
@@ -147,98 +147,90 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/layoutPickupLocation"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_15"
-                android:layout_marginBottom="@dimen/dp_5"
-                android:layout_marginRight="@dimen/dp_20"
-                android:background="@drawable/rounded_edit_border_grey"
-                android:orientation="horizontal"
-                android:padding="@dimen/dp_12">
+                android:layout_marginStart="@dimen/dp_20">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/editTextPickupLocation"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:fontFamily="@font/poppins_medium"
-                    android:gravity="start"
-                    android:hint="Your Current Locations"
-                    android:padding="@dimen/dp_5"
-                    android:singleLine="true"
-                    android:textColor="@color/colorBlack"
-                    android:textColorHint="@color/colorBlack"
-                    android:textSize="@dimen/sp_16" />
+                    android:layout_marginEnd="@dimen/dp_6"
+                    android:layout_toStartOf="@+id/btn_swap"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/layoutPickupLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_15"
+                        android:layout_marginBottom="@dimen/dp_5"
+                        android:background="@drawable/rounded_edit_border_grey"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/dp_12">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/editTextPickupLocation"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="start"
+                            android:hint="Your Current Locations"
+                            android:padding="@dimen/dp_5"
+                            android:singleLine="true"
+                            android:textColor="@color/colorBlack"
+                            android:textColorHint="@color/colorBlack"
+                            android:textSize="@dimen/sp_16" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutDropLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:background="@drawable/rounded_edit_border_grey"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/dp_12">
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/editTextDropLocation"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="start"
+                            android:hint="Your Dropoff Locations"
+                            android:padding="@dimen/dp_5"
+                            android:singleLine="true"
+                            android:textColor="@color/colorBlack"
+                            android:textColorHint="@color/colorBlack"
+                            android:textSize="@dimen/sp_16" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <ImageView
-                    android:layout_width="@dimen/dp_25"
-                    android:layout_height="@dimen/dp_25"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginRight="@dimen/dp_5"
-                    android:src="@drawable/ic_search"
-                    android:visibility="visible" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewCheckpoints"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/btn_swap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/_3sdp"
-                android:src="@drawable/swap_icon" />
-
-            <LinearLayout
-                android:id="@+id/layoutDropLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_5"
-                android:background="@drawable/rounded_edit_border_grey"
-                android:orientation="horizontal"
-                android:padding="@dimen/dp_12">
-
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/editTextDropLocation"
-                    android:layout_width="match_parent"
+                    android:id="@+id/btn_swap"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:fontFamily="@font/poppins_medium"
-                    android:gravity="start"
-                    android:hint="Your Dropoff Locations"
-                    android:padding="@dimen/dp_5"
-                    android:singleLine="true"
-                    android:textColor="@color/colorBlack"
-                    android:textColorHint="@color/colorBlack"
-                    android:textSize="@dimen/sp_16" />
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:padding="@dimen/_3sdp"
+                    android:src="@drawable/swap_icon" />
 
-                <ImageView
-                    android:layout_width="@dimen/dp_25"
-                    android:layout_height="@dimen/dp_25"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:layout_marginRight="@dimen/dp_5"
-                    android:src="@drawable/ic_search"
-                    android:visibility="visible" />
-            </LinearLayout>
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:id="@+id/layoutCheckPoints"
@@ -308,7 +300,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:orientation="horizontal">
 
@@ -378,6 +370,34 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layoutRepeatLift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:src="@drawable/repeat_24"
+                    android:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinner_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="start"
+                    android:hint="Repeat lift"
+                    android:text=""
+                    android:textSize="@dimen/sp_14" />
+            </LinearLayout>
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonLift"
                 android:layout_width="match_parent"
@@ -399,7 +419,6 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 
 </RelativeLayout>

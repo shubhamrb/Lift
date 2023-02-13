@@ -60,6 +60,10 @@ public interface HomeNavigator {
 
     void openEditLift(BaseActivity.PerformFragment performFragment, Lift lift, EditLiftDaiFragment.UpdateRecordListiner listinerUpdate, String edit);
 
+    void openPointRedemption(BaseActivity.PerformFragment performFragment);
+
+    void openAddAccount(BaseActivity.PerformFragment performFragment);
+
     void openDriverList(BaseActivity.PerformFragment performFragment, boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory);
 
     void openMatchingRide(BaseActivity.PerformFragment performFragment, boolean isFind, Integer lift_id, String vehicle_type, Integer vehicle_subcategory);

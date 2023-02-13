@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.liftPlzz.base.BaseActivity;
 import com.liftPlzz.dialog.EditLiftDaiFragment;
+import com.liftPlzz.fragments.AddAccountFragment;
 import com.liftPlzz.fragments.AddVehicleFragment;
 import com.liftPlzz.fragments.BlockFragment;
 import com.liftPlzz.fragments.ChatUserFragment;
@@ -22,6 +23,7 @@ import com.liftPlzz.fragments.MyRidesFragment;
 import com.liftPlzz.fragments.MyVehicleFragment;
 import com.liftPlzz.fragments.NotificationFragment;
 import com.liftPlzz.fragments.OTpFragment;
+import com.liftPlzz.fragments.PointRedemptionFragment;
 import com.liftPlzz.fragments.PointWalletFragment;
 import com.liftPlzz.fragments.ProfileFragment;
 import com.liftPlzz.fragments.ReferFragment;
@@ -272,5 +274,17 @@ public abstract class AppNavigationProvider extends BaseActivity implements AppN
     public void openGoGreenFragment(PerformFragment performFragment) {
         GoGreenFragment goGreenFragment = new GoGreenFragment();
         openFragment(goGreenFragment, GoGreenFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openPointRedemption(PerformFragment performFragment) {
+        PointRedemptionFragment pointRedemptionFragment = new PointRedemptionFragment();
+        openFragment(pointRedemptionFragment, PointRedemptionFragment.class.getName(), performFragment, true);
+    }
+
+    @Override
+    public void openAddAccount(PerformFragment performFragment) {
+        AddAccountFragment addAccountFragment = new AddAccountFragment();
+        openFragment(addAccountFragment, AddAccountFragment.class.getName(), performFragment, true);
     }
 }

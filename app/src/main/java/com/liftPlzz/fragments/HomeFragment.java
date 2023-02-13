@@ -27,6 +27,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,12 +43,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
@@ -168,8 +169,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     AppCompatTextView textViewTakeLift;
     @BindView(R.id.buttonLift)
     AppCompatButton buttonLift;
-    @BindView(R.id.recyclerViewCheckpoints)
-    RecyclerView recyclerViewCheckpoints;
     @BindView(R.id.layoutRide)
     LinearLayout layoutRide;
     @BindView(R.id.callButton)
@@ -181,6 +180,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     int listPos;
     @BindView(R.id.rr_toolbar)
     RelativeLayout rr_toolbar;
+    @BindView(R.id.layoutRepeatLift)
+    LinearLayout layoutRepeatLift;
+    @BindView(R.id.spinner_days)
+    AppCompatSpinner spinner_days;
 
     FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
@@ -394,6 +397,20 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         if (editTextDropLocation.getText().toString().length() > 0) {
             textViewSelectSeat.setText(seat + " Seats");
         }
+
+        List<String> list = new ArrayList<>();
+        list.add("Repeat Lift");
+        list.add("1 Day");
+        list.add("2 Days");
+        list.add("3 Days");
+        list.add("4 Days");
+        list.add("5 Days");
+        list.add("6 Days");
+        list.add("7 Days");
+
+        ArrayAdapter adapterCategory = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
+        adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_days.setAdapter(adapterCategory);
     }
 
     private void swapLocation() {
@@ -502,7 +519,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         }
     }
 
-    @OnClick({R.id.callButton, R.id.smsButton, R.id.buttonLift, R.id.layoutCheckPoints, R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime, R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation, R.id.layoutDropLocation})
+    @OnClick({R.id.callButton, R.id.smsButton, R.id.buttonLift, R.id.layoutCheckPoints,
+            R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime,
+            R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation,
+            R.id.layoutDropLocation, R.id.layoutRepeatLift})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
@@ -527,7 +547,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (textkm.getText().toString().equalsIgnoreCase("")) {
                         showMessage("Drop off location is too close");
                     } else {
-                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString());
+                        int next_days = 0;
+                        if (!spinner_days.getSelectedItem().equals("Repeat Lift")) {
+                            next_days = Integer.parseInt(spinner_days.getSelectedItem().toString().split(" ")[0]);
+                        }
+                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString(), next_days);
                         lift = null;
                     }
                 } else {
@@ -672,6 +696,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 } else {
 //                    requestpermisson();
                 }
+                break;
         }
     }
 
@@ -1712,7 +1737,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         checkPointsListAdapter.notifyDataSetChanged();
         if (checkPointsList.size() == 0) {
             layoutDropLocation.setVisibility(View.VISIBLE);
-            recyclerViewCheckpoints.setVisibility(View.GONE);
 //            isMultiCheck = true;
         }
     }
@@ -1757,7 +1781,6 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         textViewSelectDateTime.setText("Select Time");
         layoutDropLocation.setVisibility(View.VISIBLE);
         llchkpoint.setVisibility(View.VISIBLE);
-        recyclerViewCheckpoints.setVisibility(View.GONE);
     }
 
     @Override
@@ -1793,7 +1816,16 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 listString = String.join(", ", data);
             }
         }
-        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""), s.getId().toString(), "paid", "0", seat, startPoint, endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(), "" + rate_per_km);
+
+        int next_days = 0;
+        if (!spinner_days.getSelectedItem().equals("Repeat Lift")) {
+            next_days = Integer.parseInt(spinner_days.getSelectedItem().toString().split(" ")[0]);
+        }
+
+        presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""),
+                s.getId().toString(), "paid", "0", seat, startPoint,
+                endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(),
+                "" + rate_per_km, next_days);
     }
 
     @Override

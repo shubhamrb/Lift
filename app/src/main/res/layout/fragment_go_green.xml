@@ -25,12 +25,12 @@
                 android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/upload_aadhar"
+                    android:id="@+id/upload_aadhar_front"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_toStartOf="@+id/verified_aadhar"
+                    android:layout_toStartOf="@+id/verified_aadhar_front"
                     android:background="@null"
                     android:drawableLeft="@android:drawable/ic_menu_upload"
                     android:drawablePadding="@dimen/dp_5"
@@ -38,12 +38,76 @@
                     android:gravity="center|start"
                     android:padding="@dimen/dp_8"
                     android:singleLine="true"
-                    android:text=" Upload your Aadhar"
+                    android:text=" Upload Aadhar Front"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
 
                 <ImageView
-                    android:id="@+id/verified_aadhar"
+                    android:id="@+id/verified_aadhar_front"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_verified_24"
+                    app:tint="@color/divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/upload_aadhar_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_toStartOf="@+id/verified_aadhar_back"
+                    android:background="@null"
+                    android:drawableLeft="@android:drawable/ic_menu_upload"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center|start"
+                    android:padding="@dimen/dp_8"
+                    android:singleLine="true"
+                    android:text=" Upload Aadhar Back"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
+
+                <ImageView
+                    android:id="@+id/verified_aadhar_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_verified_24"
+                    app:tint="@color/divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/upload_cheque"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_toStartOf="@+id/verified_cheque"
+                    android:background="@null"
+                    android:drawableLeft="@android:drawable/ic_menu_upload"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center|start"
+                    android:padding="@dimen/dp_8"
+                    android:singleLine="true"
+                    android:text=" Upload Cancelled Cheque"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
+
+                <ImageView
+                    android:id="@+id/verified_cheque"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -105,9 +169,9 @@
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="start"
                     android:hint="Account number"
+                    android:inputType="number"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
-                    android:inputType="number"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/sp_16" />
 
@@ -162,7 +226,7 @@
                     android:background="@null"
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="start"
-                    android:hint="Your name"
+                    android:hint="Account holder name"
                     android:padding="@dimen/dp_5"
                     android:singleLine="true"
                     android:textColor="@color/colorText"

@@ -1,16 +1,13 @@
 package com.liftPlzz.presenter;
 
+import com.google.gson.JsonObject;
 import com.liftPlzz.api.ApiService;
 import com.liftPlzz.api.RetroClient;
 import com.liftPlzz.base.BasePresenter;
-import com.liftPlzz.model.upcomingLift.UpcomingLiftResponse;
-import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.PurchasePointView;
-import com.liftPlzz.views.UpComingView;
 
-import org.json.JSONObject;
-
-import okhttp3.ResponseBody;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,4 +30,29 @@ public class PurchasePointPresenter extends BasePresenter<PurchasePointView> {
 
     }
 
+    public void rechargeRequest(RequestBody api_key, RequestBody device, RequestBody token, MultipartBody.Part transImg, RequestBody amount, RequestBody desc) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<JsonObject> call = api.rechargeRequest(api_key, device, token, transImg, amount, desc);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                view.hideLoader();
+
+                if (response.body() != null) {
+                    if (response.body().get("status").getAsBoolean()) {
+                        view.rechargeRequestSubmit(response.body().get("message").getAsString());
+                    } else {
+                        view.showMessage(response.body().get("message").getAsString());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage("Check your internet connection");
+            }
+        });
+    }
 }

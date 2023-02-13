@@ -1,6 +1,7 @@
 package com.liftPlzz.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,14 +54,26 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
     @BindView(R.id.buttonSubmit)
     AppCompatButton buttonSubmit;
 
-    @BindView(R.id.upload_aadhar)
-    AppCompatTextView upload_aadhar;
+    @BindView(R.id.upload_aadhar_front)
+    AppCompatTextView upload_aadhar_front;
+
+    @BindView(R.id.upload_aadhar_back)
+    AppCompatTextView upload_aadhar_back;
+
+    @BindView(R.id.upload_cheque)
+    AppCompatTextView upload_cheque;
 
     @BindView(R.id.upload_pan)
     AppCompatTextView upload_pan;
 
-    @BindView(R.id.verified_aadhar)
-    ImageView verified_aadhar;
+    @BindView(R.id.verified_aadhar_front)
+    ImageView verified_aadhar_front;
+
+    @BindView(R.id.verified_aadhar_back)
+    ImageView verified_aadhar_back;
+
+    @BindView(R.id.verified_cheque)
+    ImageView verified_cheque;
 
     @BindView(R.id.verified_pan)
     ImageView verified_pan;
@@ -76,8 +89,8 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
     String strToken = "";
     private int IMAGE_TYPE = 1;
     private ReferralDataResponse.ReferralModel referralData;
-    private File fileAadhar = null, filePan = null;
-    private MultipartBody.Part aadharBody = null, panBody = null;
+    private File fileAadharFront = null, fileAadharBack = null, fileCheque = null, filePan = null;
+    private MultipartBody.Part aadharFrontBody = null, aadharBackBody = null, chequeBody = null, panBody = null;
 
     @Override
     protected int createLayout() {
@@ -108,7 +121,7 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
         presenter.getData(strToken);
     }
 
-    @OnClick({R.id.imageViewBack, R.id.imageViewHome, R.id.buttonSubmit, R.id.upload_aadhar, R.id.upload_pan})
+    @OnClick({R.id.imageViewBack, R.id.imageViewHome, R.id.buttonSubmit, R.id.upload_aadhar_front, R.id.upload_aadhar_back,R.id.upload_cheque, R.id.upload_pan})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
@@ -117,22 +130,42 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
             case R.id.imageViewHome:
                 getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 break;
-            case R.id.upload_aadhar:
+            case R.id.upload_aadhar_front:
+                ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080).start();
+                IMAGE_TYPE = 0;
+                break;
+            case R.id.upload_aadhar_back:
                 ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080).start();
                 IMAGE_TYPE = 1;
                 break;
-            case R.id.upload_pan:
+            case R.id.upload_cheque:
                 ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080).start();
                 IMAGE_TYPE = 2;
                 break;
+            case R.id.upload_pan:
+                ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080).start();
+                IMAGE_TYPE = 3;
+                break;
             case R.id.buttonSubmit:
 
-                if (aadharBody == null) {
-                    Toast.makeText(getActivity(), "Please upload your aadhar.", Toast.LENGTH_SHORT).show();
+                if (aadharFrontBody == null) {
+                    Toast.makeText(getActivity(), "Please upload your aadhar's front image.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (aadharBackBody == null) {
+                    Toast.makeText(getActivity(), "Please upload your aadhar's back image.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (chequeBody == null) {
+                    Toast.makeText(getActivity(), "Please upload your Cancelled Cheque.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -164,7 +197,7 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
                 RequestBody ifscBody = RequestBody.create(MultipartBody.FORM, ifsc);
                 RequestBody nameBody = RequestBody.create(MultipartBody.FORM, name);
 
-                presenter.applyGoGreen(api_key, device, token, aadharBody, panBody, accountBody, ifscBody, nameBody);
+                presenter.applyGoGreen(api_key, device, token, aadharFrontBody, aadharBackBody, chequeBody, panBody, accountBody, ifscBody, nameBody);
                 break;
         }
     }
@@ -175,7 +208,9 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
         Log.e("Response : ", jsonObject.toString());
         JsonObject dataObject = jsonObject.get("data").getAsJsonObject();
 
-        String aadhar = dataObject.get("aadhar").getAsString();
+        String aadharFront = dataObject.get("aadhar").getAsString();
+        /*String aadharBack = dataObject.get("aadhar_back").getAsString();
+        String cheque = dataObject.get("cancel_cheque").getAsString();*/
         String pan = dataObject.get("pan").getAsString();
         String account = dataObject.get("account").getAsString();
         String ifsc = dataObject.get("ifsc").getAsString();
@@ -190,28 +225,65 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
             editTextName.setText(name);
         }
 
-        if (aadhar != null && !aadhar.isEmpty()) {
-            verified_aadhar.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+        if (aadharFront != null && !aadharFront.isEmpty()) {
+            verified_aadhar_front.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
+
+       /* if (aadharBack != null && !aadharBack.isEmpty()) {
+            verified_aadhar_back.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+        }
+
+        if (cheque != null && !cheque.isEmpty()) {
+            verified_aadhar_front.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+        }*/
+
         if (pan != null && !pan.isEmpty()) {
             verified_pan.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
     }
 
     @Override
+    public void onSubmit(String message) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Go Green Partner")
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, whichButton) -> {
+                    dialog.dismiss();
+                }).show();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (IMAGE_TYPE == 1) {
+            if (IMAGE_TYPE == 0) {
                 try {
-                    fileAadhar = new File(new URL(data.getDataString()).toURI());
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileAadhar);
-                    aadharBody = MultipartBody.Part.createFormData("aadhar", fileAadhar.getName(), requestFile);
-                    verified_aadhar.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+                    fileAadharFront = new File(new URL(data.getDataString()).toURI());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileAadharFront);
+                    aadharFrontBody = MultipartBody.Part.createFormData("aadhar", fileAadharFront.getName(), requestFile);
+                    verified_aadhar_front.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+                } catch (URISyntaxException | MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            } else if (IMAGE_TYPE == 1) {
+                try {
+                    fileAadharBack = new File(new URL(data.getDataString()).toURI());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileAadharBack);
+                    aadharBackBody = MultipartBody.Part.createFormData("aadhar_back", fileAadharBack.getName(), requestFile);
+                    verified_aadhar_back.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
                 } catch (URISyntaxException | MalformedURLException e) {
                     e.printStackTrace();
                 }
             } else if (IMAGE_TYPE == 2) {
+                try {
+                    fileCheque = new File(new URL(data.getDataString()).toURI());
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), fileCheque);
+                    chequeBody = MultipartBody.Part.createFormData("cancel_cheque", fileCheque.getName(), requestFile);
+                    verified_cheque.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+                } catch (URISyntaxException | MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            } else if (IMAGE_TYPE == 3) {
                 try {
                     filePan = new File(new URL(data.getDataString()).toURI());
                     RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePan);

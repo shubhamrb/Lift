@@ -112,11 +112,11 @@ public class HomePresenter extends BasePresenter<HomeView> {
     }
 
     public void findLift(String token, String title, String requir_seats, String start_point, String end_point, String lift_date,
-                         String liftTime, String tot) {
+                         String liftTime, String tot,int next_days) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<FindLiftResponse> call = api.find_lift(Constants.API_KEY, "android", token, title, requir_seats, start_point, end_point, lift_date,
-                liftTime, tot);
+                liftTime, tot,next_days);
         call.enqueue(new Callback<FindLiftResponse>() {
             @Override
             public void onResponse(Call<FindLiftResponse> call, Response<FindLiftResponse> response) {
@@ -149,7 +149,7 @@ public class HomePresenter extends BasePresenter<HomeView> {
                            String paid_seats, String start_ponit,
                            String end_point, String checkpoints,
                            String lift_date, String liftTime,
-                           String tot, String rate_per_km) {
+                           String tot, String rate_per_km, int next_days) {
 
         Log.e("Token", token);
         Log.e("vehicle_id", vehicle_id);
@@ -163,10 +163,13 @@ public class HomePresenter extends BasePresenter<HomeView> {
         Log.e("liftTime", liftTime);
         Log.e("tot", tot);
         Log.e("rate_per_km", rate_per_km);
+        Log.e("next_days", String.valueOf(next_days));
 
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats, start_ponit, end_point, checkpoints, lift_date, liftTime, tot, rate_per_km);
+        Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id,
+                lift_type, free_seats, paid_seats, start_ponit, end_point,
+                checkpoints, lift_date, liftTime, tot, rate_per_km,next_days);
         call.enqueue(new Callback<CreateLiftResponse>() {
             @Override
             public void onResponse(Call<CreateLiftResponse> call, Response<CreateLiftResponse> response) {

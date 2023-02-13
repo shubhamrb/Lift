@@ -238,7 +238,9 @@ public interface ApiService {
                                      @Field("end_point") String end_point,
                                      @Field("lift_date") String lift_date,
                                      @Field("lift_time") String liftTime,
-                                     @Field("total_km") String total_km);
+                                     @Field("total_km") String total_km,
+                                     @Field("next_days") int next_days
+    );
 
     @FormUrlEncoded
     @POST("update-lift")
@@ -291,7 +293,9 @@ public interface ApiService {
                                          @Field("lift_date") String lift_date,
                                          @Field("lift_time") String liftTime,
                                          @Field("total_km") String total_km,
-                                         @Field("rate_per_km") String rate_per_km);
+                                         @Field("rate_per_km") String rate_per_km,
+                                         @Field("next_days") int next_days
+    );
 
 //     ,
 
@@ -723,10 +727,24 @@ public interface ApiService {
                                   @Part("client") RequestBody client,
                                   @Part("token") RequestBody token,
                                   @Part MultipartBody.Part aadhar,
+                                  @Part MultipartBody.Part aadharBack,
+                                  @Part MultipartBody.Part cancelCheque,
                                   @Part MultipartBody.Part pan,
                                   @Part("account") RequestBody account,
                                   @Part("ifsc") RequestBody ifsc,
                                   @Part("name") RequestBody name);
+
+    @Multipart
+    @POST("redemption_detail_add")
+    Call<JsonObject> addBankAccount(@Part("api_key") RequestBody api_key,
+                                    @Part("client") RequestBody client,
+                                    @Part("token") RequestBody token,
+                                    @Part MultipartBody.Part cancelCheque,
+                                    @Part MultipartBody.Part pan,
+                                    @Part("bank_name") RequestBody bankName,
+                                    @Part("account_no") RequestBody account,
+                                    @Part("ifsc") RequestBody ifsc,
+                                    @Part("account_name") RequestBody name);
 
     @FormUrlEncoded
     @POST("go_green_partner_detail")
@@ -734,6 +752,47 @@ public interface ApiService {
                                        @Field("client") String client,
                                        @Field("token") String token);
 
+    @FormUrlEncoded
+    @POST("redemption_detail_get")
+    Call<JsonObject> get_redemption_data(@Field("api_key") String api_key,
+                                         @Field("client") String client,
+                                         @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("redemption_request_get")
+    Call<JsonObject> get_redemption_history(@Field("api_key") String api_key,
+                                            @Field("client") String client,
+                                            @Field("token") String token);
+
+
+    @Multipart
+    @POST("go_green_partner_apply")
+    Call<JsonObject> applyGoGreen(@Part("api_key") RequestBody api_key,
+                                  @Part("client") RequestBody client,
+                                  @Part("token") RequestBody token,
+                                  @Part MultipartBody.Part pan,
+                                  @Part("account") RequestBody account,
+                                  @Part("ifsc") RequestBody ifsc,
+                                  @Part("name") RequestBody name);
+
+    @FormUrlEncoded
+    @POST("redemption_request_add")
+    Call<JsonObject> redeemRequest(@Field("api_key") String api_key,
+                                   @Field("client") String client,
+                                   @Field("token") String token,
+                                   @Field("point") String point,
+                                   @Field("comment") String desc,
+                                   @Field("account_id") String account
+    );
+
+    @Multipart
+    @POST("recharge_manual")
+    Call<JsonObject> rechargeRequest(@Part("api_key") RequestBody api_key,
+                                    @Part("client") RequestBody client,
+                                    @Part("token") RequestBody token,
+                                    @Part MultipartBody.Part transImg,
+                                    @Part("amount") RequestBody amount,
+                                    @Part("description") RequestBody description);
 //    api_key:070b92d28adc166b3a6c63c2d44535d2f62a3e24
 //    client:android
 //    token:NRy4MvEaDj5O04r8S6GGSZAJ7T5tv1QvS969rtgyYe7qdyKv8q6wjWBozH5I
