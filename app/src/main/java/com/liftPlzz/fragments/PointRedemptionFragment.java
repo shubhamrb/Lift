@@ -78,6 +78,9 @@ public class PointRedemptionFragment extends BaseFragment<PointRedemptionPresent
     @BindView(R.id.buttonRedeem)
     AppCompatButton buttonRedeem;
 
+    @BindView(R.id.txt_no_data_msg)
+    AppCompatTextView txt_no_data_msg;
+
     String strToken = "";
     private int CURRENT_TAB = 0;
     private List<AccountDataModel> accountsList;
@@ -170,8 +173,8 @@ public class PointRedemptionFragment extends BaseFragment<PointRedemptionPresent
                     return;
                 }
 
-                if (accountsList == null || accountsList.size() > 0) {
-                    Toast.makeText(getActivity(), "Please your bank details.", Toast.LENGTH_LONG).show();
+                if (accountsList == null || accountsList.size() == 0) {
+                    Toast.makeText(getActivity(), "Please add your bank details.", Toast.LENGTH_LONG).show();
                     return;
                 }
                 showRequestDialog();
@@ -228,8 +231,18 @@ public class PointRedemptionFragment extends BaseFragment<PointRedemptionPresent
 
         requestList = new Gson().fromJson(dataObject.toString(), accounts);
 
-        recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler_view.setAdapter(new RedeemRequestAdapter(getContext(), requestList));
+
+        if (requestList.size() > 0) {
+            recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
+            recycler_view.setAdapter(new RedeemRequestAdapter(getContext(), requestList));
+
+            txt_no_data_msg.setVisibility(View.GONE);
+            recycler_view.setVisibility(View.VISIBLE);
+        } else {
+            recycler_view.setVisibility(View.GONE);
+            txt_no_data_msg.setVisibility(View.VISIBLE);
+            txt_no_data_msg.setText("No Redemption Requests found.");
+        }
     }
 
     @Override
@@ -241,11 +254,26 @@ public class PointRedemptionFragment extends BaseFragment<PointRedemptionPresent
 
         Type accounts = new TypeToken<List<AccountDataModel>>() {
         }.getType();
-
         accountsList = new Gson().fromJson(dataObject.toString(), accounts);
 
-        recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler_view.setAdapter(new AccountsAdapter(getContext(), accountsList));
+        if (accountsList.size() > 0) {
+            recycler_view.setLayoutManager(new LinearLayoutManager(getContext()));
+            recycler_view.setAdapter(new AccountsAdapter(getContext(), accountsList));
+
+            txt_no_data_msg.setVisibility(View.GONE);
+            recycler_view.setVisibility(View.VISIBLE);
+
+            if (total_points > 0) {
+                buttonRedeem.setVisibility(View.VISIBLE);
+            } else {
+                buttonRedeem.setVisibility(View.GONE);
+            }
+        } else {
+            buttonRedeem.setVisibility(View.GONE);
+            recycler_view.setVisibility(View.GONE);
+            txt_no_data_msg.setVisibility(View.VISIBLE);
+            txt_no_data_msg.setText("You don’t have any bank account, add new account for redemption.");
+        }
     }
 
     @Override

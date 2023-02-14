@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbarNew"
         android:padding="@dimen/_20sdp">
 
@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_6sdp"
             android:fontFamily="@font/gotham_medium"
             android:gravity="center_vertical"
             android:text="00 Points"
@@ -34,9 +35,7 @@
             android:layout_alignParentEnd="true"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/sp_25"
-            android:layout_marginTop="@dimen/_6sdp"
             android:layout_marginRight="@dimen/sp_25"
-            android:layout_marginBottom="@dimen/dp_15"
             android:background="@drawable/rounded_bg_blue"
             android:backgroundTint="@color/colorPrimary"
             android:fontFamily="@font/gotham_medium"
@@ -44,7 +43,8 @@
             android:text="Redeem"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/tab_layout"
@@ -53,6 +53,7 @@
             android:layout_below="@+id/buttonRedeem"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/rounded_bg_blue_border"
             android:gravity="center"
             android:orientation="horizontal"
@@ -127,6 +128,19 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_no_data_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/gotham_medium"
+            android:text=""
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/sp_18"
+            android:visibility="gone" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonAddAccount"
             android:layout_width="match_parent"
@@ -143,7 +157,6 @@
             android:text="Add Account"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_16"
-            android:visibility="gone" />
+            android:textSize="@dimen/sp_16" />
     </RelativeLayout>
 </RelativeLayout>

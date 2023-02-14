@@ -28,11 +28,14 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tv_account_status"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_25sdp"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/rounded_button"
+            android:layout_centerVertical="true"
+            android:background="@drawable/rounded_bg_blue"
+            android:backgroundTint="@color/colorPrimary"
             android:text="Verified"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/colorWhite"
+            android:textSize="13sp" />
 
 
     </RelativeLayout>
@@ -41,6 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="1sp"
         android:layout_below="@+id/itemRow"
-        android:background="@color/colorGrey"
-        android:layout_marginTop="@dimen/_6sdp"/>
+        android:layout_marginTop="@dimen/_6sdp"
+        android:background="@color/colorGrey" />
 </RelativeLayout>
