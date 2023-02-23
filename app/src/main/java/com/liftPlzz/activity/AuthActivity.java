@@ -39,8 +39,8 @@ public class AuthActivity extends AppNavigationProvider {
                             Manifest.permission.ACCESS_FINE_LOCATION,
 //                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION,
-//                            Manifest.permission.READ_SMS,
-//                            Manifest.permission.RECEIVE_SMS
+                            Manifest.permission.READ_SMS,
+                            Manifest.permission.RECEIVE_SMS
                     },
                     PERMISSION_REQUEST_CODE_LOCATION);
         } else {
@@ -49,8 +49,8 @@ public class AuthActivity extends AppNavigationProvider {
                     new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION,
-//                            Manifest.permission.READ_SMS,
-//                            Manifest.permission.RECEIVE_SMS
+                            Manifest.permission.READ_SMS,
+                            Manifest.permission.RECEIVE_SMS
                     },/**/
                     PERMISSION_REQUEST_CODE_LOCATION);
         }
@@ -73,14 +73,14 @@ public class AuthActivity extends AppNavigationProvider {
                         .checkPermission(
                                 Manifest.permission.ACCESS_COARSE_LOCATION, getPackageName());
 
-        /*int readSms =
+        int readSms =
                 getPackageManager()
                         .checkPermission(
-                                Manifest.permission.READ_SMS, getPackageName());*/
+                                Manifest.permission.READ_SMS, getPackageName());
 
         return readStorage == PackageManager.PERMISSION_GRANTED
 //                && backgroundLocation == PackageManager.PERMISSION_GRANTED
-                && writeStorage == PackageManager.PERMISSION_GRANTED;
-//                && readSms == PackageManager.PERMISSION_GRANTED;
+                && writeStorage == PackageManager.PERMISSION_GRANTED
+                && readSms == PackageManager.PERMISSION_GRANTED;
     }
 }

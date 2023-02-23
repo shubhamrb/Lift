@@ -134,7 +134,16 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp">
+
+                <ImageView
+                    android:id="@+id/verified_pan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_verified_24"
+                    app:tint="@color/divider" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/upload_pan"
@@ -142,10 +151,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_toStartOf="@+id/verified_pan"
+                    android:layout_toEndOf="@id/verified_pan"
                     android:background="@null"
-                    android:drawableLeft="@android:drawable/ic_menu_upload"
-                    android:drawablePadding="@dimen/dp_5"
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="center|start"
                     android:padding="@dimen/dp_8"
@@ -155,18 +162,26 @@
                     android:textSize="@dimen/sp_16" />
 
                 <ImageView
-                    android:id="@+id/verified_pan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_verified_24"
+                    android:src="@android:drawable/ic_menu_upload"
                     app:tint="@color/divider" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp">
+
+                <ImageView
+                    android:id="@+id/verified_cheque"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_verified_24"
+                    app:tint="@color/divider" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/upload_cheque"
@@ -174,10 +189,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_toStartOf="@+id/verified_cheque"
+                    android:layout_toEndOf="@id/verified_cheque"
                     android:background="@null"
-                    android:drawableLeft="@android:drawable/ic_menu_upload"
-                    android:drawablePadding="@dimen/dp_5"
                     android:fontFamily="@font/gotham_medium"
                     android:gravity="center|start"
                     android:padding="@dimen/dp_8"
@@ -187,12 +200,11 @@
                     android:textSize="@dimen/sp_16" />
 
                 <ImageView
-                    android:id="@+id/verified_cheque"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_verified_24"
+                    android:src="@android:drawable/ic_menu_upload"
                     app:tint="@color/divider" />
             </RelativeLayout>
 

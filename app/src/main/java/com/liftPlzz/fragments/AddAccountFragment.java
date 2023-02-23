@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -19,7 +18,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.gson.JsonObject;
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.presenter.AddAccountPresenter;

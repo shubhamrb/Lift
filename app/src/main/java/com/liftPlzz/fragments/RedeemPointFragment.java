@@ -1,21 +1,34 @@
 package com.liftPlzz.fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,11 +48,15 @@ import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.RedeemPointView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.MediaType;
@@ -55,8 +72,6 @@ import retrofit2.Response;
 public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, RedeemPointView> implements RedeemPointView {
 
     SharedPreferences sharedPreferences;
-
-    private String strToken;
     @BindView(R.id.buttonRecharge)
     AppCompatButton btnRecharge;
     @BindView(R.id.buttonRedemption)
@@ -73,6 +88,7 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
     TextView validity_text;
     @BindView(R.id.recyclerViewpackage)
     RecyclerView recyclerViewpackage;
+    private String strToken;
     private CardModel cardModel;
     private ArrayList<RechargeFuelCardHistory> rechargeFuelCardHistories;
     private int IMAGE_TYPE = 0;
@@ -80,6 +96,8 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
     private MultipartBody.Part transBody = null;
     private ImageView verified_img;
 
+    private boolean upiShow, barcodeShow, bankShow;
+    private ActivityResultLauncher<String[]> somePermissionResultLauncher;
 
     @Override
     protected int createLayout() {
@@ -91,6 +109,23 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
         presenter = new RedeemPointPresenter();
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        somePermissionResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), (Map<String, Boolean> isGranted) -> {
+            boolean granted = true;
+            for (Map.Entry<String, Boolean> x : isGranted.entrySet()) {
+                if (!x.getValue()) granted = false;
+            }
+            if (granted) {
+                //download
+                new DownloadsImage().execute("https://charpair.com/charpair_barcode.pdf");
+            } else {
+//                Toast.makeText(getContext(), "Permission Denied.", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
 
     @Override
     protected RedeemPointView createView() {
@@ -206,9 +241,81 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
         AppCompatTextView upload_img = dialog.findViewById(R.id.upload_img);
         verified_img = dialog.findViewById(R.id.verified_img);
 
-        /*if (cardModel != null && cardModel.getCurrent_point() > 0) {
-            editTextPoints.setText("" + cardModel.getCurrent_point());
-        }*/
+        RelativeLayout btn_upi = dialog.findViewById(R.id.btn_upi);
+        LinearLayout ll_upi = dialog.findViewById(R.id.ll_upi);
+
+        RelativeLayout btn_barcode = dialog.findViewById(R.id.btn_barcode);
+        LinearLayout ll_barcode = dialog.findViewById(R.id.ll_barcode);
+
+        RelativeLayout btn_bank = dialog.findViewById(R.id.btn_bank);
+        LinearLayout ll_bank = dialog.findViewById(R.id.ll_bank);
+        ImageView copy_upi = dialog.findViewById(R.id.copy_upi);
+        ImageView copy_account = dialog.findViewById(R.id.copy_account);
+        ImageView copy_ifsc = dialog.findViewById(R.id.copy_ifsc);
+        TextView btn_download = dialog.findViewById(R.id.btn_download);
+
+
+        btn_upi.setOnClickListener(view -> {
+            if (upiShow) {
+                ll_upi.setVisibility(View.GONE);
+            } else {
+                ll_upi.setVisibility(View.VISIBLE);
+            }
+            ll_barcode.setVisibility(View.GONE);
+            ll_bank.setVisibility(View.GONE);
+            upiShow = !upiShow;
+            barcodeShow = false;
+            bankShow = false;
+        });
+
+        btn_barcode.setOnClickListener(view -> {
+            if (barcodeShow) {
+                ll_barcode.setVisibility(View.GONE);
+            } else {
+                ll_barcode.setVisibility(View.VISIBLE);
+            }
+            ll_upi.setVisibility(View.GONE);
+            ll_bank.setVisibility(View.GONE);
+            barcodeShow = !barcodeShow;
+            upiShow = false;
+            bankShow = false;
+        });
+
+        btn_bank.setOnClickListener(view -> {
+            if (bankShow) {
+                ll_bank.setVisibility(View.GONE);
+            } else {
+                ll_bank.setVisibility(View.VISIBLE);
+            }
+            ll_upi.setVisibility(View.GONE);
+            ll_barcode.setVisibility(View.GONE);
+            bankShow = !bankShow;
+            upiShow = false;
+            barcodeShow = false;
+        });
+
+        copy_upi.setOnClickListener(view -> {
+            copyText("upi", "aavis94246@barodampay");
+        });
+        copy_account.setOnClickListener(view -> {
+            copyText("account", "45760200000469");
+        });
+        copy_ifsc.setOnClickListener(view -> {
+            copyText("ifsc", "BARB0SANRAI");
+        });
+        btn_download.setOnClickListener(view -> {
+
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                somePermissionResultLauncher.launch(new
+                        String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        , Manifest.permission.READ_EXTERNAL_STORAGE});
+            } else {
+                showLoader();
+                new DownloadsImage().execute("https://charpair.com/charpair_barcode.pdf");
+            }
+
+        });
 
         upload_img.setOnClickListener(view -> {
             ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
@@ -246,6 +353,62 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
             dialog.dismiss();
         });
         dialog.show();
+    }
+
+    class DownloadsImage extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            URL url;
+            try {
+                url = new URL(strings[0]);
+                HttpURLConnection c = (HttpURLConnection) url.openConnection();
+                c.setRequestMethod("GET");
+                c.setDoOutput(true);
+                c.connect();
+                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS); //Creates app specific folder
+                if (!path.exists()) {
+                    path.mkdirs();
+                }
+                File imageFile = new File(path, "aavi" + System.currentTimeMillis() + ".pdf");
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                InputStream is = c.getInputStream();
+                byte[] buffer = new byte[4096];
+                int len1;
+
+                while ((len1 = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len1);
+                }
+                try {
+                    fos.flush();
+                    fos.close();
+                    is.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            hideLoader();
+            Toast.makeText(getContext(), "Downloaded", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void copyText(String type, String text) {
+        try {
+            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(type, text);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getActivity(), type + " copied.", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
