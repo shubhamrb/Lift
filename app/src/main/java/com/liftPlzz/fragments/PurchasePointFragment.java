@@ -205,6 +205,9 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.recharge_dialog);
+        Window window = dialog.getWindow();
+        window.setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
         AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
         EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
         EditText editTextDescription = dialog.findViewById(R.id.editTextDescription);
@@ -223,7 +226,12 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
         ImageView copy_account = dialog.findViewById(R.id.copy_account);
         ImageView copy_ifsc = dialog.findViewById(R.id.copy_ifsc);
         TextView btn_download = dialog.findViewById(R.id.btn_download);
+        ImageView btn_close = dialog.findViewById(R.id.btn_close);
 
+
+        btn_close.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
 
         btn_upi.setOnClickListener(view -> {
             if (upiShow) {

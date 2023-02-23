@@ -1,406 +1,426 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10sp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/titleTxt"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorBlack"
-        android:textStyle="bold" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:background="@drawable/current_location_et_bg"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/btn_upi"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_5sdp">
+            android:orientation="vertical"
+            android:padding="10sp">
 
             <TextView
+                android:id="@+id/titleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="Recharge with UPI ID"
-                android:textColor="@color/colorBlack" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/dropdown_arrow_24" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_upi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_5sdp"
-                android:paddingEnd="@dimen/_5sdp"
-                android:paddingBottom="@dimen/_5sdp"
-                android:text="VPA : aavis94246@barodampay"
                 android:textColor="@color/colorBlack"
-                android:textSize="12sp" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/copy_upi"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:padding="@dimen/_3sdp"
-                android:src="@drawable/ic_copy_24" />
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/divider" />
-
-        <RelativeLayout
-            android:id="@+id/btn_barcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_5sdp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="Recharge with Barcode"
-                android:textColor="@color/colorBlack" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/dropdown_arrow_24" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_barcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
-                android:padding="@dimen/_3sdp"
-                android:src="@drawable/barcode" />
-
-            <TextView
-                android:id="@+id/btn_download"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_5sdp"
-                android:paddingEnd="@dimen/_5sdp"
-                android:paddingBottom="@dimen/_5sdp"
-                android:text="Download"
-                android:textColor="@color/colorBlue"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/divider" />
-
-        <RelativeLayout
-            android:id="@+id/btn_bank"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_5sdp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="Bank A/C transfer"
-                android:textColor="@color/colorBlack" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/dropdown_arrow_24" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_bank"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+                android:id="@+id/btn_close"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:src="@drawable/com_facebook_close" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:background="@drawable/current_location_et_bg"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/btn_upi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Recharge with UPI ID"
+                        android:textColor="@color/colorBlack" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/dropdown_arrow_24" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_upi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_5sdp"
+                        android:text="VPA : aavis94246@barodampay"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/copy_upi"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/ic_copy_24" />
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/divider" />
+
+                <RelativeLayout
+                    android:id="@+id/btn_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Recharge with Barcode"
+                        android:textColor="@color/colorBlack" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/dropdown_arrow_24" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/_80sdp"
+                        android:layout_height="@dimen/_80sdp"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/barcode" />
+
+                    <TextView
+                        android:id="@+id/btn_download"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_5sdp"
+                        android:text="Download"
+                        android:textColor="@color/colorBlue"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/divider" />
+
+                <RelativeLayout
+                    android:id="@+id/btn_bank"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="Bank A/C transfer"
+                        android:textColor="@color/colorBlack" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/dropdown_arrow_24" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_bank"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_5sdp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bank Name : Bank of Baroda"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_marginStart="@dimen/_6sdp"
+                            android:src="@drawable/bob" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            android:text="A/C Number : 45760200000469"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:id="@+id/copy_account"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:src="@drawable/ic_copy_24" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/_5sdp"
+                            android:paddingEnd="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            android:text="IFSC Code : BARB0SANRAI"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:id="@+id/copy_ifsc"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:padding="@dimen/_3sdp"
+                            android:src="@drawable/ic_copy_24" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_5sdp"
+                        android:text="A/C Holder : AAVI SOLUTIONS PRIVATE LIMITED"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layoutEditText"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:background="@drawable/current_location_et_bg"
+                android:inputType="textCapSentences"
                 android:orientation="horizontal"
-                android:paddingStart="@dimen/_5sdp"
-                android:paddingEnd="@dimen/_5sdp"
-                android:paddingBottom="@dimen/_5sdp">
+                android:padding="2sp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextPoints"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Bank Name : Bank of Baroda"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_bold"
+                    android:gravity="start"
+                    android:hint="Enter amount."
+                    android:inputType="number"
+                    android:paddingStart="10dp"
+                    android:singleLine="true"
                     android:textColor="@color/colorBlack"
-                    android:textSize="12sp" />
+                    android:textColorHint="@color/colorDark"
+                    android:textSize="@dimen/sp_18" />
 
-                <ImageView
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_marginStart="@dimen/_6sdp"
-                    android:src="@drawable/bob" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:paddingEnd="@dimen/_5sdp"
-                    android:paddingBottom="@dimen/_5sdp"
-                    android:text="A/C Number : 45760200000469"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="12sp" />
-
-                <ImageView
-                    android:id="@+id/copy_account"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:padding="@dimen/_3sdp"
-                    android:src="@drawable/ic_copy_24" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutDescription"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="@dimen/dp_70"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:background="@drawable/current_location_et_bg"
+                android:inputType="textCapSentences"
+                android:orientation="horizontal"
+                android:padding="2sp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:paddingEnd="@dimen/_5sdp"
-                    android:paddingBottom="@dimen/_5sdp"
-                    android:text="IFSC Code : BARB0SANRAI"
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_light"
+                    android:gravity="start"
+                    android:hint="Description"
+                    android:inputType="text"
+                    android:padding="10dp"
                     android:textColor="@color/colorBlack"
-                    android:textSize="12sp" />
+                    android:textColorHint="@color/colorDark"
+                    android:textSize="@dimen/sp_16" />
 
-                <ImageView
-                    android:id="@+id/copy_ifsc"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:padding="@dimen/_3sdp"
-                    android:src="@drawable/ic_copy_24" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_5sdp"
-                android:paddingEnd="@dimen/_5sdp"
-                android:paddingBottom="@dimen/_5sdp"
-                android:text="A/C Holder : AAVI SOLUTIONS PRIVATE LIMITED"
-                android:textColor="@color/colorBlack"
-                android:textSize="12sp" />
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/current_location_et_bg"
+                android:padding="2sp">
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/verified_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/ic_verified_24"
+                    app:tint="@color/divider" />
 
-    </LinearLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/upload_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_toStartOf="@+id/upload"
+                    android:layout_toEndOf="@+id/verified_img"
+                    android:background="@null"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center|start"
+                    android:padding="@dimen/dp_8"
+                    android:singleLine="true"
+                    android:text=" Upload transaction image"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/sp_16" />
 
+                <ImageView
+                    android:id="@+id/upload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:src="@android:drawable/ic_menu_upload"
+                    app:tint="@color/divider" />
+            </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/layoutEditText"
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:background="@drawable/current_location_et_bg"
-        android:inputType="textCapSentences"
-        android:orientation="horizontal"
-        android:padding="2sp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@null"
+                android:fontFamily="@font/gotham_regular"
+                android:gravity="center|start"
+                android:lineSpacingExtra="@dimen/_1sdp"
+                android:text="*Note\n- Please Pay with any above options to recharge your Pair Point Wallet &amp; share the payment screenshot having transaction/ UTR details.\n- Recharge will take 24 to 48 hours to reflect in Point Wallet after sharing Transaction details."
+                android:textColor="@color/divider"
+                android:textSize="@dimen/sp_12" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/editTextPoints"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@null"
-            android:fontFamily="@font/gotham_bold"
-            android:gravity="start"
-            android:hint="Enter amount."
-            android:inputType="number"
-            android:paddingStart="10dp"
-            android:singleLine="true"
-            android:textColor="@color/colorBlack"
-            android:textColorHint="@color/colorDark"
-            android:textSize="@dimen/sp_18" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gotham_medium"
+                android:gravity="center"
+                android:text="10% processing fees + 18% GST"
+                android:textColor="@color/colorRed"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone" />
 
-    </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_20">
 
-    <LinearLayout
-        android:id="@+id/layoutDescription"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:background="@drawable/current_location_et_bg"
-        android:inputType="textCapSentences"
-        android:orientation="horizontal"
-        android:padding="2sp">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonSubmit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/rounded_button"
+                    android:fontFamily="@font/gotham_medium"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_40"
+                    android:paddingRight="@dimen/dp_40"
+                    android:text="@string/submit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/sp_16" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/editTextDescription"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@null"
-            android:fontFamily="@font/gotham_light"
-            android:gravity="start"
-            android:hint="Description"
-            android:inputType="text"
-            android:padding="10dp"
-            android:textColor="@color/colorBlack"
-            android:textColorHint="@color/colorDark"
-            android:textSize="@dimen/sp_16" />
+            </RelativeLayout>
 
-    </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:background="@drawable/current_location_et_bg"
-        android:padding="2sp">
-
-        <ImageView
-            android:id="@+id/verified_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:src="@drawable/ic_verified_24"
-            app:tint="@color/divider" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/upload_img"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_toStartOf="@+id/upload"
-            android:layout_toEndOf="@+id/verified_img"
-            android:background="@null"
-            android:fontFamily="@font/gotham_medium"
-            android:gravity="center|start"
-            android:padding="@dimen/dp_8"
-            android:singleLine="true"
-            android:text=" Upload transaction image"
-            android:textColor="@color/colorText"
-            android:textSize="@dimen/sp_16" />
-
-        <ImageView
-            android:id="@+id/upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/_5sdp"
-            android:src="@android:drawable/ic_menu_upload"
-            app:tint="@color/divider" />
-    </RelativeLayout>
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginRight="@dimen/dp_20"
-        android:background="@null"
-        android:fontFamily="@font/gotham_regular"
-        android:gravity="center|start"
-        android:lineSpacingExtra="@dimen/_1sdp"
-        android:text="*Note\n- Please Pay with any above options to recharge your Pair Point Wallet &amp; share the payment screenshot having transaction/ UTR details.\n- Recharge will take 24 to 48 hours to reflect in Point Wallet after sharing Transaction details."
-        android:textColor="@color/divider"
-        android:textSize="@dimen/sp_12" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/gotham_medium"
-        android:gravity="center"
-        android:text="10% processing fees + 18% GST"
-        android:textColor="@color/colorRed"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_20">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonSubmit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/rounded_button"
-            android:fontFamily="@font/gotham_medium"
-            android:gravity="center"
-            android:paddingLeft="@dimen/dp_40"
-            android:paddingRight="@dimen/dp_40"
-            android:text="@string/submit"
-            android:textAllCaps="false"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/sp_16" />
-
-    </RelativeLayout>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>
