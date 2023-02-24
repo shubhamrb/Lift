@@ -84,8 +84,6 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
     TextView nametext;
     @BindView(R.id.card_number)
     TextView card_number;
-    @BindView(R.id.validity_text)
-    TextView validity_text;
     @BindView(R.id.recyclerViewpackage)
     RecyclerView recyclerViewpackage;
     private String strToken;
@@ -199,7 +197,7 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
                     if (response.body().getStatus()) {
                         cardModel = response.body().getCardModel();
                         if (cardModel != null) {
-                            pointtext.setText(String.format(Locale.getDefault(), " %d", cardModel.getCurrent_point()));
+                            pointtext.setText(String.format(Locale.getDefault(), "%d Pair Points", cardModel.getCurrent_point()));
                             nametext.setText(cardModel.getFull_name());
                             String card_no = cardModel.getCard_number();
 
@@ -208,9 +206,6 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
                             } else {
                                 card_number.setText(card_no.substring(0, 4) + " **** **** " + card_no.substring(12));//2305 0000 0004 1111
                             }
-                            String card_val = cardModel.getCard_expiry();
-                            validity_text.setText(card_val.split("-")[1] + "/" + card_val.split("-")[0].substring(2));
-
                             getRechargeHistory();
                         }
                     } else {

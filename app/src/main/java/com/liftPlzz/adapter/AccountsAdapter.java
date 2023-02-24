@@ -5,6 +5,7 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,20 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.ViewHo
         }
 
         holder.tv_account_status.setText(account.getStatus());
+
+        if (account.getStatus_color() != null) {
+            switch (account.getStatus_color()) {
+                case "green":
+                    holder.tv_account_status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.quantum_googgreen)));
+                    break;
+                case "orange":
+                    holder.tv_account_status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.quantum_orange)));
+                    break;
+                case "red":
+                    holder.tv_account_status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorRed)));
+                    break;
+            }
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

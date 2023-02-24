@@ -22,6 +22,18 @@ public class RedeemRequestModel implements Serializable {
     @Expose
     private String status;
 
+    @SerializedName("status_color")
+    @Expose
+    private String status_color;
+
+    public String getStatus_color() {
+        return status_color;
+    }
+
+    public void setStatus_color(String status_color) {
+        this.status_color = status_color;
+    }
+
     public int getId() {
         return id;
     }
@@ -61,6 +73,7 @@ public class RedeemRequestModel implements Serializable {
                 ", point=" + point +
                 ", comment='" + comment + '\'' +
                 ", status='" + status + '\'' +
+                ", status_color='" + status_color + '\'' +
                 '}';
     }
 }

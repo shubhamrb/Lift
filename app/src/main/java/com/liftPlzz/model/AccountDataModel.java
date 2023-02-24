@@ -38,7 +38,17 @@ public class AccountDataModel implements Serializable {
     @Expose
     private String status;
 
+    @SerializedName("status_color")
+    @Expose
+    private String status_color;
 
+    public String getStatus_color() {
+        return status_color;
+    }
+
+    public void setStatus_color(String status_color) {
+        this.status_color = status_color;
+    }
     public int getId() {
         return id;
     }
@@ -114,6 +124,7 @@ public class AccountDataModel implements Serializable {
                 ", pan_img='" + pan_img + '\'' +
                 ", cheque_img='" + cheque_img + '\'' +
                 ", status='" + status + '\'' +
+                ", status_color='" + status_color + '\'' +
                 '}';
     }
 }

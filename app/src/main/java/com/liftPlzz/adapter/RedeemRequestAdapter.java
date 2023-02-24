@@ -5,6 +5,7 @@ package com.liftPlzz.adapter;
  */
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,21 @@ public class RedeemRequestAdapter extends RecyclerView.Adapter<RedeemRequestAdap
         holder.tv_account_name.setText(requestModel.getPoint() + " points\n" + requestModel.getComment());
 
         holder.tv_account_status.setText(requestModel.getStatus());
+
+        if (requestModel.getStatus_color() != null) {
+            switch (requestModel.getStatus_color()) {
+                case "green":
+                    holder.tv_account_status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.quantum_googgreen)));
+                    break;
+                case "orange":
+                    holder.tv_account_status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.quantum_orange)));
+                    break;
+                case "red":
+                    holder.tv_account_status.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorRed)));
+                    break;
+            }
+        }
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
