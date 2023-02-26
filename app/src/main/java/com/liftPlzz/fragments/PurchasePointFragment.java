@@ -206,7 +206,7 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
         AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
         EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
         EditText editTextDescription = dialog.findViewById(R.id.editTextDescription);
-        AppCompatTextView upload_img = dialog.findViewById(R.id.upload_img);
+        RelativeLayout upload_img = dialog.findViewById(R.id.upload_img);
         verified_img = dialog.findViewById(R.id.verified_img);
 
         RelativeLayout btn_upi = dialog.findViewById(R.id.btn_upi);
@@ -338,7 +338,7 @@ public class PurchasePointFragment extends BaseFragment<PurchasePointPresenter, 
                 c.setRequestMethod("GET");
                 c.setDoOutput(true);
                 c.connect();
-                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES); //Creates app specific folder
+                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM); //Creates app specific folder
                 if (!path.exists()) {
                     path.mkdirs();
                 }

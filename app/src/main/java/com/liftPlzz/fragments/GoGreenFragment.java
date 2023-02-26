@@ -2,13 +2,18 @@ package com.liftPlzz.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,15 +24,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
+import com.liftPlzz.model.GoGreenDataModel;
 import com.liftPlzz.model.ReferralDataResponse;
 import com.liftPlzz.presenter.GoGreenPresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.GoGreenView;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -86,11 +95,26 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
 
     @BindView(R.id.editTextName)
     AppCompatEditText editTextName;
+
+    @BindView(R.id.checkbox_terms)
+    CheckBox checkbox_terms;
+
+    @BindView(R.id.btn_terms)
+    TextView btn_terms;
+
+    @BindView(R.id.rl_approval_status)
+    RelativeLayout rl_approval_status;
+
+    @BindView(R.id.txt_approval_status)
+    TextView txt_approval_status;
+
+
     String strToken = "";
     private int IMAGE_TYPE = 1;
     private ReferralDataResponse.ReferralModel referralData;
     private File fileAadharFront = null, fileAadharBack = null, fileCheque = null, filePan = null;
     private MultipartBody.Part aadharFrontBody = null, aadharBackBody = null, chequeBody = null, panBody = null;
+    private GoGreenDataModel goGreenData;
 
     @Override
     protected int createLayout() {
@@ -121,7 +145,7 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
         presenter.getData(strToken);
     }
 
-    @OnClick({R.id.imageViewBack, R.id.imageViewHome, R.id.buttonSubmit, R.id.upload_aadhar_front, R.id.upload_aadhar_back,R.id.upload_cheque, R.id.upload_pan})
+    @OnClick({R.id.imageViewBack, R.id.imageViewHome, R.id.buttonSubmit, R.id.upload_aadhar_front, R.id.upload_aadhar_back, R.id.upload_cheque, R.id.upload_pan, R.id.btn_terms})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewBack:
@@ -153,6 +177,12 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
                         .compress(1024)            //Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080).start();
                 IMAGE_TYPE = 3;
+                break;
+            case R.id.btn_terms:
+                boolean isChecked = checkbox_terms.isChecked();
+
+                openTermsDialog();
+
                 break;
             case R.id.buttonSubmit:
 
@@ -190,6 +220,11 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
                     Toast.makeText(getActivity(), "Please enter your name.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (!checkbox_terms.isChecked()) {
+                    Toast.makeText(getActivity(), "Please accept the terms & conditions.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 RequestBody api_key = RequestBody.create(MultipartBody.FORM, Constants.API_KEY);
                 RequestBody device = RequestBody.create(MultipartBody.FORM, "android");
                 RequestBody token = RequestBody.create(MultipartBody.FORM, strToken);
@@ -202,19 +237,42 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
         }
     }
 
+    private void openTermsDialog() {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.terms_condition_dialog);
+        dialog.getWindow().setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        AppCompatButton buttonOk = dialog.findViewById(R.id.buttonOk);
+
+        buttonOk.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
+
 
     @Override
     public void setData(JsonObject jsonObject) {
         Log.e("Response : ", jsonObject.toString());
         JsonObject dataObject = jsonObject.get("data").getAsJsonObject();
 
-        String aadharFront = dataObject.get("aadhar").getAsString();
-        /*String aadharBack = dataObject.get("aadhar_back").getAsString();
-        String cheque = dataObject.get("cancel_cheque").getAsString();*/
-        String pan = dataObject.get("pan").getAsString();
-        String account = dataObject.get("account").getAsString();
-        String ifsc = dataObject.get("ifsc").getAsString();
-        String name = dataObject.get("name").getAsString();
+        Type goGreen = new TypeToken<GoGreenDataModel>() {
+        }.getType();
+        goGreenData = new Gson().fromJson(dataObject.toString(), goGreen);
+
+        if (goGreenData == null) {
+            rl_approval_status.setVisibility(View.GONE);
+            return;
+        }
+        rl_approval_status.setVisibility(View.VISIBLE);
+        String aadharFront = goGreenData.getAadhar();
+        String aadharBack = dataObject.get("aadhar_back").getAsString();
+        String cheque = dataObject.get("cancel_cheque").getAsString();
+        String pan = goGreenData.getPan();
+        String account = goGreenData.getAccount();
+        String ifsc = goGreenData.getIfsc();
+        String name = goGreenData.getName();
+
         if (account != null) {
             editTextAccount.setText(account);
         }
@@ -229,27 +287,37 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
             verified_aadhar_front.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
 
-       /* if (aadharBack != null && !aadharBack.isEmpty()) {
+        if (aadharBack != null && !aadharBack.isEmpty()) {
             verified_aadhar_back.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
 
         if (cheque != null && !cheque.isEmpty()) {
-            verified_aadhar_front.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
-        }*/
+            verified_cheque.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+        }
 
         if (pan != null && !pan.isEmpty()) {
             verified_pan.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
+
+        switch (goGreenData.getStatus_color()) {
+            case "orange":
+                rl_approval_status.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_orange)));
+                break;
+            case "green":
+                rl_approval_status.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
+                break;
+            case "red":
+                rl_approval_status.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorRed)));
+                break;
+        }
+        txt_approval_status.setText(goGreenData.getStatus());
     }
 
     @Override
     public void onSubmit(String message) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Go Green Partner")
-                .setMessage(message)
-                .setPositiveButton("OK", (dialog, whichButton) -> {
-                    dialog.dismiss();
-                }).show();
+        new AlertDialog.Builder(getActivity()).setTitle("Go Green Partner").setMessage(message).setPositiveButton("OK", (dialog, whichButton) -> {
+            dialog.dismiss();
+        }).show();
     }
 
     @Override

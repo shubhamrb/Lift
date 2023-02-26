@@ -503,7 +503,7 @@
                         android:fontFamily="@font/gotham_medium"
                         android:gravity="center|start"
                         android:singleLine="true"
-                        android:text="Upload your selfie"
+                        android:text="Upload Profile DP/Selfie"
                         android:textColor="@color/colorText"
                         android:textSize="@dimen/sp_16" />
 

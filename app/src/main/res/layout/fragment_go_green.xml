@@ -257,6 +257,51 @@
                     android:textSize="@dimen/sp_16" />
 
             </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkbox_terms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="true" />
+
+                <TextView
+                    android:id="@+id/btn_terms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Terms &amp; Conditions"
+                    android:textColor="@color/colorBlue">
+
+                </TextView>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_approval_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@drawable/rounded_bg_blue_border"
+                android:backgroundTint="@color/quantum_orange"
+                android:padding="@dimen/_6sdp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_approval_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textColor="@color/colorWhite" />
+            </RelativeLayout>
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
