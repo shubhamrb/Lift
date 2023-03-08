@@ -78,17 +78,36 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         holder.tvLiftType.setText(lift.getLiftType());
         //todo if ride_start will be 1 it will show the ride start button
         if (lift.getRideStart() == 1) {
-            holder.tvStartRide.setVisibility(View.VISIBLE);
+            holder.btn_start_map.setVisibility(View.VISIBLE);
             holder.btn_share_lift.setVisibility(View.VISIBLE);
+
             if (lift.getLiftType().equalsIgnoreCase(context.getResources().getString(R.string.find_lift))) {
                 holder.btn_same_rute.setVisibility(View.GONE);
+
+                if (lift.getIs_user_start() == 1) {
+                    holder.tvStartRide.setVisibility(View.GONE);
+                    holder.btn_navigation.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
+                    holder.btn_navigation.setVisibility(View.GONE);
+                    holder.tvStartRide.setVisibility(View.VISIBLE);
+                }
+
             } else {
                 holder.btn_same_rute.setVisibility(View.VISIBLE);
                 holder.btn_same_rute.setText(lift.getSameroutevehicle() + " Same Route");
-            }
 
+                if (lift.getIs_driver_start() == 1) {
+                    holder.tvStartRide.setVisibility(View.GONE);
+                    holder.btn_navigation.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
+                    holder.btn_navigation.setVisibility(View.GONE);
+                    holder.tvStartRide.setVisibility(View.VISIBLE);
+                }
+            }
         } else {
-            holder.tvStartRide.setVisibility(View.GONE);
+            holder.btn_start_map.setVisibility(View.GONE);
         }
 
         if (lift.getIsBooked() == 0) {
@@ -106,27 +125,6 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
         holder.textRateparkm.setText("Rate per km : " + lift.getRate_per_km() + "/km");
         holder.textPoints.setText("Total points : " + lift.getTotal_points());
         holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
-
-        if (lift.getLiftType().equals(context.getResources().getString(R.string.find_lift))) {
-            if (lift.getIs_user_start() == 1) {
-                holder.tvStartRide.setVisibility(View.GONE);
-                holder.btn_navigation.setVisibility(View.VISIBLE);
-            } else {
-                holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
-                holder.btn_navigation.setVisibility(View.GONE);
-                holder.tvStartRide.setVisibility(View.VISIBLE);
-            }
-        } else {
-            if (lift.getIs_driver_start() == 1) {
-                holder.tvStartRide.setVisibility(View.GONE);
-                holder.btn_navigation.setVisibility(View.VISIBLE);
-            } else {
-                holder.tvStartRide.setText(context.getResources().getString(R.string.start_ride));
-                holder.btn_navigation.setVisibility(View.GONE);
-                holder.tvStartRide.setVisibility(View.VISIBLE);
-            }
-        }
-
 
         holder.tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override

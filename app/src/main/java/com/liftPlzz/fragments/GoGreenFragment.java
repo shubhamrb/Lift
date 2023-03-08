@@ -298,7 +298,6 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
         if (pan != null && !pan.isEmpty()) {
             verified_pan.setImageTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_googgreen)));
         }
-
         switch (goGreenData.getStatus_color()) {
             case "orange":
                 rl_approval_status.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.quantum_orange)));
@@ -309,6 +308,9 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
             case "red":
                 rl_approval_status.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorRed)));
                 break;
+            default:
+                rl_approval_status.setVisibility(View.GONE);
+                break;
         }
         txt_approval_status.setText(goGreenData.getStatus());
     }
@@ -317,6 +319,8 @@ public class GoGreenFragment extends BaseFragment<GoGreenPresenter, GoGreenView>
     public void onSubmit(String message) {
         new AlertDialog.Builder(getActivity()).setTitle("Go Green Partner").setMessage(message).setPositiveButton("OK", (dialog, whichButton) -> {
             dialog.dismiss();
+            loadData();
+
         }).show();
     }
 

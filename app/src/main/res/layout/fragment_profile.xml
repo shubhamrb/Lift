@@ -614,7 +614,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:background="@null"
                             android:fontFamily="@font/gotham_medium"
                             android:gravity="center"
@@ -622,7 +622,7 @@
                             android:singleLine="true"
                             android:text="Total Lift"
                             android:textColor="@color/colorBlack"
-                            android:textSize="@dimen/sp_16" />
+                            android:textSize="@dimen/sp_12" />
 
                     </LinearLayout>
 
@@ -653,7 +653,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:background="@null"
                             android:fontFamily="@font/gotham_medium"
                             android:gravity="center"
@@ -662,7 +662,7 @@
                             android:singleLine="true"
                             android:text="As Lift Giver"
                             android:textColor="@color/colorBlack"
-                            android:textSize="@dimen/sp_16" />
+                            android:textSize="@dimen/sp_12" />
 
                     </LinearLayout>
 
@@ -692,7 +692,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:background="@null"
                             android:fontFamily="@font/gotham_medium"
                             android:gravity="center"
@@ -701,7 +701,7 @@
                             android:singleLine="true"
                             android:text="As Lift Taker"
                             android:textColor="@color/colorBlack"
-                            android:textSize="@dimen/sp_16" />
+                            android:textSize="@dimen/sp_12" />
 
                     </LinearLayout>
                 </LinearLayout>

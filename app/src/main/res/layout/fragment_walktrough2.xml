@@ -5,6 +5,15 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/poppins_semibold"
+        android:gravity="center"
+        android:text="Economic"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/sp_18" />
 
     <androidx.appcompat.widget.AppCompatImageView
 
@@ -14,7 +23,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_10"
-        android:src="@drawable/s3"
+        android:src="@drawable/s2"
         android:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -24,10 +33,9 @@
         android:layout_margin="@dimen/dp_5"
         android:fontFamily="@font/poppins_semibold"
         android:gravity="center"
-        android:text="Lift social service"
+        android:text="Fuel Partner / Cost Sharing / Carpooling"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/sp_18" />
-
 
 
 </LinearLayout>

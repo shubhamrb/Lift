@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_200"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/s3"
+        android:src="@drawable/s2"
         android:visibility="gone" />
 
     <RelativeLayout

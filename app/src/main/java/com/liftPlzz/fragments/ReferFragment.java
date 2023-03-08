@@ -118,15 +118,14 @@ public class ReferFragment extends BaseFragment<ReferPresenter, ReferView> imple
 
     private void buildDynamicLink(String link) {
 
-        String text = "Get Easy, Economic ,Comfortable Lift on CharPair every day!\n" +
+        String text = "Get Easy, Economic ,Comfortable Lift to your destination on Char Pair\n" +
                 "\n" +
-                "Get guaranteed 200 welcome Pair points\n" +
-                "\n" +
-                "Use referral code " + referralData.getReffer_id() + " & get 50 more points on your first lift.\n" +
+                "Use my referral code " + referralData.getReffer_id() + " & get 250 welcome Pair Points to pay for lift.\n" +
                 "\n" +
                 "Enjoy eco-friendly lift anytime, anywhere with your fuel partner.\n" +
                 "\n" +
                 "Download the app at ";
+
         FirebaseDynamicLinks.getInstance().createDynamicLink().setLink(Uri.parse(link)).setDomainUriPrefix("https://charpair.page.link").setAndroidParameters(new DynamicLink.AndroidParameters.Builder("com.liftPlzz").build()).buildShortDynamicLink().addOnSuccessListener(shortDynamicLink -> {
             String inviteLink = shortDynamicLink.getShortLink().toString();
 

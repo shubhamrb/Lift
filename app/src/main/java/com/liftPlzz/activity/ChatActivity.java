@@ -1,11 +1,8 @@
 package com.liftPlzz.activity;
 
-import static android.Manifest.permission.CALL_PHONE;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -135,11 +131,11 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
                 @Override
                 public void onClick(View v) {
 
-                    if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-                        sendDummyMsgBeforeCall(chatUser.getMobile());
-                    } else {
-                        requestPermissions(new String[]{CALL_PHONE}, 1);
-                    }
+//                    if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    sendDummyMsgBeforeCall(chatUser.getMobile());
+//                    } else {
+//                        requestPermissions(new String[]{CALL_PHONE}, 1);
+//                    }
                 }
             });
 
@@ -347,7 +343,7 @@ public class ChatActivity extends AppCompatActivity implements ChatSuggestionAda
                 "Mobile No.: " + number;
         sendMessage(message);
 
-        Intent intent = new Intent(Intent.ACTION_CALL);
+        Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + mobile));
         startActivity(intent);
     }

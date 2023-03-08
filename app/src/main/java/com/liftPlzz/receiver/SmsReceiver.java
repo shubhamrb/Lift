@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.SmsMessage;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.Status;
 import com.liftPlzz.SmsListener;
 
 public class SmsReceiver extends BroadcastReceiver {
@@ -13,7 +15,7 @@ public class SmsReceiver extends BroadcastReceiver {
     Boolean b;
     String abcd, xyz;
 
-    @Override
+    /*@Override
     public void onReceive(Context context, Intent intent) {
         Bundle data = intent.getExtras();
         Object[] pdus = (Object[]) data.get("pdus");
@@ -28,10 +30,40 @@ public class SmsReceiver extends BroadcastReceiver {
             try {
                 mListener.messageReceived(abcd); // attach value to interface
             } catch (Exception exception) {
-
+                mListener.onError(exception.getMessage());
             }
 
 
+        }
+    }*/
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (SmsRetriever.SMS_RETRIEVED_ACTION.equals(intent.getAction())) {
+            Bundle extras = intent.getExtras();
+            Status status = null;
+            if (extras != null) {
+                status = (Status) extras.get(SmsRetriever.EXTRA_STATUS);
+            }
+
+            if (status != null) {
+                switch (status.getStatusCode()) {
+                    case CommonStatusCodes.SUCCESS:
+                        // Get SMS message contents
+                        String message = (String) extras.get(SmsRetriever.EXTRA_SMS_MESSAGE);
+                        message = message.replaceAll("\\D", "");
+                        // Extract one-time code from the message and complete verification
+                        // by sending the code back to your server.
+                        if (mListener != null)
+                            mListener.messageReceived(message);
+                        break;
+                    case CommonStatusCodes.TIMEOUT:
+                        // Waiting for SMS timed out (5 minutes)
+                        // Handle the error ...
+                        if (mListener != null)
+                            mListener.onError("Failed to extract from Broadcast Receiver");
+                        break;
+                }
+            }
         }
     }
 

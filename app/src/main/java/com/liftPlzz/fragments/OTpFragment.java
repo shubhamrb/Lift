@@ -21,6 +21,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,6 +35,7 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.liftPlzz.R;
+import com.liftPlzz.SmsListener;
 import com.liftPlzz.activity.HomeActivity;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.resendOtp.Response;
@@ -134,22 +137,42 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
         firebaseAuth = FirebaseAuth.getInstance();
         sendCode();
 
-        SmsReceiver.bindListener(messageText -> {
-            if (!isManual) {
-                editTextFirstDigits.setText(String.valueOf(messageText.charAt(0)));
-                Log.d("OTP word 1", editTextFirstDigits.getText().toString());
-                editTextSecondsDigits.setText(String.valueOf(messageText.charAt(1)));
-                Log.d("OTP word 2", editTextSecondsDigits.getText().toString());
-                editTextThirdDigits.setText(String.valueOf(messageText.charAt(2)));
-                Log.d("OTP word 3", editTextThirdDigits.getText().toString());
-                editTextFourthDigits.setText(String.valueOf(messageText.charAt(3)));
-                Log.d("OTP word 4", editTextFourthDigits.getText().toString());
-                editTextFive.setText(String.valueOf(messageText.charAt(4)));
-                Log.d("OTP word 5", editTextFive.getText().toString());
-                editTextSix.setText(String.valueOf(messageText.charAt(5)));
-                Log.d("OTP word 6", editTextSix.getText().toString());
-            }
+        SmsRetrieverClient client = SmsRetriever.getClient(getContext());
+        Task<Void> task = client.startSmsRetriever();
+
+        task.addOnSuccessListener(aVoid -> {
+            SmsReceiver.bindListener(new SmsListener() {
+                @Override
+                public void messageReceived(String messageText) {
+                    if (messageText != null) {
+                        Log.e("OTP : ", messageText);
+                        if (!isManual) {
+                            editTextFirstDigits.setText(String.valueOf(messageText.charAt(0)));
+                            Log.d("OTP word 1", editTextFirstDigits.getText().toString());
+                            editTextSecondsDigits.setText(String.valueOf(messageText.charAt(1)));
+                            Log.d("OTP word 2", editTextSecondsDigits.getText().toString());
+                            editTextThirdDigits.setText(String.valueOf(messageText.charAt(2)));
+                            Log.d("OTP word 3", editTextThirdDigits.getText().toString());
+                            editTextFourthDigits.setText(String.valueOf(messageText.charAt(3)));
+                            Log.d("OTP word 4", editTextFourthDigits.getText().toString());
+                            editTextFive.setText(String.valueOf(messageText.charAt(4)));
+                            Log.d("OTP word 5", editTextFive.getText().toString());
+                            editTextSix.setText(String.valueOf(messageText.charAt(5)));
+                            Log.d("OTP word 6", editTextSix.getText().toString());
+                        }
+                    }
+                }
+
+                @Override
+                public void onError(String message) {
+                    if (message != null)
+                        Log.d("onError", message);
+                }
+            });
         });
+
+        task.addOnFailureListener(Throwable::printStackTrace);
+
 
         editTextFirstDigits.addTextChangedListener(new TextWatcher() {
             @Override
