@@ -28,9 +28,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.liftPlzz.R;
+import com.liftPlzz.activity.AuthActivity;
 import com.liftPlzz.activity.ChatActivity;
 import com.liftPlzz.activity.TicketListActivity;
 import com.liftPlzz.adapter.SettingOptionAdapter;
@@ -175,6 +177,16 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
     }
 
     @Override
+    public void onSuccessAccountSuspend(JsonObject datum) {
+        FirebaseAuth.getInstance().signOut();
+        sharedPreferences.edit().putBoolean(Constants.IS_LOGIN, false).apply();
+        sharedPreferences.edit().clear().apply();
+        Intent intent = new Intent(getActivity(), AuthActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    @Override
     public void onToggleClick(int settingId, int inputValue) {
         updateSetting(strToken, settingId, inputValue);
     }
@@ -202,17 +214,12 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
             presenter.getProfile(strToken);
         } else if (data.getType().trim().equals("Reset to default")) {
             //reset setting
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Reset to default")
-                    .setMessage("Do you really want to reset to default?")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(getActivity()).setTitle("Reset to default").setMessage("Do you really want to reset to default?").setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            presenter.reset(strToken);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, null).show();
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    presenter.reset(strToken);
+                }
+            }).setNegativeButton(android.R.string.no, null).show();
         }
     }
 
@@ -225,7 +232,18 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
         } else if (data.getShortCode().equals("edit_profile")) {
             presenter.getProfile(strToken);
         } else if (data.getShortCode().equals("suspend_account")) {
-            //
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            alertDialogBuilder.setTitle("Suspend Account");
+            alertDialogBuilder.setMessage("Are you sure you want to suspend your account?").setCancelable(true);
+            alertDialogBuilder.setPositiveButton("Suspend", (dialog, id) -> {
+                dialog.cancel();
+                presenter.suspendAccount(strToken);
+            });
+            alertDialogBuilder.setNegativeButton("Cancel", (dialog, id) -> {
+                dialog.cancel();
+            });
+            AlertDialog alert = alertDialogBuilder.create();
+            alert.show();
         } else if (data.getShortCode().equals("faq")) {
             presenter.openFaq();
         } else if (data.getShortCode().equals("how_to_use_charpair")) {
@@ -238,7 +256,7 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
             ChatUser user = new ChatUser();
             user.setId(0);
             user.setName("CharPair Support");
-            user.setMobile("9876543210");
+            user.setMobile("9981116063");
             user.setImage("https://charpair.com/website/assets/img/Char_Pair_logo.jpg");
 
             Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -256,7 +274,7 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
 
         AppCompatTextView tv_number = dialog.findViewById(R.id.tv_number);
         AppCompatTextView tv_email = dialog.findViewById(R.id.tv_email);
-        tv_number.setText("9876543210");
+        tv_number.setText("9981116063");
         tv_email.setText("support@charpair.com ");
         dialog.show();
     }
@@ -487,8 +505,7 @@ public class SettingOptionFragment extends BaseFragment<SettingPresenter, Settin
 
         okayBtn.setOnClickListener(v -> {
             dialog.dismiss();
-            if (data != null)
-                updateSetting(strToken, data.getId(), "" + ratingBr.getRating());
+            if (data != null) updateSetting(strToken, data.getId(), "" + ratingBr.getRating());
         });
         dialog.show();
     }

@@ -40,7 +40,7 @@
                 android:autoLink="phone"
                 android:fontFamily="@font/gotham_medium"
                 android:gravity="center"
-                android:text="1234567890"
+                android:text="9981116063"
                 android:textColor="@color/colorRed"
                 android:textColorLink="@color/colorRed"
                 android:textSize="@dimen/sp_20" />
@@ -92,7 +92,7 @@
                 android:autoLink="email"
                 android:fontFamily="@font/gotham_medium"
                 android:gravity="center"
-                android:text="abc@gmail.com"
+                android:text="support@charpair.com"
                 android:textColor="@color/colorBlack"
                 android:textColorLink="@color/colorBlack"
                 android:textSize="@dimen/sp_16" />

@@ -118,6 +118,36 @@ public class SettingPresenter extends BasePresenter<SettingView> {
         });
     }
 
+    public void suspendAccount(String token) {
+        view.showLoader();
+        ApiService api = RetroClient.getApiService();
+        Call<JsonObject> call = api.suspend_account(Constants.API_KEY, "android", token);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                view.hideLoader();
+
+                if (response.body() != null) {
+                    if (response.body().get("status").getAsBoolean()) {
+                        view.onSuccessAccountSuspend(response.body());
+                    } else {
+                        //  view.hideLoader();
+                        view.showMessage(response.body().get("message").getAsString());
+                    }
+
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable throwable) {
+                view.hideLoader();
+                view.showMessage("Check your internet connection");
+            }
+        });
+    }
+
     public void openUpdateProfile() {
         navigator.openUpdateProfileFragment(BaseActivity.PerformFragment.REPLACE);
     }
@@ -125,6 +155,7 @@ public class SettingPresenter extends BasePresenter<SettingView> {
     public void openFaq() {
         navigator.openFaqFragment(BaseActivity.PerformFragment.REPLACE);
     }
+
     public void openHowToUse() {
         navigator.openVideosFragment(BaseActivity.PerformFragment.REPLACE);
     }

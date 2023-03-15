@@ -395,13 +395,14 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             new GetDirection().execute(origin, destination);
 
         } else {
-            if (mGoogleMap != null)
+            if (mGoogleMap != null) {
                 mGoogleMap.addMarker(new MarkerOptions()
                         .position(pickupLocation)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
                         .title("pickup"));
 
-            setEndLiftLoc(data);
+                setEndLiftLoc(data);
+            }
         }
 
         textViewLiftName.setText("" + (data.getLift().getLiftType().equals("offer") ? "Offer Lift" : "Find Lift"));
@@ -446,7 +447,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             if (data.getCheck_point().size() == 0) {
                 ArrayList<CheckPoints> list = new ArrayList<>();
                 refreshGoogleMap(list);
-            }else {
+            } else {
                 new GetDirection().execute(origin, destination);
             }
         }
@@ -528,8 +529,6 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
         bottomSheetCheckPointsDialog.setSelectionListner(EditLiftDaiFragment.this);
         progressBar.setVisibility(View.VISIBLE);
-        presenter.getEditVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "" + lift.getId());
-        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "");
 
         btn_swap.setOnClickListener(view -> {
             swapLocation();
@@ -550,7 +549,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
         newData.getStart_point().setDate(date);
         liftdata = newData;
 
-        dropLocation=null;
+        dropLocation = null;
         setStarLift(liftdata);
 //        setEndLiftLoc(liftdata);
         draw_check_point_from_api(liftdata);
@@ -725,54 +724,12 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more detai ls.
             return;
         }
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        ///   jag
-       /* latLngOrigin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        origin = currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-        pickupLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-        googleMap.addMarker(new MarkerOptions()
-                .position(latLngOrigin)
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location))
-                .title("First"));
-
-        // [START_EXCLUDE silent]
-        editTextPickupLocation.setText(getCompleteAddressString(currentLocation.getLatitude(), currentLocation.getLongitude()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 15.0f));
-        startPoint = getJsonObjectFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
-*/
-        // Zoom in the Google Map
-//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-//        googleMap.moveCamera(new CameraUpdateFactory().newLatLngZoom(la));
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-    /*    googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                googleMap.clear();
-            }
-        });
-        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-
-                MarkerOptions markerOptions = new MarkerOptions().position(googleMap.getCameraPosition().target)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
-                googleMap.addMarker(markerOptions);
-                editTextPickupLocation.setText(getCompleteAddressString(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude));
-
-            }
-        });*/
         googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker arg0) {
@@ -792,6 +749,10 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             public void onMarkerDrag(Marker arg0) {
             }
         });
+
+        //load data
+        presenter.getEditVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "" + lift.getId());
+        presenter.getVehicle(sharedPreferences.getString(Constants.TOKEN, ""), "");
 
     }
 
@@ -1444,205 +1405,214 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
             sevenTxt.setImageResource(R.drawable.seat_filled);
         });
 
-        int selectedPos = -1;
+        if (vehicleList != null && vehicleList.size() > 0) {
+            int selectedPos = -1;
+            if (!textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
+                for (int i = 0; i < vehicleList.size(); i++) {
+                    if (vehicleId == vehicleList.get(i).getId()) {
+                        vehicleList.get(i).setRatePerKm(Integer.parseInt(rate_per_km));
+                        selectedPos = i;
+
+                        switch (vehicleList.get(i).getSeats()) {
+                            case 1:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.GONE);
+                                threeTxt.setVisibility(View.GONE);
+                                fourTxt.setVisibility(View.GONE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 2:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.GONE);
+                                fourTxt.setVisibility(View.GONE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 3:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.GONE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 4:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 5:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.VISIBLE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 6:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.VISIBLE);
+                                sixTxt.setVisibility(View.VISIBLE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 7:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.VISIBLE);
+                                sixTxt.setVisibility(View.VISIBLE);
+                                sevenTxt.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            pagerAdapter = new VehiclePagerAdapter(getContext(), vehicleList);
+            vehiclePager.setAdapter(pagerAdapter);
+            indicator.setViewPager(vehiclePager);
+            vehiclePager.setCurrentItem(selectedPos);
+            vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
+
+                }
+
+                @Override
+                public void onPageSelected(final int i) {
+                    if (vehicleList.get(i).getType().equals("two_wheeler")) {
+                        oneTxt.setImageResource(R.drawable.seat_filled);
+                        twoTxt.setImageResource(R.drawable.seat_outline);
+                        threeTxt.setImageResource(R.drawable.seat_outline);
+                        fourTxt.setImageResource(R.drawable.seat_outline);
+                        fiveTxt.setImageResource(R.drawable.seat_outline);
+                        twoTxt.setVisibility(View.GONE);
+                        threeTxt.setVisibility(View.GONE);
+                        fourTxt.setVisibility(View.GONE);
+                        fiveTxt.setVisibility(View.GONE);
+                    } else {
+                        switch (vehicleList.get(i).getSeats()) {
+                            case 1:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.GONE);
+                                threeTxt.setVisibility(View.GONE);
+                                fourTxt.setVisibility(View.GONE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 2:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.GONE);
+                                fourTxt.setVisibility(View.GONE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 3:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.GONE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 4:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.GONE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 5:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.VISIBLE);
+                                sixTxt.setVisibility(View.GONE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 6:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.VISIBLE);
+                                sixTxt.setVisibility(View.VISIBLE);
+                                sevenTxt.setVisibility(View.GONE);
+                                break;
+                            case 7:
+                                oneTxt.setVisibility(View.VISIBLE);
+                                twoTxt.setVisibility(View.VISIBLE);
+                                threeTxt.setVisibility(View.VISIBLE);
+                                fourTxt.setVisibility(View.VISIBLE);
+                                fiveTxt.setVisibility(View.VISIBLE);
+                                sixTxt.setVisibility(View.VISIBLE);
+                                sevenTxt.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                    }
+                    PagerPosition = i;
+                    etkm.setText("" + vehicleList.get(i).getRatePerKm());
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int i) {
+
+                }
+            });
+        }
+
         if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
             vehicleLayout.setVisibility(View.GONE);
             llrate.setVisibility(View.GONE);
+            oneTxt.setVisibility(View.VISIBLE);
+            twoTxt.setVisibility(View.VISIBLE);
+            threeTxt.setVisibility(View.VISIBLE);
+            fourTxt.setVisibility(View.VISIBLE);
+            fiveTxt.setVisibility(View.VISIBLE);
+            sixTxt.setVisibility(View.VISIBLE);
+            sevenTxt.setVisibility(View.VISIBLE);
         } else {
             vehicleLayout.setVisibility(View.VISIBLE);
             llrate.setVisibility(View.VISIBLE);
-            for (int i = 0; i < vehicleList.size(); i++) {
-                if (vehicleId == vehicleList.get(i).getId()) {
-                    vehicleList.get(i).setRatePerKm(Integer.parseInt(rate_per_km));
-                    selectedPos = i;
-
-                    switch (vehicleList.get(i).getSeats()) {
-                        case 1:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.GONE);
-                            threeTxt.setVisibility(View.GONE);
-                            fourTxt.setVisibility(View.GONE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 2:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.GONE);
-                            fourTxt.setVisibility(View.GONE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 3:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.GONE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 4:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 5:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.VISIBLE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 6:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.VISIBLE);
-                            sixTxt.setVisibility(View.VISIBLE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 7:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.VISIBLE);
-                            sixTxt.setVisibility(View.VISIBLE);
-                            sevenTxt.setVisibility(View.VISIBLE);
-                            break;
-                    }
-                }
-            }
         }
 
-        pagerAdapter = new VehiclePagerAdapter(getContext(), vehicleList);
-        vehiclePager.setAdapter(pagerAdapter);
-        indicator.setViewPager(vehiclePager);
-
-
         etkm.setText("" + rate_per_km);
-        vehiclePager.setCurrentItem(selectedPos);
-        vehiclePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(final int i) {
-                if (vehicleList.get(i).getType().equals("two_wheeler")) {
-                    oneTxt.setImageResource(R.drawable.seat_filled);
-                    twoTxt.setImageResource(R.drawable.seat_outline);
-                    threeTxt.setImageResource(R.drawable.seat_outline);
-                    fourTxt.setImageResource(R.drawable.seat_outline);
-                    fiveTxt.setImageResource(R.drawable.seat_outline);
-                    twoTxt.setVisibility(View.GONE);
-                    threeTxt.setVisibility(View.GONE);
-                    fourTxt.setVisibility(View.GONE);
-                    fiveTxt.setVisibility(View.GONE);
-                } else {
-                    switch (vehicleList.get(i).getSeats()) {
-                        case 1:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.GONE);
-                            threeTxt.setVisibility(View.GONE);
-                            fourTxt.setVisibility(View.GONE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 2:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.GONE);
-                            fourTxt.setVisibility(View.GONE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 3:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.GONE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 4:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.GONE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 5:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.VISIBLE);
-                            sixTxt.setVisibility(View.GONE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 6:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.VISIBLE);
-                            sixTxt.setVisibility(View.VISIBLE);
-                            sevenTxt.setVisibility(View.GONE);
-                            break;
-                        case 7:
-                            oneTxt.setVisibility(View.VISIBLE);
-                            twoTxt.setVisibility(View.VISIBLE);
-                            threeTxt.setVisibility(View.VISIBLE);
-                            fourTxt.setVisibility(View.VISIBLE);
-                            fiveTxt.setVisibility(View.VISIBLE);
-                            sixTxt.setVisibility(View.VISIBLE);
-                            sevenTxt.setVisibility(View.VISIBLE);
-                            break;
-                    }
-                }
-                PagerPosition = i;
-                etkm.setText("" + vehicleList.get(i).getRatePerKm());
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
         b1.setOnClickListener(v -> {
             if (etkm.getText().toString().isEmpty()) {
                 Toast.makeText(getActivity(), "Rate/km is mandatory.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (vehicleList.get(PagerPosition).getType().equals("two_wheeler")) {
-                seat = "1";
-            }
-
-            selectedVehicleData = vehicleList.get(PagerPosition);
-            selectedVehicleData.setRatePerKm(Integer.parseInt(etkm.getText().toString()));
             rate_per_km = etkm.getText().toString();
             if (textViewLiftName.getText().toString().equalsIgnoreCase(getResources().getString(R.string.find_lift))) {
                 textViewSelectSeat.setText(seat + " Seats");
             } else {
+                if (vehicleList.get(PagerPosition).getType().equals("two_wheeler")) {
+                    seat = "1";
+                }
+                selectedVehicleData = vehicleList.get(PagerPosition);
+                selectedVehicleData.setRatePerKm(Integer.parseInt(etkm.getText().toString()));
                 vehicleId = selectedVehicleData.getId();
                 textViewSelectSeat.setText("" + selectedVehicleData.getModel() + " | " + etkm.getText().toString() + "/km" + " | " + seat + " Seats");
             }
@@ -1696,7 +1666,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                 }
             }
         } else {
-            showMessage("No Vehicle find.Please Add Your Vehicle");
+//            showMessage("No Vehicle find.Please Add Your Vehicle");
         }
     }
 
@@ -1856,7 +1826,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     steps = legs.getJSONObject(i);
                     distance = steps.getJSONObject("distance");
                     String[] total = distance.getString("text").split(" ");
-                    totalDistance += Float.parseFloat(total[0].replace(",",""));
+                    totalDistance += Float.parseFloat(total[0].replace(",", ""));
                 }
 
                 /*JSONObject steps = legs.getJSONObject(0);

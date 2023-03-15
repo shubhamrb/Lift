@@ -106,6 +106,11 @@ public class SettingFragment extends BaseFragment<SettingPresenter, SettingView>
     }
 
     @Override
+    public void onSuccessAccountSuspend(JsonObject datum) {
+
+    }
+
+    @Override
     public void onSelectOption(String title, int id) {
         presenter.openSettingOption(title, id);
     }

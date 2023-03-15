@@ -107,6 +107,7 @@ public class MyUpcomingLiftAdapter extends RecyclerView.Adapter<MyUpcomingLiftAd
                 }
             }
         } else {
+            holder.btn_same_rute.setVisibility(View.GONE);
             holder.btn_start_map.setVisibility(View.GONE);
         }
 

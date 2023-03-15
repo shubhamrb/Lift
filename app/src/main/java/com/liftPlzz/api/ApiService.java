@@ -319,6 +319,12 @@ public interface ApiService {
                                    @Field("token") String token);
 
     @FormUrlEncoded
+    @POST("account_suspend")
+    Call<JsonObject> suspend_account(@Field("api_key") String api_key,
+                                   @Field("client") String client,
+                                   @Field("token") String token);
+
+    @FormUrlEncoded
     @POST("my-upcomming-lifts")
     Call<UpcomingLiftResponse> my_upcoming_lifts(@Field("api_key") String api_key,
                                                  @Field("client") String client,

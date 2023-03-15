@@ -40,6 +40,7 @@ public class Constants {
 
     public static String NOTIFICATION_TYPE = "";
     public static boolean isLiftOnGoing = false;
+    public static final String APP_UPDATE_MODEL = "APP_UPDATE_MODEL";
 
 
     public static void showLoader(Context context) {

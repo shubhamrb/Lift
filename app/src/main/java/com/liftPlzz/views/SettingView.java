@@ -11,4 +11,6 @@ public interface SettingView extends RootView {
     void setProfileData(Response datum);
 
     void onSuccessReset(JsonObject datum);
+
+    void onSuccessAccountSuspend(JsonObject datum);
 }
