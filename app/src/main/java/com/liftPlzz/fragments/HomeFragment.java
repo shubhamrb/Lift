@@ -255,8 +255,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void sosnumbers() {
-        Constants.showLoader(getActivity());
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        Constants.showLoader(getContext());
+        RequestQueue queue = Volley.newRequestQueue(getContext());
         StringRequest sr = new StringRequest(Request.Method.POST, "https://charpair.com/api/get-profile", new com.android.volley.Response.Listener<String>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -296,7 +296,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     private final String strToken = "";
 
     public void requestpermisson() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.SEND_SMS)) {
             } else {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
@@ -311,9 +311,9 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(sos, null, "This is emergency message from liftplzz app", null, null);
-                    Toast.makeText(getActivity(), "SMS sent.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "SMS sent.", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getActivity(), "SMS faild, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "SMS faild, please try again.", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
@@ -333,7 +333,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             lift = (EditVehicleData) bundle.getSerializable("liftModel");
         }
         Constants.isLiftOnGoing = false;
-        sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getContext().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         MapUtility.apiKey = getResources().getString(R.string.maps_api_key);
         createLocationRequest();
 
@@ -408,7 +408,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         list.add("6 Days");
         list.add("7 Days");
 
-        ArrayAdapter adapterCategory = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, list);
+        ArrayAdapter adapterCategory = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, list);
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_days.setAdapter(adapterCategory);
     }
@@ -526,7 +526,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
-                ((HomeActivity) getActivity()).openDrawer();
+                ((HomeActivity) getContext()).openDrawer();
                 break;
             case R.id.buttonLift:
 
@@ -614,11 +614,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 if (editTextDropLocation.getText().toString().length() > 0) {
                     show();
                 } else {
-                    Toast.makeText(getActivity(), "Please select drop location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please select drop location", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.layoutSelectDateTime:
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_InputMethod, HomeFragment.this, year, month, day);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_InputMethod, HomeFragment.this, year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
                 break;
@@ -631,7 +631,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     return;
                 }
                 locationSelect = 1;
-                Intent i = new Intent(getActivity(), LocationPickerActivity.class);
+                Intent i = new Intent(getContext(), LocationPickerActivity.class);
                 i.putExtra("type", "from");
                 startActivityForResult(i, ADDRESS_PICKER_REQUEST);
                 break;
@@ -641,7 +641,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     return;
                 }
                 locationSelect = 2;
-                Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+                Intent i1 = new Intent(getContext(), LocationPickerActivity.class);
                 i1.putExtra("type", "to");
                 i1.putExtra("startLocation", true);
                 startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
@@ -684,7 +684,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 break;
             case R.id.callButton:
                 if (sos.isEmpty()) {
-                    Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Emergency number not found", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", sos, null));
                     startActivity(phoneIntent);
@@ -692,7 +692,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 break;
             case R.id.smsButton:
                 if (sos.isEmpty()) {
-                    Toast.makeText(getActivity(), "Emergency number not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Emergency number not found", Toast.LENGTH_SHORT).show();
                 } else {
 //                    requestpermisson();
                 }
@@ -701,11 +701,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void fetchLocation() {
-        Toast.makeText(getActivity(), "fetching current location, please wait...", Toast.LENGTH_SHORT).show();
         currentLocationFound = false;
-        if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (getContext() == null || ActivityCompat.checkSelfPermission(getContext().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        Toast.makeText(getContext(), "fetching current location, please wait...", Toast.LENGTH_SHORT).show();
+
         Task<Location> task = fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, new CancellationToken() {
             @NonNull
             @Override
@@ -735,7 +736,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (getContext() == null || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -873,7 +874,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     }
 
     public String getJsonObject(Double latitue, Double longitute, Bundle bundle, String locationaddress) {
@@ -1082,7 +1083,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         }
                     } else if (data.getBooleanExtra("current_location", false)) {
                         type = data.getStringExtra("type");
-                        if (getActivity() == null || ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        if (getContext() == null || ActivityCompat.checkSelfPermission(getContext().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
                         Task<Location> task = fusedLocationProviderClient.getLastLocation();
@@ -1116,13 +1117,13 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             //after location switch on dialog shown
             if (resultCode != RESULT_OK) {
                 //Location not switched ON
-                Toast.makeText(getActivity(), "Location Not Available..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Location Not Available..", Toast.LENGTH_SHORT).show();
 
             } else {
                 // Start location request listener.
                 //Location will be received onLocationResult()
                 //Once loc recvd, updateListener will be turned OFF.
-                Toast.makeText(getActivity(), "Fetching Location...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Fetching Location...", Toast.LENGTH_LONG).show();
                 fetchLocation();
 
             }
@@ -1225,7 +1226,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
-        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null) {
@@ -1248,7 +1249,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
     private String getJsonObjectFromLocation(double LATITUDE, double LONGITUDE, String address) {
         String strAdd = "";
-        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null) {
@@ -1352,7 +1353,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     AppCompatButton btnSubmit;
 
     public void show() {
-        final Dialog d = new Dialog(getActivity());
+        final Dialog d = new Dialog(getContext());
         d.setContentView(R.layout.dailog_seat);
         AppCompatButton b1 = d.findViewById(R.id.btnSubmit);
         vehiclePager = d.findViewById(R.id.vehiclePager);
@@ -1703,7 +1704,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         b1.setOnClickListener(v -> {
             if (isOfferLift && etkm.getText().toString().isEmpty()) {
-                Toast.makeText(getActivity(), "Rate/km is mandatory.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Rate/km is mandatory.", Toast.LENGTH_SHORT).show();
                 return;
             }
             textViewSelectSeat.setText(seat + " Seat");
@@ -1832,7 +1833,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     public void setCallBackSelectionCheckPoints(int preferredCallingMode) {
         locationSelect = 3;
         listPos = preferredCallingMode;
-        Intent i1 = new Intent(getActivity(), LocationPickerActivity.class);
+        Intent i1 = new Intent(getContext(), LocationPickerActivity.class);
         i1.putExtra("type", "checkpoint");
         startActivityForResult(i1, ADDRESS_PICKER_REQUEST);
     }
@@ -2048,14 +2049,14 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
 
     private void showDialogFindLift(FindLiftResponse findRideData) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setTitle(findRideData.getMessage());
         alertDialogBuilder.setMessage(findRideData.getSubMessage()).setCancelable(false);
         if (findRideData.getMatchesCount() != null && findRideData.getMatchesCount() > 0) {
             alertDialogBuilder.setPositiveButton("Check", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     presenter.openMatchingRide(findRideData.getLiftId());
-//                    getActivity().finish();
+//                    getContext().finish();
                     if (mGoogleMap != null) {
                         mGoogleMap.clear();
                     }
@@ -2072,7 +2073,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             alertDialogBuilder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     try {
-                        ((HomeActivity) getActivity()).openride();
+                        ((HomeActivity) getContext()).openride();
                         if (mGoogleMap != null) {
                             mGoogleMap.clear();
                         }
@@ -2091,14 +2092,14 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private void showDialogCreateLift(String msg, String subMessage, LiftDetails liftDetails) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setTitle(msg);
         alertDialogBuilder.setMessage(subMessage).setCancelable(false);
         alertDialogBuilder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 try {
-                    ((HomeActivity) getActivity()).openride();
-                            /*Intent intent = new Intent(getActivity(), DriverListActivity.class);
+                    ((HomeActivity) getContext()).openride();
+                            /*Intent intent = new Intent(getContext(), DriverListActivity.class);
                             intent.putExtra(Constants.IS_FIND_LIFT, false);
                             intent.putExtra(Constants.LIFT_ID, liftDetails.getId());
                             intent.putExtra(Constants.VEHICLE_TYPE, liftDetails.getLiftType());
@@ -2137,8 +2138,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     }
 
     private boolean checkAndRequestPermissions() {
-        int locationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
-        int coarsePermision = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
+        int locationPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        int coarsePermision = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         List<String> listPermissionsNeeded = new ArrayList<>();
 
         if (locationPermission != PackageManager.PERMISSION_GRANTED) {
@@ -2161,7 +2162,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     private void getSettingsLocation() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
 
-        Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(getActivity()).checkLocationSettings(builder.build());
+        Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(getContext()).checkLocationSettings(builder.build());
 
         result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
             @Override

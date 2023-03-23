@@ -23,12 +23,10 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -47,7 +45,6 @@ import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.OtpReceivedInterface;
 import com.liftPlzz.views.OtpView;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -515,11 +512,11 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
     }
 
 
-    private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
-        firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(Objects.requireNonNull(getActivity()), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        if (credential != null) {
+            requireActivity();
+            firebaseAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(requireActivity(), task -> {
                         if (task.isSuccessful()) {
                             Snackbar.make(reltive, "Successful", Snackbar.LENGTH_LONG).show();
                             presenter.sendOtp(mobileNo);
@@ -529,8 +526,8 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                                 Snackbar.make(reltive, "Invalid Credentials", Snackbar.LENGTH_LONG).show();
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     private void doVerifyCode() {
@@ -539,10 +536,12 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
             Toast.makeText(getActivity(), "Please enter valid OTP.", Toast.LENGTH_LONG).show();
             return;
         }
-
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, otp);
-        signInWithPhoneAuthCredential(credential);
-
+        try {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(phoneVerificationId, otp);
+            signInWithPhoneAuthCredential(credential);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
