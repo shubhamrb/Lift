@@ -32,14 +32,13 @@
         app:srcCompat="@drawable/ic_my_location_black_24dp" />
 
 
-       <!-- <fragment
+        <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/scrollView"
             android:layout_below="@+id/rr_toolbar" />
--->
     <ImageView
         android:id="@+id/callButton"
         android:layout_width="wrap_content"

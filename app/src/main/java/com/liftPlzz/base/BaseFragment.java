@@ -17,9 +17,11 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import butterknife.ButterKnife;
+//import butterknife.ButterKnife;
 import com.liftPlzz.R;
 import com.liftPlzz.navigator.AppNavigator;
+
+import butterknife.ButterKnife;
 
 
 public abstract class BaseFragment<PresenterT extends BasePresenter<ViewT>, ViewT extends RootView> extends Fragment
