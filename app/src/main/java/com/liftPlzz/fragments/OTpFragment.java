@@ -472,8 +472,8 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
         verificationCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                if (!isManual)
-                    signInWithPhoneAuthCredential(phoneAuthCredential);
+                /*if (!isManual)
+                    signInWithPhoneAuthCredential(phoneAuthCredential);*/
             }
 
             @Override

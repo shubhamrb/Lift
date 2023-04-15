@@ -8,6 +8,17 @@
         android:id="@+id/toolbarNew"
         layout="@layout/toolbar_back_title_layout" />
 
+    <FrameLayout
+        android:id="@+id/screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:src="@drawable/logo_icon" />
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,9 +68,9 @@
                 android:id="@+id/textViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_12sdp"
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
-                android:layout_marginTop="@dimen/_12sdp"
                 android:text="Invite your friends by gifting welcome Pair Points 250"
                 android:textAlignment="center"
                 android:textColor="@color/colorBlack"
@@ -85,8 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:ellipsize="end"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:ellipsize="end"
                 android:fontFamily="@font/poppins_medium"
                 android:maxLines="2"
                 android:text="Earn 100 Pair Points for each download by your referral code."

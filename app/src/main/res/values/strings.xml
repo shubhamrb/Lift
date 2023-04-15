@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">CharPair</string>
 
-    <string name="select_date_time">Select Date &amp; Time</string>
+    <string name="select_date_time">Select Date Time</string>
 
 
     <string name="are_you_new_user_register_here">Are you new user? <font color='#DD3333'><u>Register here</u></font></string>

@@ -2,11 +2,17 @@ package com.liftPlzz.fragments;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Build;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -14,16 +20,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.liftPlzz.BuildConfig;
 import com.liftPlzz.R;
 import com.liftPlzz.base.BaseFragment;
 import com.liftPlzz.model.ReferralDataResponse;
 import com.liftPlzz.presenter.ReferPresenter;
 import com.liftPlzz.utils.Constants;
 import com.liftPlzz.views.ReferView;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,6 +67,9 @@ public class ReferFragment extends BaseFragment<ReferPresenter, ReferView> imple
 
     String strToken = "";
     private ReferralDataResponse.ReferralModel referralData;
+
+    @BindView(R.id.screen)
+    FrameLayout screen;
 
     @Override
     protected int createLayout() {
@@ -117,6 +131,10 @@ public class ReferFragment extends BaseFragment<ReferPresenter, ReferView> imple
     }
 
     private void buildDynamicLink(String link) {
+        Bitmap bitmap = Bitmap.createBitmap(screen.getWidth(), screen.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        screen.draw(canvas);
+        Uri bmpUri = getUriFromBitmap(bitmap);
 
         String text = "Get Easy, Economic ,Comfortable Lift to your destination on Char Pair\n" +
                 "\n" +
@@ -131,6 +149,16 @@ public class ReferFragment extends BaseFragment<ReferPresenter, ReferView> imple
 
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
+
+            if (bmpUri != null) {
+                sendIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+            }
+            if (bmpUri != null) {
+                sendIntent.setType(getMimeType(bmpUri));
+            } else {
+                sendIntent.setType("text/*");
+            }
+
             sendIntent.putExtra(Intent.EXTRA_TEXT, text + inviteLink);
             sendIntent.setType("text/*");
             Intent shareIntent = Intent.createChooser(sendIntent, null);
@@ -140,6 +168,40 @@ public class ReferFragment extends BaseFragment<ReferPresenter, ReferView> imple
 
     }
 
+    public String getMimeType(Uri uri) {
+        String mimeType;
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            ContentResolver cr = getContext().getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    public Uri getUriFromBitmap(Bitmap bmp) {
+
+        Uri bmpUri = null;
+        try {
+            File file = new File(getContext().getExternalFilesDir(null), "share_image_" + System.currentTimeMillis() + ".png");
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+
+            if (Build.VERSION.SDK_INT >= 24) {
+                bmpUri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".imagepicker.provider", file);  // use this version for API >= 24
+            } else {
+                bmpUri = Uri.fromFile(file);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bmpUri;
+    }
 
     @Override
     public void setData(ReferralDataResponse.ReferralModel referralData) {
