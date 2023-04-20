@@ -238,6 +238,9 @@ public interface ApiService {
                                      @Field("end_point") String end_point,
                                      @Field("lift_date") String lift_date,
                                      @Field("lift_time") String liftTime,
+                                     @Field("repeat_date") String repeat_date,
+                                     @Field("repeat_time") String repeat_time,
+                                     @Field("is_repeat") int is_repeat,
                                      @Field("total_km") String total_km,
                                      @Field("next_days") int next_days
     );
@@ -292,6 +295,9 @@ public interface ApiService {
                                          @Field("checkpoints") String checkpoints,
                                          @Field("lift_date") String lift_date,
                                          @Field("lift_time") String liftTime,
+                                         @Field("repeat_date") String repeat_date,
+                                         @Field("repeat_time") String repeat_time,
+                                         @Field("is_repeat") int is_repeat,
                                          @Field("total_km") String total_km,
                                          @Field("rate_per_km") String rate_per_km,
                                          @Field("next_days") int next_days

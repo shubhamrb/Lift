@@ -32,13 +32,14 @@
         app:srcCompat="@drawable/ic_my_location_black_24dp" />
 
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/scrollView"
-            android:layout_below="@+id/rr_toolbar" />
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/scrollView"
+        android:layout_below="@+id/rr_toolbar" />
+
     <ImageView
         android:id="@+id/callButton"
         android:layout_width="wrap_content"
@@ -165,7 +166,7 @@
                             android:layout_marginBottom="@dimen/dp_5"
                             android:background="@drawable/rounded_edit_border_grey"
                             android:orientation="horizontal"
-                            android:padding="@dimen/dp_12">
+                            android:padding="@dimen/dp_6">
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/editTextPickupLocation"
@@ -181,7 +182,7 @@
                                 android:singleLine="true"
                                 android:textColor="@color/colorBlack"
                                 android:textColorHint="@color/colorBlack"
-                                android:textSize="@dimen/sp_16" />
+                                android:textSize="@dimen/sp_14" />
 
 
                         </LinearLayout>
@@ -194,7 +195,7 @@
                             android:layout_marginTop="@dimen/dp_5"
                             android:background="@drawable/rounded_edit_border_grey"
                             android:orientation="horizontal"
-                            android:padding="@dimen/dp_12">
+                            android:padding="@dimen/dp_6">
 
 
                             <androidx.appcompat.widget.AppCompatTextView
@@ -211,7 +212,7 @@
                                 android:singleLine="true"
                                 android:textColor="@color/colorBlack"
                                 android:textColorHint="@color/colorBlack"
-                                android:textSize="@dimen/sp_16" />
+                                android:textSize="@dimen/sp_14" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -229,26 +230,25 @@
 
                 <RelativeLayout
                     android:id="@+id/layoutCheckPoints"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginLeft="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/dp_20"
-                    android:layout_marginBottom="@dimen/dp_5"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingBottom="@dimen/dp_5">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/textkm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_gravity="center"
-                        android:layout_weight="1"
                         android:background="@null"
                         android:fontFamily="@font/gotham_light"
                         android:gravity="start"
                         android:hint=""
-                        android:paddingTop="@dimen/dp_3"
                         android:singleLine="true"
                         android:textColor="@color/colorBlack"
                         android:textColorHint="@color/colorBlack"
@@ -258,8 +258,8 @@
                         android:id="@+id/llchkpoint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:visibility="invisible">
+                        android:layout_alignParentEnd="true"
+                        android:visibility="gone">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="@dimen/dp_25"
@@ -369,27 +369,69 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_20"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/dp_5"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:src="@drawable/repeat_24"
-                        android:visibility="visible" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/spinner_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/poppins_regular"
-                        android:gravity="start"
-                        android:hint="Repeat lift"
-                        android:text=""
-                        android:textSize="@dimen/sp_14" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="@dimen/dp_20"
+                            android:layout_height="@dimen/dp_20"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/dp_5"
+                            android:layout_marginEnd="@dimen/dp_5"
+                            android:src="@drawable/repeat_24"
+                            android:visibility="visible" />
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/spinner_days"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/poppins_regular"
+                            android:gravity="center_horizontal"
+                            android:hint="Repeat lift"
+                            android:text=""
+                            android:textSize="@dimen/sp_14" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/layoutSelectReturnDateTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/is_return_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/dp_5"
+                            android:visibility="visible" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/textViewSelectReturnDateTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:fontFamily="@font/gotham_light"
+                            android:gravity="start"
+                            android:padding="@dimen/dp_5"
+                            android:singleLine="true"
+                            android:text="Return"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/sp_14" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton

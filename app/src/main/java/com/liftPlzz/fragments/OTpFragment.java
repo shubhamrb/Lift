@@ -225,6 +225,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         imageViewNext.setEnabled(false);
                     }
                 } else {
+                    editTextFirstDigits.requestFocus();
                     imageViewNext.setEnabled(false);
                 }
 
@@ -257,6 +258,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         imageViewNext.setEnabled(false);
                     }
                 } else {
+                    editTextSecondsDigits.requestFocus();
                     imageViewNext.setEnabled(false);
                 }
 
@@ -290,6 +292,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         imageViewNext.setEnabled(false);
                     }
                 } else {
+                    editTextThirdDigits.requestFocus();
                     imageViewNext.setEnabled(false);
                 }
 
@@ -323,6 +326,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         imageViewNext.setEnabled(false);
                     }
                 } else {
+                    editTextFourthDigits.requestFocus();
                     imageViewNext.setEnabled(false);
                 }
 
@@ -356,6 +360,7 @@ public class OTpFragment extends BaseFragment<OtpPresenter, OtpView> implements 
                         imageViewNext.setEnabled(false);
                     }
                 } else {
+                    editTextFive.requestFocus();
                     imageViewNext.setEnabled(false);
                 }
 

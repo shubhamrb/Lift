@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -149,6 +150,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     LinearLayout layoutDropLocation;
     @BindView(R.id.layoutSelectDateTime)
     LinearLayout layoutSelectDateTime;
+    @BindView(R.id.layoutSelectReturnDateTime)
+    LinearLayout layoutSelectReturnDateTime;
     @BindView(R.id.layoutSelectSeat)
     LinearLayout layoutSelectSeat;
     @BindView(R.id.layoutGiveLift)
@@ -157,6 +160,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     LinearLayout layoutTakeLift;
     @BindView(R.id.textViewSelectDateTime)
     AppCompatTextView textViewSelectDateTime;
+    @BindView(R.id.textViewSelectReturnDateTime)
+    AppCompatTextView textViewSelectReturnDateTime;
     @BindView(R.id.textViewSelectSeat)
     AppCompatTextView textViewSelectSeat;
     @BindView(R.id.layoutCheckPoints)
@@ -177,6 +182,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     ImageView smsButton;
     @BindView(R.id.btn_swap)
     ImageView btn_swap;
+    @BindView(R.id.is_return_checkbox)
+    CheckBox is_return_checkbox;
     int listPos;
     @BindView(R.id.rr_toolbar)
     RelativeLayout rr_toolbar;
@@ -208,6 +215,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     boolean isOfferLift = false;
     String seat = "1";
     String dateTime, liftTime = "";
+    String returndateTime, returnliftTime = "";
     String wayPoints = "";
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
@@ -227,6 +235,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     Calendar calendar;
     int day, month, year, hour, minute;
     int myday, myMonth, myYear, myHour, myMinute;
+
+    int returnday, returnmonth, returnyear, returnhour, returnminute;
+    int myreturnday, myreturnMonth, myreturnYear, myreturnHour, myreturnMinute;
+
     private EditVehicleData lift;
     private Intent srcIntent, destIntent;
     private String type;
@@ -347,6 +359,11 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        returnyear = calendar.get(Calendar.YEAR);
+        returnmonth = calendar.get(Calendar.MONTH);
+        returnday = calendar.get(Calendar.DAY_OF_MONTH);
+
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         sosnumbers();
         bottomSheetCheckPointsDialog = new BottomSheetCheckPointsDialog();
@@ -392,7 +409,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
             buttonLift.setText(textViewTakeLift.getText().toString());
             textViewGiveLift.setTextColor(getResources().getColor(R.color.colorBlack));
             textViewTakeLift.setTextColor(getResources().getColor(R.color.colorWhite));
-            llchkpoint.setVisibility(View.INVISIBLE);
+            llchkpoint.setVisibility(View.GONE);
         }
         if (editTextDropLocation.getText().toString().length() > 0) {
             textViewSelectSeat.setText(seat + " Seats");
@@ -522,7 +539,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @OnClick({R.id.callButton, R.id.smsButton, R.id.buttonLift, R.id.layoutCheckPoints,
             R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime,
             R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation,
-            R.id.layoutDropLocation, R.id.layoutRepeatLift})
+            R.id.layoutDropLocation, R.id.layoutRepeatLift, R.id.layoutSelectReturnDateTime})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
@@ -541,7 +558,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
                     } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase(getContext().getString(R.string.select_date_time))) {
-                        showMessage("Select Data Time");
+                        showMessage("Select Date Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else if (textkm.getText().toString().equalsIgnoreCase("")) {
@@ -551,7 +568,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         if (!spinner_days.getSelectedItem().equals("Repeat Lift")) {
                             next_days = Integer.parseInt(spinner_days.getSelectedItem().toString().split(" ")[0]);
                         }
-                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, textkm.getText().toString(), next_days);
+                        presenter.findLift(sharedPreferences.getString(Constants.TOKEN, ""), "add ride", seat, startPoint, endPoint, dateTime, liftTime, returndateTime, returnliftTime, is_return_checkbox.isChecked() ? 1 : 0, textkm.getText().toString(), next_days);
                         lift = null;
                     }
                 } else {
@@ -622,6 +639,21 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
                 break;
+            case R.id.layoutSelectReturnDateTime:
+                DatePickerDialog returnDatePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_InputMethod,
+                        (datePicker, year, month, dayOfMonth) -> {
+
+                            myreturnYear = year;
+                            myreturnday = dayOfMonth;
+                            myreturnMonth = month;
+                            myreturnHour = returnhour = calendar.get(Calendar.HOUR_OF_DAY);
+                            myreturnMinute = returnminute = calendar.get(Calendar.MINUTE);
+                            showReturnDialog(getActivity());
+
+                        }, returnyear, returnmonth, returnday);
+                returnDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                returnDatePickerDialog.show();
+                break;
             case R.id.imageViewNotification:
                 presenter.openNotification();
                 break;
@@ -677,7 +709,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 buttonLift.setText(textViewTakeLift.getText().toString());
                 textViewGiveLift.setTextColor(getResources().getColor(R.color.colorBlack));
                 textViewTakeLift.setTextColor(getResources().getColor(R.color.colorWhite));
-                llchkpoint.setVisibility(View.INVISIBLE);
+                llchkpoint.setVisibility(View.GONE);
                 if (editTextDropLocation.getText().toString().length() > 0) {
                     textViewSelectSeat.setText(seat + " Seats");
                 }
@@ -1286,10 +1318,10 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         myMonth = month;
         myHour = hour = calendar.get(Calendar.HOUR_OF_DAY);
         myMinute = minute = calendar.get(Calendar.MINUTE);
-        showDialog(getActivity(), "Time Picker");
+        showDialog(getActivity());
     }
 
-    public void showDialog(Activity activity, String msg) {
+    public void showDialog(Activity activity) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -1318,22 +1350,30 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         dialog.show();
     }
 
-    // Used to convert 24hr format to 12hr format with AM/PM values
-    private void updateTime(int hours, int mins) {
-        String timeSet = "";
-        if (hours > 12) {
-            hours -= 12;
-            timeSet = "PM";
-        } else if (hours == 0) {
-            hours += 12;
-            timeSet = "AM";
-        } else if (hours == 12) timeSet = "PM";
-        else timeSet = "AM";
-        String minutes = "";
-        if (mins < 10) minutes = "0" + mins;
-        else minutes = String.valueOf(mins);
-        String aTime = new StringBuilder().append(hours).append(':').append(minutes).append(" ").append(timeSet).toString();
-        textViewSelectDateTime.setText(aTime);
+    public void showReturnDialog(Activity activity) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.time_picker_dialog);
+
+        TimePicker simpleTimePicker = dialog.findViewById(R.id.simpleTimePicker);
+        simpleTimePicker.setIs24HourView(false);
+        simpleTimePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
+            myreturnHour = hourOfDay;
+            myreturnMinute = minute;
+        });
+        TextView dialogButton = dialog.findViewById(R.id.btn_dialog);
+        TextView btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
+        dialogButton.setOnClickListener(v -> {
+            Calendar myCalender = Calendar.getInstance();
+            myCalender.set(myreturnYear, myreturnMonth, myreturnday, myreturnHour, myreturnMinute);
+            returndateTime = new SimpleDateFormat("yyyy-MM-dd").format(myCalender.getTime());
+            returnliftTime = new SimpleDateFormat("HH:mm:ss").format(myCalender.getTime());
+            textViewSelectReturnDateTime.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm a").format(myCalender.getTime()));
+            dialog.dismiss();
+        });
+        dialog.show();
     }
 
     @Override
@@ -1748,6 +1788,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         showDialogFindLift(findRideData);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
+        textViewSelectReturnDateTime.setText("Return");
+        is_return_checkbox.setChecked(false);
     }
 
     List<Datum> data;
@@ -1780,6 +1822,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         layoutRide.setVisibility(View.VISIBLE);
         textViewSelectSeat.setText("Select Seat");
         textViewSelectDateTime.setText("Select Time");
+        textViewSelectReturnDateTime.setText("Return");
+        is_return_checkbox.setChecked(false);
         layoutDropLocation.setVisibility(View.VISIBLE);
         llchkpoint.setVisibility(View.VISIBLE);
     }
@@ -1825,7 +1869,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
 
         presenter.createLift(sharedPreferences.getString(Constants.TOKEN, ""),
                 s.getId().toString(), "paid", "0", seat, startPoint,
-                endPoint, jsonArray.toString(), dateTime, liftTime, textkm.getText().toString(),
+                endPoint, jsonArray.toString(), dateTime, liftTime, returndateTime, returnliftTime, is_return_checkbox.isChecked() ? 1 : 0, textkm.getText().toString(),
                 "" + rate_per_km, next_days);
     }
 

@@ -72,8 +72,6 @@ import retrofit2.Response;
 public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, RedeemPointView> implements RedeemPointView {
 
     SharedPreferences sharedPreferences;
-    @BindView(R.id.buttonRecharge)
-    AppCompatButton btnRecharge;
     @BindView(R.id.buttonRedemption)
     AppCompatButton buttonRedemption;
     @BindView(R.id.buttonRequest)
@@ -135,10 +133,6 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
         strToken = sharedPreferences.getString(Constants.TOKEN, "");
-
-        btnRecharge.setOnClickListener(view -> {
-            showRechargeDialog();
-        });
 
         btnRequest.setOnClickListener(view -> {
             showRequestDialog();
@@ -221,140 +215,6 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
                 Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    /**
-     * Show Recharge dialog
-     */
-    public void showRechargeDialog() {
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.recharge_dialog);
-        Window window = dialog.getWindow();
-        window.setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        AppCompatButton buttonSubmit = dialog.findViewById(R.id.buttonSubmit);
-        EditText editTextPoints = dialog.findViewById(R.id.editTextPoints);
-        EditText editTextDescription = dialog.findViewById(R.id.editTextDescription);
-        RelativeLayout upload_img = dialog.findViewById(R.id.upload_img);
-        verified_img = dialog.findViewById(R.id.verified_img);
-
-        RelativeLayout btn_upi = dialog.findViewById(R.id.btn_upi);
-        LinearLayout ll_upi = dialog.findViewById(R.id.ll_upi);
-
-        RelativeLayout btn_barcode = dialog.findViewById(R.id.btn_barcode);
-        LinearLayout ll_barcode = dialog.findViewById(R.id.ll_barcode);
-
-        RelativeLayout btn_bank = dialog.findViewById(R.id.btn_bank);
-        LinearLayout ll_bank = dialog.findViewById(R.id.ll_bank);
-        ImageView copy_upi = dialog.findViewById(R.id.copy_upi);
-        ImageView copy_account = dialog.findViewById(R.id.copy_account);
-        ImageView copy_ifsc = dialog.findViewById(R.id.copy_ifsc);
-        TextView btn_download = dialog.findViewById(R.id.btn_download);
-        ImageView btn_close = dialog.findViewById(R.id.btn_close);
-
-
-        btn_close.setOnClickListener(view -> {
-            dialog.dismiss();
-        });
-
-        btn_upi.setOnClickListener(view -> {
-            if (upiShow) {
-                ll_upi.setVisibility(View.GONE);
-            } else {
-                ll_upi.setVisibility(View.VISIBLE);
-            }
-            ll_barcode.setVisibility(View.GONE);
-            ll_bank.setVisibility(View.GONE);
-            upiShow = !upiShow;
-            barcodeShow = false;
-            bankShow = false;
-        });
-
-        btn_barcode.setOnClickListener(view -> {
-            if (barcodeShow) {
-                ll_barcode.setVisibility(View.GONE);
-            } else {
-                ll_barcode.setVisibility(View.VISIBLE);
-            }
-            ll_upi.setVisibility(View.GONE);
-            ll_bank.setVisibility(View.GONE);
-            barcodeShow = !barcodeShow;
-            upiShow = false;
-            bankShow = false;
-        });
-
-        btn_bank.setOnClickListener(view -> {
-            if (bankShow) {
-                ll_bank.setVisibility(View.GONE);
-            } else {
-                ll_bank.setVisibility(View.VISIBLE);
-            }
-            ll_upi.setVisibility(View.GONE);
-            ll_barcode.setVisibility(View.GONE);
-            bankShow = !bankShow;
-            upiShow = false;
-            barcodeShow = false;
-        });
-
-        copy_upi.setOnClickListener(view -> {
-            copyText("upi", "aavis94246@barodampay");
-        });
-        copy_account.setOnClickListener(view -> {
-            copyText("account", "45760200000469");
-        });
-        copy_ifsc.setOnClickListener(view -> {
-            copyText("ifsc", "BARB0SANRAI");
-        });
-        btn_download.setOnClickListener(view -> {
-
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                somePermissionResultLauncher.launch(new
-                        String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        , Manifest.permission.READ_EXTERNAL_STORAGE});
-            } else {
-                showLoader();
-                new DownloadsImage().execute("https://charpair.com/charpair_barcode.pdf");
-            }
-
-        });
-
-        upload_img.setOnClickListener(view -> {
-            ImagePicker.Companion.with(this).crop()                    //Crop image(Optional), Check Customization for more option
-                    .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                    .maxResultSize(1080, 1080).start();
-            IMAGE_TYPE = 0;
-        });
-
-        buttonSubmit.setOnClickListener(v -> {
-            String amount = editTextPoints.getText().toString();
-            String description = editTextDescription.getText().toString();
-
-            if (amount.trim().equals("")) {
-                Toast.makeText(getActivity(), "Please enter amount", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (description.trim().equals("")) {
-                Toast.makeText(getActivity(), "Please enter description", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (transBody == null) {
-                Toast.makeText(getActivity(), "Please upload the transaction image.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            RequestBody api_key = RequestBody.create(MultipartBody.FORM, Constants.API_KEY);
-            RequestBody device = RequestBody.create(MultipartBody.FORM, "android");
-            RequestBody token = RequestBody.create(MultipartBody.FORM, strToken);
-            RequestBody amountBody = RequestBody.create(MultipartBody.FORM, amount);
-            RequestBody descriptionBody = RequestBody.create(MultipartBody.FORM, description);
-
-//              rechargeFuelCard(editTextPoints.getText().toString().trim());
-            presenter.rechargeRequest(api_key, device, token, transBody, amountBody, descriptionBody);
-
-            dialog.dismiss();
-        });
-        dialog.show();
     }
 
     class DownloadsImage extends AsyncTask<String, Void, Void> {

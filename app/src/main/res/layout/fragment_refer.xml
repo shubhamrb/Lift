@@ -12,6 +12,7 @@
         android:id="@+id/screen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
         android:visibility="invisible">
 
         <ImageView

@@ -82,7 +82,7 @@
                 android:textSize="18sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonRecharge"
+                android:id="@+id/buttonRedemption"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_25sdp"
                 android:layout_alignParentEnd="true"
@@ -92,7 +92,7 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp_18"
                 android:paddingRight="@dimen/dp_18"
-                android:text="Recharge"
+                android:text="Redeem Point"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_14" />
@@ -100,31 +100,12 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonRedemption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/card_item"
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/sp_25"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginRight="@dimen/sp_25"
-        android:background="@drawable/rounded_button"
-        android:fontFamily="@font/gotham_medium"
-        android:gravity="center"
-        android:paddingLeft="@dimen/dp_40"
-        android:paddingRight="@dimen/dp_40"
-        android:text="Points Redemption"
-        android:textAllCaps="false"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/sp_16" />
-
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonRedemption"
+        android:layout_below="@+id/card_item"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/sp_25"
         android:layout_marginTop="@dimen/dp_15"

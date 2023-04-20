@@ -44,8 +44,6 @@ public class LoginFragment extends BaseFragment<LoginPresenter, LoginView> imple
 
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     SharedPreferences sharedPreferences;
-    @BindView(R.id.textViewForgotPassword)
-    AppCompatTextView textViewForgotPassword;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     @BindView(R.id.imageViewNext)
     ImageView imageViewNext;

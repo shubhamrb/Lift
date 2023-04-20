@@ -232,8 +232,8 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
                                String liftTime, String tot) {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
-        Call<FindLiftResponse> call = api.find_lift(Constants.API_KEY, "android", token, title, requir_seats, start_point, end_point, lift_date,
-                liftTime, tot, 0);
+        Call<FindLiftResponse> call = api.find_lift(Constants.API_KEY, "android", token, title, requir_seats, start_point, end_point
+                , lift_date, liftTime, "", "", 0, tot, 0);
         call.enqueue(new Callback<FindLiftResponse>() {
             @Override
             public void onResponse(Call<FindLiftResponse> call, Response<FindLiftResponse> response) {
@@ -278,7 +278,7 @@ public class EditLiftPresenter extends BasePresenter<EditLiftView> {
         view.showLoader();
         ApiService api = RetroClient.getApiService();
         Call<CreateLiftResponse> call = api.create_lift(Constants.API_KEY, "android", token, vehicle_id, lift_type, free_seats, paid_seats,
-                start_ponit, end_point, checkpoints, lift_date, liftTime, tot, rate_per_km,0);
+                start_ponit, end_point, checkpoints, lift_date, liftTime, "", "", 0, tot, rate_per_km, 0);
         call.enqueue(new Callback<CreateLiftResponse>() {
             @Override
             public void onResponse(Call<CreateLiftResponse> call, Response<CreateLiftResponse> response) {

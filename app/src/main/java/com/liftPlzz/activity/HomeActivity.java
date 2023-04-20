@@ -142,8 +142,8 @@ public class HomeActivity extends AppNavigationProvider implements MenuListAdapt
         menuList.add(new MenuItem(3, getResources().getString(R.string.my_vehicle), R.drawable.my_vehicle));
         menuList.add(new MenuItem(4, getResources().getString(R.string.my_chat), R.drawable.chats));
         menuList.add(new MenuItem(5, "Refer & Earn", R.drawable.refer));
-        menuList.add(new MenuItem(6, getResources().getString(R.string.txt_feedback), R.drawable.ic_white_liftplzz));
-        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_suggestion), R.drawable.ic_white_liftplzz));
+        menuList.add(new MenuItem(6, getResources().getString(R.string.txt_feedback), R.drawable.feedback_24));
+        menuList.add(new MenuItem(7, getResources().getString(R.string.txt_suggestion), R.drawable.suggestion_icon));
         menuList.add(new MenuItem(8, getResources().getString(R.string.setting), R.drawable.setting));
         menuList.add(new MenuItem(9, getResources().getString(R.string.logout), R.drawable.logout));
 

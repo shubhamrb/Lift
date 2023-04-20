@@ -576,7 +576,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
                     } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase("Select Time")) {
-                        showMessage("Select Data Time");
+                        showMessage("Select Date Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
@@ -601,7 +601,7 @@ public class EditLiftDaiFragment extends BaseFragment<EditLiftPresenter, EditLif
                     } else if (editTextDropLocation.getText().toString().isEmpty()) {
                         showMessage("Select dropoff location");
                     } else if (textViewSelectDateTime.getText().toString().equalsIgnoreCase("Select Time")) {
-                        showMessage("Select Data Time");
+                        showMessage("Select Date Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
                     } else {
