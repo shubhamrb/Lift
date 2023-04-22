@@ -68,7 +68,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:cardCornerRadius="@dimen/_35sdp">
+        app:cardCornerRadius="@dimen/_30sdp"
+        android:layout_marginTop="-30dp"
+        app:cardElevation="0dp">
 
         <androidx.core.widget.NestedScrollView
 

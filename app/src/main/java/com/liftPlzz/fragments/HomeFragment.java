@@ -215,7 +215,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     boolean isOfferLift = false;
     String seat = "1";
     String dateTime, liftTime = "";
-    String returndateTime, returnliftTime = "";
+    String returndateTime = "", returnliftTime = "";
     String wayPoints = "";
     @BindView(R.id.textViewCheckpoints)
     AppCompatTextView textViewCheckpoints;
@@ -428,6 +428,12 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
         ArrayAdapter adapterCategory = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, list);
         adapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_days.setAdapter(adapterCategory);
+
+        is_return_checkbox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked && returndateTime.isEmpty() && returnliftTime.isEmpty()) {
+                textViewSelectReturnDateTime.performClick();
+            }
+        });
     }
 
     private void swapLocation() {
@@ -539,7 +545,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
     @OnClick({R.id.callButton, R.id.smsButton, R.id.buttonLift, R.id.layoutCheckPoints,
             R.id.layoutGiveLift, R.id.layoutTakeLift, R.id.layoutSelectSeat, R.id.layoutSelectDateTime,
             R.id.imageViewHome, R.id.imageViewNotification, R.id.layoutPickupLocation,
-            R.id.layoutDropLocation, R.id.layoutRepeatLift, R.id.layoutSelectReturnDateTime})
+            R.id.layoutDropLocation, R.id.layoutRepeatLift, R.id.textViewSelectReturnDateTime})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.imageViewHome:
@@ -563,6 +569,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select Seats");
                     } else if (textkm.getText().toString().equalsIgnoreCase("")) {
                         showMessage("Drop off location is too close");
+                    } else if (is_return_checkbox.isChecked() && (returndateTime.isEmpty() || returnliftTime.isEmpty())) {
+                        showMessage("Select Return Date Time");
                     } else {
                         int next_days = 0;
                         if (!spinner_days.getSelectedItem().equals("Repeat Lift")) {
@@ -581,6 +589,8 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                         showMessage("Select Date Time");
                     } else if (textViewSelectSeat.getText().toString().equalsIgnoreCase("Select Seat")) {
                         showMessage("Select Seats");
+                    } else if (is_return_checkbox.isChecked() && (returndateTime.isEmpty() || returnliftTime.isEmpty())) {
+                        showMessage("Select Return Date Time");
                     } else {
 //                        rate_per_km = Integer.parseInt(etkm.getText().toString().trim());
                         if (pagerAdapter != null) {
@@ -639,7 +649,7 @@ public class HomeFragment extends BaseFragment<HomePresenter, HomeView> implemen
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
                 break;
-            case R.id.layoutSelectReturnDateTime:
+            case R.id.textViewSelectReturnDateTime:
                 DatePickerDialog returnDatePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_InputMethod,
                         (datePicker, year, month, dayOfMonth) -> {
 

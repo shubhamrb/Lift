@@ -4,6 +4,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
+    dataBinding.enabled true
     defaultConfig {
         applicationId "com.liftPlzz"
         minSdkVersion 23
