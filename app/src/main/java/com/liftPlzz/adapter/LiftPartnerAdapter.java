@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.liftPlzz.R;
 import com.liftPlzz.model.on_going.LiftUsers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,13 +22,13 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
 
     private Context context;
     private List<LiftUsers> list;
-    private OnEndClick onEndClick;
+    private OnButtonClick onButtonClick;
 
 
-    public LiftPartnerAdapter(Context context, List<LiftUsers> list, OnEndClick onEndClick) {
+    public LiftPartnerAdapter(Context context, List<LiftUsers> list, OnButtonClick onButtonClick) {
         this.context = context;
         this.list = list;
-        this.onEndClick = onEndClick;
+        this.onButtonClick = onButtonClick;
     }
 
     @Override
@@ -50,8 +49,20 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
         holder.userName.setText("Name : " + list.get(position).getName());
         holder.userNumber.setText("Mobile Number : " + list.get(position).getMobile());
 
+        if (list.get(position).getLiftee_joined() == 0) {
+            holder.endBtn.setVisibility(View.GONE);
+            holder.joinBtn.setVisibility(View.VISIBLE);
+        } else {
+            holder.joinBtn.setVisibility(View.GONE);
+            holder.endBtn.setVisibility(View.VISIBLE);
+        }
+
+        holder.joinBtn.setOnClickListener(v -> {
+            onButtonClick.onJoinClick(list.get(position));
+        });
+
         holder.endBtn.setOnClickListener(v -> {
-            onEndClick.onButtonClick(list.get(position));
+            onButtonClick.onEndClick(list.get(position));
         });
     }
 
@@ -65,6 +76,8 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
         TextView userNumber;
         @BindView(R.id.endBtn)
         Button endBtn;
+        @BindView(R.id.joinBtn)
+        Button joinBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -72,7 +85,9 @@ public class LiftPartnerAdapter extends RecyclerView.Adapter<LiftPartnerAdapter.
         }
     }
 
-    public interface OnEndClick {
-        void onButtonClick(LiftUsers user);
+    public interface OnButtonClick {
+        void onJoinClick(LiftUsers user);
+
+        void onEndClick(LiftUsers user);
     }
 }

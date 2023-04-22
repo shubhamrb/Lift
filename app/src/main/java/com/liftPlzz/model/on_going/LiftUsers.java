@@ -113,11 +113,21 @@ public class LiftUsers {
     @Expose
     private String notification_id;
 
+    @SerializedName("liftee_joined")
+    @Expose
+    private int liftee_joined;
 
     @SerializedName("api_token")
     @Expose
     private String api_token;
 
+    public int getLiftee_joined() {
+        return liftee_joined;
+    }
+
+    public void setLiftee_joined(int liftee_joined) {
+        this.liftee_joined = liftee_joined;
+    }
 
     public int getRequest_id() {
         return request_id;

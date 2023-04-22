@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_margin="3sp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="3sp"
     android:background="@drawable/end_ride_user_bg"
     android:padding="10sp">
 
@@ -16,33 +15,46 @@
         android:textStyle="bold" />
 
     <TextView
-        android:textSize="12sp"
         android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/leftId"
         android:layout_marginTop="2sp"
-        android:layout_toLeftOf="@+id/endBtn" />
+        android:layout_toLeftOf="@+id/endBtn"
+        android:textSize="12sp" />
 
     <TextView
-        android:textSize="12sp"
         android:id="@+id/userNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/userName"
         android:layout_marginTop="2sp"
-        android:layout_toLeftOf="@+id/endBtn" />
+        android:layout_toLeftOf="@+id/endBtn"
+        android:textSize="12sp" />
 
 
     <Button
         android:id="@+id/endBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/end_ride"
         android:textColor="@color/quantum_white_100"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/joinBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Join"
+        android:textColor="@color/quantum_white_100"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

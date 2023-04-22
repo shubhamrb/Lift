@@ -3,7 +3,6 @@ package com.liftPlzz.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
@@ -387,7 +386,7 @@ public class StartRideActivity extends AppCompatActivity implements
             imageViewOption.setVisibility(View.GONE);
         }
 
-        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+        if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             txtShareCode.setVisibility(View.VISIBLE);
         } else {
             toolBarTitle.setText(R.string.start_ride);
@@ -762,11 +761,11 @@ public class StartRideActivity extends AppCompatActivity implements
                             mService.requestLocationUpdates();
                             Log.e("Line 561", "offer_lift match");
                         } else {
-                            if (!driverstarted) {
+                            /*if (!driverstarted) {
                                 Toast.makeText(StartRideActivity.this, "Let driver start the ride first", Toast.LENGTH_SHORT).show();
                             } else {
                                 showDialogEnterCode();
-                            }
+                            }*/
                         }
                     } else {
                         if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
@@ -935,7 +934,7 @@ public class StartRideActivity extends AppCompatActivity implements
         queue.add(sr);
     }
 
-    private void showDialogEnterCode() {
+    private void showDialogEnterCode(Integer lift_id) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("Enter Code");
         alertDialogBuilder.setCancelable(false);
@@ -958,7 +957,7 @@ public class StartRideActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 String otp = editText.getText().toString();
                 if (!otp.equals("")) {
-                    getLiftStartCodeMatch(strToken, otp);
+                    getLiftStartCodeMatch(strToken, otp, lift_id);
                     alert.dismiss();
                 } else {
                     Toast.makeText(mainContext, "Please enter code.", Toast.LENGTH_SHORT).show();
@@ -1210,7 +1209,7 @@ public class StartRideActivity extends AppCompatActivity implements
         });
     }
 
-    public void getLiftStartCodeMatch(String token, String code) {
+    public void getLiftStartCodeMatch(String token, String code, Integer lift_id) {
         Constants.showLoader(StartRideActivity.this);
         if (ActivityCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -1235,7 +1234,7 @@ public class StartRideActivity extends AppCompatActivity implements
                         ApiService api = RetroClient.getApiService();
                         Call<JsonObject> call = api.liftStartCodeMatch(Constants.API_KEY,
                                 Constants.ANDROID, token,
-                                lift.getId(),
+                                lift_id,
                                 Integer.parseInt(code),
                                 jsonObject.getString("lat_long"),
                                 jsonObject.getString("city"),
@@ -1253,15 +1252,14 @@ public class StartRideActivity extends AppCompatActivity implements
                                         Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                                         if (status) {
                                             request_id = Integer.parseInt(jsonObject.getJSONObject("data").getString("request_id"));
-                                            tvStartRide.setText(getResources().getString(R.string.end_ride));
-                                            tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
-//                            tvStartRide.setBackground(getResources().getDrawable(R.drawable.rounded_bg_dark));
-                                            bywhomRidestarted = 1;
-                                            getUsers(2);
-                                            mService.requestLocationUpdates();
-                                            if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+//                                            tvStartRide.setText(getResources().getString(R.string.end_ride));
+//                                            tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
+//                                            bywhomRidestarted = 1;
+//                                            getUsers(2);
+//                                            mService.requestLocationUpdates();
+                                            /*if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                                                 turnByTurnNavigation();
-                                            }
+                                            }*/
                                         } else {
                                             Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                                         }
@@ -1582,12 +1580,19 @@ public class StartRideActivity extends AppCompatActivity implements
         Button endAllRideBtn = dialogView.findViewById(R.id.endAllRideBtn);
 
         listview.setLayoutManager(new LinearLayoutManager(this));
-        LiftPartnerAdapter adapter = new LiftPartnerAdapter(mainContext, liftUsersList, new LiftPartnerAdapter.OnEndClick() {
+        LiftPartnerAdapter adapter = new LiftPartnerAdapter(mainContext, liftUsersList, new LiftPartnerAdapter.OnButtonClick() {
             @Override
-            public void onButtonClick(LiftUsers user) {
+            public void onEndClick(LiftUsers user) {
                 alertDialog.dismiss();
                 request_id = user.getRequest_id();
                 endRideCinfirmationDialog(false);
+            }
+
+            @Override
+            public void onJoinClick(LiftUsers user) {
+                alertDialog.dismiss();
+                request_id = user.getRequest_id();
+                showDialogEnterCode(user.getUser_lift_id());
             }
         });
         listview.setAdapter(adapter);

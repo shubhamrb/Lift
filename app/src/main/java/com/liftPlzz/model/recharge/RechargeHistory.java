@@ -18,7 +18,7 @@ public class RechargeHistory implements Serializable {
     private String type;
     @SerializedName("amount")
     @Expose
-    private Integer amount;
+    private float amount;
     @SerializedName("source")
     @Expose
     private String source;
@@ -59,11 +59,11 @@ public class RechargeHistory implements Serializable {
         this.type = type;
     }
 
-    public Integer getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
