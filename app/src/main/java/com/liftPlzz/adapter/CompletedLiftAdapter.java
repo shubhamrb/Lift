@@ -63,7 +63,7 @@ public class CompletedLiftAdapter extends RecyclerView.Adapter<CompletedLiftAdap
         holder.textDistancekm.setText("Distance : " + lift.getTotalDistance() + " km");
 
         holder.itemView.setOnClickListener(view -> {
-            itemListener.showBill(lift.getId());
+            itemListener.showBill(lift.getRequest_id());
         });
     }
 

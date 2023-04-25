@@ -18,7 +18,7 @@ public class CardModel {
 
     @SerializedName("current_point")
     @Expose
-    private int current_point;
+    private String current_point;
 
     public String getCard_expiry() {
         return card_expiry;
@@ -44,11 +44,11 @@ public class CardModel {
         this.full_name = full_name;
     }
 
-    public int getCurrent_point() {
+    public String getCurrent_point() {
         return current_point;
     }
 
-    public void setCurrent_point(int current_point) {
+    public void setCurrent_point(String current_point) {
         this.current_point = current_point;
     }
 }

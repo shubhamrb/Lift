@@ -408,6 +408,7 @@ public class StartRideActivity extends AppCompatActivity implements
         } else if (!lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
             getUsers(2);
             if (lift.getIs_user_start() == 1) {
+                tvStartRide.setVisibility(View.VISIBLE);
                 bywhomRidestarted = 1;
                 tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
                 tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
@@ -417,9 +418,9 @@ public class StartRideActivity extends AppCompatActivity implements
                 buildLocationRequest();
                 getLocationAPI();
             } else {
-                tvStartRide.setText(mainContext.getResources().getString(R.string.start_ride));
+//                tvStartRide.setVisibility(View.GONE);
+                tvStartRide.setText("Refresh");
                 tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorAccent)));
-
             }
         } else {
             Toast.makeText(StartRideActivity.this, "Start ride to know user's location of your lift", Toast.LENGTH_LONG).show();
@@ -751,9 +752,10 @@ public class StartRideActivity extends AppCompatActivity implements
             case R.id.btn_start_ride:
                 try {
                     String txt = tvStartRide.getText().toString();
-                    if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
-                        //todo start ride will call from here
-                        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                    //todo start ride will call from here
+                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                        if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.start_ride))) {
+
                             Constants.showLoader(StartRideActivity.this);
                             Log.d("btn_start_ride", txt);
                             ridestarted = true;
@@ -761,17 +763,11 @@ public class StartRideActivity extends AppCompatActivity implements
                             mService.requestLocationUpdates();
                             Log.e("Line 561", "offer_lift match");
                         } else {
-                            /*if (!driverstarted) {
-                                Toast.makeText(StartRideActivity.this, "Let driver start the ride first", Toast.LENGTH_SHORT).show();
-                            } else {
-                                showDialogEnterCode();
-                            }*/
-                        }
-                    } else {
-                        if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
                             Log.e("Lift", "end by driver");
                             getOnGoing(sharedPreferences.getString(Constants.TOKEN, ""), true);
-                        } else {
+                        }
+                    } else {
+                        if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.end_ride))) {
                             endRideCinfirmationDialog(false);
                         }
                     }
@@ -1743,13 +1739,14 @@ public class StartRideActivity extends AppCompatActivity implements
                 Log.d("payapi", response);
                 try {
                     JSONObject jObject = new JSONObject(response);
-                    String scss = jObject.getString("message");
-                    Log.d("success", scss);
-                    if (scss.equalsIgnoreCase("Success")) {
-                        Toast.makeText(StartRideActivity.this, "Payment Successfully Done!!", Toast.LENGTH_SHORT).show();
+                    boolean scss = jObject.getBoolean("status");
+                    String msg = jObject.getString("message");
+
+                    if (scss) {
                         getPayedTODriver();
                     }
-                } catch (JSONException e) {
+                    Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

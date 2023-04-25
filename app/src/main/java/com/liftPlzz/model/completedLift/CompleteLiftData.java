@@ -8,6 +8,11 @@ public class CompleteLiftData {
     @SerializedName("id")
     @Expose
     private Integer id;
+
+    @SerializedName("request_id")
+    @Expose
+    private Integer request_id;
+
     @SerializedName("title")
     @Expose
     private String title;
@@ -60,6 +65,14 @@ public class CompleteLiftData {
     @SerializedName("total_distance")
     @Expose
     private String totalDistance;
+
+    public Integer getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(Integer request_id) {
+        this.request_id = request_id;
+    }
 
     public Integer getId() {
         return id;

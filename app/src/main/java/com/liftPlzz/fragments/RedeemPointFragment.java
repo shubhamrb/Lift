@@ -191,7 +191,7 @@ public class RedeemPointFragment extends BaseFragment<RedeemPointPresenter, Rede
                     if (response.body().getStatus()) {
                         cardModel = response.body().getCardModel();
                         if (cardModel != null) {
-                            pointtext.setText(String.format(Locale.getDefault(), "%d Pair Points", cardModel.getCurrent_point()));
+                            pointtext.setText(String.format(Locale.getDefault(), "%s Pair Points", cardModel.getCurrent_point()));
                             nametext.setText(cardModel.getFull_name());
                             String card_no = cardModel.getCard_number();
 
