@@ -202,7 +202,6 @@ public class StartRideActivity extends AppCompatActivity implements
                         startedcount = 3;
                         if (!isAlreadyStarted)
                             startDriverLift(location, strToken);
-                        return;
                     } else {
                         if (location != null) {
                             if (Previouslocation == null) {
@@ -769,6 +768,9 @@ public class StartRideActivity extends AppCompatActivity implements
                     } else {
                         if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.end_ride))) {
                             endRideCinfirmationDialog(false);
+                        } else {
+                            Constants.showLoader(mainContext);
+                            getUsers(2);
                         }
                     }
                 } catch (Exception E) {
@@ -804,7 +806,7 @@ public class StartRideActivity extends AppCompatActivity implements
                         JSONObject mainjson = new JSONObject(new Gson().toJson(response.body()));
                         if (mainjson.getBoolean("status")) {
                             StringBuilder wholelatlong = new StringBuilder();
-                            Log.e("historylocationList", "" + historylocationList.get(0).toString());
+                            Log.e("historylocationList", "" + historylocationList.toString());
                             for (int x = 0; x < historylocationList.size(); x++) {
                                 Log.e("historylocationList", "" + historylocationList.get(x).toString());
                                 wholelatlong.append("(");
@@ -1129,7 +1131,7 @@ public class StartRideActivity extends AppCompatActivity implements
                     LatLngBounds bounds = mGoogleMap.getProjection().getVisibleRegion().latLngBounds;
                     try {
                         if (!oneTimeZoomed || !bounds.contains(Objects.requireNonNull(src1))) {
-                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(src1, 35.0f));
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(src1, 25.0f));
                             oneTimeZoomed = true;
                         }
                     } catch (Exception e) {
@@ -1493,9 +1495,20 @@ public class StartRideActivity extends AppCompatActivity implements
             @Override
             public void onResponse(String response) {
                 Log.d("usersresponse", response);
+                Constants.hideLoader();
                 try {
                     JSONObject jObject = new JSONObject(response);
                     JSONObject data = jObject.getJSONObject("data");
+                    int is_ride_start = data.getInt("is_ride_start");
+                    request_id = data.getInt("request_id");
+                    if (is_ride_start == 1) {
+                        lift.setIs_user_start(1);
+                        bywhomRidestarted = 1;
+                        tvStartRide.setText(mainContext.getResources().getString(R.string.end_ride));
+                        tvStartRide.setBackgroundTintList(ColorStateList.valueOf(mainContext.getResources().getColor(R.color.colorRed)));
+                        lift.setRequest_id(request_id);
+                    }
+
                     users = data.getJSONArray("user");
                     tracking_lift_id = data.getString("tracking_lift_id");
                     StringBuilder builder = new StringBuilder();
@@ -1741,11 +1754,13 @@ public class StartRideActivity extends AppCompatActivity implements
                     JSONObject jObject = new JSONObject(response);
                     boolean scss = jObject.getBoolean("status");
                     String msg = jObject.getString("message");
+                    Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
 
                     if (scss) {
                         getPayedTODriver();
+                    } else {
+                        finish();
                     }
-                    Toast.makeText(StartRideActivity.this, msg, Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -1,6 +1,5 @@
 package com.liftPlzz.firebase;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -64,13 +63,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            {
                 Log.e("log : ", "if");
                 CHANNEL_ID = "notification";
                 CharSequence name = "notification";
                 String Description = "This is my channel";
                 int importance = 0;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     importance = NotificationManager.IMPORTANCE_HIGH;
                 }
                 Uri defaultSoundUri;
@@ -83,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                         .build();
                 NotificationChannel mChannel;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
                     mChannel.setDescription(Description);
                     mChannel.enableLights(true);
@@ -148,60 +147,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
                 builder.setContentIntent(pendingIntent);
                 notificationManager.notify(NOTIFICATION_ID, builder.build());
-            } else {
-
-                Intent intent = null;
-                if (type.equalsIgnoreCase("cancel-invitation") || type.equalsIgnoreCase("send-invitation")) {
-                    String liftId = "", subCategoryId = "";
-                    if (jObject.has("LIFT_ID")) {
-                        liftId = jObject.getString("LIFT_ID");
-                    }
-                    if (jObject.has("LIFT_ID")) {
-                        subCategoryId = jObject.getString("SUB_CATEGORY_ID");
-                    }
-                    intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("from", "notification");
-                    if (!liftId.equals(""))
-                        intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
-                    if (!subCategoryId.equals(""))
-                        intent.putExtra(Constants.SUB_CATEGORY_ID, Integer.parseInt(subCategoryId));
-                    intent.putExtra(Constants.PARTNER, false);
-
-                } else if (type.equalsIgnoreCase("invitation-status-update")) {
-                    String liftId = jObject.getString("LIFT_ID");
-                    intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("from", "notification");
-
-                    if (!liftId.equals(""))
-                        intent.putExtra(Constants.LIFT_ID, Integer.parseInt(liftId));
-                    intent.putExtra(Constants.PARTNER, false);
-
-                } else if (type.equalsIgnoreCase("ride-end")) {
-                    intent = new Intent(this, HomeActivity.class);
-                }
-
-                intent.putExtra("type", type);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                        PendingIntent.FLAG_ONE_SHOT);
-
-                Uri defaultSoundUri;
-                if (object.has("sound") && !object.getString("sound").equals("default")) {
-                    defaultSoundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + this.getPackageName() + "/" + R.raw.notification);
-                } else {
-                    defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                }
-
-                Notification n = new Notification.Builder(this)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(object.getString("body"))
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent)
-                        .setSmallIcon(R.drawable.logo_icon)
-                        .setSound(defaultSoundUri)
-                        .build();
-                NotificationManager notificationManager1 = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationManager1.notify(NOTIFICATION_ID, n);
             }
         } catch (Exception e) {
             e.printStackTrace();

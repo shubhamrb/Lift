@@ -37,9 +37,7 @@ public class FuelCardRechargeHistoryAdapter extends RecyclerView.Adapter<FuelCar
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.srctext.setText(listsnew.get(position).getRemarks() != null ? listsnew.get(position).getRemarks() : "");
-        holder.remarktext.setText(listsnew.get(position).getStatus());
-        holder.desttext.setVisibility(View.GONE);
+        holder.remarktext.setText(listsnew.get(position).getRemarks() != null ? listsnew.get(position).getRemarks() : "");
         if (!listsnew.get(position).getStatus().equals("Pending")) {
             holder.amount.setText("" + listsnew.get(position).getPoint());
             holder.amount.setTextColor(context.getResources().getColor(R.color.colorPrimary));
@@ -72,9 +70,7 @@ public class FuelCardRechargeHistoryAdapter extends RecyclerView.Adapter<FuelCar
         TextView daytext;
         TextView monthtext;
         TextView amount;
-        TextView srctext;
         TextView remarktext;
-        TextView desttext;
         CardView indicator;
 
         public MyViewHolder(View itemView) {
@@ -82,9 +78,7 @@ public class FuelCardRechargeHistoryAdapter extends RecyclerView.Adapter<FuelCar
             amount = itemView.findViewById(R.id.amountext);
             daytext = itemView.findViewById(R.id.daytext);
             monthtext = itemView.findViewById(R.id.monthtext);
-            srctext = itemView.findViewById(R.id.srctext);
             remarktext = itemView.findViewById(R.id.remarktext);
-            desttext = itemView.findViewById(R.id.desttext);
             indicator = itemView.findViewById(R.id.indicator);
         }
     }

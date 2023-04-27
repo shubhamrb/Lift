@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/_40sdp"
     android:layout_margin="@dimen/dp_10"
     android:backgroundTint="@color/colorDimWhite"
     android:elevation="@dimen/dp_2"
@@ -16,19 +16,19 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/indicator"
-            android:layout_width="@dimen/dp_4"
+            android:layout_width="@dimen/dp_3"
             android:layout_height="match_parent"
             android:backgroundTint="@color/colorPrimary" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/date_card"
             android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_height="@dimen/dp_30"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dp_10"
             app:cardCornerRadius="@dimen/dp_5">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center">
@@ -37,29 +37,27 @@
                     android:id="@+id/daytext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
                     android:fontFamily="@font/gotham_medium"
                     android:text="12"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/monthtext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/daytext"
-                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="@dimen/_2sdp"
                     android:fontFamily="@font/gotham_medium"
                     android:text="Jul"
                     android:textSize="13sp"
                     android:textStyle="normal" />
-            </RelativeLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/dp_70">
+            android:layout_gravity="center_vertical">
 
             <LinearLayout
                 android:id="@+id/ll_details"
@@ -68,35 +66,17 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/amountext"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_13">
-
-                <TextView
-                    android:id="@+id/srctext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/gotham_medium"
-                    android:text="Get 1 points for test"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
+                android:paddingStart="@dimen/dp_13"
+                android:paddingEnd="@dimen/dp_13">
 
                 <TextView
                     android:id="@+id/remarktext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
                     android:fontFamily="@font/gotham_medium"
                     android:text="online payment gateway used"
-                    android:textSize="15sp"/>
-
-                <TextView
-                    android:id="@+id/desttext"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:fontFamily="@font/gotham_medium"
-                    android:text="wallet_points"
                     android:textSize="15sp" />
+
             </LinearLayout>
 
             <TextView

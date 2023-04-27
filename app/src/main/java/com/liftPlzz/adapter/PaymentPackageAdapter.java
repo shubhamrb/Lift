@@ -36,8 +36,6 @@ public class PaymentPackageAdapter extends RecyclerView.Adapter<PaymentPackageAd
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.srctext.setText(listsnew.get(position).getSource());
-        holder.desttext.setText(listsnew.get(position).getDest());
         holder.remarktext.setText(listsnew.get(position).getRemarks());
         if (listsnew.get(position).getType().equals("credit")) {
             holder.amount.setText("+" + listsnew.get(position).getAmount());
@@ -71,9 +69,7 @@ public class PaymentPackageAdapter extends RecyclerView.Adapter<PaymentPackageAd
         TextView daytext;
         TextView monthtext;
         TextView amount;
-        TextView srctext;
         TextView remarktext;
-        TextView desttext;
         CardView indicator;
 
         public MyViewHolder(View itemView) {
@@ -81,9 +77,7 @@ public class PaymentPackageAdapter extends RecyclerView.Adapter<PaymentPackageAd
             amount = itemView.findViewById(R.id.amountext);
             daytext = itemView.findViewById(R.id.daytext);
             monthtext = itemView.findViewById(R.id.monthtext);
-            srctext = itemView.findViewById(R.id.srctext);
             remarktext = itemView.findViewById(R.id.remarktext);
-            desttext = itemView.findViewById(R.id.desttext);
             indicator = itemView.findViewById(R.id.indicator);
         }
     }
