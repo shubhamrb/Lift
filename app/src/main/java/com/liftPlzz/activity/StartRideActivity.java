@@ -1960,7 +1960,13 @@ public class StartRideActivity extends AppCompatActivity implements
 
                 btnOk.setOnClickListener(v -> {
                     dialog.cancel();
-                    rideEndAccept(request_id);
+                    if (lift.getLiftType().equalsIgnoreCase(getResources().getString(R.string.offer_lift))) {
+                        rideEndAccept(request_id);
+                    } else {
+                        if (tvStartRide.getText().toString().equalsIgnoreCase(getResources().getString(R.string.end_ride))) {
+                            tvStartRide.performClick();
+                        }
+                    }
                 });
                 btnCancel.setOnClickListener(v -> {
                     dialog.cancel();
